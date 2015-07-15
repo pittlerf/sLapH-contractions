@@ -22,7 +22,7 @@ MAIN = contract
 
 GENERAL = global_data global_data_input_handling \
 	        global_data_input_handling_utils global_data_init_lookup_tables \
-	        global_data_init_lookup_tables_utils
+	        global_data_init_lookup_tables_utils RandomVector ranlxs
 
 
 MODULES = $(GENERAL)
