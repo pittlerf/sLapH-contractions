@@ -1,0 +1,39 @@
+# This is an example input file
+
+# perallelisation: Be carefull - Atm I would only use one thread for Eigen. It 
+#                                usually is much slower than simple omp!
+nb_omp_threads = 2
+nb_eigen_threads = 1
+
+# lattice parameters:
+Lt = 48
+Lx = 24
+Ly = 24 
+Lz = 24 
+
+# configuration handling: 
+start_config = 714
+end_config   = 714
+delta_config = 4
+
+# eigenvector handling:
+number_of_eigen_vec = 120
+path_eigenvectors   = /data/LapHs/contraction_Markus/test_data/ev
+name_eigenvectors   = eigenvectors
+# output path
+output_path = ./
+
+# quarks to be used - The file at the and is the location of the perambulators.
+[quarks]
+quark = u:5:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/up
+quark = s:5:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/strange
+
+# operators to be used
+[operator_lists]
+operator_list = g5.d0.p0
+operator_list = g3.d0.p0
+
+# all correlation functions which will be computed
+[correlator_lists]
+correlator_list = C2+:Q0:Op0:Q0:Op0
+
