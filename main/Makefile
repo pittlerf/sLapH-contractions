@@ -18,18 +18,22 @@ all: rmxeq mkdep mkxeq
 
 # main programs and modules to be compiled
 
+
 MAIN = contract
 
-GENERAL = global_data global_data_input_handling global_data_build_IO_names \
-	        global_data_input_handling_utils global_data_init_lookup_tables \
-	        global_data_init_lookup_tables_utils RandomVector ranlxs
+GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
+	           global_data_input_handling_utils global_data_init_lookup_tables \
+	           global_data_init_lookup_tables_utils
+
+RANDOM = RandomVector ranlxs
 
 
-MODULES = $(GENERAL)
+MODULES = $(GLOBALDATA) $(RANDOM)
 
 # search path for modules
 MDIR = ../modules
-VPATH = .:$(MDIR)
+
+VPATH = .:$(MDIR):$(MDIR)/GlobalData
 
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
@@ -39,18 +43,18 @@ LIMEPATH = /home/knippsch/ExternLibraries/lime
 # additional include directories
 INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
           /home/knippsch/ExternLibraries/boost_1_55_0 \
-          $(LIMEPATH)/include/ ../include 
+          $(LIMEPATH)/include/ ../include ../include/GlobalData
 
 # additional libraries
 
 LIBS = boost_program_options lime 
 
-LIBPATH = /usr/local/lib /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/ $(LIMEPATH)/lib 
-
+LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
+          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/
 
 # scheduling and optimization options
-CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native -Wno-unused-variable \
-         -Wno-unused-local-typedefs -Wno-sign-compare
+CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
+         -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare
 ############################## do not change ###################################
 
 SHELL=/bin/bash
