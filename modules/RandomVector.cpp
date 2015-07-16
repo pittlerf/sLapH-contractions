@@ -92,6 +92,8 @@ void LapH::RandomVector::read_random_vector(const std::string& filename) {
 void LapH::RandomVector::read_random_vector(const size_t entity, 
                                             const std::string& filename) {
   // open file for reading
+  std::cout << "\tReading random vector from file:\n\t\t" << filename 
+            << std::endl;
   FILE *fp = NULL;
   if((fp = fopen(filename.c_str(), "rb")) == NULL){
     std::cout << "failed to open file to read random vector: " 

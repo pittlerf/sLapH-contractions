@@ -51,6 +51,9 @@ private:
   std::string name_lattice;
   std::string path_output;
   std::string path_config;
+
+  RandomVectorConstruction rnd_vec_construct;
+  PerambulatorConstruction peram_construct;
  
   indexlist_1 rnd_vec_1pt;
   indexlist_2 rnd_vec_2pt;
@@ -88,12 +91,15 @@ private:
   vec_pd_rVdaggerVr lookup_rvdvr;
   void init_lookup_tables();
 
-
-
 public:
   static GlobalData* Instance ();
 
+  // reading the input parameters from the infile in the main routine
   void read_parameters(int ac, char* av[]);
+
+  // This fills the random vector and prambulator structs with the paths and
+  // file names to read the data in depending on the config.
+  void build_IO_names(const size_t config);
 
   // return functions for parameters
   inline std::string get_name_lattice() {
@@ -152,6 +158,12 @@ public:
   }
   inline int get_verbose() {
     return verbose;
+  }
+  inline RandomVectorConstruction get_rnd_vec_construct(){
+    return rnd_vec_construct;
+  }
+  inline PerambulatorConstruction get_peram_sonctruct() {
+    return peram_construct;
   }
   inline std::string get_path_eigenvectors() {
     return path_eigenvectors;

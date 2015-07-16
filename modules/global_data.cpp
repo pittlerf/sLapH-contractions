@@ -180,6 +180,13 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     // the wanted correlators
     init_lookup_tables();
 
+    // TODO: should be put in a separate function
+    // setting the sizes and numbers of random vectors and perambulators
+    rnd_vec_construct.nb_entities = 0;
+    for(const auto& q: quarks)
+      rnd_vec_construct.nb_entities += q.number_of_rnd_vec;
+    rnd_vec_construct.length = Lt * 4 * number_of_eigen_vec;
+
   }
   catch(std::exception& e){
     std::cout << e.what() << "\n";

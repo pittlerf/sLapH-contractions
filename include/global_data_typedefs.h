@@ -10,6 +10,31 @@
 
 #include <typedefs.h>
 
+
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+// Small struct which contains all information to build and read random vectors,
+// like how many are needed, their length, and what the input paths are.
+struct RandomVectorConstruction {
+
+  size_t nb_entities;
+  size_t length;
+  std::vector<std::string> filename_list;
+
+};
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+// Small struct which contains all information to build and read Perambulators,
+// like how many are needed, their size, and what the input paths are.
+struct PerambulatorConstruction {
+
+  size_t nb_entities;
+  size_t size;
+  std::vector<std::string> filename_list;
+
+};
 // *****************************************************************************
 // *****************************************************************************
 // *****************************************************************************
