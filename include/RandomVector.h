@@ -28,9 +28,8 @@ public:
   RandomVector() : vec(0, cmplx(0.0,0.0)) { };
   // NOTE: It is assumed that all random vector have the same length!
   RandomVector(const size_t nb_entities, const size_t length) : 
-                vec(nb_entities*length, cmplx(0.0,0.0)), 
-                nb_entities(nb_entities),
-                length(length) {
+                                     vec(nb_entities*length, cmplx(0.0,0.0)), 
+                                     nb_entities(nb_entities), length(length) {
     std::cout << "\tRandom vectors initialised" << std::endl;
   };
   ~RandomVector() {};

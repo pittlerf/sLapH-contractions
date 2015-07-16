@@ -1,21 +1,23 @@
-//============================================================================
-// Name        : contract.cpp
-// Author      : BK
-// Version     :
-// Copyright   : Copies are prohibited so far
-// Description : Contraction code for Laphs Perambulators
-//============================================================================
+// *****************************************************************************
+// Name         : contract.cpp
+// Author       : Bastian Knippschild
+// Contributors : Christopher Helmes, Christian Jost, Liuming Liu, Markus Werner
+// Version      : 0.1
+// Copyright    : Copies are prohibited so far
+// Description  : Contraction code for Laphs Perambulators
+// *****************************************************************************
 
 #include <iostream>
 
 #include "omp.h"
 
 #include "global_data.h"
+#include "Perambulator.h"
 #include "RandomVector.h"
 
 int main (int ac, char* av[]) {
 
-  // reading in global parameters from input file
+  // reading global parameters from input file
   GlobalData* global_data = GlobalData::Instance();
   global_data->read_parameters(ac, av);
 
@@ -26,8 +28,11 @@ int main (int ac, char* av[]) {
 
   // ***************************************************************************
   // Creating instances of perambulators, random vectors, operators, and 
-  // correlators. The eigenvectors are read from disc in the operator class;
-//  peram = perambulator();
+  // correlators. The eigenvectors are read from disc in the operator class.
+  LapH::Perambulator perambulators(
+                                 global_data->get_peram_construct().nb_entities,
+                                 global_data->get_peram_construct().size_rows,
+                                 global_data->get_peram_construct().size_cols);
   LapH::RandomVector randomvectors(
                                global_data->get_rnd_vec_construct().nb_entities,
                                global_data->get_rnd_vec_construct().length);
@@ -35,16 +40,16 @@ int main (int ac, char* av[]) {
 //  correlators = correlators();
 
   // ***************************************************************************
-  // Loop over all configurations **********************************************
-  // ***************************************************************************
+  // Loop over all configurations stated in the infile *************************
   for(size_t config_i  = global_data->get_start_config(); 
              config_i <= global_data->get_end_config(); 
              config_i += global_data->get_delta_config()){
     std::cout << "\nprocessing configuration: " << config_i << "\n\n";
     global_data->build_IO_names(config_i);
-//    // read perambulators
-//    peram.read();
-//    // read random vectors
+    // read perambulators
+    perambulators.read_perambulators_from_separate_files(
+                              global_data->get_peram_construct().filename_list);
+    // read random vectors
     randomvectors.read_random_vectors_from_separate_files(
                             global_data->get_rnd_vec_construct().filename_list);
 //    // read eigenvectors and build operators

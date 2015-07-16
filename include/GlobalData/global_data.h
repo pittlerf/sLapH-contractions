@@ -162,7 +162,7 @@ public:
   inline RandomVectorConstruction get_rnd_vec_construct(){
     return rnd_vec_construct;
   }
-  inline PerambulatorConstruction get_peram_sonctruct() {
+  inline PerambulatorConstruction get_peram_construct() {
     return peram_construct;
   }
   inline std::string get_path_eigenvectors() {

@@ -113,8 +113,8 @@ void LapH::RandomVector::read_random_vectors_from_separate_files(
                                 const std::vector<std::string>& filename_list) {
 
   if(filename_list.size() != nb_entities)
-    std::cout << "Problem when reading random vectors: The number of read "
-              << "random vectors is not the same as the expected one!" 
+    std::cout << "Problem when reading random vectors: The number of random "
+              << "vectors read is not the same as the expected one!" 
               << std::endl;
   for(size_t i = 0; i < filename_list.size(); i++)
     read_random_vector(i, filename_list[i]);

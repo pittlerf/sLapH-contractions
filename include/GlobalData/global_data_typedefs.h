@@ -18,8 +18,7 @@
 // like how many are needed, their length, and what the input paths are.
 struct RandomVectorConstruction {
 
-  size_t nb_entities;
-  size_t length;
+  size_t nb_entities, length;
   std::vector<std::string> filename_list;
 
 };
@@ -30,8 +29,7 @@ struct RandomVectorConstruction {
 // like how many are needed, their size, and what the input paths are.
 struct PerambulatorConstruction {
 
-  size_t nb_entities;
-  size_t size;
+  size_t nb_entities, size_rows, size_cols;
   std::vector<std::string> filename_list;
 
 };

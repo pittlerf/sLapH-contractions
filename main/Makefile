@@ -27,8 +27,9 @@ GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 
 RANDOM = RandomVector ranlxs
 
+GENERAL = Perambulator
 
-MODULES = $(GLOBALDATA) $(RANDOM)
+MODULES = $(GLOBALDATA) $(RANDOM) $(GENERAL)
 
 # search path for modules
 MDIR = ../modules
