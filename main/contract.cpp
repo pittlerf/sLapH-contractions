@@ -48,6 +48,9 @@ int main (int ac, char* av[]) {
     global_data->build_IO_names(config_i);
     // read perambulators
     perambulators.read_perambulators_from_separate_files(
+                              global_data->get_Lt(),
+                              global_data->get_number_of_eigen_vec(),
+                              global_data->get_quarks(),
                               global_data->get_peram_construct().filename_list);
     // read random vectors
     randomvectors.read_random_vectors_from_separate_files(

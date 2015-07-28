@@ -10,6 +10,7 @@
 #include "Eigen/Dense"
 
 #include "typedefs.h"
+#include "global_data_typedefs.h"
 
 namespace LapH {
 
@@ -17,22 +18,25 @@ class Perambulator {
 
 private:
   std::vector<Eigen::MatrixXcd> peram;
-  size_t nb_entities;
-  size_t size_rows, size_cols;
 
 public:  
-  // standard ctor and dtor are enough - all else is handled by std::vector
-  Perambulator () : peram(0, Eigen::MatrixXcd(0,0)), nb_entities(0), 
-                    size_rows(0), size_cols(0) {};
-  // NOTE: IT is assumed that all perambulators have the same size!
+  // just a default constructor
+  Perambulator () : peram(0, Eigen::MatrixXcd(0,0)) {};
+  // constructor which creates the correct sizes of the matrices
+  // input: nb_entitites -> how many perambulators are there
+  //        size_rows    -> number of rows for each perambulator
+  //        size_cols    -> number of columns for each prambulator
   Perambulator(const size_t nb_entities, 
-               const size_t size_rows, 
-               const size_t size_cols):
-                 peram(nb_entities, Eigen::MatrixXcd(size_rows, size_cols)),
-                 nb_entities(nb_entities), size_rows(size_rows), 
-                 size_cols(size_cols) {
+               const std::vector<size_t>& size_rows, 
+               const std::vector<size_t>& size_cols):
+                                    peram(nb_entities, Eigen::MatrixXcd(0, 0)) {
+    // TODO: Think about putting this in initialisation list (via lambda?)
+    for(size_t i = 0; i < nb_entities; i++)
+      peram[i].resize(size_rows[i], size_cols[i]);
+
     std::cout << "\tPerambulators initialised" << std::endl;
   }
+  // the default deconstructor - std::vector and Eigen should handle everything
   ~Perambulator() {};
 
   // [] operator to directly access the elements of perambulator
@@ -41,12 +45,22 @@ public:
   }
 
   // rading one perambulators from some file
-  // input: entity   -> the entry where this peram will be stores
-  //        filename -> just the file name
-  void read_perambulator(const size_t entity, const std::string& filename);
+  // input: entity       -> the entry where this peram will be stores
+  //        Lt           -> total number of timeslices - for each peram the same
+  //        nb_eigen_vec -> total number of eigen vecs - for each peram the same
+  //        q            -> contains information about dilution scheme and size
+  //        filename     -> just the file name
+  void read_perambulator(const size_t entity, const size_t Lt, 
+                         const size_t nb_eigen_vec, const quark& q,
+                         const std::string& filename);
   // rading perambulators where each perambulator is stored in a different file
-  // input: filename_list -> vector which contains all file names
+  // input: Lt           -> total number of timeslices - for each peram the same
+  //        nb_eigen_vec -> total number of eigen vecs - for each peram the same
+  //        quark        -> contains information about dilution scheme and size
+  //        filename_list -> vector which contains all file names
   void read_perambulators_from_separate_files(
+                                 const size_t Lt, const size_t nb_eigen_vec,
+                                 const std::vector<quark>& quark,
                                  const std::vector<std::string>& filename_list);
 
 };

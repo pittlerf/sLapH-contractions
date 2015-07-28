@@ -186,10 +186,12 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     rnd_vec_construct.nb_entities += q.number_of_rnd_vec;
   rnd_vec_construct.length = Lt * 4 * number_of_eigen_vec;
   peram_construct.nb_entities = rnd_vec_construct.nb_entities;
-  peram_construct.size_rows = rnd_vec_construct.length;
-  // TODO: At this point it is not possible to have different dilution 
-  //       schemes for different quarks! It is all the same.
-  peram_construct.size_cols = (Lt / quarks[0].number_of_dilution_T) * 
-                               quarks[0].number_of_dilution_E * 
-                               quarks[0].number_of_dilution_D;
+  for(const auto& q: quarks){
+    for(size_t r = 0; r < q.number_of_rnd_vec; r++){
+      peram_construct.size_rows.push_back(rnd_vec_construct.length);
+      peram_construct.size_cols.push_back((Lt / q.number_of_dilution_T) * 
+                                           q.number_of_dilution_E * 
+                                           q.number_of_dilution_D);
+    }
+  }
 }
