@@ -73,7 +73,6 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
 //         is 1 for the first combination and 0 else and will be checked
 //         in BasicOperator::init_operator
 // id_rVdaggerVr - like id_VdaggerV, but all momenta are saved
-
   struct pdg{
     size_t id;
     std::array<int,3> p3;
