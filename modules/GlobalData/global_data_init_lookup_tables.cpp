@@ -18,7 +18,8 @@ using gdu::set_index_4pt;
 static void init_lookup_corr(const Correlator_list& correlator_list, 
                       const std::vector<Operator_list>& operator_list,
                       vec_pdg_Corr& lookup_corr, vec_pd_VdaggerV& lookup_vdv,
-                      vec_pd_rVdaggerVr& lookup_rvdvr, size_t index_of_unity) {
+                      vec_pd_rVdaggerVr& lookup_rvdvr, size_t index_of_unity,
+                      std::vector<MesonPDG>& MesonPDG_lookuptable) {
 
   // extracting all operator IDs which are used in correlation functions
   std::vector<int> used_operator_IDs;
@@ -81,12 +82,20 @@ static void init_lookup_corr(const Correlator_list& correlator_list,
   lookup_corr.swap(dump_write); 
   // setting the identification numbers of lookup_corr
   size_t counter = 0;
-  for(auto& op : lookup_corr){
+  for(auto& op : lookup_corr)
     op.id = counter++;
-  }
+
+
 
   // final setting lookuptables for vdaggerv and so on
   set_index_corr(lookup_corr, lookup_vdv, lookup_rvdvr);
+
+  // TODO: Todo is only for highlighting. Here, the old struct is copied into
+  //       the new struct.
+  for(auto& vdv : lookup_vdv)
+    MesonPDG_lookuptable.push_back(MesonPDG(vdv.id, lookup_corr[vdv.index].p3, 
+                                                    lookup_corr[vdv.index].dis3, 
+                                                    lookup_corr[vdv.index].gamma));
 
   // setting index_of_unity
   pdg zero;
@@ -634,7 +643,7 @@ void GlobalData::init_lookup_tables() {
 
   }
   init_lookup_corr(correlator_list, operator_list, lookup_corr, lookup_vdv, 
-                   lookup_rvdvr, index_of_unity);    
+                   lookup_rvdvr, index_of_unity, MesonPDG_lookuptable);    
   init_lookup_2pt(correlator_list, operator_list, lookup_corr, lookup_2pt);
   init_lookup_4pt(correlator_list, operator_list, lookup_corr, lookup_4pt,
                   lookup_4pt_3_IO);

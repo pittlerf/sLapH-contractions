@@ -12,6 +12,7 @@
 #include "omp.h"
 
 #include "global_data.h"
+#include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "RandomVector.h"
 
@@ -26,7 +27,7 @@ int main (int ac, char* av[]) {
   omp_set_num_threads(global_data->get_nb_omp_threads());
   Eigen::setNbThreads(global_data->get_nb_eigen_threads());
 
-  // ***************************************************************************
+  // ---------------------------------------------------------------------------
   // Creating instances of perambulators, random vectors, operators, and 
   // correlators. The eigenvectors are read from disc in the operator class.
   LapH::Perambulator perambulators(
@@ -36,11 +37,15 @@ int main (int ac, char* av[]) {
   LapH::RandomVector randomvectors(
                                global_data->get_rnd_vec_construct().nb_entities,
                                global_data->get_rnd_vec_construct().length);
-//  operators = operators();  
+  LapH::OperatorsForMesons meson_operators(
+                                   global_data->get_Lt(), global_data->get_Lx(),
+                                   global_data->get_Ly(), global_data->get_Lz(),
+                                   global_data->get_number_of_eigen_vec(),
+                                   global_data->get_MesonPDG_lookuptable());  
 //  correlators = correlators();
 
-  // ***************************************************************************
-  // Loop over all configurations stated in the infile *************************
+  // ---------------------------------------------------------------------------
+  // Loop over all configurations stated in the infile -------------------------
   for(size_t config_i  = global_data->get_start_config(); 
              config_i <= global_data->get_end_config(); 
              config_i += global_data->get_delta_config()){
@@ -55,8 +60,8 @@ int main (int ac, char* av[]) {
     // read random vectors
     randomvectors.read_random_vectors_from_separate_files(
                             global_data->get_rnd_vec_construct().filename_list);
-//    // read eigenvectors and build operators
-//    operators.build();
+    // read eigenvectors and build operators
+    meson_operators.create_operators(global_data->get_filename_eigenvectors());
 //    // doing all the contractions
 //    correlators.contract(peram, operators);
   }

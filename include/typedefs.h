@@ -84,6 +84,26 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
     size_t id_rvdvr;
   };
 
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// TODO: Todo is only for highlighting. This is the new struct which contains
+//       the quantum numbers for meson operators.
+  struct MesonPDG{
+    size_t id;
+    std::array<int,3> p3;
+    std::array<int,3> dis3;
+    std::vector<int> gamma;
+    // just a small constructor to ensure easy filling of its vector form
+    MesonPDG(const size_t id, const std::array<int, 3>& p3, 
+             const std::array<int, 3>& dis3, const std::vector<int>& gamma) :
+             id(id), p3(p3), dis3(dis3), gamma(gamma) {};
+  };
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+
+
 // struct which contains all id's from pdg for which VdaggerV is not 
 // redundant. Only half the momenta and no gamma structure is contained
 // id    - number to reference VdaggerV

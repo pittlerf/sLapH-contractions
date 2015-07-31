@@ -46,6 +46,7 @@ private:
   size_t nb_omp_threads, nb_eigen_threads;
   std::string path_eigenvectors;
   std::string name_eigenvectors;
+  std::string filename_eigenvectors;
   std::string path_perambulators;
   std::string name_perambulators;
   std::string name_lattice;
@@ -89,6 +90,9 @@ private:
   vec_index_IO_1 lookup_4pt_3_IO;
   vec_pd_VdaggerV lookup_vdv;
   vec_pd_rVdaggerVr lookup_rvdvr;
+  // TODO: Todo is only for highlighting. This is a new array of quatnum numbers
+  //       for mesons
+  std::vector<MesonPDG> MesonPDG_lookuptable;
   void init_lookup_tables();
 
 public:
@@ -171,6 +175,9 @@ public:
   inline std::string get_name_eigenvectors() {
     return name_eigenvectors;
   }
+  inline std::string get_filename_eigenvectors () {
+    return filename_eigenvectors;
+  }
   inline std::string get_path_perambulators() {
     return path_perambulators;
   }
@@ -228,7 +235,9 @@ public:
   inline const vec_pd_rVdaggerVr get_lookup_rVdaggerVr() {
     return lookup_rvdvr;
   }
-
+  inline const std::vector<MesonPDG> get_MesonPDG_lookuptable(){
+    return MesonPDG_lookuptable;
+  }
   //! All con/de-structors are protected to assure that only one instance exists
   //! at once. DO NOT CHANGE!!
 protected:

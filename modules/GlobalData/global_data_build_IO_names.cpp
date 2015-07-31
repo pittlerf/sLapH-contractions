@@ -1,8 +1,8 @@
 #include "global_data.h"
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> create_rnd_vector_file_names (
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static std::vector<std::string> create_rnd_vector_file_names (
                                     const int config, const int nb_of_eigen_vec,
                                     const std::vector<quark> quarks) {
 
@@ -23,9 +23,9 @@ std::vector<std::string> create_rnd_vector_file_names (
   }
   return filename_list;
 }
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> create_perambulator_file_names (
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static std::vector<std::string> create_perambulator_file_names (
                                               const int config, const int Lt,
                                               const std::vector<quark> quarks) {
 
@@ -50,13 +50,27 @@ std::vector<std::string> create_perambulator_file_names (
   }
   return filename_list;
 }
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static std::string create_eigenvector_file_name (
+                                         const size_t config,
+                                         const std::string& path_eigenvectors,
+                                         const std::string& name_eigenvectors) {
+  char name[200];
+  std::string filename = path_eigenvectors + "/" + name_eigenvectors;
+  sprintf(name, "%s.%04d.", filename.c_str(), (int) config);
+  return name;
+
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void GlobalData::build_IO_names(const size_t config){
 
   rnd_vec_construct.filename_list = create_rnd_vector_file_names(
                                            config, number_of_eigen_vec, quarks);
   peram_construct.filename_list = create_perambulator_file_names(
                                                             config, Lt, quarks);
-
+  filename_eigenvectors = create_eigenvector_file_name(config, 
+                                                       path_eigenvectors, 
+                                                       name_eigenvectors);
 }
