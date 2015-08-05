@@ -41,7 +41,7 @@ int main (int ac, char* av[]) {
                                    global_data->get_Lt(), global_data->get_Lx(),
                                    global_data->get_Ly(), global_data->get_Lz(),
                                    global_data->get_number_of_eigen_vec(),
-                                   global_data->get_MesonPDG_lookuptable());  
+                                   global_data->get_operator_lookuptable());  
 //  correlators = correlators();
 
   // ---------------------------------------------------------------------------

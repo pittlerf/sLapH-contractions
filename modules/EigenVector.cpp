@@ -27,9 +27,9 @@ void LapH::EigenVector::read_eigen_vector(const std::string& filename,
 
   // small test of trace and sum over the eigen vector matrix!
   if(verbose){
-    std::cout << "trace of V^d*V on t = " << t << ":\t"
+    std::cout << "trace of V^d*V" << ":\t"
         << (V[t].adjoint() * V[t]).trace() << std::endl;
-    std::cout << "sum over all entries of V^d*V on t = " << t << ":\t"
+    std::cout << "sum over all entries of V^d*V" << ":\t"
         << (V[t].adjoint() * V[t]).sum() << std::endl;
   }   
 }

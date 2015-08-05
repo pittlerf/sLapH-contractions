@@ -87,7 +87,7 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-// TODO: Todo is only for highlighting. This is the new struct which contains
+// TODO: Todo is only for highlighting. These are the new structs which contain
 //       the quantum numbers for meson operators.
   struct MesonPDG{
     size_t id;
@@ -99,6 +99,52 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
              const std::array<int, 3>& dis3, const std::vector<int>& gamma) :
              id(id), p3(p3), dis3(dis3), gamma(gamma) {};
   };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct VdaggerVP{
+    size_t id;
+    std::array<int,3> p3;
+    // just a small constructor to ensure easy filling of its vector form
+    VdaggerVP(const size_t id, const std::array<int, 3>& p3) : id(id), p3(p3){};
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct VdaggerVPD{
+    size_t id;
+    size_t id_momentum;
+    std::array<int,3> dis3;
+    // just a small constructor to ensure easy filling of its vector form
+    VdaggerVPD(const size_t id, const size_t id_momentum, 
+               const std::array<int, 3>& dis3) : 
+                                id(id), id_momentum(id_momentum), dis3(dis3) {};
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct rVdaggerVLookup{
+    size_t id;
+    size_t id_vdaggerv;
+    bool need_vdaggerv_daggering;
+    std::vector<size_t> rnd_vec_ids;
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct rVdaggerVrLookup{
+    size_t id;
+    size_t id_vdaggerv;
+    bool need_vdaggerv_daggering;
+    std::vector<std::array<size_t, 2> > rnd_vec_ids;
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct OperatorLookup{
+    std::vector<VdaggerVP> vdaggerv_momenta;
+    std::vector<VdaggerVPD> vdaggerv_mom_dis;
+    std::vector<rVdaggerVLookup> rvdaggerv_lookuptable;  
+    std::vector<rVdaggerVrLookup> rvdaggervr_lookuptable;  
+    size_t index_of_unity;
+    bool can_vdaggerv_be_deleted;
+  };
+// TODO: Highlighting ends here
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 

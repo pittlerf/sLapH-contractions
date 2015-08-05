@@ -7,10 +7,10 @@ namespace {
 // -----------------------------------------------------------------------------
 // creates a two-dimensional vector containing the momenta for the operators
 // input: Lx, Ly, Lz      -> lattice extend in x, y, and z direction
-//        MesonPDG_lookup -> contains the momenta
+//        vdaggerv_lookup -> contains the momenta
 // output: momentum -> two dimensional array where the momenta are stored
 void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz, 
-                    const std::vector<MesonPDG>& MesonPDG_lookuptable, 
+                    const std::vector<VdaggerVP>& vdaggerv_momenta, 
                     array_cd_d2& momentum){
 
   static const std::complex<double> I(0.0, 1.0);
@@ -18,7 +18,7 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
   // To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
   // quantum number id in op_VdaggerV will be used. The rest can be obtained
   // by adjoining
-  for(const auto& op : MesonPDG_lookuptable){
+  for(const auto& op : vdaggerv_momenta){
     // op_VdaggerV contains the index of one (redundancy) op_Corr which
     // allows to deduce the quantum numbers (momentum)
     const double ipx = op.p3[0] * 2. * M_PI / (double) Lx; 
@@ -47,9 +47,9 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
 LapH::OperatorsForMesons::OperatorsForMesons
                            (const size_t Lt, const size_t Lx, const size_t Ly, 
                             const size_t Lz, const size_t nb_ev,
-                            const std::vector<MesonPDG>& MesonPDG_lookuptable) : 
+                            const OperatorLookup& operator_lookuptable) : 
                                   vdaggerv(), momentum(), 
-                                  MesonPDG_lookuptable(MesonPDG_lookuptable),
+                                  operator_lookuptable(operator_lookuptable),
                                   Lt(Lt), Lx(Lx), Ly(Ly), Lz(Lz), nb_ev(nb_ev) {
 
 //  const std::vector<quark> quarks = global_data->get_quarks();
@@ -61,13 +61,15 @@ LapH::OperatorsForMesons::OperatorsForMesons
   // only half of the array is stored to save memory. But be careful, it 
   // must be mapped correctly from outside by addressing the momentum
   // correctly and daggering
-  vdaggerv.resize(boost::extents[MesonPDG_lookuptable.size()][Lt]);
+  vdaggerv.resize(boost::extents[
+                             operator_lookuptable.vdaggerv_mom_dis.size()][Lt]);
 
 
   // the momenta only need to be calculated for a subset of quantum numbers
   // (see VdaggerV::build_vdaggerv)
-  momentum.resize(boost::extents[MesonPDG_lookuptable.size()][Lx*Ly*Lz]);
-  create_momenta(Lx, Ly, Lz, MesonPDG_lookuptable, momentum);
+  momentum.resize(boost::extents[
+                       operator_lookuptable.vdaggerv_mom_dis.size()][Lx*Ly*Lz]);
+  create_momenta(Lx, Ly, Lz, operator_lookuptable.vdaggerv_momenta, momentum);
 
 }
 // -----------------------------------------------------------------------------
@@ -75,11 +77,9 @@ LapH::OperatorsForMesons::OperatorsForMesons
 void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
 
   clock_t t2 = clock();
-  std::cout << "\tbuild vdaggerv:";
-
   const size_t dim_row = 3*Lx*Ly*Lz;
 
-//  const size_t id_unity = global_data->get_index_of_unity();
+  const size_t id_unity = operator_lookuptable.index_of_unity;
 
   // resizing each matrix in vdaggerv
   std::fill(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
@@ -92,29 +92,28 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
   #pragma omp for schedule(dynamic)
   for(size_t t = 0; t < Lt; ++t){
 
+    // creating full filename for eigenvectors and reading them in
     char inter_name[200];
     sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
-    V_t.read_eigen_vector(inter_name, 0, 1); // reading eigenvectors
+    V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
     // calculation must only be performed for a subset of quantum numbers given
     // in op_VdaggerV.
-    for(const auto& op : MesonPDG_lookuptable){
+    for(const auto& op : operator_lookuptable.vdaggerv_mom_dis){
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
-//      if(op.index != id_unity){
+      if(op.id != id_unity){
         // momentum vector contains exp(-i p x). Divisor 3 for colour index. 
         // All three colours on same lattice site get the same momentum.
         for(size_t x = 0; x < dim_row; ++x) {
           mom(x) = momentum[op.id][x/3];
         }
         vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * V_t[0];
-//      }
-//      else{
-//        // zero momentum 
-//        (vdaggerv[op.id][t]) = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
-//      }
+      }
+      else // zero momentum
+        vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
     }
   } // loop over time
 }// pragma omp parallel ends here

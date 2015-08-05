@@ -92,7 +92,7 @@ private:
   vec_pd_rVdaggerVr lookup_rvdvr;
   // TODO: Todo is only for highlighting. This is a new array of quatnum numbers
   //       for mesons
-  std::vector<MesonPDG> MesonPDG_lookuptable;
+  OperatorLookup operator_lookuptable;
   void init_lookup_tables();
 
 public:
@@ -235,8 +235,8 @@ public:
   inline const vec_pd_rVdaggerVr get_lookup_rVdaggerVr() {
     return lookup_rvdvr;
   }
-  inline const std::vector<MesonPDG> get_MesonPDG_lookuptable(){
-    return MesonPDG_lookuptable;
+  inline const OperatorLookup get_operator_lookuptable(){
+    return operator_lookuptable;
   }
   //! All con/de-structors are protected to assure that only one instance exists
   //! at once. DO NOT CHANGE!!

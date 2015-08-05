@@ -1,6 +1,7 @@
 #ifndef OPERATORSFORMESONS_H_
 #define OPERATORSFORMESONS_H_
 
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -23,7 +24,7 @@ private:
   array_Xcd_d2_eigen vdaggerv;
 //  array_Xcd_d2_eigen rvdaggervr;
   array_cd_d2 momentum;
-  const std::vector<MesonPDG> MesonPDG_lookuptable;
+  const OperatorLookup operator_lookuptable;
   const size_t Lt, Lx, Ly, Lz, nb_ev;
 
   // internal functions to build individual operators --> The interface to these
@@ -33,7 +34,7 @@ private:
 
 public:
   // standard ctor makes no sence
-  OperatorsForMesons () : vdaggerv(), momentum(), MesonPDG_lookuptable(),
+  OperatorsForMesons () : vdaggerv(), momentum(), operator_lookuptable(),
                           Lt(0), Lx(0), Ly(0), Lz(0), nb_ev(0) {
     std::cout << "Standard constructor for Operators makes no sence" 
               << std::endl;
@@ -42,7 +43,7 @@ public:
   // ctor which builds up all the memory
   OperatorsForMesons (const size_t Lt, const size_t Lx, const size_t Ly, 
                       const size_t Lz, const size_t nb_ev, 
-                      const std::vector<MesonPDG>& MesonPDG_lookuptable);
+                      const OperatorLookup& operator_lookuptable);
   // standard dtor - eveything should be handled by Eigen and
   //                 Boost::Mulidimensional arrays.
   ~OperatorsForMesons () {};
