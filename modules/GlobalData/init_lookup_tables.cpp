@@ -416,7 +416,7 @@ static void build_C20_lookup(const std::vector<std::string>& correlator_names,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void GlobalData::init_lookup_tables_new() {
+void GlobalData::init_lookup_tables() {
 
   for (const auto& correlator : correlator_list){
 

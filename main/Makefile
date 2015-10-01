@@ -22,8 +22,7 @@ all: rmxeq mkdep mkxeq
 MAIN = contract
 
 GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
-	           global_data_input_handling_utils global_data_init_lookup_tables \
-	           global_data_init_lookup_tables_utils init_lookup_tables
+	           global_data_input_handling_utils init_lookup_tables
 
 RANDOM = RandomVector ranlxs
 

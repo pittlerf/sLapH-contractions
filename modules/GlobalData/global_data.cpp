@@ -180,8 +180,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
 
   // setting the lookup tables for all needed quantum numbers to calculate
   // the wanted correlators
-//  init_lookup_tables();
-  init_lookup_tables_new();
+  init_lookup_tables();
 
   // TODO: should be put in a separate function
   // setting the sizes and numbers of random vectors and perambulators
