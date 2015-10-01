@@ -22,6 +22,7 @@ path_eigenvectors   = /data/LapHs/contraction_Markus/test_data/ev
 name_eigenvectors   = eigenvectors
 # output path
 output_path = ./
+overwrite_old = yes
 
 # quarks to be used - The file at the and is the location of the perambulators.
 [quarks]
@@ -36,6 +37,7 @@ operator_list = g3.d0.p0,2
 # all correlation functions which will be computed
 [correlator_lists]
 correlator_list = C2+:Q0:Op0:Q0:Op0
-correlator_list = C2+:Q1:Op1:Q1:Op0
-correlator_list = C20:Q1:Op0:Q0:Op1
+correlator_list = C20:Q1:Op1:Q1:Op0
+#correlator_list = C2+:Q1:Op1:Q0:Op0
+#correlator_list = C20:Q1:Op0:Q0:Op1
 

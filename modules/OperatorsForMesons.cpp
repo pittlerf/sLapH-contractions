@@ -10,7 +10,7 @@ namespace {
 //        vdaggerv_lookup -> contains the momenta
 // output: momentum -> two dimensional array where the momenta are stored
 void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz, 
-                    const std::vector<VdaggerVP>& vdaggerv_momenta, 
+                    const std::vector<VdaggerVQuantumNumbers>& vdaggerv_lookup, 
                     array_cd_d2& momentum){
 
   static const std::complex<double> I(0.0, 1.0);
@@ -18,12 +18,12 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
   // To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
   // quantum number id in op_VdaggerV will be used. The rest can be obtained
   // by adjoining
-  for(const auto& op : vdaggerv_momenta){
+  for(const auto& op : vdaggerv_lookup){
     // op_VdaggerV contains the index of one (redundancy) op_Corr which
     // allows to deduce the quantum numbers (momentum)
-    const double ipx = op.p3[0] * 2. * M_PI / (double) Lx; 
-    const double ipy = op.p3[1] * 2. * M_PI / (double) Ly;
-    const double ipz = op.p3[2] * 2. * M_PI / (double) Lz;
+    const double ipx = op.momentum[0] * 2. * M_PI / (double) Lx; 
+    const double ipy = op.momentum[1] * 2. * M_PI / (double) Ly;
+    const double ipz = op.momentum[2] * 2. * M_PI / (double) Lz;
     // calculate \vec{p} \cdot \vec{x} for all \vec{x} on the lattice
     for(int x = 0; x < Lx; ++x){
       const int xH = x * Ly * Lz; // helper variable
@@ -62,14 +62,14 @@ LapH::OperatorsForMesons::OperatorsForMesons
   // must be mapped correctly from outside by addressing the momentum
   // correctly and daggering
   vdaggerv.resize(boost::extents[
-                             operator_lookuptable.vdaggerv_mom_dis.size()][Lt]);
+                             operator_lookuptable.vdaggerv_lookup.size()][Lt]);
 
 
   // the momenta only need to be calculated for a subset of quantum numbers
   // (see VdaggerV::build_vdaggerv)
   momentum.resize(boost::extents[
-                       operator_lookuptable.vdaggerv_mom_dis.size()][Lx*Ly*Lz]);
-  create_momenta(Lx, Ly, Lz, operator_lookuptable.vdaggerv_momenta, momentum);
+                       operator_lookuptable.vdaggerv_lookup.size()][Lx*Ly*Lz]);
+  create_momenta(Lx, Ly, Lz, operator_lookuptable.vdaggerv_lookup, momentum);
 
 }
 // -----------------------------------------------------------------------------
@@ -78,7 +78,6 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
-
   const size_t id_unity = operator_lookuptable.index_of_unity;
 
   // resizing each matrix in vdaggerv
@@ -101,7 +100,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
     // calculation must only be performed for a subset of quantum numbers given
     // in op_VdaggerV.
-    for(const auto& op : operator_lookuptable.vdaggerv_mom_dis){
+    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
       if(op.id != id_unity){

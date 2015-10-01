@@ -89,60 +89,114 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
 // -----------------------------------------------------------------------------
 // TODO: Todo is only for highlighting. These are the new structs which contain
 //       the quantum numbers for meson operators.
-  struct MesonPDG{
+  struct VdaggerVQuantumNumbers{ 
     size_t id;
-    std::array<int,3> p3;
-    std::array<int,3> dis3;
-    std::vector<int> gamma;
-    // just a small constructor to ensure easy filling of its vector form
-    MesonPDG(const size_t id, const std::array<int, 3>& p3, 
-             const std::array<int, 3>& dis3, const std::vector<int>& gamma) :
-             id(id), p3(p3), dis3(dis3), gamma(gamma) {};
+    std::array<int, 3> momentum;
+    std::array<int, 3> displacement;
+    VdaggerVQuantumNumbers(const size_t id, const std::array<int, 3>& momentum, 
+             const std::array<int, 3>& displacement) :
+             id(id), momentum(momentum), displacement(displacement) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
-  struct VdaggerVP{
+  struct RandomIndexCombinationsQ2{
     size_t id;
-    std::array<int,3> p3;
+    size_t id_q1, id_q2;
+    std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
     // just a small constructor to ensure easy filling of its vector form
-    VdaggerVP(const size_t id, const std::array<int, 3>& p3) : id(id), p3(p3){};
-  };
+    RandomIndexCombinationsQ2(const size_t id, 
+                   const size_t id_q1, const size_t id_q2, 
+                   const std::vector<std::pair<size_t, size_t> >& rnd_vec_ids) :
+                         id(id), id_q1(id_q1), id_q2(id_q2), 
+                         rnd_vec_ids(rnd_vec_ids) {};
+  };  
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
-  struct VdaggerVPD{
+  struct RandomIndexCombinationsQ1{
     size_t id;
-    size_t id_momentum;
-    std::array<int,3> dis3;
-    // just a small constructor to ensure easy filling of its vector form
-    VdaggerVPD(const size_t id, const size_t id_momentum, 
-               const std::array<int, 3>& dis3) : 
-                                id(id), id_momentum(id_momentum), dis3(dis3) {};
-  };
-  // ---------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------
-  struct rVdaggerVLookup{
-    size_t id;
-    size_t id_vdaggerv;
-    bool need_vdaggerv_daggering;
+    size_t id_q1;
     std::vector<size_t> rnd_vec_ids;
-  };
+    // just a small constructor to ensure easy filling of its vector form
+    RandomIndexCombinationsQ1(const size_t id, const size_t id_q1,
+                          const std::vector<size_t>& rnd_vec_ids) :
+                              id(id), id_q1(id_q1), rnd_vec_ids(rnd_vec_ids) {};
+  };  
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
-  struct rVdaggerVrLookup{
+  struct VdaggerVRandomLookup{
     size_t id;
     size_t id_vdaggerv;
+    size_t id_ricQ_lookup;
     bool need_vdaggerv_daggering;
-    std::vector<std::array<size_t, 2> > rnd_vec_ids;
+    // just a small constructor to ensure easy filling of its vector form
+    VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
+              const size_t id_ricQ_lookup, const bool need_vdaggerv_daggering) :
+               id(id), id_vdaggerv(id_vdaggerv), id_ricQ_lookup(id_ricQ_lookup),
+               need_vdaggerv_daggering(need_vdaggerv_daggering) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
   struct OperatorLookup{
-    std::vector<VdaggerVP> vdaggerv_momenta;
-    std::vector<VdaggerVPD> vdaggerv_mom_dis;
-    std::vector<rVdaggerVLookup> rvdaggerv_lookuptable;  
-    std::vector<rVdaggerVrLookup> rvdaggervr_lookuptable;  
+
+    std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup;
+
+    std::vector<RandomIndexCombinationsQ1> ricQ1_lookup;
+    std::vector<RandomIndexCombinationsQ2> ricQ2_lookup;
+
+    std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  
+    std::vector<VdaggerVRandomLookup> rvdaggervr_lookuptable;  
+
     size_t index_of_unity;
-    bool can_vdaggerv_be_deleted;
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct QuarklineQ1Indices {
+    size_t id, id_rvdaggerv, id_peram;
+    std::vector<int> gamma; 
+    // just a small constructor to ensure easy filling of its vector form
+    QuarklineQ1Indices(const size_t id, const size_t id_rvdaggerv, 
+                       const size_t id_peram, const std::vector<int>& gamma) :
+                     id(id), id_rvdaggerv(id_rvdaggerv), id_peram(id_peram),
+                     gamma(gamma) {};
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct QuarklineQ2Indices {
+    size_t id, id_vdaggerv, id_peram1, id_peram2;
+    bool need_vdaggerv_dag;
+    std::vector<int> gamma; 
+    // just a small constructor to ensure easy filling of its vector form
+    QuarklineQ2Indices(const size_t id, const size_t id_vdaggerv, 
+                       const size_t id_peram1, const size_t id_peram2, 
+                       const bool need_vdaggerv_dag,
+                       const std::vector<int>& gamma) :
+                     id(id), id_vdaggerv(id_vdaggerv), id_peram1(id_peram1),
+                     id_peram2(id_peram2), need_vdaggerv_dag(need_vdaggerv_dag),
+                     gamma(gamma) {};
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct QuarklineLookup{
+    std::vector<QuarklineQ1Indices> Q1;
+    std::vector<QuarklineQ2Indices> Q2V;
+    std::vector<QuarklineQ2Indices> Q2L;
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct CorrInfo{
+    size_t id;
+    std::string outfilename;
+    std::vector<size_t> lookup;
+    // just a small constructor to ensure easy filling of its vector form
+    CorrInfo(const size_t id, const std::string& outfilename, 
+             const std::vector<size_t>& lookup) :
+                     id(id), outfilename(outfilename), lookup(lookup) {};
+  };
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  struct CorrelatorLookup{
+    std::vector<CorrInfo> C20;
+    std::vector<CorrInfo> C2c;
   };
 // TODO: Highlighting ends here
 // -----------------------------------------------------------------------------

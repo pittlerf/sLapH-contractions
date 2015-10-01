@@ -20,12 +20,15 @@ class RandomVector {
 private:
   // the random vector
   std::vector<cmplx> vec;
-  size_t nb_entities;
-  size_t length;
+  const size_t nb_entities;
+  const size_t length;
 
 public:
   // standard ctor and dtor are enough - all else is handled by std::vector
-  RandomVector() : vec(0, cmplx(0.0,0.0)) { };
+  RandomVector() : vec(0, cmplx(0.0,0.0)), nb_entities(0), length(0) {
+    std::cout << "The standard ctor of random vectors is useless!" << std::endl;
+    exit(0);
+  };
   // NOTE: It is assumed that all random vector have the same length!
   RandomVector(const size_t nb_entities, const size_t length) : 
                                      vec(nb_entities*length, cmplx(0.0,0.0)), 

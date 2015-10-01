@@ -3,147 +3,367 @@
 
 namespace gdu = ::global_data_utils;
 
+//// -----------------------------------------------------------------------------
+//// -----------------------------------------------------------------------------
+//// function to obtain index combinations of random vectors for charged corr
+//static size_t set_rnd_vec_charged(const std::vector<quark>& quarks, 
+//                             const size_t id_q1, const size_t id_q2, 
+//                             std::vector<rVdaggerVrRandomLookup>& rnd_vec_ids) {
+//
+//  // First, check if the random vector index combination already exists
+//  for(const auto& r_id : rnd_vec_ids)
+//    if(((r_id.id_q1 == id_q1) && (r_id.id_q2 == id_q2)) ||
+//       ((r_id.id_q1 == id_q2) && (r_id.id_q2 == id_q1)) )
+//      return r_id.id;
+//
+//  // set start and end points of rnd numbers
+//  auto rndq1_start = 0;
+//  for(auto i = 0; i < id_q1; i++)
+//    rndq1_start =+ quarks[i].number_of_rnd_vec;
+//  auto rndq2_start = 0;
+//  for(auto i = 0; i < id_q2; i++)
+//    rndq2_start =+ quarks[i].number_of_rnd_vec;
+//  auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
+//  auto rndq2_end = rndq2_start + quarks[id_q2].number_of_rnd_vec;
+//
+//  // check if there are enough random vectors
+//  // TODO: if statements can be joined to make it shorter
+//  if(id_q1 == id_q2){
+//    if(quarks[id_q1].number_of_rnd_vec < 2){
+//      std::cerr << "There are not enough random vectors for charged correlators"
+//                << std::endl;
+//      exit(-1);
+//    }
+//  }
+//  else{
+//    if((quarks[id_q1].number_of_rnd_vec < 1 && 
+//        quarks[id_q2].number_of_rnd_vec < 1)){
+//      std::cerr << "There are not enough random vectors for charged correlators"
+//                << std::endl;
+//      exit(-1);
+//    }
+//  }
+//
+//  // finally filling the array
+//  std::vector<std::array<size_t, 2> > rnd_vec_comb;
+//  for(size_t i = rndq1_start; i < rndq1_end; ++i)
+//    for(size_t j = rndq2_start; j < rndq2_end; ++j)
+//      if(i != j) 
+//        rnd_vec_comb.emplace_back(std::array<size_t, 2>{i, j});
+//  rnd_vec_ids.emplace_back(rVdaggerVrRandomLookup(rnd_vec_ids.size(), id_q1, 
+//                                                          id_q2, rnd_vec_comb));
+//  return rnd_vec_ids.back().id;
+//}
+//// -----------------------------------------------------------------------------
+//// -----------------------------------------------------------------------------
+//// function to obtain index combinations of random vectors for uncharged corrs
+//static void set_rnd_vec_uncharged(const std::vector<quark>& quarks, 
+//                              const size_t id_q1, 
+//                              std::vector<rVdaggerVRandomLookup>& rnd_vec_ids) {
+//
+//  // First, check if the random vector indices already exists
+//  for(const auto& r_id : rnd_vec_ids)
+//    if(r_id.id_q1 == id_q1) 
+//      return;
+//
+//  // set start and end points of rnd numbers
+//  auto rndq1_start = 0;
+//  for(auto i = 0; i < id_q1; i++)
+//    rndq1_start =+ quarks[i].number_of_rnd_vec;
+//  auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
+//
+//  if(quarks[id_q1].number_of_rnd_vec < 2){
+//    std::cerr << "There are not enough random vectors for uncharged correlators"
+//              << std::endl;
+//    exit(-1);
+//  }
+//
+//  // finally filling the array
+//  std::vector<size_t> rnd_vec_comb;
+//  for(size_t i = rndq1_start; i < rndq1_end; ++i)
+//    rnd_vec_comb.emplace_back(i);
+//  rnd_vec_ids.emplace_back(rVdaggerVRandomLookup(rnd_vec_ids.size(), id_q1, 
+//                                                                 rnd_vec_comb));
+//}
+//// -----------------------------------------------------------------------------
+//// -----------------------------------------------------------------------------
+
 namespace {
 
-// need some functions from namespace global_data_utils
-using gdu::add_p3;
-using gdu::abs_p3;
-using gdu::compare_quantum_numbers_of_pdg;
-using gdu::compare_mom_dis_of_pdg;
-using gdu::compare_index_list;
-using gdu::set_index_corr;
-using gdu::set_index_2pt;
-using gdu::set_index_4pt;
+//// need some functions from namespace global_data_utils
+//using gdu::add_p3;
+//using gdu::abs_p3;
+//using gdu::compare_quantum_numbers_of_pdg;
+//using gdu::compare_mom_dis_of_pdg;
+//using gdu::compare_index_list;
+//using gdu::set_index_corr;
+//using gdu::set_index_2pt;
+//using gdu::set_index_4pt;
+//
+//static void init_lookup_corr(const Correlator_list& correlator_list, 
+//                             const std::vector<Operator_list>& operator_list,
+//                             const std::vector<quark>& quarks,
+//                             vec_pdg_Corr& lookup_corr,
+//                             OperatorLookup& operator_lookuptable) {
+//
+//  // extracting all operator IDs which are used in correlation functions
+//  std::vector<int> used_operator_IDs;
+//  for (const auto& corr_list : correlator_list)
+//    for(const auto& op_id : corr_list.operator_numbers)
+//      if(std::none_of(used_operator_IDs.begin(), used_operator_IDs.end(), 
+//                                            [op_id](int i){return i == op_id;}))
+//        used_operator_IDs.emplace_back(op_id);
+//
+//  // write quantum numbers specified in infile into lookup_corr
+//  for(const auto& op_entry : used_operator_IDs){
+//    for(const auto& individual_operator : operator_list[op_entry]){
+//      pdg write; // just a dummy
+//      write.gamma = individual_operator.gammas; // Dirac Matrices
+//      write.dis3 = individual_operator.dil_vec; // displacement Vector
+//      for(const auto& mom_vec : individual_operator.mom_vec){ // momenta
+//        for(auto mom : mom_vec){
+//          write.p3 = mom;
+//          lookup_corr.emplace_back(write);
+//      }}
+//  }}
+//  // doubly counted lookup_corr entries are deleted to avoid comp. overhead
+//  auto it = lookup_corr.begin();
+//  while(it != lookup_corr.end()) {
+//    auto it2 = it;
+//    it2++;
+//    while(it2 != lookup_corr.end()) {
+//      if(compare_quantum_numbers_of_pdg(*it, *it2))
+//        lookup_corr.erase(it2);
+//      else
+//        it2++;
+//    }
+//    it++;
+//  }
+//  // sorting lookup_corr for equal momentum and displacement vectors - makes it
+//  // easier to run over it with auto loops
+//  std::vector<pdg> dump_write; // just an intermediate memory for the sorting
+//  while(lookup_corr.size() != 0){
+//
+//    it = lookup_corr.begin();
+//    dump_write.push_back(*it);
+//    lookup_corr.erase(it);
+//
+//    auto it2 = dump_write.end()-1;
+//    while(it != lookup_corr.end()) {
+//      if(compare_mom_dis_of_pdg(*it, *it2)){
+//        dump_write.push_back(*it);
+//        lookup_corr.erase(it);
+//      }
+//      else
+//        it++;
+//    }
+//  }
+//  // swapping the intermidiate memory back to the original lookup table
+//  lookup_corr.swap(dump_write); 
+//  // setting the identification numbers of lookup_corr
+//  size_t counter = 0;
+//  for(auto& op : lookup_corr)
+//    op.id = counter++;
+//  // ------------------ DONE SO FAR --------------------------------------------
+//
+//
+//  // ------------------ SETTING LOOKUPTABLES FOR OPERATORS ---------------------
+//  // filling lookuptables relevant for VdaggerV in operators
+//  size_t tot_i = 0, mom_i = 0, mom_index = 0; // just some indices
+//  for(const auto& op : lookup_corr){
+//    auto d = op.dis3; // These declarations are necessary because lambdas
+//    auto pp = op.p3;  // must not get member varaiables in capture list!
+//    std::array<int,3> pm = {-pp[0], -pp[1], -pp[2]};
+//    std::vector<VdaggerVP> mom = operator_lookuptable.vdaggerv_momenta;
+//    // TODO: Think about a way to condense these two if statements in one!
+//    if(std::none_of(operator_lookuptable.vdaggerv_mom_dis.begin(),
+//                    operator_lookuptable.vdaggerv_mom_dis.end(),
+//                    [&pm,&pp,&d,&mom](VdaggerVPD v)
+//                    {
+//                      auto c1 = (v.dis3 == d);
+//                      auto c2 = (mom[v.id_momentum].p3 == pp);
+//                      auto c3 = (mom[v.id_momentum].p3 == pm);
+//                      return c1 and (c2 or c3);
+//                    }
+//                    )) {
+//      operator_lookuptable.vdaggerv_momenta.
+//                                           emplace_back(VdaggerVP(mom_i,op.p3));
+//      operator_lookuptable.vdaggerv_mom_dis.
+//                                emplace_back(VdaggerVPD(tot_i, mom_i, op.dis3));
+//      tot_i++;
+//      mom_i++;
+//    } // The 'else if' catptures new displacement with known momentum! 
+//    else if(std::any_of(operator_lookuptable.vdaggerv_mom_dis.begin(),
+//                        operator_lookuptable.vdaggerv_mom_dis.end(),
+//                        [&pm,&pp,&d,&mom,&mom_index](VdaggerVPD v)
+//                        {
+//                          auto c1 = (v.dis3 != d);
+//                          auto c2 = (mom[v.id_momentum].p3 == pp);
+//                          auto c3 = (mom[v.id_momentum].p3 == pm);
+//                          if(c1 and (c2 or c3))
+//                            mom_index = v.id_momentum;           
+//                          return c1 and (c2 or c3);
+//                        }
+//                        )) {
+//      operator_lookuptable.vdaggerv_mom_dis.
+//                            emplace_back(VdaggerVPD(tot_i, mom_index, op.dis3));
+//      tot_i++;
+//    }
+//  }
+//  // setting index_of_unity
+//  std::array<int, 3> zero = {0,0,0};
+//  for(const auto& op : operator_lookuptable.vdaggerv_mom_dis)
+//    if((op.dis3 == zero) and 
+//       (operator_lookuptable.vdaggerv_momenta[op.id_momentum].p3 == zero))
+//      operator_lookuptable.index_of_unity = op.id;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+////  // filling lookuptables relevant for rVdaggerV and rVdaggerVr in operators
+////  counter = 0;
+////  for (const auto& corr_list : correlator_list){
+////    if (corr_list.type == "C2+") {
+////
+////      std::cout << "correlation function number: " << counter++ << std::endl;
+////
+////      size_t id_rnd_comb = set_rnd_vec_charged(quarks, 
+////                                              corr_list.quark_numbers[0], 
+////                                              corr_list.quark_numbers[1], 
+////                                              operator_lookuptable.rVVr_lookup);
+////      // TODO: make a function out of this
+////      vec_pdg_Corr local_quantum_numbers;
+////      // throwing out double elements
+////      auto op_numbers = corr_list.operator_numbers;
+////      std::sort(op_numbers.begin(), op_numbers.end());
+////      auto it = std::unique(op_numbers.begin(), op_numbers.end());
+////      op_numbers.resize(std::distance(op_numbers.begin(),it));
+////      for(const auto& op_nb : op_numbers){
+////        for(const auto& individual_operator : operator_list[op_nb]){
+////          pdg write; // just a dummy
+////          write.gamma = individual_operator.gammas; // Dirac Matrices
+////          write.dis3 = individual_operator.dil_vec; // displacement Vector
+////          for(const auto& mom_vec : individual_operator.mom_vec){ // momenta
+////            for(auto mom : mom_vec){
+////              write.p3 = mom;
+////              local_quantum_numbers.emplace_back(write);
+////          }}
+////      }}
+////      // doubly counted lookup_corr entries are deleted to avoid comp. overhead
+////      auto it1 = local_quantum_numbers.begin();
+////      while(it1 != local_quantum_numbers.end()) {
+////        auto it2 = it1;
+////        it2++;
+////        while(it2 != local_quantum_numbers.end()) {
+////          // thow out same momentum and displacements
+////          if(compare_mom_dis_of_pdg(*it1, *it2)) 
+////            local_quantum_numbers.erase(it2);
+////          else
+////            it2++;
+////        }
+////        it1++;
+////      }
+////      // finally building lookuptable for rvdaggervr
+////      for(const auto& qn : local_quantum_numbers){
+////        // find quantum numbers in vdaggerv
+////        auto d = qn.dis3; // These declarations are necessary because lambdas
+////        auto pp = qn.p3;  // must not get member varaiables in capture list!
+////        std::array<int,3> pm = {-pp[0], -pp[1], -pp[2]};
+////        std::vector<VdaggerVP> mom = operator_lookuptable.vdaggerv_momenta;
+////        size_t vdv_id = 0;
+////        bool vdv_dag = 0;
+////        if(std::any_of(operator_lookuptable.vdaggerv_mom_dis.begin(),
+////                       operator_lookuptable.vdaggerv_mom_dis.end(),
+////                       [&pm,&pp,&d,&mom,&vdv_id,&vdv_dag](VdaggerVPD v)
+////                       {
+////                         auto c1 = (v.dis3 == d);
+////                         auto c2 = (mom[v.id_momentum].p3 == pp);
+////                         auto c3 = (mom[v.id_momentum].p3 == pm);
+////                         if(c1 and c2){
+////                           vdv_id = v.id;
+////                           vdv_dag = 0;
+////                         }
+////                         else if(c1 and c3){
+////                           vdv_id = v.id;
+////                           vdv_dag = 1;
+////                         } 
+////                         return c1 and (c2 or c3);
+////                       }
+////                       )) {
+////          // find vdaggerv and quark indices in rvdaggervr lookup and create
+////          // a new entry if it does not exist
+////          if(std::none_of(operator_lookuptable.rVVr_lookup.begin(),
+////                          operator_lookuptable.rVVr_lookup.end(),
+////                          [](rVdaggerVrRandomLookup v)
+////                          {
+////
+////
+////
+////
+////
+////
+////
+////                          }
+////                          )){
+////              operator_lookuptable.rVVr_lookup.emplace_back(
+////                       rVdaggerVrRandomLookup(
+////                               operator_lookuptable.rVVr_lookup.size(),
+////                                          ));
+////          }
+////        }
+////      }
+////    }
+////    else if (corr_list.type == "C20") {
+////      set_rnd_vec_uncharged(quarks, corr_list.quark_numbers[0],  
+////                            operator_lookuptable.rVV_lookup);
+////      set_rnd_vec_uncharged(quarks, corr_list.quark_numbers[1],  
+////                            operator_lookuptable.rVV_lookup);
+////    }
+////  }
+////  // setting ids of lookuptables
+////  counter = 0;
+////  for(auto& op : operator_lookuptable.rvdaggerv_lookuptable)
+////    op.id = counter++;
+////  counter = 0;
+////  for(auto& op : operator_lookuptable.rvdaggervr_lookuptable)
+////    op.id = counter++;
+////
+////
+////
+////
+////
+////
+////
+////
+////  // small test to check random vector combinations
+////  for(const auto& op : operator_lookuptable.rVVr_lookup){
+////    std::cout << "rnd vec combinations: " << op.id << "\t" << op.id_q1 << " " 
+////              << op.id_q2 << std::endl;
+////    for(const auto& rnd : op.rnd_vec_ids){
+////      std::cout << "\t" << rnd[0] << " " << rnd[1] << std::endl;
+////    }
+////  }
+////  // small test to check random vector combinations
+////  for(const auto& op : operator_lookuptable.rVV_lookup){
+////    std::cout << "rnd vec combinations: " << op.id << "\t" << op.id_q1 
+////              << std::endl;
+////    for(const auto& rnd : op.rnd_vec_ids){
+////      std::cout << "\t" << rnd << std::endl;
+////    }
+////  }
+//
+//
+//
+//}
 
-static void init_lookup_corr(const Correlator_list& correlator_list, 
-                             const std::vector<Operator_list>& operator_list,
-                             vec_pdg_Corr& lookup_corr,
-                             OperatorLookup& operator_lookuptable) {
-
-  // extracting all operator IDs which are used in correlation functions
-  std::vector<int> used_operator_IDs;
-  for (const auto& corr_list : correlator_list)
-    for(const auto& op_id : corr_list.operator_numbers)
-      if(std::none_of(used_operator_IDs.begin(), used_operator_IDs.end(), 
-                                            [op_id](int i){return i == op_id;}))
-        used_operator_IDs.push_back(op_id);
-
-  // write quantum numbers specified in infile into lookup_corr
-  for(const auto& op_entry : used_operator_IDs){
-    for(const auto& individual_operator : operator_list[op_entry]){
-      pdg write; // just a dummy
-      write.gamma = individual_operator.gammas; // Dirac Matrices
-      write.dis3 = individual_operator.dil_vec; // displacement Vector
-      for(const auto& mom_vec : individual_operator.mom_vec){ // momenta
-        for(auto mom : mom_vec){
-          write.p3 = mom;
-          lookup_corr.push_back(write);
-      }}
-  }}
-  // doubly counted lookup_corr entries are deleted to avoid comp. overhead
-  auto it = lookup_corr.begin();
-  while(it != lookup_corr.end()) {
-    auto it2 = it;
-    it2++;
-    while(it2 != lookup_corr.end()) {
-      if(compare_quantum_numbers_of_pdg(*it, *it2))
-        lookup_corr.erase(it2);
-      else
-        it2++;
-    }
-    it++;
-  }
-  // sorting lookup_corr for equal momentum and displacement vectors - makes it
-  // easier to run over it with auto loops
-  std::vector<pdg> dump_write; // just an intermediate memory for the sorting
-  while(lookup_corr.size() != 0){
-
-    it = lookup_corr.begin();
-    dump_write.push_back(*it);
-    lookup_corr.erase(it);
-
-    auto it2 = dump_write.end()-1;
-    while(it != lookup_corr.end()) {
-      if(compare_mom_dis_of_pdg(*it, *it2)){
-        dump_write.push_back(*it);
-        lookup_corr.erase(it);
-      }
-      else
-        it++;
-    }
-  }
-  // swapping the intermidiate memory back to the original lookup table
-  lookup_corr.swap(dump_write); 
-  // setting the identification numbers of lookup_corr
-  size_t counter = 0;
-  for(auto& op : lookup_corr)
-    op.id = counter++;
-  // ------------------ DONE SO FAR --------------------------------------------
-
-
-  // ------------------ SETTING LOOKUPTABLES FOR OPERATORS ---------------------
-  // filling lookuptables relevant for VdaggerV in operators
-  size_t tot_i = 0, mom_i = 0, mom_index = 0; // just some indices
-  for(const auto& op : lookup_corr){
-    auto d = op.dis3; // These declarations are necessary because lambdas
-    auto pp = op.p3;  // must not get member varaiables in capture list!
-    std::array<int,3> pm = {-pp[0], -pp[1], -pp[2]};
-    std::vector<VdaggerVP> mom = operator_lookuptable.vdaggerv_momenta;
-    // TODO: Think about a way to condense these two if statements in one!
-    if(std::none_of(operator_lookuptable.vdaggerv_mom_dis.begin(),
-                    operator_lookuptable.vdaggerv_mom_dis.end(),
-                    [&pm,&pp,&d,&mom](VdaggerVPD v)
-                    {
-                      auto c1 = (v.dis3 == d);
-                      auto c2 = (mom[v.id_momentum].p3 == pp);
-                      auto c3 = (mom[v.id_momentum].p3 == pm);
-                      return c1 and (c2 or c3);
-                    }
-                    )) {
-      operator_lookuptable.vdaggerv_momenta.push_back(VdaggerVP(mom_i,op.p3));
-      operator_lookuptable.vdaggerv_mom_dis.
-                               push_back(VdaggerVPD(tot_i, mom_i, op.dis3));
-      tot_i++;
-      mom_i++;
-    } // The 'else if' catptures new displacement with known momentum! 
-    else if(std::any_of(operator_lookuptable.vdaggerv_mom_dis.begin(),
-                        operator_lookuptable.vdaggerv_mom_dis.end(),
-                        [&pm,&pp,&d,&mom,&mom_index](VdaggerVPD v)
-                        {
-                          auto c1 = (v.dis3 != d);
-                          auto c2 = (mom[v.id_momentum].p3 == pp);
-                          auto c3 = (mom[v.id_momentum].p3 == pm);
-                          if(c1 and (c2 or c3))
-                            mom_index = v.id_momentum;           
-                          return c1 and (c2 or c3);
-                        }
-                        )) {
-      operator_lookuptable.vdaggerv_mom_dis.
-                               push_back(VdaggerVPD(tot_i, mom_index, op.dis3));
-      tot_i++;
-    }
-  }
-  // setting index_of_unity
-  std::array<int, 3> zero = {0,0,0};
-  for(const auto& op : operator_lookuptable.vdaggerv_mom_dis)
-    if((op.dis3 == zero) and 
-       (operator_lookuptable.vdaggerv_momenta[op.id_momentum].p3 == zero))
-      operator_lookuptable.index_of_unity = op.id;
-
-  // filling lookuptables relevant for rVdaggerV and rVdaggerVr in operators
-  for (const auto& corr_list : correlator_list){
-    if (corr_list.type == "C2+") {
-      std::cout << "this is a charged Meson" << std::endl;
-    }
-    else if (corr_list.type == "C20") {
-      std::cout << "this is an uncharged Meson" << std::endl;
-    }
-  }
-}
-
-//// *****************************************************************************
-//// *****************************************************************************
-//// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
+// *****************************************************************************
 //static void init_lookup_2pt(const Correlator_list& correlator_list, 
 //                     const std::vector<Operator_list>& operator_list,
 //                     const vec_pdg_Corr& lookup_corr, 
@@ -497,38 +717,6 @@ static void init_lookup_corr(const Correlator_list& correlator_list,
 ////    std::cout << r << std::endl;
 ////  }
 //}
-//
-//// function to obtain the index combinations of the random vectors
-//// for two quarks
-//static void set_rnd_vec_2pt(std::vector<quark>& quarks, 
-//                            indexlist_2& rnd_vec_2pt) {
-//  // ATM hardcoded, check which quarks are being used
-//  const int q1 = 0, q2 = 0;
-//  const int rndq1 = quarks[q1].number_of_rnd_vec;
-//  const int rndq2 = quarks[q2].number_of_rnd_vec;
-//
-//  // check if there are enough random vectors
-//  if( (q1 == q2) && (rndq1 < 2) ) {
-//    std::cerr << "There are not enough random vectors for 2point functions" 
-//              << std::endl;
-//    exit(-1);
-//  }
-//  for(size_t i = 0; i < rndq1; ++i) {
-//    for(size_t j = 0; j < rndq1; ++j) {
-//      // if the quarks are the same, skip the combinations
-//      // with i==j
-//      if( (q1 != q2) || (i != j) ) {
-//        rnd_vec_2pt.emplace_back(i, j);
-//      }
-//    }
-//  }
-//
-////  std::cout << "rnd_vec test: " << rnd_vec_C2.size() << std::endl;
-////  for(auto& r : rnd_vec_C2) {
-////    std::cout << r.first << " " << r.second << std::endl;
-////  }
-//}
-//
 //// function to obtain index combinations of the random vectors 
 //// for three quarks
 //static void set_rnd_vec_3pt(std::vector<quark>& quarks, 
@@ -652,8 +840,8 @@ static void init_lookup_corr(const Correlator_list& correlator_list,
 
 void GlobalData::init_lookup_tables() {
 
-  init_lookup_corr(correlator_list, operator_list, lookup_corr, 
-                   operator_lookuptable);    
+//  init_lookup_corr(correlator_list, operator_list, quarks, lookup_corr,
+//                   operator_lookuptable);    
 //  init_lookup_2pt(correlator_list, operator_list, lookup_corr, lookup_2pt);
 //  init_lookup_4pt(correlator_list, operator_list, lookup_corr, lookup_4pt,
 //                  lookup_4pt_3_IO);

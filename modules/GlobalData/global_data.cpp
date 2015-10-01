@@ -70,6 +70,9 @@ void GlobalData::read_parameters (int ac, char* av[]) {
       po::value<std::string>(&path_output)-> 
                                           default_value("../../contractions"),
       "path for output")
+    ("overwrite_old",
+      po::value<std::string>(&overwrite)->default_value("no"), 
+      "shall old correlator files be overwritten, yes or no")
     ("config_path",
       po::value<std::string>(&path_config)->default_value("../../configs"),
       "path for configurations")
@@ -177,7 +180,8 @@ void GlobalData::read_parameters (int ac, char* av[]) {
 
   // setting the lookup tables for all needed quantum numbers to calculate
   // the wanted correlators
-  init_lookup_tables();
+//  init_lookup_tables();
+  init_lookup_tables_new();
 
   // TODO: should be put in a separate function
   // setting the sizes and numbers of random vectors and perambulators

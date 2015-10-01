@@ -26,6 +26,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 
+#include <sys/stat.h>
+
 #include "global_data_typedefs.h"
 #include "typedefs.h"
 
@@ -51,6 +53,7 @@ private:
   std::string name_perambulators;
   std::string name_lattice;
   std::string path_output;
+  std::string overwrite;
   std::string path_config;
 
   RandomVectorConstruction rnd_vec_construct;
@@ -93,7 +96,11 @@ private:
   // TODO: Todo is only for highlighting. This is a new array of quatnum numbers
   //       for mesons
   OperatorLookup operator_lookuptable;
+  QuarklineLookup quarkline_lookuptable;
+  CorrelatorLookup correlator_lookuptable;
   void init_lookup_tables();
+  // TODO: new version
+  void init_lookup_tables_new();
 
 public:
   static GlobalData* Instance ();
