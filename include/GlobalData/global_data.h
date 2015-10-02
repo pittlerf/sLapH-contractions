@@ -59,11 +59,6 @@ private:
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
  
-  indexlist_1 rnd_vec_1pt;
-  indexlist_2 rnd_vec_2pt;
-  indexlist_3 rnd_vec_3pt;
-  indexlist_4 rnd_vec_4pt;
-
   // The function input handling creates quarks, operator_lists and
   // correlator_lists from the strings created from the infile!
   // in: vectors of strings of: quark_configs
@@ -83,24 +78,10 @@ private:
 
   // The function init_lookup_tables creates the lookup tables from quarks, 
   // operator_list and correlator_list.
-  size_t index_of_unity;
-  vec_pdg_Corr lookup_corr;
-  vec_index_2pt lookup_2pt;
-  vec_index_4pt lookup_4pt;
-  vec_index_IO_1 lookup_2pt_IO;
-  vec_index_IO_2 lookup_4pt_1_IO;
-  vec_index_IO_2 lookup_4pt_2_IO;
-  vec_index_IO_1 lookup_4pt_3_IO;
-  vec_pd_VdaggerV lookup_vdv;
-  vec_pd_rVdaggerVr lookup_rvdvr;
-  // TODO: Todo is only for highlighting. This is a new array of quatnum numbers
-  //       for mesons
   OperatorLookup operator_lookuptable;
   QuarklineLookup quarkline_lookuptable;
   CorrelatorLookup correlator_lookuptable;
   void init_lookup_tables();
-  // TODO: new version
-  void init_lookup_tables_new();
 
 public:
   static GlobalData* Instance ();
@@ -199,48 +180,6 @@ public:
   }
   inline Correlator_list& get_correlator_list() {
     return correlator_list;
-  }
-  inline const vec_pdg_Corr& get_lookup_corr() {
-    return lookup_corr;
-  }
-  inline const vec_index_2pt& get_lookup_2pt_trace() {
-    return lookup_2pt;
-  }
-  inline const vec_index_4pt& get_lookup_4pt_trace() {
-    return lookup_4pt;
-  }
-  inline const vec_index_IO_1& get_lookup_2pt_IO() {
-    return lookup_2pt_IO;
-  }
-  inline const vec_index_IO_2& get_lookup_4pt_1_IO() {
-    return lookup_4pt_1_IO;
-  }
-  inline const vec_index_IO_2& get_lookup_4pt_2_IO() {
-    return lookup_4pt_2_IO;
-  }
-  inline const vec_index_IO_1& get_lookup_4pt_3_IO() {
-    return lookup_4pt_3_IO;
-  }
-  inline const indexlist_1& get_rnd_vec_1pt() {
-    return rnd_vec_1pt;
-  }
-  inline const indexlist_2& get_rnd_vec_2pt() {
-    return rnd_vec_2pt;
-  }
-  inline const indexlist_3& get_rnd_vec_3pt() {
-    return rnd_vec_3pt;
-  }
-  inline const indexlist_4& get_rnd_vec_4pt() {
-    return rnd_vec_4pt;
-  }
-  inline const size_t get_index_of_unity() {
-    return index_of_unity;
-  }
-  inline const vec_pd_VdaggerV get_lookup_VdaggerV() {
-    return lookup_vdv;
-  }
-  inline const vec_pd_rVdaggerVr get_lookup_rVdaggerVr() {
-    return lookup_rvdvr;
   }
   inline const OperatorLookup get_operator_lookuptable(){
     return operator_lookuptable;

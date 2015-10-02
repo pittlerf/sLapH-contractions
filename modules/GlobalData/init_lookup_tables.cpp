@@ -216,7 +216,7 @@ static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks,
   // First, check if the random vector indices already exists
   for(const auto& r_id : rnd_vec_ids)
     if(r_id.id_q1 == id_q1) 
-      return r_id.id_q1;
+      return r_id.id;
 
   // set start and end points of rnd numbers
   auto rndq1_start = 0;
@@ -471,6 +471,7 @@ void GlobalData::init_lookup_tables() {
       rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
                                  correlator.quark_numbers[1], 
                                  operator_lookuptable.ricQ1_lookup) );
+
       std::vector<std::vector<size_t> > rvdv_indices;
       build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
                              operator_lookuptable.rvdaggerv_lookuptable,
