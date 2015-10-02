@@ -32,8 +32,7 @@ typedef boost::multi_array<cmplx, 10> array_cd_d10;
 
 // special type for Corr and Q2
 typedef boost::multi_array<std::vector<std::vector<cmplx> >, 4> array_corr;
-typedef boost::multi_array<std::vector<std::vector<Eigen::MatrixXcd> >, 4> 
-                                                                       array_q2;
+typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
 // Eigen typedefs
 typedef std::vector<Eigen::MatrixXcd> vec_Xcd_eigen;
@@ -49,10 +48,10 @@ typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
 // index typedefs
-typedef std::list<size_t> indexlist_1;
-typedef std::list<std::pair<size_t, size_t> > indexlist_2;
-typedef std::list<std::array<size_t, 3> > indexlist_3;
-typedef std::list<std::array<size_t, 4> > indexlist_4;
+//typedef std::list<size_t> indexlist_1;
+//typedef std::list<std::pair<size_t, size_t> > indexlist_2;
+//typedef std::list<std::array<size_t, 3> > indexlist_3;
+//typedef std::list<std::array<size_t, 4> > indexlist_4;
 
 
 // -----------------------------------------------------------------------------
@@ -119,28 +118,29 @@ typedef std::list<std::array<size_t, 4> > indexlist_4;
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
   struct QuarklineQ1Indices {
-    size_t id, id_rvdaggerv, id_peram;
+    size_t id, id_rvdaggerv, id_peram, id_ric_lookup;
     std::vector<int> gamma; 
     // just a small constructor to ensure easy filling of its vector form
     QuarklineQ1Indices(const size_t id, const size_t id_rvdaggerv, 
-                       const size_t id_peram, const std::vector<int>& gamma) :
+                       const size_t id_peram, const size_t id_ric_lookup, 
+                       const std::vector<int>& gamma) :
                      id(id), id_rvdaggerv(id_rvdaggerv), id_peram(id_peram),
-                     gamma(gamma) {};
+                     id_ric_lookup(id_ric_lookup), gamma(gamma) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
   struct QuarklineQ2Indices {
-    size_t id, id_vdaggerv, id_peram1, id_peram2;
+    size_t id, id_vdaggerv, id_peram1, id_peram2, id_ric_lookup;
     bool need_vdaggerv_dag;
     std::vector<int> gamma; 
     // just a small constructor to ensure easy filling of its vector form
     QuarklineQ2Indices(const size_t id, const size_t id_vdaggerv, 
                        const size_t id_peram1, const size_t id_peram2, 
-                       const bool need_vdaggerv_dag,
+                       const size_t id_ric_lookup, const bool need_vdaggerv_dag,
                        const std::vector<int>& gamma) :
                      id(id), id_vdaggerv(id_vdaggerv), id_peram1(id_peram1),
-                     id_peram2(id_peram2), need_vdaggerv_dag(need_vdaggerv_dag),
-                     gamma(gamma) {};
+                     id_peram2(id_peram2), id_ric_lookup(id_ric_lookup), 
+                     need_vdaggerv_dag(need_vdaggerv_dag), gamma(gamma) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------

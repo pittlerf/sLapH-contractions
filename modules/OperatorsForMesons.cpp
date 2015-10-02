@@ -97,6 +97,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
   const size_t id_unity = operator_lookuptable.index_of_unity;
 
   // resizing each matrix in vdaggerv
+  // TODO: check if it is better to use for_each and resize instead of std::fill
   std::fill(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 

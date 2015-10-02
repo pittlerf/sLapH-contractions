@@ -21,7 +21,7 @@ namespace LapH {
 class OperatorsForMesons {
 
 private:
-  // contains for operators which are accessible from outside
+  // containers for operators which are accessible from outside
   array_Xcd_d2_eigen vdaggerv;
   Xcd_d3_eigen rvdaggerv;
   Xcd_d3_eigen rvdaggervr;

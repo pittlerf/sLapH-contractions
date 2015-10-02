@@ -184,6 +184,9 @@ public:
   inline const OperatorLookup get_operator_lookuptable(){
     return operator_lookuptable;
   }
+  inline const QuarklineLookup get_quarkline_lookuptable(){
+    return quarkline_lookuptable;
+  }
   //! All con/de-structors are protected to assure that only one instance exists
   //! at once. DO NOT CHANGE!!
 protected:
