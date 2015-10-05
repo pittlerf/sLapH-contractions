@@ -39,7 +39,7 @@ public:
 
   // () operator to directly access the elements of vec
   inline cmplx operator()(const size_t entity, const size_t entry) const {
-    return vec[entity*length+entry];
+    return vec.at(entity*length+entry);
   }
 
   // computes the random vectors for the sources

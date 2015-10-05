@@ -47,6 +47,7 @@ int main (int ac, char* av[]) {
   LapH::Quarklines quarklines(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,
                          (global_data->get_quarks())[0].number_of_dilution_E,
+                          global_data->get_number_of_eigen_vec(),
                           global_data->get_quarkline_lookuptable(),
                           global_data->get_operator_lookuptable().ricQ2_lookup);
 //  correlators = correlators();
@@ -72,7 +73,11 @@ int main (int ac, char* av[]) {
                                                                  randomvectors);
     // building quarklines from operators and perambulators
     quarklines.create_quarklines(perambulators, meson_operators, 
-                                 global_data->get_quarkline_lookuptable());
+                          global_data->get_quarkline_lookuptable(),
+                          global_data->get_operator_lookuptable().ricQ2_lookup);
+    // this memory is not needed anymore
+    meson_operators.free_memory_rvdaggerv();
+    meson_operators.free_memory_vdaggerv();
 
 //    // doing all the contractions
 //    correlators.contract(peram, operators);

@@ -173,7 +173,7 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
     else
       vdv = vdaggerv[op.id_vdaggerv][t].adjoint();
 
-    const auto id = operator_lookuptable.ricQ1_lookup[op.id_ricQ_lookup].id;
+    size_t rid = 0;
     for(const auto& rnd_id : 
               operator_lookuptable.ricQ1_lookup[op.id_ricQ_lookup].rnd_vec_ids){
 
@@ -181,9 +181,10 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
       for(size_t vec_i = 0; vec_i < nb_ev; ++vec_i) {
         size_t blk =  block + vec_i * 4 + 4 * nb_ev * t;
         
-        rvdaggerv[op.id][t][id].block(vec_i%dilE + dilE*block, 0, 1, nb_ev) += 
+        rvdaggerv[op.id][t][rid].block(vec_i%dilE + dilE*block, 0, 1, nb_ev) += 
              vdv.row(vec_i) * std::conj(rnd_vec(rnd_id, blk));
       }}
+      rid++;
     }
   }}// time and operator loops end here
 
@@ -224,7 +225,7 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
     else
       vdv = vdaggerv[op.id_vdaggerv][t].adjoint();
 
-    const auto id = operator_lookuptable.ricQ2_lookup[op.id_ricQ_lookup].id;
+    size_t rid = 0;
     int check = -1;
     for(const auto& rnd_id : 
               operator_lookuptable.ricQ2_lookup[op.id_ricQ_lookup].rnd_vec_ids){
@@ -243,12 +244,13 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
       for(size_t block_y = 0; block_y < 4; block_y++){
       for(size_t vec_y = 0; vec_y < nb_ev; ++vec_y) {
         size_t blk =  block_y + vec_y * 4 + 4 * nb_ev * t;
-        rvdaggervr[op.id][t][id].block(
+        rvdaggervr[op.id][t][rid].block(
                             dilE*block_y + vec_y%dilE, dilE*block_x, 1, dilE) +=
                 M.block(vec_y, dilE*block_x, 1, dilE) * 
                                          std::conj(rnd_vec(rnd_id.second, blk));
       }}} 
       check = rnd_id.first;
+      rid++;
     }
   }}// time and operator loops end here
 

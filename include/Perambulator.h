@@ -43,7 +43,7 @@ public:
 
   // [] operator to directly access the elements of perambulator
   inline const Eigen::MatrixXcd& operator[](const size_t entity) const {
-    return peram[entity];
+    return peram.at(entity);
   }
 
   // rading one perambulators from some file

@@ -16,6 +16,11 @@
 
 namespace LapH {
 
+struct gamma_lookup {
+  std::array<int, 4> row;
+  std::array<cmplx, 4> value;
+};
+
 class Quarklines {
 
 private:
@@ -23,30 +28,35 @@ private:
   array_quarkline Q1;
   array_quarkline Q2V;
   array_quarkline Q2L;
-  const size_t Lt, dilT, dilE;
+  const size_t Lt, dilT, dilE, nev;
+  std::vector<LapH::gamma_lookup>  gamma;
 
   void build_Q1(const Perambulator& peram,
                 const OperatorsForMesons& meson_operator,
-                const std::vector<QuarklineQ1Indices>& lookup);
+                const std::vector<QuarklineQ1Indices>& ql_lookup,
+                const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   void build_Q2V(const Perambulator& peram,
                  const OperatorsForMesons& meson_operator,
-                 const std::vector<QuarklineQ2Indices>& lookup);
+                 const std::vector<QuarklineQ2Indices>& ql_lookup,
+                 const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   void build_Q2L(const Perambulator& peram,
                  const OperatorsForMesons& meson_operator,
-                 const std::vector<QuarklineQ2Indices>& lookup);
+                 const std::vector<QuarklineQ2Indices>& ql_lookup,
+                 const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 
 public:
 
   Quarklines (const size_t Lt, const size_t dilT, const size_t dilE, 
-              const QuarklineLookup& quarkline_lookuptable,
+              const size_t nev, const QuarklineLookup& quarkline_lookuptable,
               const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   ~Quarklines () {}; // dtor
 
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void create_quarklines(const Perambulator& peram, 
-                         const OperatorsForMesons& meson_operator,
-                         const QuarklineLookup& quarkline_lookuptable);
+                      const OperatorsForMesons& meson_operator,
+                      const QuarklineLookup& quarkline_lookuptable,
+                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 
 };
 // -----------------------------------------------------------------------------

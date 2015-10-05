@@ -74,13 +74,13 @@ public:
   inline const Eigen::MatrixXcd& return_rvdaggerv(const size_t index, 
                                                   const size_t t, 
                                                   const size_t rnd_id) const {
-    return rvdaggerv[index][t][rnd_id];
+    return rvdaggerv.at(index).at(t).at(rnd_id);
   }
   // ---------------------------------------------------------------------------
   inline const Eigen::MatrixXcd& return_rvdaggervr(const size_t index, 
                                                    const size_t t, 
                                                    const size_t rnd_id) const {
-    return rvdaggervr[index][t][rnd_id];
+    return rvdaggervr.at(index).at(t).at(rnd_id);
   }
 
 };

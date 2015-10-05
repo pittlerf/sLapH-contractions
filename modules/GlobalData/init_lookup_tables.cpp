@@ -197,13 +197,14 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   }
 
   // finally filling the array
+  std::pair<size_t, size_t> offset = std::make_pair(rndq1_start, rndq2_start);
   std::vector<std::pair<size_t, size_t> > rnd_vec_comb;
   for(size_t i = rndq1_start; i < rndq1_end; ++i)
     for(size_t j = rndq2_start; j < rndq2_end; ++j)
       if(i != j) 
         rnd_vec_comb.emplace_back(i, j);
   rnd_vec_ids.emplace_back(RandomIndexCombinationsQ2(rnd_vec_ids.size(), id_q1, 
-                                                          id_q2, rnd_vec_comb));
+                                                  id_q2, offset, rnd_vec_comb));
   return rnd_vec_ids.back().id;
 }
 // -----------------------------------------------------------------------------
@@ -290,7 +291,7 @@ static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id,
       const auto& rnd = rnd_vec_id[i];
  
       auto it = std::find_if(rvdaggerv_lookup.begin(), rvdaggerv_lookup.end(),
-                           [&vdv, &rnd](VdaggerVRandomLookup vdv_qn)
+                           [&](VdaggerVRandomLookup vdv_qn)
                            {
                              auto c1 = (vdv_qn.id_ricQ_lookup == rnd);
                              auto c2 = (vdv_qn.id_vdaggerv == vdv.first);

@@ -47,15 +47,8 @@ typedef boost::multi_array<Eigen::MatrixXcd, 8> array_Xcd_d8_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
-// index typedefs
-//typedef std::list<size_t> indexlist_1;
-//typedef std::list<std::pair<size_t, size_t> > indexlist_2;
-//typedef std::list<std::array<size_t, 3> > indexlist_3;
-//typedef std::list<std::array<size_t, 4> > indexlist_4;
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
   struct VdaggerVQuantumNumbers{ 
     size_t id;
     std::array<int, 3> momentum;
@@ -69,12 +62,14 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
   struct RandomIndexCombinationsQ2{
     size_t id;
     size_t id_q1, id_q2;
+    std::pair<size_t, size_t> offset;
     std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
     // just a small constructor to ensure easy filling of its vector form
     RandomIndexCombinationsQ2(const size_t id, 
                    const size_t id_q1, const size_t id_q2, 
+                   const std::pair<size_t, size_t> offset, 
                    const std::vector<std::pair<size_t, size_t> >& rnd_vec_ids) :
-                         id(id), id_q1(id_q1), id_q2(id_q2), 
+                         id(id), id_q1(id_q1), id_q2(id_q2), offset(offset),
                          rnd_vec_ids(rnd_vec_ids) {};
   };  
   // ---------------------------------------------------------------------------
@@ -166,61 +161,7 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
     std::vector<CorrInfo> C20;
     std::vector<CorrInfo> C2c;
   };
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-
-
-//// struct which contains all id's from pdg for which VdaggerV is not 
-//// redundant. Only half the momenta and no gamma structure is contained
-//// id    - number to reference VdaggerV
-//// index - id of pdg
-//  struct pd{
-//    size_t id;
-//    size_t index;
-//  };
-//
-//// struct which contains all id's from pdg for which rVdaggerVr is not 
-//// redundant. No gamma structure is contained. Half the momenta can be 
-//// calculated by adjoining their negative counterpart, which will be done if
-//// the adjoint-flag is set to 1
-//// id    - number to reference VdaggerV
-//// index - id of pdg and id for the adjoint pdg
-//  struct pd_r{
-//    size_t id;
-//    size_t id_adjoint;
-//    size_t index;
-//    bool adjoint;
-//  };
-//
-//  struct index_2pt {
-//    size_t id;
-//    size_t index_Q2;
-//    size_t index_Corr;
-//  };
-//
-//  struct index_4pt {
-//    size_t id;
-//    size_t index_Q2[2];
-//    size_t index_Corr[2];
-//  };
-//
-//  struct index_IO_1 {
-//    size_t id;
-//    indexlist_1 index_pt;
-//  };
-//
-//  struct index_IO_2 {
-//    size_t id;
-//    indexlist_2 index_pt;
-//  };
-//
-//typedef std::vector<pdg> vec_pdg_Corr;  
-//typedef std::vector<pd> vec_pd_VdaggerV;
-//typedef std::vector<pd_r> vec_pd_rVdaggerVr;
-//typedef std::vector<index_2pt> vec_index_2pt;
-//typedef std::vector<index_4pt> vec_index_4pt;
-//typedef std::vector<index_IO_1> vec_index_IO_1;
-//typedef std::vector<index_IO_2> vec_index_IO_2;
+  // -----------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------
 
 #endif // _TYPEDEFS_H_
