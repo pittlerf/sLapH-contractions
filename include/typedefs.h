@@ -31,7 +31,8 @@ typedef boost::multi_array<cmplx, 9> array_cd_d9;
 typedef boost::multi_array<cmplx, 10> array_cd_d10;
 
 // special type for Corr and Q2
-typedef boost::multi_array<std::vector<std::vector<cmplx> >, 4> array_corr;
+//typedef boost::multi_array<std::vector<std::vector<cmplx> >, 4> array_corr;
+typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
 // Eigen typedefs
@@ -47,8 +48,8 @@ typedef boost::multi_array<Eigen::MatrixXcd, 8> array_Xcd_d8_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
-  // -----------------------------------------------------------------------------
-  // -----------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   struct VdaggerVQuantumNumbers{ 
     size_t id;
     std::array<int, 3> momentum;
@@ -148,20 +149,38 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
   // ---------------------------------------------------------------------------
   struct CorrInfo{
     size_t id;
-    std::string outfilename;
+    std::string outpath, outfile;
     std::vector<size_t> lookup;
     // just a small constructor to ensure easy filling of its vector form
-    CorrInfo(const size_t id, const std::string& outfilename, 
-             const std::vector<size_t>& lookup) :
-                     id(id), outfilename(outfilename), lookup(lookup) {};
+    CorrInfo(const size_t id, const std::string& outpath, 
+             const std::string& outfile, const std::vector<size_t>& lookup) :
+                  id(id), outpath(outpath), outfile(outfile), lookup(lookup) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------
   struct CorrelatorLookup{
+    std::vector<CorrInfo> C1;
+    std::vector<CorrInfo> C1T;
+
+    std::vector<CorrInfo> corr0;
     std::vector<CorrInfo> C20;
+    std::vector<CorrInfo> C4D0;
+    std::vector<CorrInfo> C4V0;
+
+    std::vector<CorrInfo> corrC;
     std::vector<CorrInfo> C2c;
+    std::vector<CorrInfo> C4Dc;
+    std::vector<CorrInfo> C4Vc;
+
+    std::vector<CorrInfo> C30;
+    std::vector<CorrInfo> C3C;
+
+    std::vector<CorrInfo> C4C0;
+    std::vector<CorrInfo> C4CC;
+    std::vector<CorrInfo> C4B0;
+    std::vector<CorrInfo> C4BC;
   };
-  // -----------------------------------------------------------------------------
-  // -----------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
 #endif // _TYPEDEFS_H_

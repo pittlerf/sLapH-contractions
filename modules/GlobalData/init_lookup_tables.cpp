@@ -69,39 +69,40 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
                const std::string& outpath, const std::string& overwrite,
                const std::vector<std::string>& quark_types, 
                const std::vector<std::vector<QuantumNumbers> >& quantum_numbers,
-               std::vector<std::string>& corr_names){
+               std::vector<std::pair<std::string, std::string> >& corr_names){
   
   for(const auto& qn_row : quantum_numbers){
-    std::string name = outpath + "/cnfg" + std::to_string(cnfg)  + "/" 
-                               + corr_type + "/" + corr_type + "_";
+    std::string pathname = outpath + "/cnfg" + std::to_string(cnfg)  + "/" 
+                               + corr_type + "/";
+    std::string filename =  corr_type + "_";
     for(const auto& qt : quark_types) // adding quark content
-      name += qt;
+      filename += qt;
     for(const auto& qn : qn_row){ // adding quantum numbers
       std::stringstream result;
       std::copy(qn.momentum.begin(), qn.momentum.end(), 
                 std::ostream_iterator<int>(result, ""));
-      name += ("_p" + result.str());
+      filename += ("_p" + result.str());
       result.str("");
       std::copy(qn.displacement.begin(), qn.displacement.end(), 
                 std::ostream_iterator<int>(result, ""));
-      name += (".d" + result.str());
+      filename += (".d" + result.str());
       result.str("");
       std::copy(qn.gamma.begin(), qn.gamma.end(), 
-                std::ostream_iterator<int>(result, "-"));
-      name += (".g" + result.str());
+                std::ostream_iterator<int>(result, ""));
+      filename += (".g" + result.str());
     }
-    name += ".dat";
+    filename += ".dat";
     // check if the file already exists and terminate program if it should not
     // be overwriten
     if(overwrite == "no"){
       struct stat buffer;
-      if((stat (name.c_str(), &buffer) == 0)){
+      if((stat ((pathname+filename).c_str(), &buffer) == 0)){
         std::cout << "Program terminated because outfile already exists!" 
                   << std::endl;  
         exit(0);
       }
     }
-    corr_names.emplace_back(name);
+    corr_names.emplace_back(std::make_pair(pathname, filename));
   }
 }
 // -----------------------------------------------------------------------------
@@ -164,8 +165,8 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
 
   // First, check if the random vector index combination already exists
   for(const auto& r_id : rnd_vec_ids)
-    if(((r_id.id_q1 == id_q1) && (r_id.id_q2 == id_q2)) ||
-       ((r_id.id_q1 == id_q2) && (r_id.id_q2 == id_q1)) )
+    if(((r_id.id_q1 == id_q1) && (r_id.id_q2 == id_q2)))// ||
+//       ((r_id.id_q1 == id_q2) && (r_id.id_q2 == id_q1)) )
       return r_id.id;
 
   // set start and end points of rnd numbers
@@ -365,21 +366,21 @@ static void build_Q1_lookup(const size_t id_quark_used,
   for(size_t row = 0; row < quantum_numbers.size(); row++){
     const auto qn = quantum_numbers[row][operator_id];
     const auto rvdv = rvdv_indices[row][operator_id];
-
+    const size_t rnd_index = set_rnd_vec_charged(quarks, id_quark_used, 
+                                                id_quark_connected, ric_lookup);
     auto it = std::find_if(Q1.begin(), Q1.end(),
                          [&](QuarklineQ1Indices q1)
                          {
                            auto c1 = (q1.id_peram == id_quark_used);
                            auto c2 = (q1.gamma == qn.gamma);
                            auto c3 = (q1.id_rvdaggerv == rvdv);
-                           return c1 && c2 && c3;
+                           auto c4 = (q1.id_ric_lookup == rnd_index);
+                           return c1 && c2 && c3 && c4;
                          });
     if(it != Q1.end()) {
         Q1_indices[row][operator_id] = (*it).id;
     }
     else {
-      size_t rnd_index = set_rnd_vec_charged(quarks, id_quark_used, 
-                                                id_quark_connected, ric_lookup);
       Q1.emplace_back(QuarklineQ1Indices(Q1.size(), rvdv, id_quark_used, 
                                                           rnd_index, qn.gamma));
       Q1_indices[row][operator_id] = Q1.back().id;
@@ -388,40 +389,78 @@ static void build_Q1_lookup(const size_t id_quark_used,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static void build_C2c_lookup(const std::vector<std::string>& correlator_names, 
-                         const std::vector<std::vector<size_t> >& rvdvr_indices, 
+static void build_C2c_lookup( 
+                         const std::vector<std::pair<
+                                  std::string, std::string> >& correlator_names,
+                         const std::vector<std::vector<size_t> >& rvdvr_indices,
                          const std::vector<std::vector<size_t> >& Q2_indices, 
-                         std::vector<CorrInfo>& corr_lookup){
+                         CorrelatorLookup& corr_lookup){
 
   for(size_t row = 0; row < correlator_names.size(); row++){
     std::vector<size_t> indices = {Q2_indices[row][0], rvdvr_indices[row][1]};
-    auto it = std::find_if(corr_lookup.begin(), corr_lookup.end(),
+    auto it_C2c = std::find_if(corr_lookup.C2c.begin(), corr_lookup.C2c.end(),
                          [&](CorrInfo corr)
                          {
-                           return (corr.outfilename == correlator_names[row]); 
+                           return (corr.outfile==correlator_names[row].second); 
                          });
-    if(it == corr_lookup.end())
-      corr_lookup.emplace_back(CorrInfo(corr_lookup.size(), 
-                                        correlator_names[row], indices));
+    if(it_C2c == corr_lookup.C2c.end()){
+      auto it = std::find_if(corr_lookup.corrC.begin(), corr_lookup.corrC.end(),
+                             [&](CorrInfo corr)
+                             {
+                               return (corr.lookup == indices); 
+                             });
+      if(it != corr_lookup.corrC.end()){
+        corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
+                      correlator_names[row].first, correlator_names[row].second,
+                      std::vector<size_t>((*it).id)));
+      }
+      else {
+        corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
+                                       "", "", indices));
+        corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
+                                     correlator_names[row].first,
+                                     correlator_names[row].second, 
+                           std::vector<size_t>(corr_lookup.corrC.back().id)));
+      }
+    }
   }  
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static void build_C20_lookup(const std::vector<std::string>& correlator_names, 
+static void build_C20_lookup(
+                         const std::vector<std::pair<
+                                  std::string, std::string> >& correlator_names,
                          const std::vector<std::vector<size_t> >& Q1_indices, 
-                         std::vector<CorrInfo>& corr_lookup){
+                         CorrelatorLookup& corr_lookup){
 
   size_t row = 0;
   for(const auto& Q1 : Q1_indices){
     std::vector<size_t> indices = {Q1[0], Q1[1]};
-    auto it = std::find_if(corr_lookup.begin(), corr_lookup.end(),
-                         [&](CorrInfo corr)
-                         {
-                           return (corr.outfilename == correlator_names[row]); 
-                         });
-    if(it == corr_lookup.end())
-      corr_lookup.emplace_back(CorrInfo(corr_lookup.size(), 
-                                        correlator_names[row], indices));
+    auto it_C20 = std::find_if(corr_lookup.C20.begin(), corr_lookup.C20.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second);
+                          });
+    if(it_C20 == corr_lookup.C20.end()){
+      auto it = std::find_if(corr_lookup.corr0.begin(), corr_lookup.corr0.end(),
+                             [&](CorrInfo corr)
+                             {
+                               return (corr.lookup == indices); 
+                             });
+      if(it != corr_lookup.corr0.end()){
+        corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
+                      correlator_names[row].first, correlator_names[row].second,
+                      std::vector<size_t>((*it).id)));
+      }
+      else {
+        corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
+                                       "", "", indices));
+        corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
+                                     correlator_names[row].first,
+                                     correlator_names[row].second, 
+                           std::vector<size_t>(corr_lookup.corr0.back().id)));
+      }
+    }
     row++;
   }  
 }
@@ -440,7 +479,7 @@ void GlobalData::init_lookup_tables() {
     std::vector<std::string> quark_types; 
     for(const auto& id : correlator.quark_numbers)
       quark_types.emplace_back(quarks[id].type);
-    std::vector<std::string> correlator_names;
+    std::vector<std::pair<std::string, std::string> > correlator_names;
     build_correlator_names(correlator.type, start_config, path_output, 
                      overwrite, quark_types, quantum_numbers, correlator_names);
     // 2. build the lookuptable for VdaggerV and return an array of indices
@@ -471,7 +510,7 @@ void GlobalData::init_lookup_tables() {
                       quarkline_lookuptable.Q2V, Q2_indices);
       // 5. build the lookuptable for the correlation functions
       build_C2c_lookup(correlator_names, rvdvr_indices, Q2_indices, 
-                                                    correlator_lookuptable.C2c);
+                                                    correlator_lookuptable);
     }
     else if (correlator.type == "C20") {
       // 3. build the lookuptable for rVdaggerV and return an array of indices
@@ -503,8 +542,7 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
-      build_C20_lookup(correlator_names, Q1_indices, 
-                       correlator_lookuptable.C20);
+      build_C20_lookup(correlator_names, Q1_indices, correlator_lookuptable);
     }
   }
   // finding the index where we have no momentum and no displacement
@@ -513,7 +551,7 @@ void GlobalData::init_lookup_tables() {
     if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) )
       operator_lookuptable.index_of_unity = op_vdv.id;
 }
-// TODO: Build a function to change names in the correlator lookup tables for
+// TODO: Build a function to change outpahts in the correlator lookup tables for
 //       new configuration numbers
 
 

@@ -187,6 +187,9 @@ public:
   inline const QuarklineLookup get_quarkline_lookuptable(){
     return quarkline_lookuptable;
   }
+  inline const CorrelatorLookup get_correlator_lookuptable(){
+    return correlator_lookuptable;
+  }
   //! All con/de-structors are protected to assure that only one instance exists
   //! at once. DO NOT CHANGE!!
 protected:

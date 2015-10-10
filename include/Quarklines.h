@@ -51,6 +51,10 @@ public:
               const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   ~Quarklines () {}; // dtor
 
+  inline const Eigen::MatrixXcd& return_Q1(const size_t t1, const size_t t2,
+                                   const size_t op_id, const size_t rnd) const {
+    return Q1[t1][t2][op_id].at(rnd);
+  }
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void create_quarklines(const Perambulator& peram, 

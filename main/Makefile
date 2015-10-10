@@ -26,14 +26,14 @@ GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 
 RANDOM = RandomVector ranlxs
 
-GENERAL = Perambulator EigenVector OperatorsForMesons Quarklines
+GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines
 
 MODULES = $(GLOBALDATA) $(RANDOM) $(GENERAL)
 
 # search path for modules
 MDIR = ../modules
 
-VPATH = .:$(MDIR):$(MDIR)/GlobalData
+VPATH = .:$(MDIR):$(MDIR)/GlobalData:$(MDIR)/Correlators
 
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
