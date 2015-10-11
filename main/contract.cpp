@@ -82,9 +82,9 @@ int main (int ac, char* av[]) {
 
     // doing all the contractions
     correlators.contract(quarklines, meson_operators,
+                         global_data->get_operator_lookuptable(),
                          global_data->get_correlator_lookuptable(),
-                         global_data->get_quarkline_lookuptable(),
-                         global_data->get_operator_lookuptable().ricQ2_lookup);
+                         global_data->get_quarkline_lookuptable());
 
     // TODO: Function that changes the output path in correlator_lookuptable
   }

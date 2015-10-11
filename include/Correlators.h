@@ -28,10 +28,14 @@ private:
                    const std::vector<CorrInfo>& corr_lookup,
                    const QuarklineLookup& quark_lookup,
                    const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
-  void build_corrC();
+  void build_corrC(const Quarklines& quarklines, 
+                     const OperatorsForMesons& meson_operator,
+                     const OperatorLookup& OperatorLookup,
+                     const std::vector<CorrInfo>& corr_lookup,
+                     const QuarklineLookup& quark_lookup);
 
   // functions to build correlation functions
-  void build_C20();
+  void build_C20(const std::vector<CorrInfo>& corr_lookup);
   void build_C2c();
 
 public:
@@ -41,9 +45,9 @@ public:
 
   void contract(const Quarklines& quarklines, 
                 const OperatorsForMesons& meson_operator,
+                const OperatorLookup& operator_lookup,
                 const CorrelatorLookup& corr_lookup, 
-                const QuarklineLookup& quark_lookup,
-                const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+                const QuarklineLookup& quark_lookup);
 };
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

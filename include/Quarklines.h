@@ -51,9 +51,21 @@ public:
               const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   ~Quarklines () {}; // dtor
 
+  inline const cmplx& return_gamma_val(const size_t gamma_id, 
+                                       const size_t row) const {
+    return gamma[gamma_id].value[row];
+  }
+  inline const int& return_gamma_row(const size_t gamma_id, 
+                                     const size_t row) const{
+    return gamma[gamma_id].row[row];
+  }
   inline const Eigen::MatrixXcd& return_Q1(const size_t t1, const size_t t2,
                                    const size_t op_id, const size_t rnd) const {
     return Q1[t1][t2][op_id].at(rnd);
+  }
+  inline const Eigen::MatrixXcd& return_Q2V(const size_t t1, const size_t t2,
+                                   const size_t op_id, const size_t rnd) const {
+    return Q2V[t1][t2][op_id].at(rnd);
   }
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------

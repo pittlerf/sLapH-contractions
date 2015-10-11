@@ -151,10 +151,13 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
     size_t id;
     std::string outpath, outfile;
     std::vector<size_t> lookup;
+    std::vector<int> gamma;
     // just a small constructor to ensure easy filling of its vector form
     CorrInfo(const size_t id, const std::string& outpath, 
-             const std::string& outfile, const std::vector<size_t>& lookup) :
-                  id(id), outpath(outpath), outfile(outfile), lookup(lookup) {};
+             const std::string& outfile, const std::vector<size_t>& lookup,
+             const std::vector<int>& gamma) :
+                   id(id), outpath(outpath), outfile(outfile), lookup(lookup), 
+                   gamma(gamma) {};
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------

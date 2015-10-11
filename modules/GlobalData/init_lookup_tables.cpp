@@ -390,11 +390,11 @@ static void build_Q1_lookup(const size_t id_quark_used,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 static void build_C2c_lookup( 
-                         const std::vector<std::pair<
-                                  std::string, std::string> >& correlator_names,
-                         const std::vector<std::vector<size_t> >& rvdvr_indices,
-                         const std::vector<std::vector<size_t> >& Q2_indices, 
-                         CorrelatorLookup& corr_lookup){
+      const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& rvdvr_indices,
+      const std::vector<std::vector<size_t> >& Q2_indices, 
+      CorrelatorLookup& corr_lookup){
 
   for(size_t row = 0; row < correlator_names.size(); row++){
     std::vector<size_t> indices = {Q2_indices[row][0], rvdvr_indices[row][1]};
@@ -412,15 +412,17 @@ static void build_C2c_lookup(
       if(it != corr_lookup.corrC.end()){
         corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
                       correlator_names[row].first, correlator_names[row].second,
-                      std::vector<size_t>((*it).id)));
+                      std::vector<size_t>({(*it).id}),
+                      std::vector<int>({})));
       }
       else {
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                                       "", "", indices));
+                               "", "", indices, quantum_numbers[row][1].gamma));
         corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
-                                     correlator_names[row].first,
-                                     correlator_names[row].second, 
-                           std::vector<size_t>(corr_lookup.corrC.back().id)));
+                           correlator_names[row].first,
+                           correlator_names[row].second, 
+                           std::vector<size_t>({corr_lookup.corrC.back().id}),
+                           std::vector<int>({})));
       }
     }
   }  
@@ -428,10 +430,9 @@ static void build_C2c_lookup(
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 static void build_C20_lookup(
-                         const std::vector<std::pair<
-                                  std::string, std::string> >& correlator_names,
-                         const std::vector<std::vector<size_t> >& Q1_indices, 
-                         CorrelatorLookup& corr_lookup){
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& Q1_indices, 
+      CorrelatorLookup& corr_lookup){
 
   size_t row = 0;
   for(const auto& Q1 : Q1_indices){
@@ -450,15 +451,17 @@ static void build_C20_lookup(
       if(it != corr_lookup.corr0.end()){
         corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
                       correlator_names[row].first, correlator_names[row].second,
-                      std::vector<size_t>((*it).id)));
+                      std::vector<size_t>({(*it).id}), 
+                      std::vector<int>({})));
       }
       else {
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                       "", "", indices));
+                                     "", "", indices, std::vector<int>({})));
         corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
-                                     correlator_names[row].first,
-                                     correlator_names[row].second, 
-                           std::vector<size_t>(corr_lookup.corr0.back().id)));
+                           correlator_names[row].first,
+                           correlator_names[row].second, 
+                           std::vector<size_t>({corr_lookup.corr0.back().id}),
+                           std::vector<int>({})));
       }
     }
     row++;
@@ -509,8 +512,8 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
       // 5. build the lookuptable for the correlation functions
-      build_C2c_lookup(correlator_names, rvdvr_indices, Q2_indices, 
-                                                    correlator_lookuptable);
+      build_C2c_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
+                       Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C20") {
       // 3. build the lookuptable for rVdaggerV and return an array of indices

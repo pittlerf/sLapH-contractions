@@ -305,34 +305,42 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
         for(size_t row = 0; row < 4; row++){
         for(size_t col = 0; col < 4; col++){
           if(!qll.need_vdaggerv_dag)
-            M.block(row*dilE, col*nev, dilE, nev) =
-              peram[rnd_id.first].block((t1*4 + col)*nev, (t2*4 + row)*dilE, 
+            M.block(col*dilE, row*nev, dilE, nev) =
+              peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
                                         nev, dilE).adjoint() *
               meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
           else
-            M.block(row*dilE, col*nev, dilE, nev) =
-              peram[rnd_id.first].block((t1*4 + col)*nev, (t2*4 + row)*dilE, 
+            M.block(col*dilE, row*nev, dilE, nev) =
+              peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
                                         nev, dilE).adjoint() *
               meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
           // gamma_5 trick
           if( ((row + col) == 3) || (abs(row - col) > 1) )
-            M.block(row*dilE, col*nev, dilE, nev) *= -1.;
+            M.block(col*dilE, row*nev, dilE, nev) *= -1.;
         }}
+        Q2V[t1][t2][qll.id][rnd_counter].Zero(4*dilE, 4*dilE);
 
-        const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
+        const size_t gamma_id = qll.gamma[0]; 
 
-        for(size_t row = 0; row < 4; row++){
-        for(size_t col = 0; col < 4; col++){
+        for(size_t block_dil = 0; block_dil < 4; block_dil++) {
+          const cmplx value = gamma[gamma_id].value[block_dil];
+          const size_t gamma_index = gamma[gamma_id].row[block_dil];
+          for(size_t row = 0; row < 4; row++){
+          for(size_t col = 0; col < 4; col++){
 
           Q2V[t1][t2][qll.id][rnd_counter].
-                                          block(row*dilE, col*dilE, dilE, dilE)=
-            gamma[gamma_id].value[row] *  
-            M.block(row*dilE, col*nev, dilE, nev) *
-            peram[rnd_id.second].block((t1*4 + gamma[gamma_id].row[row])*nev, 
-                                       (t2*4 + col)*dilE, 
-                                       nev, dilE);
+                        block(row*dilE, col*dilE, dilE, dilE) +=
+
+               value * 
+
+               M.block(row*dilE, block_dil*nev, dilE, nev) *
+
+               peram[rnd_id.second].block(
+                          (t1*4 + gamma_index)*nev, 
+                          (t2*4 + col)*dilE, nev, dilE);
 
         }}
+}
         rnd_counter++;
       }
     }
