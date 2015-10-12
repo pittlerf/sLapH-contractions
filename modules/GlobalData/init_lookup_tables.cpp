@@ -42,7 +42,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
   // TODO: think about a way to avoid these if conditions 
   if (correlator.type == "C1" || correlator.type == "C1T") {
-  
+    for(const auto& op0 : qn_op[0])
+      quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
   }
   else if (correlator.type == "C2+" || correlator.type == "C20") {
     for(const auto& op0 : qn_op[0]){
@@ -282,8 +283,6 @@ static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id,
 
   for(const auto& vdv_row : vdv_indices){
     std::vector<size_t> rvdv_indices_row;
-    // unelegant, but what else can I co? This is necessary because every
-    // operator has its own rnd vector.
     // TODO: Think about merging this and build_rVdaggerVr_lookup into one
     //       function. For n-point functions also the other one needs a vector
     //       of rnd_vec_id!
@@ -469,6 +468,30 @@ static void build_C20_lookup(
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void build_C1_lookup(
+      const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& Q1_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  size_t row = 0;
+  for(const auto& Q1 : Q1_indices){
+    std::vector<size_t> indices = {Q1[0]};
+    auto it_C1 = std::find_if(corr_lookup.C1.begin(), corr_lookup.C1.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second);
+                          });
+    if(it_C1 == corr_lookup.C1.end()){
+      corr_lookup.C1.emplace_back(CorrInfo(corr_lookup.C1.size(), 
+                      correlator_names[row].first, correlator_names[row].second,
+                      indices, quantum_numbers[row][0].gamma));
+    }
+    row++;
+  }  
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void GlobalData::init_lookup_tables() {
 
   for (const auto& correlator : correlator_list){
@@ -492,7 +515,24 @@ void GlobalData::init_lookup_tables() {
     std::vector<std::vector<std::pair<size_t, bool> > > vdv_indices;
     build_VdaggerV_lookup(quantum_numbers, operator_lookuptable.vdaggerv_lookup,
                                                                    vdv_indices);
-
+    if (correlator.type == "C1") {
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[0], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      std::vector<std::vector<size_t> > rvdv_indices;
+      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
+                             operator_lookuptable.rvdaggerv_lookuptable,
+                             rvdv_indices);
+      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
+                            std::vector<size_t>(rvdv_indices[0].size()));
+      build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[0],
+                      0, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_C1_lookup(quantum_numbers, correlator_names, Q1_indices, 
+                                                        correlator_lookuptable);
+    }
     if (correlator.type == "C2+") {
       // 3. build the lookuptable for rVdaggerVr and return an array of indices
       //    corresponding to the 'quantum_numbers' computed in step 1.

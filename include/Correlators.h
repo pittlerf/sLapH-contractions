@@ -20,6 +20,7 @@ class Correlators {
 
 private:
   array_cd_d2 C2c, C20;
+  array_C1 C1, C1T;
   array_corr corrC, corr0; // this is only needed intermideately
   const size_t Lt, dilT, dilE, nev;
 
@@ -35,8 +36,12 @@ private:
                      const QuarklineLookup& quark_lookup);
 
   // functions to build correlation functions
+  void build_C1(const Quarklines& quarklines, 
+                const std::vector<CorrInfo>& corr_lookup,
+                const QuarklineLookup& quark_lookup,
+                const std::vector<RandomIndexCombinationsQ1>& ric_lookup);
   void build_C20(const std::vector<CorrInfo>& corr_lookup);
-  void build_C2c();
+  void build_C2c(const std::vector<CorrInfo>& corr_lookup);
 
 public:
   Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 

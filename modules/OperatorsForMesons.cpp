@@ -227,15 +227,15 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
 
     size_t rid = 0;
     int check = -1;
+    Eigen::MatrixXcd M; // Intermediate memory
     for(const auto& rnd_id : 
               operator_lookuptable.ricQ2_lookup[op.id_ricQ_lookup].rnd_vec_ids){
 
-      Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(nb_ev, 4*dilE);
       if(check != rnd_id.first){ // this avoids recomputation
+        M = Eigen::MatrixXcd::Zero(nb_ev, 4*dilE);
         for(size_t block = 0; block < 4; block++){
-        for(size_t vec_i = 0; vec_i < nb_ev; ++vec_i) {
-          size_t blk =  block + vec_i * 4 + 4 * nb_ev * t;
-          
+        for(size_t vec_i = 0; vec_i < nb_ev; vec_i++) {
+          size_t blk =  block + (vec_i + nb_ev * t) * 4;
           M.block(0, vec_i%dilE + dilE*block, nb_ev, 1) += 
                vdv.col(vec_i) * rnd_vec(rnd_id.first, blk);
         }}
@@ -243,11 +243,11 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
       for(size_t block_x = 0; block_x < 4; block_x++){
       for(size_t block_y = 0; block_y < 4; block_y++){
       for(size_t vec_y = 0; vec_y < nb_ev; ++vec_y) {
-        size_t blk =  block_y + vec_y * 4 + 4 * nb_ev * t;
+        size_t blk =  block_y + (vec_y + nb_ev * t) * 4;
         rvdaggervr[op.id][t][rid].block(
                             dilE*block_y + vec_y%dilE, dilE*block_x, 1, dilE) +=
                 M.block(vec_y, dilE*block_x, 1, dilE) * 
-                                         std::conj(rnd_vec(rnd_id.second, blk));
+                std::conj(rnd_vec(rnd_id.second, blk));
       }}} 
       check = rnd_id.first;
       rid++;
