@@ -300,24 +300,27 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
 
     for(const auto& qll : ql_lookup){
       size_t rnd_counter = 0;
+      int check = -1;
       for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
 
-        for(size_t row = 0; row < 4; row++){
-        for(size_t col = 0; col < 4; col++){
-          if(!qll.need_vdaggerv_dag)
-            M.block(col*dilE, row*nev, dilE, nev) =
-              peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
-                                        nev, dilE).adjoint() *
-              meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
-          else
-            M.block(col*dilE, row*nev, dilE, nev) =
-              peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
-                                        nev, dilE).adjoint() *
-              meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
-          // gamma_5 trick
-          if( ((row + col) == 3) || (abs(row - col) > 1) )
-            M.block(col*dilE, row*nev, dilE, nev) *= -1.;
-        }}
+        if(check != rnd_id.first){ // this avoids recomputation
+          for(size_t row = 0; row < 4; row++){
+          for(size_t col = 0; col < 4; col++){
+            if(!qll.need_vdaggerv_dag)
+              M.block(col*dilE, row*nev, dilE, nev) =
+                peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
+                                          nev, dilE).adjoint() *
+                meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
+            else
+              M.block(col*dilE, row*nev, dilE, nev) =
+                peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
+                                          nev, dilE).adjoint() *
+                meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
+            // gamma_5 trick
+            if( ((row + col) == 3) || (abs(row - col) > 1) )
+              M.block(col*dilE, row*nev, dilE, nev) *= -1.;
+          }}
+        }
         Q2V[t1][t2][qll.id][rnd_counter].Zero(4*dilE, 4*dilE);
 
         const size_t gamma_id = qll.gamma[0]; 
@@ -341,6 +344,7 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
 
           }}
         }
+        check = rnd_id.first;
         rnd_counter++;
       }
     }
