@@ -339,8 +339,8 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
                           (t1*4 + gamma_index)*nev, 
                           (t2*4 + col)*dilE, nev, dilE);
 
-        }}
-}
+          }}
+        }
         rnd_counter++;
       }
     }

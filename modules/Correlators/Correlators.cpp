@@ -17,47 +17,31 @@ LapH::Correlators::Correlators (
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C1(const Quarklines& quarklines,
-                     const std::vector<CorrInfo>& corr_lookup,
-                     const QuarklineLookup& quark_lookup,
-                     const std::vector<RandomIndexCombinationsQ1>& ric_lookup) {
+                    const std::vector<CorrInfo>& corr_lookup,
+                    const QuarklineLookup& quark_lookup,
+                    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
 
   std::cout << "\tcomputing C1:";
   clock_t time = clock();
 
   for(const auto& c_look : corr_lookup){
-//    const auto& ric0 = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
-//                                                     id_ric_lookup].rnd_vec_ids;
-//    const auto& ric1 = ric_lookup[quark_lookup.Q1[c_look.lookup[1]].
-//                                                     id_ric_lookup].rnd_vec_ids;
-//    if(ric0.size() != ric1.size()){
-//      std::cout << "rnd combinations are not the same in build_corr0" 
-//                << std::endl;
-//      exit(0);
-//    }
-//    for(size_t t1 = 0; t1 < Lt; t1++){
-//    for(size_t t2 = 0; t2 < Lt; t2++){
-//      corr0[c_look.id][t1][t2].resize(ric0.size());
-//      for(auto& corr : corr0[c_look.id][t1][t2])
-//        corr = cmplx(0.0,0.0);
-//      for(const auto& rnd : ric0){
-//        const auto id = &rnd - &ric0[0];
-//        const auto it1 = std::find_if(ric1.begin(), ric1.end(),
-//                                [&](std::pair<size_t, size_t> pair){
-//                                  return (pair == 
-//                                         std::make_pair(rnd.second, rnd.first));
-//                                });
-//        if(it1 == ric1.end()){
-//          std::cout << "something wrong with random vectors in build_corr0" 
-//                    << std::endl;
-//          exit(0);
-//        }
-//        //for(size_t block = 0; block < 4; block++)
-//          corr0[c_look.id][t1][t2][id] += 
-//                      (quarklines.return_Q1(t1, t2/dilT, c_look.lookup[0], id) *
-//                       quarklines.return_Q1(t2, t1/dilT, c_look.lookup[1], 
-//                                                     it1-ric1.begin())).trace();
-//      }
-//    }}
+    const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
+                                                     id_ric_lookup].rnd_vec_ids;
+    for(size_t t = 0; t < Lt; t++){
+      C1[c_look.id][t].resize(ric.size());
+      for(auto& corr : C1[c_look.id][t])
+        corr = cmplx(0.0,0.0);
+      for(const auto& id : ric){
+        C1[c_look.id][t][&id-&ric[0]] += 
+         quarklines.return_Q1(t, t/dilT, c_look.lookup[0], &id-&ric[0]).trace();
+      }
+    }
+    std::cout << c_look.outfile << std::endl;
+    for(size_t rnd = 0; rnd < ric.size(); rnd++)
+      for(size_t t = 0; t < Lt; t++)
+        std::cout << std::setprecision(5) << rnd << "\t" << t << "\t" 
+                  << C1[c_look.id][t][rnd] << std::endl;
+
   }
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -120,7 +104,7 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
   for(const auto& c_look : corr_lookup){
     for(int t1 = 0; t1 < Lt; t1++){
     for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t1 - t2 - (int)Lt) % (int)Lt);
+      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
       for(const auto& corr : corr0[c_look.lookup[0]][t1][t2])
         C20[c_look.id][t] += corr;
     }}
@@ -184,7 +168,7 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
   for(const auto& c_look : corr_lookup){
     for(int t1 = 0; t1 < Lt; t1++){
     for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t1 - t2 - (int)Lt) % (int)Lt);
+      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
       for(const auto& corr : corrC[c_look.lookup[0]][t1][t2]){
         C2c[c_look.id][t] += corr;
       }
@@ -217,7 +201,7 @@ void LapH::Correlators::contract (const Quarklines& quarklines,
 //  corr0.resize(boost::extents[0][0][0][0][0][0]);
   // 3. Build all other correlation functions.
   build_C1(quarklines, corr_lookup.C1, quark_lookup, 
-                                                  operator_lookup.ricQ1_lookup);
+                                                  operator_lookup.ricQ2_lookup);
 }
 
 

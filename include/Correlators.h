@@ -39,7 +39,7 @@ private:
   void build_C1(const Quarklines& quarklines, 
                 const std::vector<CorrInfo>& corr_lookup,
                 const QuarklineLookup& quark_lookup,
-                const std::vector<RandomIndexCombinationsQ1>& ric_lookup);
+                const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   void build_C20(const std::vector<CorrInfo>& corr_lookup);
   void build_C2c(const std::vector<CorrInfo>& corr_lookup);
 
