@@ -168,21 +168,21 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
     std::vector<CorrInfo> corr0;
     std::vector<CorrInfo> C20;
-    std::vector<CorrInfo> C4D0;
-    std::vector<CorrInfo> C4V0;
+    std::vector<CorrInfo> C40D;
+    std::vector<CorrInfo> C40V;
 
     std::vector<CorrInfo> corrC;
     std::vector<CorrInfo> C2c;
-    std::vector<CorrInfo> C4Dc;
-    std::vector<CorrInfo> C4Vc;
+    std::vector<CorrInfo> C4cD;
+    std::vector<CorrInfo> C4cV;
 
     std::vector<CorrInfo> C30;
     std::vector<CorrInfo> C3C;
 
-    std::vector<CorrInfo> C4C0;
-    std::vector<CorrInfo> C4CC;
-    std::vector<CorrInfo> C4B0;
-    std::vector<CorrInfo> C4BC;
+    std::vector<CorrInfo> C40C;
+    std::vector<CorrInfo> C4cC;
+    std::vector<CorrInfo> C40B;
+    std::vector<CorrInfo> C4cB;
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------

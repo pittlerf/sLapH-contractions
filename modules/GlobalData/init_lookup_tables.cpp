@@ -60,8 +60,15 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
   else if (correlator.type == "C3+" || correlator.type == "C30") {
   
   }
-  else if (correlator.type == "C4D" || correlator.type == "C4C") {
-  
+  else if (correlator.type == "C40D" || correlator.type == "C40B") {
+    for(const auto& op0 : qn_op[0]){
+    for(const auto& op1 : qn_op[1]){ 
+    for(const auto& op2 : qn_op[2]){ 
+    for(const auto& op3 : qn_op[3]){ // all combinations of operators
+      // TODO: This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
+      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
+      quantum_numbers.emplace_back(single_vec_qn);
+    }}}}
   }
 }
 // -----------------------------------------------------------------------------
@@ -479,6 +486,80 @@ static void build_C20_lookup(
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static void build_C40D_lookup(
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& Q1_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  size_t row = 0;
+  for(const auto& Q1 : Q1_indices){
+    std::vector<size_t> indices1 = {Q1[0], Q1[1]};
+    std::vector<size_t> indices2 = {Q1[2], Q1[3]};
+    auto it_C40D = std::find_if(corr_lookup.C20.begin(), corr_lookup.C20.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second);
+                          });
+    if(it_C40D == corr_lookup.C40D.end()){
+      size_t id1, id2;
+      auto it1 = std::find_if(corr_lookup.corr0.begin(), 
+                              corr_lookup.corr0.end(),
+                              [&](CorrInfo corr)
+                              {
+                                return (corr.lookup == indices1); 
+                              });
+      if((it1 == corr_lookup.corr0.end())){
+        corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
+                                     "", "", indices1, std::vector<int>({})));
+        id1 = corr_lookup.corr0.back().id;
+      }
+      else
+        id1 = (*it1).id;
+      auto it2 = std::find_if(corr_lookup.corr0.begin(), 
+                              corr_lookup.corr0.end(),
+                              [&](CorrInfo corr)
+                              {
+                                return (corr.lookup == indices2); 
+                              });
+      if((it2 == corr_lookup.corr0.end())){
+        corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
+                                     "", "", indices2, std::vector<int>({})));
+        id2 = corr_lookup.corr0.back().id;
+      }
+      else
+        id2 = (*it2).id;
+
+      corr_lookup.C40D.emplace_back(CorrInfo(corr_lookup.C40D.size(), 
+                      correlator_names[row].first, correlator_names[row].second, 
+                      std::vector<size_t>({id1, id2}), std::vector<int>({})));
+    }
+    row++;
+  }  
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static void build_C40B_lookup(
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& Q1_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  size_t row = 0;
+  for(const auto& Q1 : Q1_indices){
+    auto it = std::find_if(corr_lookup.C40B.begin(), corr_lookup.C40B.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second);
+                          });
+    if(it == corr_lookup.C40B.end()){
+      corr_lookup.C40B.emplace_back(CorrInfo(corr_lookup.C40B.size(), 
+                      correlator_names[row].first, correlator_names[row].second, 
+                      Q1, std::vector<int>({})));
+    }
+    row++;
+  }  
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 static void build_C1_lookup(
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -512,6 +593,7 @@ void GlobalData::init_lookup_tables() {
     std::vector<std::vector<QuantumNumbers> > quantum_numbers;
     build_quantum_numbers_from_correlator_list(correlator, operator_list, 
                                                quantum_numbers);
+
     // Build the correlator names
     std::vector<std::string> quark_types; 
     for(const auto& id : correlator.quark_numbers)
@@ -597,6 +679,92 @@ void GlobalData::init_lookup_tables() {
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
       build_C20_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+    }
+    else if (correlator.type == "C40D") {
+
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[0], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[1], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[2], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[3], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      std::vector<std::vector<size_t> > rvdv_indices;
+      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
+                             operator_lookuptable.rvdaggerv_lookuptable,
+                             rvdv_indices);
+      // The size of this lookuptable needs to be known beforehand, because it
+      // is build recursevely!
+      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
+                            std::vector<size_t>(rvdv_indices[0].size()));
+      build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[0],
+                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
+                      2, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[3], correlator.quark_numbers[2],
+                      3, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_C40D_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+    }
+    else if (correlator.type == "C40B") {
+
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[0], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[1], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[2], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[3], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      std::vector<std::vector<size_t> > rvdv_indices;
+      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
+                             operator_lookuptable.rvdaggerv_lookuptable,
+                             rvdv_indices);
+      // The size of this lookuptable needs to be known beforehand, because it
+      // is build recursevely!
+      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
+                            std::vector<size_t>(rvdv_indices[0].size()));
+      build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[2],
+                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
+                      2, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[3], correlator.quark_numbers[0],
+                      3, false, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_C40B_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+    }
+    else {
+      std::cout << "Correlator type not known!" << std::endl;
+      exit(0);
     }
   }
   // finding the index where we have no momentum and no displacement
