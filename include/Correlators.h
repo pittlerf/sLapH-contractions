@@ -19,7 +19,7 @@ namespace LapH {
 class Correlators {
 
 private:
-  array_cd_d2 C2c, C20, C40D, C40B;
+  array_cd_d2 C2c, C20, C4cD, C40D, C40B;
   array_C1 C1, C1T;
   array_corr corrC, corr0; // this is only needed intermideately
   const size_t Lt, dilT, dilE, nev;
@@ -49,6 +49,9 @@ private:
                   const QuarklineLookup& quark_lookup,
                   const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   void build_C2c(const std::vector<CorrInfo>& corr_lookup);
+  void build_C4cD(const OperatorLookup& operator_lookup, 
+                  const CorrelatorLookup& corr_lookup,
+                  const QuarklineLookup& quark_lookup);
 
 public:
   Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 

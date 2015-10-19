@@ -18,6 +18,8 @@ LapH::Correlators::Correlators (
 
   C2c.resize(boost::extents[corr_lookup.C2c.size()][Lt]);
   std::fill(C2c.data(), C2c.data()+C2c.num_elements(), cmplx(.0,.0));
+  C4cD.resize(boost::extents[corr_lookup.C4cD.size()][Lt]);
+  std::fill(C4cD.data(), C4cD.data()+C4cD.num_elements(), cmplx(.0,.0));
 
 }
 // -----------------------------------------------------------------------------
@@ -162,6 +164,13 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+
+
+
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void LapH::Correlators::build_corrC(const Quarklines& quarklines, 
                      const OperatorsForMesons& meson_operator,
                      const OperatorLookup& operator_lookup,
@@ -225,6 +234,54 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
     }
   }
 }
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup, 
+                                   const CorrelatorLookup& corr_lookup,
+                                   const QuarklineLookup& quark_lookup) {
+
+  for(const auto& c_look : corr_lookup.C4cD){
+
+    const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
+    const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
+    const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id0].
+                                                     id_ric_lookup].rnd_vec_ids;
+    const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id1].
+                                                     id_ric_lookup].rnd_vec_ids;
+
+    size_t norm = 0;
+    for(int t1 = 0; t1 < Lt; t1++){
+    for(int t2 = 0; t2 < Lt; t2++){
+      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
+
+      for(const auto& rnd0 : ric0)
+      for(const auto& rnd1 : ric1)
+
+      if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
+         (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
+
+        C4cD[c_look.id][t] += 
+                   corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
+                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+        norm++;
+      }
+    }}
+    for(auto& corr : C4cD[c_look.id]){
+      // normalisation
+      corr /= norm/Lt;
+      std::cout << std::setprecision(5) << &corr - &C4cD[c_look.id][0] << "\t" 
+                << corr << std::endl;
+    }
+  }
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+
+
+
+
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40B(const Quarklines& quarklines,
@@ -298,6 +355,13 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+
+
+
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void LapH::Correlators::contract (const Quarklines& quarklines, 
                      const OperatorsForMesons& meson_operator,
                      const OperatorLookup& operator_lookup,
@@ -308,17 +372,16 @@ void LapH::Correlators::contract (const Quarklines& quarklines,
   build_corrC(quarklines, meson_operator, operator_lookup, corr_lookup.corrC, 
                                                                   quark_lookup);
   build_C2c(corr_lookup.C2c);
-//  corrC.resize(boost::extents[0][0][0][0][0][0]);
+  build_C4cD(operator_lookup, corr_lookup, quark_lookup);
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(quarklines, corr_lookup.corr0, quark_lookup, 
                                                   operator_lookup.ricQ2_lookup);
-  build_C40B(quarklines, corr_lookup.C40B, quark_lookup, 
-                                                  operator_lookup.ricQ2_lookup);
-  build_C40D(operator_lookup, corr_lookup, quark_lookup);
   build_C20(corr_lookup.C20);
-//  corr0.resize(boost::extents[0][0][0][0][0][0]);
+  build_C40D(operator_lookup, corr_lookup, quark_lookup);
   // 3. Build all other correlation functions.
   build_C1(quarklines, corr_lookup.C1, quark_lookup, 
+                                                  operator_lookup.ricQ2_lookup);
+  build_C40B(quarklines, corr_lookup.C40B, quark_lookup, 
                                                   operator_lookup.ricQ2_lookup);
 }
 

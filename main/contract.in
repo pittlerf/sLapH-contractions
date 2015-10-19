@@ -26,7 +26,7 @@ overwrite_old = yes
 
 # quarks to be used - The file at the and is the location of the perambulators.
 [quarks]
-quark = u:6:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/up
+quark = u:5:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/up
 #quark = s:5:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/strange
 
 # operators to be used
@@ -42,9 +42,10 @@ operator_list = g6.d0.p0
 # all correlation functions which will be computed
 [correlator_lists]
 #correlator_list = C1:Q0:Op4
-#correlator_list = C2+:Q0:Op5:Q1:Op5
+correlator_list = C2+:Q0:Op5:Q0:Op5
+correlator_list = C4+D:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C2+:Q1:Op5:Q0:Op5
 #correlator_list = C40D:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
 #correlator_list = C20:Q0:Op4:Q0:Op4
 #correlator_list = C20:Q0:Op5:Q1:Op5
-correlator_list = C40B:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
+#correlator_list = C40B:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
