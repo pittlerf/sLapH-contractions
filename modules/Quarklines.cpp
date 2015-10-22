@@ -333,11 +333,8 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
 
           Q2V[t1][t2][qll.id][rnd_counter].
                         block(row*dilE, col*dilE, dilE, dilE) +=
-
                value * 
-
                M.block(row*dilE, block_dil*nev, dilE, nev) *
-
                peram[rnd_id.second].block(
                           (t1*4 + gamma_index)*nev, 
                           (t2*4 + col)*dilE, nev, dilE);
@@ -369,48 +366,56 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
   Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
 #pragma omp for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
-    for(const auto& qll : ql_lookup){
-      size_t rnd_counter = 0;
-      for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
-
+  for(const auto& qll : ql_lookup){
+    size_t rnd_counter = 0;
+    int check = -1;
+    for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
+      if(check != rnd_id.first){ // this avoids recomputation
         for(size_t row = 0; row < 4; row++){
         for(size_t col = 0; col < 4; col++){
           if(!qll.need_vdaggerv_dag)
-            M.block(row*dilE, col*nev, dilE, nev) =
-              peram[rnd_id.first].
-                         block((t1*4 + col)*nev, (t1/dilT*4 + row)*dilE, 
-                                                          nev, dilE).adjoint() *
+            M.block(col*dilE, row*nev, dilE, nev) =
+              peram[rnd_id.first].block((t1*4 + row)*nev, 
+                                        (t1/dilT*4 + col)*dilE, 
+                                        nev, dilE).adjoint() *
               meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
           else
-            M.block(row*dilE, col*nev, dilE, nev) =
-              peram[rnd_id.first].
-                         block((t1*4 + col)*nev, (t1/dilT*4 + row)*dilE, 
-                                                          nev, dilE).adjoint() *
+            M.block(col*dilE, row*nev, dilE, nev) =
+              peram[rnd_id.first].block((t1*4 + row)*nev, 
+                                        (t1/dilT*4 + col)*dilE, 
+                                        nev, dilE).adjoint() *
               meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
           // gamma_5 trick
           if( ((row + col) == 3) || (abs(row - col) > 1) )
-            M.block(row*dilE, col*nev, dilE, nev) *= -1.;
+            M.block(col*dilE, row*nev, dilE, nev) *= -1.;
         }}
-
-        const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
-
-        for(size_t t2 = 0; t2 < Lt/dilT; t2++){
-        for(size_t row = 0; row < 4; row++){
-        for(size_t col = 0; col < 4; col++){
-
-          Q2V[t1][t2][qll.id][rnd_counter].
-                                         block(row*dilE, col*dilE, dilE, dilE) =
-            gamma[gamma_id].value[row] *  
-            M.block(row*dilE, col*nev, dilE, nev) *
-            peram[rnd_id.second].block((t1*4 + gamma[gamma_id].row[row])*nev, 
-                                       (t2*4 + col)*dilE, 
-                                       nev, dilE);
-
-        }}}
-        rnd_counter++;
       }
+      for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+        Q2L[t1][t2][qll.id][rnd_counter].Zero(4*dilE, 4*dilE);
+
+        const size_t gamma_id = qll.gamma[0]; 
+
+        for(size_t block_dil = 0; block_dil < 4; block_dil++) {
+          const cmplx value = gamma[gamma_id].value[block_dil];
+          const size_t gamma_index = gamma[gamma_id].row[block_dil];
+          for(size_t row = 0; row < 4; row++){
+          for(size_t col = 0; col < 4; col++){
+
+          Q2L[t1][t2][qll.id][rnd_counter].
+                        block(row*dilE, col*dilE, dilE, dilE) +=
+               value * 
+               M.block(row*dilE, block_dil*nev, dilE, nev) *
+               peram[rnd_id.second].block(
+                          (t1*4 + gamma_index)*nev, 
+                          (t2*4 + col)*dilE, nev, dilE);
+
+          }}
+        }
+      }
+      check = rnd_id.first;
+      rnd_counter++;
     }
-  }
+  }}
 } // pragma omp ends
 
   time = clock() - time;

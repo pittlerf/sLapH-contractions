@@ -17,6 +17,11 @@ struct QuantumNumbers{
 };
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static std::array<int, 3> change_sign_array(const std::array<int, 3>& in){
+  return {-in[0], -in[1], -in[2]};
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void build_quantum_numbers_from_correlator_list(const Correlators& correlator, 
                     const std::vector<Operator_list>& operator_list,
                     std::vector<std::vector<QuantumNumbers> >& quantum_numbers){
@@ -50,7 +55,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
       for(const auto& op1 : qn_op[1]){ // all combinations of operators
         std::vector<QuantumNumbers> single_vec_qn;
         // momentum at source and sink must always be the same for 2pt fcts.
-        if(op0.momentum == op1.momentum){ 
+        if(op0.momentum == change_sign_array(op1.momentum)){ 
           single_vec_qn.emplace_back(op0); // TODO: might be possible to write
           single_vec_qn.emplace_back(op1); //       more elegantly
           quantum_numbers.emplace_back(single_vec_qn);
@@ -62,7 +67,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
   }
   else if (correlator.type == "C40D" || correlator.type == "C40V" ||
            correlator.type == "C40B" || correlator.type == "C40C" ||
-           correlator.type == "C4+D") {
+           correlator.type == "C4+D" || correlator.type == "C4+V" ||
+           correlator.type == "C4+B" || correlator.type == "C4+C") {
     for(const auto& op0 : qn_op[0]){
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
@@ -443,7 +449,7 @@ static void build_C2c_lookup(
       }
       else {
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                               "", "", indices, quantum_numbers[row][1].gamma));
+                            "", "", indices, quantum_numbers[row][1].gamma));
         corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
                            correlator_names[row].first,
                            correlator_names[row].second, 
@@ -482,7 +488,7 @@ static void build_C4cD_lookup(
                               });
       if(it1 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                              "", "", indices1, quantum_numbers[row][1].gamma));
+                           "", "", indices1, quantum_numbers[row][1].gamma));
         id1 = corr_lookup.corrC.back().id;
       }
       else 
@@ -496,7 +502,7 @@ static void build_C4cD_lookup(
                               });
       if(it2 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                              "", "", indices2, quantum_numbers[row][3].gamma));
+                           "", "", indices2, quantum_numbers[row][3].gamma));
         id2 = corr_lookup.corrC.back().id;
       }
       else 
@@ -505,6 +511,62 @@ static void build_C4cD_lookup(
       corr_lookup.C4cD.emplace_back(CorrInfo(corr_lookup.C4cD.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
                       std::vector<size_t>({id1, id2}), std::vector<int>({})));
+    }
+  }  
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static void build_C4cC_lookup( 
+      const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& rvdvr_indices,
+      const std::vector<std::vector<size_t> >& Q2_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  for(size_t row = 0; row < correlator_names.size(); row++){
+    std::vector<size_t> indices = {Q2_indices[row][0], rvdvr_indices[row][1], 
+                                   Q2_indices[row][2], rvdvr_indices[row][3]};
+    auto it_C4cC = std::find_if(corr_lookup.C4cC.begin(), 
+                                corr_lookup.C4cC.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second); 
+                          });
+
+    if(it_C4cC == corr_lookup.C4cC.end()){
+      std::vector<int> gammas = {{quantum_numbers[row][1].gamma[0], 
+                                  quantum_numbers[row][3].gamma[0]}};
+      corr_lookup.C4cC.emplace_back(CorrInfo(corr_lookup.C4cC.size(), 
+                      correlator_names[row].first, correlator_names[row].second, 
+                      indices, gammas));
+    }
+  }  
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static void build_C4cB_lookup( 
+      const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
+      const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::vector<size_t> >& rvdvr_indices,
+      const std::vector<std::vector<size_t> >& Q2_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  for(size_t row = 0; row < correlator_names.size(); row++){
+    std::vector<size_t> indices = {Q2_indices[row][0], rvdvr_indices[row][1], 
+                                   Q2_indices[row][2], rvdvr_indices[row][3]};
+    auto it_C4cB = std::find_if(corr_lookup.C4cB.begin(), 
+                                corr_lookup.C4cB.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.outfile==correlator_names[row].second); 
+                          });
+
+    if(it_C4cB == corr_lookup.C4cB.end()){
+      std::vector<int> gammas = {{quantum_numbers[row][1].gamma[0], 
+                                  quantum_numbers[row][3].gamma[0]}};
+      corr_lookup.C4cB.emplace_back(CorrInfo(corr_lookup.C4cB.size(), 
+                      correlator_names[row].first, correlator_names[row].second, 
+                      indices, gammas));
     }
   }  
 }
@@ -740,6 +802,60 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
       build_C4cD_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
+                        Q2_indices, correlator_lookuptable);
+    }
+    else if (correlator.type == "C4+C") {
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 
+                                            correlator.quark_numbers[0], 
+                                            correlator.quark_numbers[1], false,
+                                            operator_lookuptable.ricQ2_lookup));
+      rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 
+                                            correlator.quark_numbers[2], 
+                                            correlator.quark_numbers[3], false,
+                                            operator_lookuptable.ricQ2_lookup));
+      std::vector<std::vector<size_t> > rvdvr_indices;
+      build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
+                              operator_lookuptable.rvdaggervr_lookuptable,
+                              rvdvr_indices);
+      std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
+                                  std::vector<size_t>(rvdvr_indices[0].size()));
+      build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+                      0, quantum_numbers, quarks, vdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q2V, Q2_indices);
+      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
+                      2, quantum_numbers, quarks, vdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q2V, Q2_indices);
+      build_C4cC_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
+                        Q2_indices, correlator_lookuptable);
+    }
+    else if (correlator.type == "C4+B") {
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 
+                                            correlator.quark_numbers[0], 
+                                            correlator.quark_numbers[1], false,
+                                            operator_lookuptable.ricQ2_lookup));
+      rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 
+                                            correlator.quark_numbers[2], 
+                                            correlator.quark_numbers[3], false,
+                                            operator_lookuptable.ricQ2_lookup));
+      std::vector<std::vector<size_t> > rvdvr_indices;
+      build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
+                              operator_lookuptable.rvdaggervr_lookuptable,
+                              rvdvr_indices);
+      std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
+                                  std::vector<size_t>(rvdvr_indices[0].size()));
+      build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+                      0, quantum_numbers, quarks, vdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q2L, Q2_indices);
+      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
+                      2, quantum_numbers, quarks, vdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q2L, Q2_indices);
+      build_C4cB_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
                         Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C20") {
