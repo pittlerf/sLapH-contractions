@@ -177,7 +177,7 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
     std::vector<CorrInfo> C4cV;
 
     std::vector<CorrInfo> C30;
-    std::vector<CorrInfo> C3C;
+    std::vector<CorrInfo> C3c;
 
     std::vector<CorrInfo> C40C;
     std::vector<CorrInfo> C4cC;

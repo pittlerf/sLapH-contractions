@@ -11,6 +11,8 @@ LapH::Correlators::Correlators (
 
   C20.resize(boost::extents[corr_lookup.C20.size()][Lt]);
   std::fill(C20.data(), C20.data()+C20.num_elements(), cmplx(.0,.0));
+  C30.resize(boost::extents[corr_lookup.C30.size()][Lt]);
+  std::fill(C30.data(), C30.data()+C30.num_elements(), cmplx(.0,.0));
   C40D.resize(boost::extents[corr_lookup.C40D.size()][Lt]);
   std::fill(C40D.data(), C40D.data()+C40D.num_elements(), cmplx(.0,.0));
   C40V.resize(boost::extents[corr_lookup.C40V.size()][Lt]);
@@ -22,6 +24,8 @@ LapH::Correlators::Correlators (
 
   C2c.resize(boost::extents[corr_lookup.C2c.size()][Lt]);
   std::fill(C2c.data(), C2c.data()+C2c.num_elements(), cmplx(.0,.0));
+  C3c.resize(boost::extents[corr_lookup.C3c.size()][Lt]);
+  std::fill(C3c.data(), C3c.data()+C3c.num_elements(), cmplx(.0,.0));
   C4cD.resize(boost::extents[corr_lookup.C4cD.size()][Lt]);
   std::fill(C4cD.data(), C4cD.data()+C4cD.num_elements(), cmplx(.0,.0));
   C4cV.resize(boost::extents[corr_lookup.C4cV.size()][Lt]);
@@ -570,6 +574,69 @@ std::cout << "\n" << norm/(Lt*Lt) << "\n";
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+void LapH::Correlators::build_C30(const Quarklines& quarklines,
+                     const std::vector<CorrInfo>& corr_lookup,
+                     const QuarklineLookup& quark_lookup,
+                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+
+  std::cout << "\tcomputing C30:";
+  clock_t time = clock();
+
+  for(const auto& c_look : corr_lookup){
+    const auto& ric0 = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
+                                                     id_ric_lookup].rnd_vec_ids;
+    const auto& ric1 = ric_lookup[quark_lookup.Q1[c_look.lookup[1]].
+                                                     id_ric_lookup].rnd_vec_ids;
+    const auto& ric2 = ric_lookup[quark_lookup.Q1[c_look.lookup[2]].
+                                                     id_ric_lookup].rnd_vec_ids;
+    if(ric0.size() != ric1.size() || ric0.size() != ric2.size()){
+      std::cout << "rnd combinations are not the same in build_C30" 
+                << std::endl;
+      exit(0);
+    }
+
+    size_t norm = 0;
+// This is necessary to ensure the correct summation of the correlation function
+#pragma omp parallel reduction(+:norm)
+{
+    std::vector<cmplx> C(Lt, cmplx(.0,.0));
+    #pragma omp for schedule(dynamic) 
+    for(int t1 = 0; t1 < Lt; t1++){
+    for(int t2 = 0; t2 < Lt; t2++){
+      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
+      for(const auto& rnd0 : ric0){
+      for(const auto& rnd1 : ric1){
+      if(rnd0.second == rnd1.first && rnd0.first != rnd1.second){
+        const auto L1 =
+          quarklines.return_Q1(t1, t2/dilT, c_look.lookup[0], &rnd0-&ric0[0]) *
+          quarklines.return_Q1(t2, t1/dilT, c_look.lookup[1], &rnd1-&ric1[0]);
+        for(const auto& rnd2 : ric2){
+        if(rnd1.second == rnd2.first && rnd2.second == rnd0.first){
+          C[t] += (L1*quarklines.return_Q1(t1, t1/dilT, c_look.lookup[2], 
+                                                       &rnd2-&ric2[0])).trace();
+          norm++;
+        }}
+      }}}
+    }}
+    #pragma omp critical
+    {
+      for(size_t t = 0; t < Lt; t++)
+        C30[c_look.id][t] += C[t];
+    }
+}// parallel part ends here
+    for(auto& corr : C30[c_look.id]){
+      // normalisation
+      corr /= norm/Lt;
+      std::cout << std::setprecision(5) << &corr - &C30[c_look.id][0] << "\t" 
+                << corr << std::endl;
+    }
+  }
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
@@ -744,6 +811,8 @@ void LapH::Correlators::contract (const Quarklines& quarklines,
                                                                   quark_lookup);
   build_C4cB(quarklines, meson_operator, operator_lookup, corr_lookup.C4cB, 
                                                                   quark_lookup);
+  build_C30(quarklines, corr_lookup.C30, quark_lookup, 
+                                                  operator_lookup.ricQ2_lookup);
   build_C40C(quarklines, corr_lookup.C40C, quark_lookup, 
                                                   operator_lookup.ricQ2_lookup);
   build_C40B(quarklines, corr_lookup.C40B, quark_lookup, 
