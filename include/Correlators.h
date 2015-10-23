@@ -7,7 +7,11 @@
 #include <string>
 #include <vector>
 
+#include <sys/types.h>  
+#include <sys/stat.h>   
+
 #include "boost/multi_array.hpp"
+#include "boost/filesystem.hpp"
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
@@ -19,8 +23,6 @@ namespace LapH {
 class Correlators {
 
 private:
-  array_cd_d2 C2c, C3c, C4cD, C4cV, C4cC, C4cB, C20, C30, C40D, C40V, C40C, C40B;
-  array_C1 C1, C1T;
   array_corr corrC, corr0; // this is only needed intermideately
   const size_t Lt, dilT, dilE, nev;
 
@@ -79,7 +81,8 @@ private:
 
 public:
   Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
-               const size_t nev, const CorrelatorLookup& corr_lookup);
+               const size_t nev, const CorrelatorLookup& corr_lookup) :
+               Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {};
   ~Correlators () {}; // dtor
 
   void contract(const Quarklines& quarklines, 
