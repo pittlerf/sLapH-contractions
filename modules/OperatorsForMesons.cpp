@@ -111,7 +111,9 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
     // creating full filename for eigenvectors and reading them in
     char inter_name[200];
     sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
-    V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
+    //avoid reading eigenvectors for now, since no displacement or momentum is
+    //used
+    //V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
