@@ -59,7 +59,9 @@ int main (int ac, char* av[]) {
              config_i <= global_data->get_end_config(); 
              config_i += global_data->get_delta_config()){
     std::cout << "\nprocessing configuration: " << config_i << "\n\n";
+    // changes all paths and names which depend on the configuration
     global_data->build_IO_names(config_i);
+
     // read perambulators
     perambulators.read_perambulators_from_separate_files(
                               global_data->get_Lt(),
@@ -85,8 +87,6 @@ int main (int ac, char* av[]) {
                          global_data->get_operator_lookuptable(),
                          global_data->get_correlator_lookuptable(),
                          global_data->get_quarkline_lookuptable());
-
-    // TODO: Function that changes the output path in correlator_lookuptable
   }
   // That's all Folks!
   return 0;

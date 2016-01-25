@@ -33,6 +33,7 @@ private:
 
   // internal functions to build individual operators --> The interface to these
   // functions is 'create_Operators'
+  // input -> filename: name and path of eigenvectors
   void build_vdaggerv(const std::string& filename);
   void build_rvdaggerv(const LapH::RandomVector& rnd_vec);
   void build_rvdaggervr(const LapH::RandomVector& rnd_vec);
@@ -46,9 +47,9 @@ public:
     exit(0);
   };
   // ctor which builds up all the memory
-  OperatorsForMesons (const size_t Lt, const size_t Lx, const size_t Ly, 
-                      const size_t Lz, const size_t nb_ev, const size_t dilE,
-                      const OperatorLookup& operator_lookuptable);
+  OperatorsForMesons(const size_t Lt, const size_t Lx, const size_t Ly, 
+                     const size_t Lz, const size_t nb_ev, const size_t dilE,
+                     const OperatorLookup& operator_lookuptable);
   // standard dtor - eveything should be handled by Eigen, std::vector, and
   //                 Boost::Mulidimensional arrays.
   ~OperatorsForMesons () {};

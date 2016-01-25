@@ -7,7 +7,6 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
                                            const size_t nb_eigen_vec,
                                            const quark& q,
                                            const std::string& filename) {
-
   clock_t t = clock();
   FILE *fp = NULL;
 
@@ -40,9 +39,9 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
             for(size_t dirac2 = 0; dirac2 < nb_dil_D; ++dirac2){
               row_i = 4 * nb_eigen_vec * t1 + 4 * ev1 + dirac1;
               col_i = nb_dil_D * nb_dil_E * t2 + nb_dil_D * ev2 + dirac2;
-              peram[entity](4 * nb_eigen_vec * t1 + nb_eigen_vec * dirac1 + ev1, 
+              peram[entity](4 * nb_eigen_vec * t1 + nb_eigen_vec * dirac1 + ev1,
                     nb_dil_E * nb_dil_D * t2 + nb_dil_E * dirac2 + ev2) = 
-              perambulator_read[row_i * nb_inversions + col_i];
+                               perambulator_read[row_i * nb_inversions + col_i];
             }
 
   // writing out how long it took to read the file

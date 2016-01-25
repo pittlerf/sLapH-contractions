@@ -19,7 +19,7 @@ all: rmxeq mkdep mkxeq
 # main programs and modules to be compiled
 
 
-MAIN = contract
+MAIN = contract 4pt_D_all VdaggerV
 
 GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 	           global_data_input_handling_utils init_lookup_tables

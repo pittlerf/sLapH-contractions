@@ -109,8 +109,9 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
     std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  
     std::vector<VdaggerVRandomLookup> rvdaggervr_lookuptable;  
-
+  
     size_t index_of_unity;
+
   };
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------------------------

@@ -73,7 +73,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     ("overwrite_old",
       po::value<std::string>(&overwrite)->default_value("no"), 
       "shall old correlator files be overwritten, yes or no")
-    ("config_path",
+    ("path_config",
       po::value<std::string>(&path_config)->default_value("../../configs"),
       "path for configurations")
     ("lattice", 

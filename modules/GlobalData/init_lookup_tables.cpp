@@ -22,6 +22,19 @@ static std::array<int, 3> change_sign_array(const std::array<int, 3>& in){
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+static int compute_norm_squ(const std::array<int, 3>& in){
+  return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static int add_momenta_squared(const std::array<int, 3>& in1, 
+                               const std::array<int, 3>& in2){
+  return (in1[0]+in2[0]) * (in1[0]+in2[0]) + 
+         (in1[1]+in2[1]) * (in1[1]+in2[1]) + 
+         (in1[2]+in2[2]) * (in1[2]+in2[2]);
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void build_quantum_numbers_from_correlator_list(const Correlators& correlator, 
                     const std::vector<Operator_list>& operator_list,
                     std::vector<std::vector<QuantumNumbers> >& quantum_numbers){
@@ -71,10 +84,81 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
       quantum_numbers.emplace_back(single_vec_qn);
     }}}
   }
+  else if (correlator.type == "C4+D" || correlator.type == "C4+B") {
+    // momentum combinations on source side ------------------------------------
+    size_t counter_test = 0;
+    for(const auto& op0 : qn_op[0]){
+    for(const auto& op2 : qn_op[2]){
+      const int mom0 = compute_norm_squ(op0.momentum);
+      const int mom2 = compute_norm_squ(op2.momentum);
+      const int tot_mom_l = add_momenta_squared(op0.momentum, op2.momentum);
+      
+      if(tot_mom_l == 0){
+        if(mom0 > 2)
+          continue;
+      }
+      else if(tot_mom_l == 1){
+        if((mom0 + mom2) > 5)
+          continue;
+      }
+      else if(tot_mom_l == 2){
+        if((mom0 + mom2) > 4)
+          continue;
+      }
+      else if(tot_mom_l == 3){
+        if((mom0 + mom2) > 5)
+          continue;
+      }
+      else if(tot_mom_l == 4){
+        if((mom0 + mom2) > 2)
+          continue;
+      }
+      else
+        continue; // maximum momentum is 4
+
+    // momentum combinations on sink side --------------------------------------
+    for(const auto& op1 : qn_op[1]){ 
+    for(const auto& op3 : qn_op[3]){ // all combinations of operators
+      const int mom1 = compute_norm_squ(op1.momentum);
+      const int mom3 = compute_norm_squ(op3.momentum);
+      const int tot_mom_r = add_momenta_squared(op1.momentum, op3.momentum);
+      if(tot_mom_r != tot_mom_l)
+        continue; // both total momenta must be equal
+
+      if(tot_mom_r == 0){
+        if(mom1 > 2)
+          continue;
+      }
+      else if(tot_mom_r == 1){
+        if((mom1 + mom3) > 5)
+          continue;
+      }
+      else if(tot_mom_r == 2){
+        if((mom1 + mom3) > 4)
+          continue;
+      }
+      else if(tot_mom_r == 3){
+        if((mom1 + mom3) > 5)
+          continue;
+      }
+      else if(tot_mom_r == 4){
+        if((mom1 + mom3) > 2)
+          continue;
+      }
+      else
+        continue; // maximum momentum is 4
+
+      // create combinations ---------------------------------------------------
+      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
+      quantum_numbers.emplace_back(single_vec_qn);
+      counter_test++;
+    }}}}
+    std::cout << "test finished - combinations: " << counter_test << std::endl;
+  }
   else if (correlator.type == "C40D" || correlator.type == "C40V" ||
            correlator.type == "C40B" || correlator.type == "C40C" ||
-           correlator.type == "C4+D" || correlator.type == "C4+V" ||
-           correlator.type == "C4+B" || correlator.type == "C4+C") {
+           correlator.type == "C4+V" ||
+           correlator.type == "C4+C") {
     for(const auto& op0 : qn_op[0]){
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
@@ -99,10 +183,14 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
     std::string filename =  corr_type + "_";
     for(const auto& qt : quark_types) // adding quark content
       filename += qt;
+    size_t id = 0;
     for(const auto& qn : qn_row){ // adding quantum numbers
       std::stringstream result;
       std::copy(qn.momentum.begin(), qn.momentum.end(), 
                 std::ostream_iterator<int>(result, ""));
+      if(id == 0)
+        pathname += ("first_p_" + result.str() + "/");
+      id++;
       filename += ("_p" + result.str());
       result.str("");
       std::copy(qn.displacement.begin(), qn.displacement.end(), 
@@ -1254,8 +1342,6 @@ void GlobalData::init_lookup_tables() {
     if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) )
       operator_lookuptable.index_of_unity = op_vdv.id;
 }
-// TODO: Build a function to change outpahts in the correlator lookup tables for
-//       new configuration numbers
 
 
 

@@ -16,11 +16,13 @@ static std::vector<std::string> create_rnd_vector_file_names (
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // building paths and filenames for rnd vecs
       sprintf(temp1, "cnfg%d/rnd_vec_%01d/", config, rnd_vec_i);
+//      sprintf(temp1, "");
       sprintf(temp2, "randomvector.rndvecnb%02d.u.nbev%04d.%04d", rnd_vec_i, 
                                                      nb_of_eigen_vec, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
+
   return filename_list;
 }
 // -----------------------------------------------------------------------------
@@ -39,6 +41,7 @@ static std::vector<std::string> create_perambulator_file_names (
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // data path for qbig contractions
       sprintf(temp1, "cnfg%d/rnd_vec_%01d/", config, rnd_vec_i);
+      //sprintf(temp1, "");
 
       sprintf(temp2,
           "perambulator.rndvecnb%02d.u.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
@@ -73,4 +76,16 @@ void GlobalData::build_IO_names(const size_t config){
   filename_eigenvectors = create_eigenvector_file_name(config, 
                                                        path_eigenvectors, 
                                                        name_eigenvectors);
+
+
+  // changing the outpath of the correlator according to config - Note: for
+  // the first config nothin happens here. It is done in build_correlator_names
+  // in init_lookup_tables.cpp .
+//  for(const auto& correlator : correlator_lookuptable){
+//    for(const auto& name : correlator){
+//      name.
+//    std::string pathname = outpath + "/cnfg" + std::to_string(config)  + "/" 
+//                                   + corr_type + "/";
+//    }
+//  }  
 }
