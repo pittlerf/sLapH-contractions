@@ -39,17 +39,60 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+void write_vdaggerv(const std::string& pathname, const std::string& filename, 
+                    const Eigen::MatrixXcd& Vt){
+
+  // check if directory exists
+  if(access(pathname.c_str(), 0 ) != 0) {
+      std::cout << "\tdirectory " << pathname.c_str() 
+                << " does not exist and will be created";
+      boost::filesystem::path dir(pathname.c_str());
+      if(!boost::filesystem::create_directories(dir))
+        std::cout << "\tSuccess" << std::endl;
+      else
+        std::cout << "\tFailure" << std::endl;
+  }
+  // writing the data
+  std::ofstream file((pathname+filename).c_str(), 
+                     std::ofstream::binary | std::ofstream::trunc);
+
+  if(file.is_open()){
+    std::cout << "\twriting VdaggerV to file:" << pathname+filename 
+              << std::endl;
+    // buffer for writing
+    vec eigen_vec(Vt.size());
+    for (size_t ncol = 0; ncol < Vt.cols(); ncol++) {
+      for(size_t nrow = 0; nrow < Vt.rows(); nrow++){
+        eigen_vec.at(ncol*Vt.rows() + nrow) = (Vt)(nrow, ncol);
+      }
+    }
+    file.write(reinterpret_cast<const char*>(&eigen_vec[0]), 
+               Vt.size()*sizeof(cmplx));
+    if(!file.good())
+      std::cout << "Problems while write to " << (pathname+filename).c_str() 
+                << std::endl;
+    file.close();
+  }
+  else
+    std::cout << "can't open " << (pathname+filename).c_str() 
+              << std::endl;
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 } // internal namespace ends here
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 LapH::OperatorsForMesons::OperatorsForMesons
                         (const size_t Lt, const size_t Lx, const size_t Ly, 
                          const size_t Lz, const size_t nb_ev, const size_t dilE,
-                         const OperatorLookup& operator_lookuptable) : 
+                         const OperatorLookup& operator_lookuptable,
+                         const std::string& handling_vdaggerv,
+                         const std::string& path_vdaggerv) : 
                                vdaggerv(), momentum(), 
                                operator_lookuptable(operator_lookuptable),
                                Lt(Lt), Lx(Lx), Ly(Ly), Lz(Lz), nb_ev(nb_ev), 
-                               dilE(dilE) {
+                               dilE(dilE), handling_vdaggerv(handling_vdaggerv),
+                               path_vdaggerv(path_vdaggerv){
 
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[
@@ -90,11 +133,17 @@ LapH::OperatorsForMesons::OperatorsForMesons
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
+void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
+                                              const int config) {
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
   const size_t id_unity = operator_lookuptable.index_of_unity;
+
+  // prepare full path for writing
+  char dummy_path[200];
+  sprintf(dummy_path, "/%s/cnfg%04d/", path_vdaggerv.c_str(), config);
+  const std::string full_path(dummy_path);
 
   // resizing each matrix in vdaggerv
   // TODO: check if it is better to use for_each and resize instead of std::fill
@@ -127,6 +176,19 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
           mom(x) = momentum[op.id][x/3];
         }
         vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * V_t[0];
+        // writing vdaggerv to disk
+        if(handling_vdaggerv == "write"){
+          char dummy2[200];
+          sprintf(dummy2, "operators.%04d.p_", config);
+          std::string dummy = std::string(dummy2) + 
+                              std::to_string(op.momentum[0]) + 
+                              std::to_string(op.momentum[1]) + 
+                              std::to_string(op.momentum[2]);
+          char outfile[200];
+          sprintf(outfile, "%s_.t_%03d", dummy.c_str(), (int) t);
+          write_vdaggerv(full_path, std::string(outfile), 
+                                                            vdaggerv[op.id][t]);
+        }
       }
       else // zero momentum
         vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
@@ -138,6 +200,82 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
   std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed 
     << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
   is_vdaggerv_set = true;
+
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void LapH::OperatorsForMesons::read_vdaggerv(const int config){
+
+  clock_t t2 = clock();
+  const size_t dim_row = 3*Lx*Ly*Lz;
+  const size_t id_unity = operator_lookuptable.index_of_unity;
+
+  // prepare full path for reading
+  char dummy_path[200];
+  sprintf(dummy_path, "/%s/cnfg%04d/operators.%04d", path_vdaggerv.c_str(), 
+                                                                config, config);
+  std::string full_path(dummy_path);
+
+  // resizing each matrix in vdaggerv
+  std::fill(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
+            Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
+
+#pragma omp parallel
+{
+  #pragma omp for schedule(dynamic)
+  for(size_t t = 0; t < Lt; ++t){
+    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
+      // For zero momentum and displacement VdaggerV is the unit matrix, thus
+      // the calculation is not performed
+      if(op.id != id_unity){
+
+        // creating full filename for vdaggerv and reading them in
+        std::string dummy = full_path + ".p_" + 
+                            std::to_string(op.momentum[0]) + 
+                            std::to_string(op.momentum[1]) + 
+                            std::to_string(op.momentum[2]);
+
+        char infile[200];
+        sprintf(infile, "%s_.t_%03d", dummy.c_str(), (int) t);
+
+        // writing the data
+        std::ifstream file(infile, std::ifstream::binary);
+      
+        if(file.is_open()){
+          std::cout << "\treading VdaggerV from file:" << infile << std::endl;
+
+          // buffer for reading
+          vec eigen_vec(vdaggerv[op.id][t].size());
+          file.read(reinterpret_cast<char*>(&eigen_vec[0]), 
+                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+          for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+            for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
+               (vdaggerv[op.id][t])(nrow, ncol) = 
+                            eigen_vec.at(ncol*vdaggerv[op.id][t].rows() + nrow);
+            }
+          }
+          if(!file.good()){
+            std::cout << "Problems while reading from " << infile << std::endl;
+            exit(0);
+          }
+          file.close();
+        }
+        else{
+          std::cout << "can't open " << infile << std::endl;
+          exit(0);
+        }
+      }
+      else // zero momentum
+        vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
+    }
+  } // loop over time
+}// pragma omp parallel ends here
+
+  t2 = clock() - t2;
+  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed 
+    << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
+  is_vdaggerv_set = true;
+  
 
 }
 // -----------------------------------------------------------------------------
@@ -262,9 +400,18 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::OperatorsForMesons::create_operators(const std::string& filename, 
-                                            const LapH::RandomVector& rnd_vec) {
+                                            const LapH::RandomVector& rnd_vec,
+                                            const int config) {
   is_vdaggerv_set = false;
-  build_vdaggerv(filename);
+  if(handling_vdaggerv == "write" || handling_vdaggerv == "build")
+    build_vdaggerv(filename, config);
+  else if(handling_vdaggerv == "read")
+    read_vdaggerv(config);
+  else{
+    std::cout << "\n\tThe flag handling_vdaggerv in input file is wrong!!\n\n"
+              << std::endl;
+    exit(0);
+  }
   build_rvdaggerv(rnd_vec);
   build_rvdaggervr(rnd_vec);
 }

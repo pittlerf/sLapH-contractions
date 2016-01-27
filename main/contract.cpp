@@ -40,7 +40,9 @@ int main (int ac, char* av[]) {
                             global_data->get_Ly(), global_data->get_Lz(),
                             global_data->get_number_of_eigen_vec(),
                             (global_data->get_quarks())[0].number_of_dilution_E,
-                            global_data->get_operator_lookuptable());  
+                            global_data->get_operator_lookuptable(),
+                            global_data->get_handling_vdaggerv(),
+                            global_data->get_path_vdaggerv());  
   LapH::Quarklines quarklines(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,
                          (global_data->get_quarks())[0].number_of_dilution_E,
@@ -73,7 +75,7 @@ int main (int ac, char* av[]) {
                             global_data->get_rnd_vec_construct().filename_list);
     // read eigenvectors and build operators
     meson_operators.create_operators(global_data->get_filename_eigenvectors(),
-                                                                 randomvectors);
+                                                       randomvectors, config_i);
     // building quarklines from operators and perambulators
     quarklines.create_quarklines(perambulators, meson_operators, 
                           global_data->get_quarkline_lookuptable(),

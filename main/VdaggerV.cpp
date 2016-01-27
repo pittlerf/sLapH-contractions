@@ -228,18 +228,19 @@ int main (int ac, char* av[]) {
   for(int p3 = 2; p3 >= -2; p3--)
   if(p1*p1+p2*p2+p3*p3 <= 4 && !(p1 == 0 && p2 == 0 && p3 == 0)){
     std::array<int, 3> momentum = {p1,p2,p3};
+    std::cout << p1 << "\t" << p2 << "\t" << p3 << std::endl;
     auto it = std::find_if(vdaggerv_lookup.begin(), vdaggerv_lookup.end(),
                            [&momentum](VdaggerVQuantumNumbers vdv_qn)
                              {
-                                const std::array<int, 3> pm = {-momentum[0],
-                                                               -momentum[1],
-                                                               -momentum[2]};
+                               const std::array<int, 3> pm = {-momentum[0],
+                                                              -momentum[1],
+                                                              -momentum[2]};
                                if(vdv_qn.momentum == pm)
                                  return true;
                                else
                                  return false;
                              });
-    if(it == vdaggerv_lookup.end()){
+    if(!(it != vdaggerv_lookup.end())){
       vdaggerv_lookup.emplace_back(
                             VdaggerVQuantumNumbers(id, momentum, displacement));
       id++;

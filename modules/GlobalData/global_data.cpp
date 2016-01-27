@@ -103,7 +103,16 @@ void GlobalData::read_parameters (int ac, char* av[]) {
       po::value<std::string>(&name_eigenvectors)->
                                                  default_value("eigenvector"),
       "name of eigenvectors\nThe full name is internally created to:\n"
-      "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"");
+      "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"")
+    ("handling_vdaggerv",
+      po::value<std::string>(&handling_vdaggerv)->default_value("build"),
+      "The options are:\n"
+      "build: VdaggerV is build for all operators but not written to disk\n"
+      "write: VdaggerV is build for all operators and written to disk\n"
+      "read: VdaggerV was previously constructed and is read from disk")
+    ("path_vdaggerv",
+      po::value<std::string>(&path_vdaggerv)->default_value(""),
+      "Path of vdaggerv");
   // quark options
   config.add_options()
     ("quarks.quark", make_value(&quark_configs),

@@ -21,8 +21,11 @@ path_config = ./
 number_of_eigen_vec = 120
 path_eigenvectors   = /data/LapHs/contraction_Markus/test_data/ev
 name_eigenvectors   = eigenvectors
+handling_vdaggerv   = read
+path_vdaggerv       = /data/LapHs/contraction_Markus/test_data/operators
+
 # output path
-output_path = /data2/
+output_path = /data2/test2
 overwrite_old = yes
 
 
