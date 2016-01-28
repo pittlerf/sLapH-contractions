@@ -208,7 +208,7 @@ void LapH::OperatorsForMesons::read_vdaggerv(const int config){
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
-  const size_t id_unity = operator_lookuptable.index_of_unity;
+  const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
   char dummy_path[200];
