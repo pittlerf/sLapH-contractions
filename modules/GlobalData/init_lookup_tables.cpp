@@ -831,7 +831,24 @@ static void build_C4cB_lookup(
                       correlator_names[row].first, correlator_names[row].second, 
                       indices, gammas));
     }
-  }  
+  } 
+  // sorting the lookuptable to speed up the computeation of this diagram
+//  std::sort(corr_lookup.C4cB.begin(), corr_lookup.C4cB.end(),
+//                           []
+//                           (CorrInfo corr1, CorrInfo corr2)
+//                           {
+//                             const bool a = corr1.lookup[0] < corr2.lookup[0];
+//                             const bool b = corr1.lookup[2] < corr2.lookup[2];
+//                             //const bool c = corr1.lookup[0] < corr2.lookup[2];
+//                             //const bool d = corr1.lookup[2] < corr2.lookup[0];
+//
+//                             //return ((corr1.lookup[3]) < (corr2.lookup[3]));
+//
+//                             return (a && b); // || (c && d);
+//                           });
+  for(const auto& look : corr_lookup.C4cB)
+    std::cout << look.lookup[0] << "\t" << look.lookup[2] << "\t" 
+              << look.lookup[1] << "\t" << look.lookup[3] << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1456,6 +1473,9 @@ void GlobalData::init_lookup_tables() {
   for(const auto& op_vdv : operator_lookuptable.vdaggerv_lookup)
     if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) )
       operator_lookuptable.index_of_unity = op_vdv.id;
+    else
+      operator_lookuptable.index_of_unity = -1;
+
 }
 
 

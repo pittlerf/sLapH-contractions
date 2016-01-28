@@ -476,8 +476,9 @@ void LapH::Correlators::build_C4cB(const Quarklines& quarklines,
   std::cout << "\tcomputing C4cB:";
   clock_t time = clock();
 
+  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
+
   for(const auto& c_look : corr_lookup){
-    std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
     const auto& ric0 = operator_lookup.ricQ2_lookup[
                   quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
     const auto& ric1 = operator_lookup.ricQ2_lookup[//needed only for checking
@@ -492,13 +493,12 @@ void LapH::Correlators::build_C4cB(const Quarklines& quarklines,
        ric0.size() != ric3.size()){
       std::cout << "rnd combinations are not the same in build_C4cB" 
                 << std::endl;
-      }
+    }
 
-    size_t norm = 0;
 // This is necessary to ensure the correct summation of the correlation function
-#pragma omp parallel reduction(+:norm)
+#pragma omp parallel
 {
-    std::vector<cmplx> C(Lt, cmplx(.0,.0));
+    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
     #pragma omp for schedule(dynamic) 
     for(int t1 = 0; t1 < Lt; t1++){
     for(int t2 = 0; t2 < Lt; t2++){
@@ -520,6 +520,7 @@ void LapH::Correlators::build_C4cB(const Quarklines& quarklines,
             meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id1).
                                 block(gamma_index*dilE, col*dilE, dilE, dilE);
         }
+        Eigen::MatrixXcd M2 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
         for(const auto& rnd2 : ric2){
         for(const auto& rnd3 : ric3){
         if(rnd2.first != rnd3.first && rnd2.second == rnd3.second && 
@@ -527,36 +528,36 @@ void LapH::Correlators::build_C4cB(const Quarklines& quarklines,
            rnd0.second != rnd3.second){
           const size_t id2 = &rnd2 - &ric2[0];
           const size_t id3 = &rnd3 - &ric3[0];
-          Eigen::MatrixXcd M2 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
           for(size_t col = 0; col < 4; col++){
             const cmplx value = quarklines.return_gamma_val(c_look.gamma[1], col);
             const size_t gamma_index = quarklines.return_gamma_row(
                                                             c_look.gamma[1], col);
-            M2.block(0, col*dilE, 4*dilE, dilE) = value *
+            M2.block(0, col*dilE, 4*dilE, dilE) += value *
               quarklines.return_Q2L(t2, t1/dilT, c_look.lookup[2], id2).
                                  block(0, gamma_index*dilE, 4*dilE, dilE) *
               meson_operator.return_rvdaggervr(c_look.lookup[3], t1, id3).
                                   block(gamma_index*dilE, col*dilE, dilE, dilE);
           }
-          C[t] += (M1*M2).trace();
-          norm++;
         }}}
+        C[c_look.id][t] += (M1*M2).trace();
       }}}
     }}
     #pragma omp critical
     {
       for(size_t t = 0; t < Lt; t++)
-        correlator[t] += C[t];
+        correlator[c_look.id][t] += C[c_look.id][t];
     }
 }// parallel part ends here
 
-    // normalisation
-    for(auto& corr : correlator)
-      corr /= norm/Lt;
-    // write data to file
-    write_correlators(correlator, c_look);
-  }
+  } // loop over operators ends here
 
+  // normalisation
+  for(const auto& c_look : corr_lookup){
+    for(auto& corr : correlator[c_look.id])
+      corr /= (6*5*4*3)*Lt; // TODO: Hard Coded atm - Be carfull
+    // write data to file
+    write_correlators(correlator[c_look.id], c_look);
+  }
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;

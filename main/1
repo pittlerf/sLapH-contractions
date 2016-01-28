@@ -94,6 +94,8 @@ LapH::OperatorsForMesons::OperatorsForMesons
                                dilE(dilE), handling_vdaggerv(handling_vdaggerv),
                                path_vdaggerv(path_vdaggerv){
 
+  std::cout << Lx << "\t" << Ly << "\t" << Lz << std::endl;
+
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[
                              operator_lookuptable.vdaggerv_lookup.size()][Lt]);
@@ -138,7 +140,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
-  const int id_unity = operator_lookuptable.index_of_unity;
+  const size_t id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for writing
   char dummy_path[200];
