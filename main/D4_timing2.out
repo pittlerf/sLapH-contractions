@@ -84,13 +84,13 @@ processing configuration: 714
 		in: 0.2 seconds
 	Reading perambulator from file:
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_1/perambulator.rndvecnb01.u.TsoB0024.VsoI0006.DsoF4.TsiF0048.SsiF13824.DsiF4.CsiF3.smeared1.00714
-		in: 0.2 seconds
+		in: 0.3 seconds
 	Reading perambulator from file:
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_2/perambulator.rndvecnb02.u.TsoB0024.VsoI0006.DsoF4.TsiF0048.SsiF13824.DsiF4.CsiF3.smeared1.00714
-		in: 0.2 seconds
+		in: 0.3 seconds
 	Reading perambulator from file:
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_3/perambulator.rndvecnb03.u.TsoB0024.VsoI0006.DsoF4.TsiF0048.SsiF13824.DsiF4.CsiF3.smeared1.00714
-		in: 0.2 seconds
+		in: 0.3 seconds
 	Reading perambulator from file:
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_4/perambulator.rndvecnb04.u.TsoB0024.VsoI0006.DsoF4.TsiF0048.SsiF13824.DsiF4.CsiF3.smeared1.00714
 		in: 0.2 seconds
@@ -109,168 +109,161 @@ processing configuration: 714
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_4/randomvector.rndvecnb04.u.nbev0120.0714
 	Reading random vector from file:
 		/data/LapHs/contraction_Markus/test_data/peram/up/cnfg714/rnd_vec_5/randomvector.rndvecnb05.u.nbev0120.0714
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_002
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_000
+	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_000
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_001
+//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_002
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_003
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_001
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_000
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_002
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_000
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_001
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_003
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_002
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_003
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_001
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_003
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_000
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_004
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_006	reading VdaggerV from file:
-//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_005
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_005
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_007
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_006
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_004
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_007
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_005
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_006
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_007
-	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_005
-//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_006
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_004	reading VdaggerV from file:
+//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_007	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_006
+
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_005
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_008
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_006
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_007
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_008
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_009
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_010
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_008
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_008
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_010	reading VdaggerV from file:
-//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_009
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_011
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_010
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_009
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_008
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_009
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_010
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_011
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_012
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_013
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_011
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_004
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_013
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_009
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_010
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_012
-	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_014//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_015
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_013
-
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_011
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_013
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_012
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_014
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_015
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_013
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_016
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_014
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_015
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_016
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_015
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_014
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_017
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_016
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_013
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_014
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_016
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_015
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_017
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_018
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_017
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_019
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_016
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_018
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_017
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_018
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_019
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_020
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_021
+	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_019
+//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_018
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_020
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_022
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_019
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_020
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_021
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_022
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_021
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_020
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_023
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_021
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_022
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_021
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_024
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_023
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_025
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_026
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_025
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_021
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_023
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_024
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_025
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_023
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_026
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_025
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_026
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_024
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_027
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_028	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_026
-
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_029
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_027
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_030
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_028
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_028
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_029
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_027
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_027
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_028
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_030
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_027
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_029
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_030
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_029
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_029
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_030
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_031
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_032
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_030
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_033
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_031
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_032
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_031
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_034
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_032
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_033
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_032
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_033
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_032
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_035
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_034
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_033
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_034
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_035
+	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_024//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_026
+
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_034
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_035
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_036
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_034
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_037
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_026
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_036
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_035
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_037
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_036
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_038
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_039
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_037
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_039
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_036
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_038
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_039
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_037
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_039
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_038
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_039
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_040
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_041
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_040
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_042
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_043
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_041
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_040
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_042
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_043
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_040
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_039
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_041
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_042
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_043
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_038
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_040
+	reading VdaggerV from file:	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_042//data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_043
+
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_038
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_043
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_044
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_042
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_043
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_045
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_045
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_046
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_044
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_042
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_046
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_045
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_044
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_046
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_001_.t_047
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_045
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_046
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_044
-	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_047
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_046
+	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_-100_.t_047
 	reading VdaggerV from file://data/LapHs/contraction_Markus/test_data/operators/cnfg0714/operators.0714.p_0-10_.t_047
-			SUCCESS - 0.1 seconds
+			SUCCESS - 0.0 seconds
 	build rvdaggerv:		SUCCESS - 0.0 seconds
 	build rvdaggervr:		SUCCESS - 2.2 seconds
 	computing Q1:			SUCCESS - 0.0 seconds
-	computing Q2L:			SUCCESS - 141.6 seconds
+	computing Q2L:			SUCCESS - 141.2 seconds
 	computing Q2V:			SUCCESS - 0.0 seconds
 	computing corrC:		SUCCESS - 0.0 seconds
 	computing corr0:		SUCCESS - 0.0 seconds
 	computing C1:			SUCCESS - 0.0 seconds
 	computing C4cC:			SUCCESS - 0.0 seconds
-	computing C4cB:	directory /data2/test4/cnfg714/C4+B/first_p_000/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_-100/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_0-10/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_00-1/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_001/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_010/ does not exist and will be created	Success
-	directory /data2/test4/cnfg714/C4+B/first_p_100/ does not exist and will be created	Success
-			SUCCESS - 707.8 seconds
+	computing C4cB:			SUCCESS - 720.1 seconds
 	computing C30:		SUCCESS - 0.0 seconds
 	computing C40C:		SUCCESS - 0.0 seconds
 	computing C40B:		SUCCESS - 0.0 seconds

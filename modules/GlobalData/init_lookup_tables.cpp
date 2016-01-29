@@ -838,13 +838,15 @@ static void build_C4cB_lookup(
 //                           (CorrInfo corr1, CorrInfo corr2)
 //                           {
 //                             const bool a = corr1.lookup[0] < corr2.lookup[0];
-//                             const bool b = corr1.lookup[2] < corr2.lookup[2];
+//                             const bool b = corr1.lookup[1] < corr2.lookup[1];
 //                             //const bool c = corr1.lookup[0] < corr2.lookup[2];
 //                             //const bool d = corr1.lookup[2] < corr2.lookup[0];
 //
 //                             //return ((corr1.lookup[3]) < (corr2.lookup[3]));
 //
-//                             return (a && b); // || (c && d);
+//                             //return (a && b); // || (c && d);
+//                             return (corr1.lookup[0] + corr1.lookup[1]) < 
+//                                    (corr2.lookup[0] + corr2.lookup[1]);
 //                           });
   for(const auto& look : corr_lookup.C4cB)
     std::cout << look.lookup[0] << "\t" << look.lookup[2] << "\t" 
@@ -1470,11 +1472,14 @@ void GlobalData::init_lookup_tables() {
   }
   // finding the index where we have no momentum and no displacement
   const std::array<int, 3> zero = {0,0,0};
+  bool found = false;
   for(const auto& op_vdv : operator_lookuptable.vdaggerv_lookup)
-    if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) )
+    if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) ){
       operator_lookuptable.index_of_unity = op_vdv.id;
-    else
-      operator_lookuptable.index_of_unity = -1;
+      found = true;
+    }
+  if(!found)
+    operator_lookuptable.index_of_unity = -1;
 
 }
 

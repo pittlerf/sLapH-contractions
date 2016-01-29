@@ -9,6 +9,7 @@
 #define _TYPEDEFS_H_
 
 #include <algorithm>
+#include <array>
 #include <complex>
 #include <vector>
 #include <list>
