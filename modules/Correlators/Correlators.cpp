@@ -481,80 +481,178 @@ void LapH::Correlators::build_C4cB(const Quarklines& quarklines,
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
 {
-  array_Xcd_d3_eigen M1;
-  M1.resize(boost::extents[6][6][6]);
-  for(int i1 = 0; i1 < 6; i1++)
-  for(int i2 = 0; i2 < 6; i2++)
-  for(int i3 = 0; i3 < 6; i3++)
-    M1[i1][i2][i3] = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
-  Eigen::MatrixXcd M2 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
-
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
+
+  // creating memory arrays M1, M2 for intermediate storge of Quarklines
+  std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
+  std::vector<std::array<size_t, 3> > M1_look;
+  std::vector<std::array<size_t, 3> > M2_look;
+  for(const auto& c_look : corr_lookup){
+    const auto& ric0 = operator_lookup.ricQ2_lookup[
+                quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
+    const auto& ric1 = operator_lookup.ricQ2_lookup[//needed only for checking
+               operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].
+                                                  id_ricQ_lookup].rnd_vec_ids;
+    const auto& ric2 = operator_lookup.ricQ2_lookup[
+                quark_lookup.Q2L[c_look.lookup[2]].id_ric_lookup].rnd_vec_ids;
+    const auto& ric3 = operator_lookup.ricQ2_lookup[//needed only for checking
+               operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
+                                                    id_ricQ_lookup].rnd_vec_ids;
+    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
+       ric0.size() != ric3.size()){
+      std::cout << "rnd combinations are not the same in build_C4cB" 
+                << std::endl;
+    }
+    // creating memeory for M1 -------------------------------------------------
+    const size_t id3 = c_look.lookup[3];
+    const size_t id0 = c_look.lookup[0];
+    auto it1 = std::find_if(M1_look.begin(), M1_look.end(), 
+                           [&id3, &id0](std::array<size_t, 3> check){
+                             return (id3 == check[1] && id0 == check[2]);
+                           });
+    size_t M1_counter = 0;
+    if(it1 != M1_look.end()){
+      M1_look.emplace_back(std::array<size_t, 3>({{(*it1)[0], id3, id0}}));
+    }
+    else {
+      M1.emplace_back(std::vector<Eigen::MatrixXcd>());
+      for(const auto& rnd0 : ric0)
+      for(const auto& rnd1 : ric1)
+      if(rnd0.first == rnd1.first && rnd0.second != rnd1.second)
+        M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4*dilE, 4*dilE));
+      M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id3, id0}}));
+      M1_counter++;
+    }
+    // creating memeory for M2 -------------------------------------------------
+    const size_t id1 = c_look.lookup[1];
+    const size_t id2 = c_look.lookup[2];
+    auto it2 = std::find_if(M2_look.begin(), M2_look.end(), 
+                            [&id1, &id2](std::array<size_t, 3> check){
+                              return (id1 == check[1] && id2 == check[2]);
+                            });
+    size_t M2_counter = 0;
+    if(it2 != M2_look.end()){
+      M2_look.emplace_back(std::array<size_t, 3>({{(*it2)[0], id1, id2}}));
+    }
+    else {
+      M2.emplace_back(std::vector<Eigen::MatrixXcd>());
+      for(const auto& rnd2 : ric2)
+      for(const auto& rnd3 : ric3)
+      if(rnd2.first == rnd3.first && rnd2.second != rnd3.second)
+        M2[M2_counter].emplace_back(Eigen::MatrixXcd::Zero(4*dilE, 4*dilE));
+      M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id1, id2}}));
+      M2_counter++;
+    }
+  }
 
   #pragma omp for schedule(dynamic) 
   for(int t1 = 0; t1 < Lt; t1++){
   for(int t2 = 0; t2 < Lt; t2++){
     int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
+
+    std::array<int, 2> check = {{-1, -1}}; // check if M1 needs recomputation
+
+
+    // build M1
     for(const auto& c_look : corr_lookup){
       const auto& ric0 = operator_lookup.ricQ2_lookup[
                   quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
       const auto& ric1 = operator_lookup.ricQ2_lookup[//needed only for checking
+                 operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].
+                                                    id_ricQ_lookup].rnd_vec_ids;
+      const size_t id3 = c_look.lookup[3];
+      const size_t id0 = c_look.lookup[0];
+      auto it1 = std::find_if(M1_look.begin(), M1_look.end(), 
+                             [&id3, &id0](std::array<size_t, 3> check){
+                               return (id3 == check[1] && id0 == check[2]);
+                             });
+      size_t M1_rnd_counter = 0;
+      for(const auto& rnd0 : ric0){
+      for(const auto& rnd1 : ric1){
+      if(rnd0.first == rnd1.first && rnd0.second != rnd1.second){
+        const size_t id0 = &rnd0 - &ric0[0];
+        const size_t id1 = &rnd1 - &ric1[0];
+        for(size_t col = 0; col < 4; col++){
+  
+          const cmplx value = quarklines.return_gamma_val(c_look.gamma[1], col);
+          const size_t gamma_index = quarklines.return_gamma_row(
+                                                          c_look.gamma[1], col);
+          M1[(*it1)[0]][M1_rnd_counter].
+            block(col*dilE, 0, dilE, 4*dilE) = value *
+            meson_operator.return_rvdaggervr(c_look.lookup[3], t1, id1).
+                                block(col*dilE, gamma_index*dilE, dilE, dilE) *
+            quarklines.return_Q2L(t1, t2/dilT, c_look.lookup[0], id0).
+                               block(gamma_index*dilE, 0, dilE, 4*dilE);
+        }
+        M1_rnd_counter++;
+      }}}
+    }
+    // build M2
+    for(const auto& c_look : corr_lookup){
+      const auto& ric2 = operator_lookup.ricQ2_lookup[
+                  quark_lookup.Q2L[c_look.lookup[2]].id_ric_lookup].rnd_vec_ids;
+      const auto& ric3 = operator_lookup.ricQ2_lookup[//needed only for checking
                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
+                                                    id_ricQ_lookup].rnd_vec_ids;
+      const size_t id1 = c_look.lookup[1];
+      const size_t id2 = c_look.lookup[2];
+      auto it2 = std::find_if(M2_look.begin(), M2_look.end(), 
+                              [&id1, &id2](std::array<size_t, 3> check){
+                                return (id1 == check[1] && id2 == check[2]);
+                              });
+      size_t M2_rnd_counter = 0;
+      for(const auto& rnd2 : ric2)
+      for(const auto& rnd3 : ric3)
+      if(rnd2.first == rnd3.first && rnd2.second != rnd3.second)
+        for(size_t col = 0; col < 4; col++){
+          const cmplx value = 
+                           quarklines.return_gamma_val(c_look.gamma[0], col);
+          const size_t gamma_index = quarklines.return_gamma_row(
+                                                        c_look.gamma[0], col);
+          M2[(*it2)[0]][M2_rnd_counter].
+            block(col*dilE, 0, dilE, 4*dilE) += value *
+            meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id3).
+                                block(col*dilE, gamma_index*dilE, dilE, dilE)*
+            quarklines.return_Q2L(t2, t1/dilT, c_look.lookup[2], id2).
+                               block(gamma_index*dilE, 0, dilE, 4*dilE);
+  
+        }
+        M2_rnd_counter++;
+      }}}
+    }
+
+    Eigen::MatrixXcd M3 = Eigen::Matrix::Zero(4*dilE, 4*dilE);
+    for(const auto& c_look : corr_lookup){
+      const auto& ric0 = operator_lookup.ricQ2_lookup[
+                  quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
+      const auto& ric1 = operator_lookup.ricQ2_lookup[//needed only for checking
+                 operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].
                                                     id_ricQ_lookup].rnd_vec_ids;
       const auto& ric2 = operator_lookup.ricQ2_lookup[
                   quark_lookup.Q2L[c_look.lookup[2]].id_ric_lookup].rnd_vec_ids;
       const auto& ric3 = operator_lookup.ricQ2_lookup[//needed only for checking
-                 operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].
+                 operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
                                                     id_ricQ_lookup].rnd_vec_ids;
-      if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
-         ric0.size() != ric3.size()){
-        std::cout << "rnd combinations are not the same in build_C4cB" 
-                  << std::endl;
-      }
-
+      size_t M1_rnd_counter = 0;
       for(const auto& rnd0 : ric0){
       for(const auto& rnd1 : ric1){
-      if(rnd0.first != rnd1.first && rnd0.second == rnd1.second){
-        const size_t id0 = &rnd0 - &ric0[0];
-        const size_t id1 = &rnd1 - &ric1[0];
-        //Eigen::MatrixXcd M1 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
-        for(size_t col = 0; col < 4; col++){
-
-          const cmplx value = quarklines.return_gamma_val(c_look.gamma[0], col);
-          const size_t gamma_index = quarklines.return_gamma_row(
-                                                          c_look.gamma[0], col);
-          M1[rnd0.first][rnd0.second][rnd1.first].
-            block(0, col*dilE, 4*dilE, dilE) = value *
-            quarklines.return_Q2L(t1, t2/dilT, c_look.lookup[0], id0).
-                               block(0, gamma_index*dilE, 4*dilE, dilE) *
-            meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id1).
-                                block(gamma_index*dilE, col*dilE, dilE, dilE);
-        }
-      }}}
-      for(const auto& rnd0 : ric0){
-      for(const auto& rnd1 : ric1){
-      if(rnd0.first != rnd1.first && rnd0.second == rnd1.second){
-        M2.setZero(4 * dilE, 4 * dilE); // setting matrix values to zero
+      if(rnd0.first == rnd1.first && rnd0.second != rnd1.second){
+        M3.setZero(4 * dilE, 4 * dilE); // setting matrix values to zero
+        size_t M2_rnd_counter = 0;
         for(const auto& rnd2 : ric2){
         for(const auto& rnd3 : ric3){
-        if(rnd2.first != rnd3.first && rnd2.second == rnd3.second && 
-           rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
-           rnd0.second != rnd3.second){
-          const size_t id2 = &rnd2 - &ric2[0];
-          const size_t id3 = &rnd3 - &ric3[0];
-          for(size_t col = 0; col < 4; col++){
-            const cmplx value = 
-                             quarklines.return_gamma_val(c_look.gamma[1], col);
-            const size_t gamma_index = quarklines.return_gamma_row(
-                                                          c_look.gamma[1], col);
-            M2.block(0, col*dilE, 4*dilE, dilE) += value *
-              quarklines.return_Q2L(t2, t1/dilT, c_look.lookup[2], id2).
-                                 block(0, gamma_index*dilE, 4*dilE, dilE) *
-              meson_operator.return_rvdaggervr(c_look.lookup[3], t1, id3).
-                                  block(gamma_index*dilE, col*dilE, dilE, dilE);
+        if(rnd2.first == rnd3.first && rnd2.second != rnd3.second){
+
+          if(rnd0.second == rnd3.second && rnd1.second == rnd2.second &&
+            rnd0.first != rnd2.first){
+
+            M3 += M2[0][M2_rnd_counter];
+
           }
+          M2_rnd_counter;
         }}}
-        C[c_look.id][t] += (M1[rnd0.first][rnd0.second][rnd1.first]*M2).trace();
+        C[c_look.id][t] += (M1[0]M1_rnd_counter[]*M3).trace();
+        M1_rnd_counter++;
       }}}
     } // loop over operators ends here
   }} // loops over time end here

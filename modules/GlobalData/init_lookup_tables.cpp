@@ -189,11 +189,11 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     size_t counter_mom3 = 0;
     size_t counter_mom4 = 0;
     for(const auto& op0 : qn_op[0]){
-    for(const auto& op2 : qn_op[2]){
+    for(const auto& op3 : qn_op[3]){
       const int mom0 = compute_norm_squ(op0.momentum);
-      const int mom2 = compute_norm_squ(op2.momentum);
-      const int tot_mom_l = add_momenta_squared(op0.momentum, op2.momentum);
-      std::array<int, 3> tot_mom_v_l = add_momenta(op0.momentum, op2.momentum);
+      const int mom3 = compute_norm_squ(op3.momentum);
+      const int tot_mom_l = add_momenta_squared(op0.momentum, op3.momentum);
+      std::array<int, 3> tot_mom_v_l = add_momenta(op0.momentum, op3.momentum);
       
       if(tot_mom_l == 0){
         if(mom0 > 2 || mom0 == 0)
@@ -201,22 +201,22 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
         counter_mom0++;
       }
       else if(tot_mom_v_l == std::array<int,3>({0,0,1})){
-        if((mom0 + mom2) > 5)
+        if((mom0 + mom3) > 5)
           continue;
         counter_mom1++;
       }
       else if(tot_mom_v_l == std::array<int,3>({0,1,1})){
-        if((mom0 + mom2) > 6)
+        if((mom0 + mom3) > 6)
           continue;
         counter_mom2++;
       }
       else if(tot_mom_v_l == std::array<int,3>({1,1,1})){
-        if((mom0 + mom2) > 7)
+        if((mom0 + mom3) > 7)
           continue;
         counter_mom3++;
       }
       else if(tot_mom_v_l == std::array<int,3>({0,0,2})){
-        if((mom0 + mom2) > 4)
+        if((mom0 + mom3) > 4)
           continue;
         counter_mom4++;
       }
@@ -225,11 +225,11 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
     // momentum combinations on sink side --------------------------------------
     for(const auto& op1 : qn_op[1]){ 
-    for(const auto& op3 : qn_op[3]){ // all combinations of operators
+    for(const auto& op2 : qn_op[2]){ // all combinations of operators
       const int mom1 = compute_norm_squ(op1.momentum);
-      const int mom3 = compute_norm_squ(op3.momentum);
-      const int tot_mom_r = add_momenta_squared(op1.momentum, op3.momentum);
-      std::array<int, 3> tot_mom_v_r = add_momenta(op1.momentum, op3.momentum);
+      const int mom2 = compute_norm_squ(op2.momentum);
+      const int tot_mom_r = add_momenta_squared(op1.momentum, op2.momentum);
+      std::array<int, 3> tot_mom_v_r = add_momenta(op1.momentum, op2.momentum);
       if((tot_mom_v_r[0] != -tot_mom_v_l[0]) ||
          (tot_mom_v_r[1] != -tot_mom_v_l[1]) ||
          (tot_mom_v_r[2] != -tot_mom_v_l[2]))
@@ -240,19 +240,19 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
           continue;
       }
       else if(tot_mom_v_r == std::array<int,3>({0,0,-1})){
-        if((mom1 + mom3) > 5)
+        if((mom1 + mom2) > 5)
           continue;
       }
       else if(tot_mom_v_r == std::array<int,3>({0,-1,-1})){
-        if((mom1 + mom3) > 6)
+        if((mom1 + mom2) > 6)
           continue;
       }
       else if(tot_mom_v_r == std::array<int,3>({-1,-1,-1})){
-        if((mom1 + mom3) > 7)
+        if((mom1 + mom2) > 7)
           continue;
       }
       else if(tot_mom_v_r == std::array<int,3>({0,0,-2})){
-        if((mom1 + mom3) > 4)
+        if((mom1 + mom2) > 4)
           continue;
       }
       else
@@ -842,15 +842,15 @@ static void build_C4cB_lookup(
 //                             //const bool c = corr1.lookup[0] < corr2.lookup[2];
 //                             //const bool d = corr1.lookup[2] < corr2.lookup[0];
 //
-//                             //return ((corr1.lookup[3]) < (corr2.lookup[3]));
+//                             return ((corr1.lookup[1]) < (corr2.lookup[1]));
 //
 //                             //return (a && b); // || (c && d);
-//                             return (corr1.lookup[0] + corr1.lookup[1]) < 
-//                                    (corr2.lookup[0] + corr2.lookup[1]);
+//                             //return (corr1.lookup[0] + corr1.lookup[1]) < 
+//                             //       (corr2.lookup[0] + corr2.lookup[1]);
 //                           });
   for(const auto& look : corr_lookup.C4cB)
-    std::cout << look.lookup[0] << "\t" << look.lookup[2] << "\t" 
-              << look.lookup[1] << "\t" << look.lookup[3] << std::endl;
+    std::cout << look.lookup[0] << "\t" << look.lookup[3] << "\t" 
+              << look.lookup[1] << "\t" << look.lookup[2] << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
