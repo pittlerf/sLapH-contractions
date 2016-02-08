@@ -27,10 +27,11 @@ private:
   const size_t Lt, dilT, dilE, nev;
 
   // this is just for intermediate steps
-  void build_corr0(const Quarklines& quarklines, 
+  void build_corr0(const OperatorsForMesons& meson_operator, 
+                   const Perambulator& perambulators,
                    const std::vector<CorrInfo>& corr_lookup,
                    const QuarklineLookup& quark_lookup,
-                   const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+                   const OperatorLookup& operator_lookup);
   void build_corrC(const Quarklines& quarklines, 
                    const OperatorsForMesons& meson_operator,
                    const OperatorLookup& OperatorLookup,
@@ -85,8 +86,9 @@ public:
                Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {};
   ~Correlators () {}; // dtor
 
-  void contract(const Quarklines& quarklines, 
+  void contract(Quarklines& quarklines, 
                 const OperatorsForMesons& meson_operator,
+                const Perambulator& perambulators,
                 const OperatorLookup& operator_lookup,
                 const CorrelatorLookup& corr_lookup, 
                 const QuarklineLookup& quark_lookup);

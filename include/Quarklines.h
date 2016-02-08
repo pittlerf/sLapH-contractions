@@ -73,6 +73,12 @@ public:
   }
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
+  void build_Q1_one_t(const Perambulator& peram,
+                      const OperatorsForMesons& meson_operator,
+                      const int t_source, const int t_sink,
+                      const std::vector<QuarklineQ1Indices>& ql_lookup,
+                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+
   void create_quarklines(const Perambulator& peram, 
                       const OperatorsForMesons& meson_operator,
                       const QuarklineLookup& quarkline_lookuptable,

@@ -206,11 +206,18 @@ LapH::Quarklines::Quarklines(
                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup) :
                                     Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {
 
-  Q1.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q1.size()]);
-  Q2V.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q2V.size()]);
-  Q2L.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q2L.size()]);
+  // needed to construct quarklines on individual time slices
+  int tt2 = 0;
+  if(Lt==1 || Lt==2)
+    tt2 = 1;
+  else
+    tt2 = Lt/dilT;
+
+  Q1.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q1.size()]);
+  Q2V.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q2V.size()]);
+  Q2L.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q2L.size()]);
   for(size_t t1 = 0; t1 < Lt; t1++){                  
-  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+  for(size_t t2 = 0; t2 < tt2; t2++){
     for(size_t op = 0; op < quarkline_lookuptable.Q1.size(); op++){ 
       size_t nb_rnd = ric_lookup[(quarkline_lookuptable.Q1[op]).
                                  id_ric_lookup].rnd_vec_ids.size();
@@ -273,7 +280,6 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
                                        nev, dilE);
         }}
         rnd_counter++;
-
       }
     }
   }}
@@ -281,6 +287,53 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void LapH::Quarklines::build_Q1_one_t(const Perambulator& peram,
+              const OperatorsForMesons& meson_operator,
+              const int t_source, const int t_sink,
+              const std::vector<QuarklineQ1Indices>& ql_lookup,
+              const std::vector<RandomIndexCombinationsQ2>& ric_lookup){
+
+//#pragma omp parallel for schedule(dynamic)
+  for(const auto& qll : ql_lookup){
+    const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
+    size_t rnd_counter = 0;
+    for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
+      const size_t rid1 = rnd_id.first - offset; 
+      const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
+      for(size_t row = 0; row < 4; row++){
+      for(size_t col = 0; col < 4; col++){
+        Q1[0][0][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
+          gamma[gamma_id].value[row] *  
+          meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t_source, rid1).
+                                                block(row*dilE, 0, dilE, nev)*
+          peram[rnd_id.second].block((t_source*4+gamma[gamma_id].row[row])*nev, 
+                                     (t_sink/dilT*4 + col)*dilE, nev, dilE);
+      }}
+      rnd_counter++;
+    }
+  }
+//#pragma omp parallel for schedule(dynamic)
+  for(const auto& qll : ql_lookup){
+    const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
+    size_t rnd_counter = 0;
+    for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
+      const size_t rid1 = rnd_id.first - offset; 
+      const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
+      for(size_t row = 0; row < 4; row++){
+      for(size_t col = 0; col < 4; col++){
+        Q1[1][0][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
+          gamma[gamma_id].value[row] *  
+          meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t_sink, rid1).
+                                                block(row*dilE, 0, dilE, nev)*
+          peram[rnd_id.second].block((t_sink*4+gamma[gamma_id].row[row])*nev, 
+                                     (t_source/dilT*4 + col)*dilE, nev, dilE);
+      }}
+      rnd_counter++;
+    }
+  }
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
