@@ -74,8 +74,8 @@ private:
                   const OperatorLookup& operator_lookup,
                   const std::vector<CorrInfo>& corr_lookup,
                   const QuarklineLookup& quark_lookup);
-  void build_C4cB(const Quarklines& quarklines, 
-                  const OperatorsForMesons& meson_operator,
+  void build_C4cB(const OperatorsForMesons& meson_operator,
+                  const Perambulator& perambulators,
                   const OperatorLookup& operator_lookup,
                   const std::vector<CorrInfo>& corr_lookup,
                   const QuarklineLookup& quark_lookup);
