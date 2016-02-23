@@ -35,6 +35,7 @@ int main (int ac, char* av[]) {
   LapH::RandomVector randomvectors(
                                global_data->get_rnd_vec_construct().nb_entities,
                                global_data->get_rnd_vec_construct().length);
+
   LapH::OperatorsForMesons meson_operators(
                             global_data->get_Lt(), global_data->get_Lx(),
                             global_data->get_Ly(), global_data->get_Lz(),
@@ -55,6 +56,8 @@ int main (int ac, char* av[]) {
                           global_data->get_number_of_eigen_vec(),
                           global_data->get_quarkline_lookuptable(),
                           global_data->get_operator_lookuptable().ricQ2_lookup);
+
+
   LapH::Correlators correlators(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,
                          (global_data->get_quarks())[0].number_of_dilution_E,

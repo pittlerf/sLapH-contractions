@@ -63,6 +63,11 @@ private:
                   const QuarklineLookup& quark_lookup,
                   const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
   void build_C2c(const std::vector<CorrInfo>& corr_lookup);
+  void build_C3c(const OperatorsForMesons& meson_operator,
+                 const Perambulator& perambulators,
+                 const OperatorLookup& operator_lookup,
+                 const std::vector<CorrInfo>& corr_lookup,
+                 const QuarklineLookup& quark_lookup);
   void build_C4cD(const OperatorLookup& operator_lookup, 
                   const CorrelatorLookup& corr_lookup,
                   const QuarklineLookup& quark_lookup);
