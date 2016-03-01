@@ -146,12 +146,12 @@ void build_VdaggerV_lookup(
                              auto c1 = (vdv_qn.displacement == qn.displacement);
                              auto c2 = (vdv_qn.momentum == qn.momentum);
                              // also negative momentum is checked
-                             const std::array<int, 3> pm = {-qn.momentum[0],
+                             const std::array<int, 3> pm = {{-qn.momentum[0],
                                                             -qn.momentum[1],
-                                                            -qn.momentum[2]};
+                                                            -qn.momentum[2]}};
                              auto c3 = (vdv_qn.momentum == pm);
                              // TODO: Think about the daggering!!
-                             const std::array<int, 3> zero = {0,0,0};
+                             const std::array<int, 3> zero = {{0,0,0}};
                              if (c1 and c2){
                                dagger = false;
                                return true;
@@ -1249,7 +1249,7 @@ void GlobalData::init_lookup_tables() {
     }
   }
   // finding the index where we have no momentum and no displacement
-  const std::array<int, 3> zero = {0,0,0};
+  const std::array<int, 3> zero = {{0,0,0}};
   for(const auto& op_vdv : operator_lookuptable.vdaggerv_lookup)
     if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) )
       operator_lookuptable.index_of_unity = op_vdv.id;
