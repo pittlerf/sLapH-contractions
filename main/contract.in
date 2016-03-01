@@ -13,7 +13,7 @@ Lz = 24
 
 # configuration handling: 
 start_config = 714
-end_config   = 714
+end_config   = 724
 delta_config = 4
 
 # eigenvector handling:

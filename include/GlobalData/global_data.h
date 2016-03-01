@@ -22,6 +22,7 @@
 #include <Eigen/SparseCore>
 
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
@@ -190,6 +191,47 @@ public:
   inline const CorrelatorLookup get_correlator_lookuptable(){
     return correlator_lookuptable;
   }
+  void change_correlator_paths(const size_t old_cnfg, const size_t new_cnfg){
+    std::string o = std::to_string(old_cnfg);
+    std::string n = std::to_string(new_cnfg);
+    for(auto& C : correlator_lookuptable.C1)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C1T)
+      boost::replace_all(C.outpath, o, n);
+
+    for(auto& C : correlator_lookuptable.corr0)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C20)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C40D)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C40V)
+      boost::replace_all(C.outpath, o, n);
+
+    for(auto& C : correlator_lookuptable.corrC)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C2c)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C4cD)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C4cV)
+      boost::replace_all(C.outpath, o, n);
+
+    for(auto& C : correlator_lookuptable.C30)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C3c)
+      boost::replace_all(C.outpath, o, n);
+
+    for(auto& C : correlator_lookuptable.C40C)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C4cC)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C40B)
+      boost::replace_all(C.outpath, o, n);
+    for(auto& C : correlator_lookuptable.C4cB)
+      boost::replace_all(C.outpath, o, n);
+  }
+
   //! All con/de-structors are protected to assure that only one instance exists
   //! at once. DO NOT CHANGE!!
 protected:

@@ -109,9 +109,12 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename) {
   for(size_t t = 0; t < Lt; ++t){
 
     // creating full filename for eigenvectors and reading them in
-    char inter_name[200];
-    sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
-    V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
+    if(!((operator_lookuptable.vdaggerv_lookup.size() == 1) &&
+         (operator_lookuptable.vdaggerv_lookup[0].id == id_unity))){
+      char inter_name[200];
+      sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
+      V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
+    }
 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
