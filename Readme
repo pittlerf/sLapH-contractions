@@ -1,1 +1,4 @@
-This is the new version of the contraction code.
+This is the new version of the contraction code. (Bastian 2015)
+
+On Qbig start with
+LD_LIBRARY_PATH=:/hiskp2/werner/libraries/boost_1_60_0/stage/lib ./contract -i LapHs.in

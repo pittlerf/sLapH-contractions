@@ -38,19 +38,20 @@ VPATH = .:$(MDIR):$(MDIR)/GlobalData:$(MDIR)/Correlators
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
 
-LIMEPATH = /home/knippsch/ExternLibraries/lime
+LIMEPATH = /hiskp2/jost/code/lime #/hiskp2/werner/libraries/lime-1.3.2
 
 # additional include directories
-INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
-          /home/knippsch/ExternLibraries/boost_1_55_0 \
-          $(LIMEPATH)/include/ ../include ../include/GlobalData
+INCPATH = /hiskp2/werner/libraries/eigen-3.2.7 \
+	  /hiskp2/werner/libraries/boost_1_60_0 \
+	  $(LIMEPATH)/include/ ../include ../include/GlobalData
+
 
 # additional libraries
 
-LIBS = boost_program_options lime 
+LIBS = boost_program_options boost_filesystem boost_system lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
-          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/
+	  /hiskp2/werner/libraries/boost_1_60_0/stage/lib/
 
 # scheduling and optimization options
 CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
@@ -59,7 +60,7 @@ CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
 ############################## do not change ###################################
 
 SHELL=/bin/bash
-CC=g++
+CC=g++-4.7
 CLINKER=$(CC)
 
 PGMS= $(MAIN) $(MODULES)
@@ -76,14 +77,14 @@ $(addsuffix .d,$(PGMS)): %.d: %.cpp Makefile
 # rule to compile source programs
 
 $(addsuffix .o,$(PGMS)): %.o: %.cpp Makefile
-	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) -static
+	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) #-static
 
 
 # rule to link object files
 
 $(MAIN): %: %.o $(addsuffix .o,$(MODULES)) Makefile
 	$(CLINKER) $< $(addsuffix .o,$(MODULES)) $(CFLAGS) $(LOGOPTION) \
-	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ -static
+	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ #-static
 
 # produce executables
 

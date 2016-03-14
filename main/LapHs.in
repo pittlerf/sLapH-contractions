@@ -1,33 +1,28 @@
 # This is an example input file
 
-# perallelisation: Be carefull - Atm I would only use one thread for Eigen. It 
-#                                usually is much slower than simple omp!
-nb_omp_threads = 4
-nb_eigen_threads = 1
-
 # lattice parameters:
-Lt = 48
-Lx = 24
-Ly = 24 
-Lz = 24 
+Lt = 64
+Lx = 32
+Ly = 32 
+Lz = 32 
 
-# configuration handling: 
+# configuration handling:
 start_config = 714
-end_config   = 724
+end_config   = 714
 delta_config = 4
 
 # eigenvector handling:
-number_of_eigen_vec = 120
-path_eigenvectors   = /data/LapHs/contraction_Markus/test_data/ev
+number_of_eigen_vec = 220
+path_eigenvectors   = /hiskp2/eigensystems/B25.32t
 name_eigenvectors   = eigenvectors
 # output path
-output_path = .
+output_path = /hiskp2/werner/check
 overwrite_old = yes
 
 # quarks to be used - The file at the and is the location of the perambulators.
 [quarks]
-quark = u:4:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/up
-quark = s:4:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/strange
+quark = s:3:TI:2:EI:4:DI:4:/hiskp2/perambulators/B25.32t/nev_220/strange_186
+#quark = u:4:TI:2:EI:4:DI:4:/
 
 # operators to be used
 [operator_lists]
@@ -44,15 +39,15 @@ operator_list = g9.d0.p0
 
 # all correlation functions which will be computed
 [correlator_lists]
-correlator_list = C1:Q0:Op4
-#correlator_list = C2+:Q0:Op5:Q0:Op5 #pion
+#correlator_list = C1:Q0:Op4
+correlator_list = C2+:Q0:Op5:Q0:Op5 #pion
 #correlator_list = C2+:Q0:Op5:Q1:Op5 #kaon
 #correlator_list = C4+D:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+V:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+C:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+B:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #
-#correlator_list = C20:Q0:Op4:Q0:Op4 #pion
+correlator_list = C20:Q0:Op4:Q0:Op4 #pion
 #correlator_list = C20:Q0:Op4:Q1:Op4 #kaon
 #correlator_list = C30:Q0:Op4:Q0:Op4:Q0:Op4
 #correlator_list = C40D:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
