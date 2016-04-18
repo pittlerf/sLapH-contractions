@@ -90,7 +90,7 @@ int main (int ac, char* av[]) {
 //                          global_data->get_quarkline_lookuptable(),
 //                          global_data->get_operator_lookuptable().ricQ2_lookup);
     // this memory is not needed anymore
-    meson_operators.free_memory_rvdaggerv();
+//    meson_operators.free_memory_rvdaggerv();
     meson_operators.free_memory_vdaggerv();
 
     // doing all the contractions
