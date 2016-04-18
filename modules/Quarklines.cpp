@@ -337,6 +337,59 @@ void LapH::Quarklines::build_Q1_one_t(const Perambulator& peram,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+void LapH::Quarklines::build_Q1_mult_t(const Perambulator& peram,
+              const OperatorsForMesons& meson_operator,
+              const int t1_block, const int t2_block,
+              const std::vector<QuarklineQ1Indices>& ql_lookup,
+              const std::vector<RandomIndexCombinationsQ2>& ric_lookup){
+  // t1 -> t2 -----------------------------------------------------------------
+  size_t pos = 0;
+  for(int t1 = dilT*t1_block; t1 < dilT*(t1_block+1); t1++){
+    for(const auto& qll : ql_lookup){
+      const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
+      size_t rnd_counter = 0;
+      for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
+        const size_t rid1 = rnd_id.first - offset; 
+        const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
+        for(size_t row = 0; row < 4; row++){
+        for(size_t col = 0; col < 4; col++){
+          Q1[pos][0][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
+            gamma[gamma_id].value[row] *  
+            meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t1, rid1).
+                                                  block(row*dilE, 0, dilE, nev)*
+            peram[rnd_id.second].block((t1*4+gamma[gamma_id].row[row])*nev, 
+                                       (t2_block*4 + col)*dilE, nev, dilE);
+        }}
+        rnd_counter++;
+      }
+    }
+    pos++;
+  }
+  // t2 -> t1 -----------------------------------------------------------------
+  for(int t2 = dilT*t2_block; t2 < dilT*(t2_block+1); t2++){
+    for(const auto& qll : ql_lookup){
+      const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
+      size_t rnd_counter = 0;
+      for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
+        const size_t rid1 = rnd_id.first - offset; 
+        const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
+        for(size_t row = 0; row < 4; row++){
+        for(size_t col = 0; col < 4; col++){
+          Q1[pos][0][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
+            gamma[gamma_id].value[row] *  
+            meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t2, rid1).
+                                                  block(row*dilE, 0, dilE, nev)*
+            peram[rnd_id.second].block((t2*4+gamma[gamma_id].row[row])*nev, 
+                                       (t1_block*4 + col)*dilE, nev, dilE);
+        }}
+        rnd_counter++;
+      }
+    }
+    pos++;
+  }
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void LapH::Quarklines::build_Q2V(const Perambulator& peram,
                const OperatorsForMesons& meson_operator,
                const std::vector<QuarklineQ2Indices>& ql_lookup,

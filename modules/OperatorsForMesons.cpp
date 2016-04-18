@@ -113,6 +113,7 @@ LapH::OperatorsForMesons::OperatorsForMesons
 
   rvdaggervr.resize(operator_lookuptable.rvdaggervr_lookuptable.size());
   counter = 0;
+
   for(auto& rvdvr_level1 : rvdaggervr){
     rvdvr_level1.resize(Lt);
     size_t nb_rnd_combinations = 

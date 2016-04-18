@@ -78,6 +78,11 @@ public:
                       const int t_source, const int t_sink,
                       const std::vector<QuarklineQ1Indices>& ql_lookup,
                       const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+  void build_Q1_mult_t(const Perambulator& peram,
+                       const OperatorsForMesons& meson_operator,
+                       const int t_source, const int t_sink,
+                       const std::vector<QuarklineQ1Indices>& ql_lookup,
+                       const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 
   void build_Q2L_one_t(const Perambulator& peram,
                        const OperatorsForMesons& meson_operator,
