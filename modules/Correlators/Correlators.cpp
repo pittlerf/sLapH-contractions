@@ -129,7 +129,7 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
     }}
     // normalisation
     for(auto& corr : correlator)
-      corr /= Lt*corr0[c_look..lookup[0]][0][0].size();
+      corr /= Lt*corr0[c_look.lookup[0]][0][0].size();
     // write data to file
     write_correlators(correlator, c_look);
   }

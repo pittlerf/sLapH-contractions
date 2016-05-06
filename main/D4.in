@@ -12,9 +12,9 @@ Ly = 24
 Lz = 24 
 
 # configuration handling: 
-start_config = 714
+start_config = 712
 end_config   = 714
-delta_config = 4
+delta_config = 2
 
 # eigenvector handling:
 number_of_eigen_vec = 120

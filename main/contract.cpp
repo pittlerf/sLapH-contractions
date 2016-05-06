@@ -58,8 +58,37 @@ int main (int ac, char* av[]) {
   for(size_t config_i  = global_data->get_start_config(); 
              config_i <= global_data->get_end_config(); 
              config_i += global_data->get_delta_config()){
+
     std::cout << "\nprocessing configuration: " << config_i << "\n\n";
-    global_data->build_IO_names(config_i);
+    global_data->build_IO_names(config_i);// building IO names
+
+    // check if paths for randomvectors and perambulators exist - If not, this
+    // configuration is simply skipped with a warning! TODO: Code duplication
+    bool continue_flag = false;
+    for(const auto& check : global_data->get_rnd_vec_construct().filename_list){
+      std::ifstream f(check.c_str());
+      if(!f.good()){
+        std::cout << "!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!" << std::endl;
+        std::cout << "Randomvectors " << check << " do not exist on config "
+                  << config_i << std::endl;
+        std::cout << "!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!" << std::endl;
+        continue_flag = true;
+        break;
+      }
+    }
+    for(const auto& check : global_data->get_peram_construct().filename_list){
+      std::ifstream f(check.c_str());
+      if(!f.good()){
+        std::cout << "!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!" << std::endl;
+        std::cout << "Perambulators " << check << " do not exist on config "
+                  << config_i << std::endl;
+        std::cout << "!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!" << std::endl;
+        continue_flag = true;
+        break;
+      }
+    }
+    if(continue_flag)
+      continue;
 
     // read perambulators
     perambulators.read_perambulators_from_separate_files(
