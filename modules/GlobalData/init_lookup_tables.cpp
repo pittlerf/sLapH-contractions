@@ -50,7 +50,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     for(const auto& op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
   }
-  else if (correlator.type == "C2+" || correlator.type == "C20") {
+  else if (correlator.type == "C2+" || correlator.type == "C20" ||
+           correlator.type == "Check") {
     for(const auto& op0 : qn_op[0]){
       for(const auto& op1 : qn_op[1]){ // all combinations of operators
         std::vector<QuantumNumbers> single_vec_qn;
@@ -926,7 +927,7 @@ void GlobalData::init_lookup_tables() {
       build_C1_lookup(quantum_numbers, correlator_names, Q1_indices, 
                                                         correlator_lookuptable);
     }
-    else if (correlator.type == "C2+") {
+    else if (correlator.type == "C2+" || correlator.type == "Check") {
       // 3. build the lookuptable for rVdaggerVr and return an array of indices
       //    corresponding to the 'quantum_numbers' computed in step 1.
       std::vector<size_t> rnd_vec_id;
