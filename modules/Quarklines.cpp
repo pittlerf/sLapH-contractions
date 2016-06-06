@@ -151,37 +151,37 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
       gamma[12].value[3] = I;
       break;
 
-    case 13: // gamma_1 * gamma_2
-      gamma[13].row[0] = 0;
+    case 13: // gamma_0 * gamma_1 * gamma_5
+      gamma[13].row[0] = 1;
       gamma[13].value[0] = I;
-      gamma[13].row[1] = 1;
-      gamma[13].value[1] = -I;
-      gamma[13].row[2] = 2;
+      gamma[13].row[1] = 0;
+      gamma[13].value[1] = I;
+      gamma[13].row[2] = 3;
       gamma[13].value[2] = I;
-      gamma[13].row[3] = 3;
-      gamma[13].value[3] = -I;
+      gamma[13].row[3] = 2;
+      gamma[13].value[3] = I;
       break;
 
-    case 14: // gamma_1 * gamma_3
+    case 14: // gamma_0 * gamma_2 * gamma_5
       gamma[14].row[0] = 1;
-      gamma[14].value[0] = -1;
+      gamma[14].value[0] = 1;
       gamma[14].row[1] = 0;
-      gamma[14].value[1] = 1;
+      gamma[14].value[1] = -1;
       gamma[14].row[2] = 3;
-      gamma[14].value[2] = -1;
+      gamma[14].value[2] = 1;
       gamma[14].row[3] = 2;
-      gamma[14].value[3] = 1;
+      gamma[14].value[3] = -1;
       break;
 
-    case 15: // gamma_2 * gamma_3
-      gamma[15].row[0] = 1;
+    case 15: // gamma_0 * gamma_3 * gamma_5
+      gamma[15].row[0] = 0;
       gamma[15].value[0] = I;
-      gamma[15].row[1] = 0;
-      gamma[15].value[1] = I;
-      gamma[15].row[2] = 3;
+      gamma[15].row[1] = 1;
+      gamma[15].value[1] = -I;
+      gamma[15].row[2] = 2;
       gamma[15].value[2] = I;
-      gamma[15].row[3] = 2;
-      gamma[15].value[3] = I;
+      gamma[15].row[3] = 3;
+      gamma[15].value[3] = -I;
       break;
 
     default:
