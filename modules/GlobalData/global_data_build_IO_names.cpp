@@ -27,6 +27,8 @@ static std::vector<std::string> create_rnd_vector_file_names (
 // -----------------------------------------------------------------------------
 static std::vector<std::string> create_perambulator_file_names (
                                               const int config, const int Lt,
+                                              const int Lx, const int Ly, 
+                                              const int Lz, 
                                               const std::vector<quark> quarks) {
 
   std::vector<std::string> filename_list; // the return vector of file names
@@ -44,7 +46,7 @@ static std::vector<std::string> create_perambulator_file_names (
           "perambulator.rndvecnb%02d.u.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
           "SsiF%d.DsiF4.CsiF3.smeared1.%05d", 
           rnd_vec_i, Lt / q.number_of_dilution_T, q.number_of_dilution_E,
-          q.number_of_dilution_D, Lt, 13824, config);
+          q.number_of_dilution_D, Lt, Lx*Ly*Lz, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
@@ -69,7 +71,7 @@ void GlobalData::build_IO_names(const size_t config){
   rnd_vec_construct.filename_list = create_rnd_vector_file_names(
                                            config, number_of_eigen_vec, quarks);
   peram_construct.filename_list = create_perambulator_file_names(
-                                                            config, Lt, quarks);
+                                                config, Lt, Lx, Ly, Lz, quarks);
   filename_eigenvectors = create_eigenvector_file_name(config, 
                                                        path_eigenvectors, 
                                                        name_eigenvectors);

@@ -19,7 +19,7 @@ all: rmxeq mkdep mkxeq
 # main programs and modules to be compiled
 
 
-MAIN = contract
+MAIN = contract 
 
 GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 	           global_data_input_handling_utils init_lookup_tables
@@ -38,27 +38,28 @@ VPATH = .:$(MDIR):$(MDIR)/GlobalData:$(MDIR)/Correlators
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
 
-LIMEPATH = /hiskp2/helmes/programm_libs/lime-1.3.2 
+LIMEPATH = /home/knippsch/ExternLibraries/lime
 
 # additional include directories
-INCPATH = /hiskp2/helmes/programm_libs/eigen-3.2.0 \
-          /hiskp2/knippsch/contraction/libs/boostLIBS/include \
-          $(LIMEPATH)/include ../include ../include/GlobalData
+INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
+          /home/knippsch/ExternLibraries/boost_1_55_0 \
+          $(LIMEPATH)/include/ ../include ../include/GlobalData
 
 # additional libraries
 
-LIBS = boost_program_options boost_filesystem boost_system lime 
+LIBS = boost_program_options lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
-				  /hiskp2/knippsch/contraction/libs/boostLIBS/lib/
+          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/
 
 # scheduling and optimization options
-CFLAGS = -Wall -pedantic -std=c++0x -fopenmp -O2 -march=native \
-         -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare 
+CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
+         -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare \
+         -lboost_system -lboost_filesystem
 ############################## do not change ###################################
 
 SHELL=/bin/bash
-CC=g++-4.7
+CC=g++
 CLINKER=$(CC)
 
 PGMS= $(MAIN) $(MODULES)
@@ -69,20 +70,20 @@ PGMS= $(MAIN) $(MODULES)
 # rule to make dependencies
 
 $(addsuffix .d,$(PGMS)): %.d: %.cpp Makefile
-	@ $(CC) -ansi $< -MM $(addprefix -I,$(INCPATH)) -o $@ $(CFLAGS) 
+	@ $(CC) -ansi $< -MM $(addprefix -I,$(INCPATH)) -o $@ $(CFLAGS)
 
 
 # rule to compile source programs
 
 $(addsuffix .o,$(PGMS)): %.o: %.cpp Makefile
-	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH))
+	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) -static
 
 
 # rule to link object files
 
 $(MAIN): %: %.o $(addsuffix .o,$(MODULES)) Makefile
 	$(CLINKER) $< $(addsuffix .o,$(MODULES)) $(CFLAGS) $(LOGOPTION) \
-	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@
+	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ -static
 
 # produce executables
 
