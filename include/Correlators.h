@@ -32,7 +32,7 @@ private:
                    const std::vector<CorrInfo>& corr_lookup,
                    const QuarklineLookup& quark_lookup,
                    const OperatorLookup& operator_lookup);
-  void build_corrC(const Quarklines& quarklines, 
+  void build_corrC(const Perambulator& perambulators,
                    const OperatorsForMesons& meson_operator,
                    const OperatorLookup& OperatorLookup,
                    const std::vector<CorrInfo>& corr_lookup,

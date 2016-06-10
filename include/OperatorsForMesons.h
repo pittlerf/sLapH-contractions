@@ -38,6 +38,7 @@ private:
   // input -> filename: name and path of eigenvectors
   void build_vdaggerv(const std::string& filename, const int config);
   void read_vdaggerv(const int config);
+  void read_vdaggerv_liuming(const int config);
   void build_rvdaggerv(const LapH::RandomVector& rnd_vec);
   void build_rvdaggervr(const LapH::RandomVector& rnd_vec);
 

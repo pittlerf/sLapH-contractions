@@ -443,10 +443,11 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   // set start and end points of rnd numbers
   auto rndq1_start = 0;
   for(auto i = 0; i < id_q1; i++)
-    rndq1_start =+ quarks[i].number_of_rnd_vec;
+    rndq1_start += quarks[i].number_of_rnd_vec;
   auto rndq2_start = 0;
   for(auto i = 0; i < id_q2; i++)
-    rndq2_start =+ quarks[i].number_of_rnd_vec;
+    rndq2_start += quarks[i].number_of_rnd_vec;
+
   auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
   auto rndq2_end = rndq2_start + quarks[id_q2].number_of_rnd_vec;
 
@@ -474,7 +475,7 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   if(!C1){
     for(size_t i = rndq1_start; i < rndq1_end; ++i)
       for(size_t j = rndq2_start; j < rndq2_end; ++j)
-        if(i != j) 
+        if(i != j)
           rnd_vec_comb.emplace_back(i, j);
   }
   else {
@@ -538,17 +539,18 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
     std::vector<size_t> rvdvr_indices_row;
 
     for(size_t vdv_id = 0; vdv_id < vdv_row.size(); vdv_id++){
-//    if(vdv_id%2 != 0){
+
+      size_t rnd_index = 0; // construct to get correct random number indices
+      if(vdv_id == 2 || vdv_id == 3)
+        rnd_index = 1;
 
       const auto vdv = vdv_row[vdv_id];
      
       auto it = std::find_if(rvdaggervr_lookup.begin(), rvdaggervr_lookup.end(),
                              [&](VdaggerVRandomLookup vdv_qn)
                              {
-                               //auto c1 = (vdv_qn.id_ricQ_lookup == 
-                               //           rnd_vec_id[(vdv_id-1)/2]);
                                auto c1 = (vdv_qn.id_ricQ_lookup == 
-                                          rnd_vec_id[vdv_id]);
+                                          rnd_vec_id[rnd_index]);
                                auto c2 = (vdv_qn.id_vdaggerv == vdv.first);
                                auto c3 = (vdv_qn.need_vdaggerv_daggering == 
                                           vdv.second); 
@@ -559,17 +561,11 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
         rvdvr_indices_row.emplace_back((*it).id);
       }
       else {
-//        rvdaggervr_lookup.emplace_back(VdaggerVRandomLookup(
-//                                       rvdaggervr_lookup.size(), vdv.first, 
-//                                       rnd_vec_id[(vdv_id-1)/2], vdv.second));
         rvdaggervr_lookup.emplace_back(VdaggerVRandomLookup(
                                        rvdaggervr_lookup.size(), vdv.first, 
-                                       rnd_vec_id[vdv_id], vdv.second));
+                                       rnd_vec_id[rnd_index], vdv.second));
         rvdvr_indices_row.emplace_back(rvdaggervr_lookup.back().id);
       }
-//    }
-//    else
-//      rvdvr_indices_row.emplace_back(0);
     }
     rvdvr_indices.emplace_back(rvdvr_indices_row);
   }
