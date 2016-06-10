@@ -44,15 +44,8 @@ int main (int ac, char* av[]) {
                             global_data->get_operator_lookuptable(),
                             global_data->get_handling_vdaggerv(),
                             global_data->get_path_vdaggerv());  
-//  LapH::Quarklines quarklines(global_data->get_Lt(), 
-//                         (global_data->get_quarks())[0].number_of_dilution_T,
-//                         (global_data->get_quarks())[0].number_of_dilution_E,
-//                          global_data->get_number_of_eigen_vec(),
-//                          global_data->get_quarkline_lookuptable(),
-//                          global_data->get_operator_lookuptable().ricQ2_lookup);
-  LapH::Quarklines quarklines(
-                       2*(global_data->get_quarks())[0].number_of_dilution_T, 
-                         (global_data->get_quarks())[0].number_of_dilution_T,
+  // TODO: can be deleted
+  LapH::Quarklines quarklines(1, 0,
                          (global_data->get_quarks())[0].number_of_dilution_E,
                           global_data->get_number_of_eigen_vec(),
                           global_data->get_quarkline_lookuptable(),
@@ -86,13 +79,6 @@ int main (int ac, char* av[]) {
     // read eigenvectors and build operators
     meson_operators.create_operators(global_data->get_filename_eigenvectors(),
                                                        randomvectors, config_i);
-//    // building quarklines from operators and perambulators
-//    quarklines.create_quarklines(perambulators, meson_operators, 
-//                          global_data->get_quarkline_lookuptable(),
-//                          global_data->get_operator_lookuptable().ricQ2_lookup);
-    // this memory is not needed anymore
-//    meson_operators.free_memory_rvdaggerv();
-    meson_operators.free_memory_vdaggerv();
 
     // doing all the contractions
     correlators.contract(quarklines, meson_operators, perambulators,
