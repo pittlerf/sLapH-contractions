@@ -252,72 +252,62 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
   // building the quark line directly frees up a lot of memory
   Quarklines quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
                         operator_lookup.ricQ2_lookup);
-  for(const auto& c_look : corr_lookup){
-    const auto& ric0 = operator_lookup.ricQ2_lookup[
+  #pragma omp for schedule(dynamic)
+  for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
+  for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
+    quarklines.build_Q2V_one_t(perambulators, meson_operator, t1_i, t2_i,
+                              quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
+    for(int dir = 0; dir < 2; dir++){
+  
+      if((t1_i == t2_i) && (dir == 1))
+        continue;
+  
+      int t1_min, t2_min, t1_max, t2_max;
+      if(dir == 0){
+        t1_min = dilT*t1_i;
+        t1_max = dilT*(t1_i+1);
+        t2_min = dilT*t2_i;
+        t2_max = dilT*(t2_i+1);
+      }
+      else{
+        t1_min = dilT*t2_i;
+        t1_max = dilT*(t2_i+1);
+        t2_min = dilT*t1_i;
+        t2_max = dilT*(t1_i+1);
+      }
+  
+      for(int t1 = t1_min; t1 < t1_max; t1++){
+      for(int t2 = t2_min; t2 < t2_max; t2++){
+
+        // quarkline indices
+        int id_Q2L_1;
+    
+        if(t1_i == t2_i){   
+          if(t1_min != 0)  
+            id_Q2L_1 = t1%t1_min;    
+          else{        
+            id_Q2L_1 = t1;    
+          }    
+        }      
+        else{    
+          if(t1_min != 0) 
+             id_Q2L_1 = (dir)*dilT + t1%t1_min; 
+           else   
+             id_Q2L_1 = ((dir)*dilT + t1);     
+        }                                                  
+
+        // building correlator -------------------------------------------------
+        for(const auto& c_look : corr_lookup){
+          const auto& ric0 = operator_lookup.ricQ2_lookup[
                   quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
-    const auto& ric1 = operator_lookup.ricQ2_lookup[//needed only for checking
-               operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
+          const auto& ric1 = operator_lookup.ricQ2_lookup[//just for checking
+                       operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
                                                     id_ricQ_lookup].rnd_vec_ids;
-    if(ric0.size() != ric1.size()){
-      std::cout << "rnd combinations are not the same in build_corrC" 
-                << std::endl;
-      exit(0);
-    }
-    #pragma omp for schedule(dynamic)
-    for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
-    for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
-      quarklines.build_Q2V_one_t(perambulators, meson_operator, t1_i, t2_i,
-                                quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
-
-      for(int dir = 0; dir < 2; dir++){
-    
-        if((t1_i == t2_i) && (dir == 1))
-          continue;
-    
-        int t1_min, t2_min, t1_max, t2_max;
-        if(dir == 0){
-          t1_min = dilT*t1_i;
-          t1_max = dilT*(t1_i+1);
-          t2_min = dilT*t2_i;
-          t2_max = dilT*(t2_i+1);
-        }
-        else{
-          t1_min = dilT*t2_i;
-          t1_max = dilT*(t2_i+1);
-          t2_min = dilT*t1_i;
-          t2_max = dilT*(t1_i+1);
-        }
-    
-        for(int t1 = t1_min; t1 < t1_max; t1++){
-        for(int t2 = t2_min; t2 < t2_max; t2++){
-
-          // quarkline indices
-          int id_Q2L_1, id_Q2L_2;
-      
-          if(t1_i == t2_i){   
-            if(t1_min != 0)  
-              id_Q2L_1 = t1%t1_min;    
-            else{        
-              id_Q2L_1 = t1;    
-            }    
-            if(t2_min != 0)     
-              id_Q2L_2 = t2%t2_min;     
-            else{   
-              id_Q2L_2 = t2;   
-            }    
-          }      
-          else{    
-            if(t1_min != 0) 
-               id_Q2L_1 = (dir)*dilT + t1%t1_min; 
-             else   
-               id_Q2L_1 = ((dir)*dilT + t1);     
-             if(t2_min != 0)    
-               id_Q2L_2 = (dir+1)%dilT*dilT + t2%t2_min;  
-             else        
-               id_Q2L_2 = (dir+1)%dilT*dilT + t2;               
-          }                                                  
-          id_Q2_L = 0; // TODO: might be needed later
-          // building correlator 
+          if(ric0.size() != ric1.size()){
+            std::cout << "rnd combinations are not the same in build_corrC" 
+                      << std::endl;
+            exit(0);
+          }
           corrC[c_look.id][t1][t2].resize(ric0.size());
           for(auto& corr : corrC[c_look.id][t1][t2])
             corr = cmplx(0.0,0.0);
@@ -334,10 +324,10 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
                       block(gamma_index*dilE, block*dilE, dilE, dilE)).trace();
             }
           }
-        }}// t1, t2 end here
-      }// dir (directions) end here
-    }}// block times end here
-  }
+        }
+      }}// t1, t2 end here
+    }// dir (directions) end here
+  }}// block times end here
 }// omp paralle ends here
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
