@@ -152,14 +152,15 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
   // ---------------------------------------------------------------------------
   struct CorrInfo{
     size_t id;
-    std::string outpath, outfile;
+    std::string outpath, outfile, hdf5_dataset_name;
     std::vector<size_t> lookup;
     std::vector<int> gamma;
     // just a small constructor to ensure easy filling of its vector form
     CorrInfo(const size_t id, const std::string& outpath, 
-             const std::string& outfile, const std::vector<size_t>& lookup,
-             const std::vector<int>& gamma) :
-                   id(id), outpath(outpath), outfile(outfile), lookup(lookup), 
+             const std::string& outfile, const std::string& hdf5_dataset_name,
+             const std::vector<size_t>& lookup, const std::vector<int>& gamma) :
+                   id(id), outpath(outpath), outfile(outfile), 
+                   hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), 
                    gamma(gamma) {};
   };
   // ---------------------------------------------------------------------------

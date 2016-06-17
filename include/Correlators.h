@@ -18,7 +18,30 @@
 #include "Quarklines.h"
 #include "typedefs.h"
 
+#include "H5Cpp.h"
+
 namespace LapH {
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// This is just a workaround for complex numbers to get it running for hdf5
+typedef struct { 
+  double re; 
+  double im; 
+} complex_t; 
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// This is the datatype to write 4pt functions and that alike directly
+struct compcomp_t { 
+  double rere;   
+  double reim;
+  double imre;
+  double imim;   
+  compcomp_t(const double rere, const double reim, 
+             const double imre, const double imim) : 
+                              rere(rere), reim(reim), imre(imre), imim(imim) {};
+}; 
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 class Correlators {
 

@@ -2,6 +2,32 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+// ugly way to check if group exists and if not to create it -
+// Alternative: use c API (don't want to)
+inline void open_or_create_hdf5_group(const std::string& GROUP_NAME,
+                                      const H5::H5File& file, H5::Group& group){
+  try{
+    group = file.openGroup(GROUP_NAME.c_str());
+  }
+  catch(H5::Exception& e){
+    group = file.createGroup(GROUP_NAME.c_str());
+  }
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// ugly stays ugly :(
+inline void open_or_create_hdf5_file(const H5std_string FILE_NAME, 
+                                     H5::H5File&file){
+
+  try{
+    file = H5::H5File(FILE_NAME, H5F_ACC_EXCL);
+  }
+  catch(H5::Exception& e){
+    file = H5::H5File(FILE_NAME, H5F_ACC_RDWR);
+  }
+}
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 static void write_correlators(const std::vector<cmplx>& corr, 
                               const CorrInfo& corr_info){
   // check if directory exists
@@ -14,24 +40,59 @@ static void write_correlators(const std::vector<cmplx>& corr,
       else
         std::cout << "\tFailure" << std::endl;
   }
-  // writing the data
-  std::ofstream file((corr_info.outpath+corr_info.outfile).c_str(), 
-                     std::ios::out | std::ofstream::binary | std::ios::trunc);
-  if(file.is_open()){
-    file.write(reinterpret_cast<const char*>(&corr[0]), 
-               corr.size()*sizeof(cmplx));
+  // writing the data ----------------------------------------------------------
+  try
+  {
+    // exceptins will be catched at the end and not printed
+    H5::Exception::dontPrint(); 
+    // hdf5 data
+    H5::H5File file;
+    H5::Group group;
+    H5::DataSet dset;
+    // create new memory data type for writing for COMPLEX numbers -------------
+    H5::CompType cmplx_w(sizeof(std::complex<double>));
+    auto type = H5::PredType::NATIVE_DOUBLE;
+    cmplx_w.insertMember("re", HOFFSET(LapH::complex_t, re), type);
+    cmplx_w.insertMember("im", HOFFSET(LapH::complex_t, im), type);
+    // open file or create the file if it does not exist -----------------------
+    const H5std_string FILE_NAME((corr_info.outpath+corr_info.outfile).c_str());
+    open_or_create_hdf5_file(FILE_NAME, file);
+    // create the dataset to write data ----------------------------------------
+    H5std_string DATASET_NAME((corr_info.hdf5_dataset_name).c_str());
+    hsize_t dim(corr.size());
+    H5::DataSpace dspace(1, &dim);
+    dset = file.createDataSet(DATASET_NAME, cmplx_w, dspace);
+    dset.write(&corr[0], cmplx_w);
+    dset.close();
     file.close();
+
+  } // end of try block - catching all the bad things --------------------------
+  // catch failure caused by the H5File operations
+  catch(H5::FileIException error){
+     error.printError();
   }
-  else
-    std::cout << "can't open " << (corr_info.outpath+corr_info.outfile).c_str() 
-              << std::endl;
+  // catch failure caused by the DataSet operations
+  catch(H5::DataSetIException error){
+     error.printError();
+  }
+  // catch failure caused by the DataSpace operations
+  catch(H5::DataSpaceIException error){
+     error.printError();
+  }
+  // catch failure caused by the DataSpace operations
+  catch(H5::DataTypeIException error){
+     error.printError();
+  }
+  // catch failure caused by the Group operations
+  catch(H5::GroupIException error){
+     error.printError();
+  }
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // TODO: Bad style: code duplication - see write_correlators
-static void write_4pt_correlators(
-                               const std::vector<std::array<double, 4> >& corr, 
-                               const CorrInfo& corr_info){
+static void write_4pt_correlators(const std::vector<LapH::compcomp_t>& corr, 
+                                  const CorrInfo& corr_info){
   // check if directory exists
   if(access( corr_info.outpath.c_str(), 0 ) != 0) {
       std::cout << "\tdirectory " << corr_info.outpath.c_str() 
@@ -42,17 +103,55 @@ static void write_4pt_correlators(
       else
         std::cout << "\tFailure" << std::endl;
   }
-  // writing the data
-  std::ofstream file((corr_info.outpath+corr_info.outfile).c_str(), 
-                     std::ios::out | std::ofstream::binary | std::ios::trunc);
-  if(file.is_open()){
-    file.write(reinterpret_cast<const char*>(&corr[0]), 
-               4*corr.size()*sizeof(double));
+  // writing the data ----------------------------------------------------------
+  try
+  {
+    // exceptins will be catched at the end and not printed
+    H5::Exception::dontPrint(); 
+    // hdf5 data
+    H5::H5File file;
+    H5::Group group;
+    H5::DataSet dset;
+    // create new memory data type for writing for COMPLEX numbers -------------
+    H5::CompType cmplxcmplx_w(4*sizeof(double));
+    auto type = H5::PredType::NATIVE_DOUBLE;
+    cmplxcmplx_w.insertMember("rere", HOFFSET(LapH::compcomp_t, rere), type);
+    cmplxcmplx_w.insertMember("reim", HOFFSET(LapH::compcomp_t, reim), type);
+    cmplxcmplx_w.insertMember("imre", HOFFSET(LapH::compcomp_t, imre), type);
+    cmplxcmplx_w.insertMember("imim", HOFFSET(LapH::compcomp_t, imim), type);
+    // open file or create the file if it does not exist -----------------------
+    const H5std_string FILE_NAME((corr_info.outpath+corr_info.outfile).c_str());
+    open_or_create_hdf5_file(FILE_NAME, file);
+    // create the dataset to write data ----------------------------------------
+    H5std_string DATASET_NAME((corr_info.hdf5_dataset_name).c_str());
+    hsize_t dim(corr.size());
+    H5::DataSpace dspace(1, &dim);
+    dset = file.createDataSet(DATASET_NAME, cmplxcmplx_w, dspace);
+    dset.write(&corr[0], cmplxcmplx_w);
+    dset.close();
     file.close();
+
+  } // end of try block - catching all the bad things --------------------------
+  // catch failure caused by the H5File operations
+  catch(H5::FileIException error){
+     error.printError();
   }
-  else
-    std::cout << "can't open " << (corr_info.outpath+corr_info.outfile).c_str() 
-              << std::endl;
+  // catch failure caused by the DataSet operations
+  catch(H5::DataSetIException error){
+     error.printError();
+  }
+  // catch failure caused by the DataSpace operations
+  catch(H5::DataSpaceIException error){
+     error.printError();
+  }
+  // catch failure caused by the DataSpace operations
+  catch(H5::DataTypeIException error){
+     error.printError();
+  }
+  // catch failure caused by the Group operations
+  catch(H5::GroupIException error){
+     error.printError();
+  }
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -183,7 +282,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
                                    const QuarklineLookup& quark_lookup) {
 
   for(const auto& c_look : corr_lookup.C40D){
-    std::vector<std::array<double, 4> > correlator(Lt, {{.0, .0, .0, .0}});
+    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
     const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
     const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id0].
@@ -201,25 +300,28 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
       if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
 
-        correlator[t][0] += 
+        correlator[t].rere += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][1] += 
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][2] += 
+        correlator[t].reim += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
-        correlator[t][3] += 
+        correlator[t].imre += 
+                   corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
+                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+        correlator[t].imim += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
     // normalisation
-    for(auto& corr1 : correlator)
-      for(auto& corr2 : corr1)
-        corr2 /= norm/Lt;
+    for(auto& corr1 : correlator){
+      corr1.rere /= norm/Lt;
+      corr1.reim /= norm/Lt;
+      corr1.imre /= norm/Lt;
+      corr1.imim /= norm/Lt;
+    }
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
@@ -231,7 +333,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
                                    const QuarklineLookup& quark_lookup) {
 
   for(const auto& c_look : corr_lookup.C40V){
-    std::vector<std::array<double, 4> > correlator(Lt, {{.0, .0, .0, .0}});
+    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
     const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
     const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id0].
@@ -249,25 +351,28 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
       if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
 
-        correlator[t][0] += 
+        correlator[t].rere += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
                    corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][1] += 
-                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][2] += 
+        correlator[t].reim += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
                    corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
-        correlator[t][3] += 
+        correlator[t].imre += 
+                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
+                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+        correlator[t].imim += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
                    corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
     // normalisation
-    for(auto& corr1 : correlator)
-      for(auto& corr2 : corr1)
-        corr2 /= norm/Lt;
+    for(auto& corr1 : correlator){
+      corr1.rere /= norm/Lt;
+      corr1.reim /= norm/Lt;
+      corr1.imre /= norm/Lt;
+      corr1.imim /= norm/Lt;
+    }
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
@@ -408,7 +513,7 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
                                    const QuarklineLookup& quark_lookup) {
 
   for(const auto& c_look : corr_lookup.C4cD){
-    std::vector<std::array<double, 4> > correlator(Lt, {{.0, .0, .0, .0}});
+    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
     const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id0].
@@ -427,25 +532,28 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
       if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
 
-        correlator[t][0] += 
+        correlator[t].rere += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][1] += 
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][2] += 
+        correlator[t].reim += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
-        correlator[t][3] += 
+        correlator[t].imre += 
+                   corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
+                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+        correlator[t].imim += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
     // normalisation
-    for(auto& corr1 : correlator)
-      for(auto& corr2 : corr1)
-        corr2 /= norm/Lt;
+    for(auto& corr1 : correlator){
+      corr1.rere /= norm/Lt;
+      corr1.reim /= norm/Lt;
+      corr1.imre /= norm/Lt;
+      corr1.imim /= norm/Lt;
+    }
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
@@ -457,7 +565,7 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
                                    const QuarklineLookup& quark_lookup) {
 
   for(const auto& c_look : corr_lookup.C4cV){
-    std::vector<std::array<double, 4> > correlator(Lt, {{.0, .0, .0, .0}});
+    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
     const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id0].
@@ -476,25 +584,28 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
       if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
 
-        correlator[t][0] += 
+        correlator[t].rere += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
                    corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][1] += 
-                   corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t][2] += 
+        correlator[t].reim += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
                    corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
-        correlator[t][3] += 
+        correlator[t].imre += 
+                   corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
+                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+        correlator[t].imim += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
                    corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
     // normalisation
-    for(auto& corr1 : correlator)
-      for(auto& corr2 : corr1)
-        corr2 /= norm/Lt;
+    for(auto& corr1 : correlator){
+      corr1.rere /= norm/Lt;
+      corr1.reim /= norm/Lt;
+      corr1.imre /= norm/Lt;
+      corr1.imim /= norm/Lt;
+    }
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
@@ -1293,14 +1404,15 @@ void LapH::Correlators::contract (Quarklines& quarklines,
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(meson_operator, perambulators, corr_lookup.corr0, 
               quark_lookup, operator_lookup);
+  // in C3c, also corr0 is build, since this is much faster
+  build_C3c(meson_operator, perambulators, operator_lookup, corr_lookup.C3c, 
+                                                                 quark_lookup);
   build_C20(corr_lookup.C20);
   build_C40D(operator_lookup, corr_lookup, quark_lookup);
   build_C40V(operator_lookup, corr_lookup, quark_lookup);
   // 3. Build all other correlation functions.
   build_C1(quarklines, corr_lookup.C1, quark_lookup, 
                                                  operator_lookup.ricQ2_lookup);
-  build_C3c(meson_operator, perambulators, operator_lookup, corr_lookup.C3c, 
-                                                                 quark_lookup);
   build_C4cC(quarklines, meson_operator, operator_lookup, corr_lookup.C4cC, 
                                                                  quark_lookup);
   build_C4cB(meson_operator, perambulators, operator_lookup, corr_lookup.C4cB, 

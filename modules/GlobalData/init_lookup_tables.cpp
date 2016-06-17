@@ -342,11 +342,13 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
                const std::string& outpath, const std::string& overwrite,
                const std::vector<std::string>& quark_types, 
                const std::vector<std::vector<QuantumNumbers> >& quantum_numbers,
-               std::vector<std::pair<std::string, std::string> >& corr_names){
+               std::vector<std::pair<std::string, std::string> >& corr_names,
+               std::vector<std::string>& hdf5_dataset_name){
   
   for(const auto& qn_row : quantum_numbers){
-    std::string pathname = outpath + "/cnfg" + std::to_string(cnfg)  + "/" 
-                               + corr_type + "/";
+    std::string hdf5_filename =  corr_type + "_cnfg" + 
+                                 std::to_string(cnfg) + ".h5";
+    std::string pathname = outpath + "/";
     std::string filename =  corr_type + "_";
     for(const auto& qt : quark_types) // adding quark content
       filename += qt;
@@ -355,8 +357,8 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
       std::stringstream result;
       std::copy(qn.momentum.begin(), qn.momentum.end(), 
                 std::ostream_iterator<int>(result, ""));
-      if(id == 0)
-        pathname += ("first_p_" + result.str() + "/");
+      //if(id == 0)
+      //  pathname += ("first_p_" + result.str() + "/");
       id++;
       filename += ("_p" + result.str());
       result.str("");
@@ -368,18 +370,20 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
                 std::ostream_iterator<int>(result, ""));
       filename += (".g" + result.str());
     }
-    filename += ".dat";
-    // check if the file already exists and terminate program if it should not
-    // be overwriten
-    if(overwrite == "no"){
-      struct stat buffer;
-      if((stat ((pathname+filename).c_str(), &buffer) == 0)){
-        std::cout << "Program terminated because outfile already exists!" 
-                  << std::endl;  
-        exit(0);
-      }
-    }
-    corr_names.emplace_back(std::make_pair(pathname, filename));
+    // TODO: Remark - This is not needed for hdf5 at this point but might 
+    //                become important later on
+    //// check if the file already exists and terminate program if it should not
+    //// be overwriten
+    //if(overwrite == "no"){
+    //  struct stat buffer;
+    //  if((stat ((pathname+filename).c_str(), &buffer) == 0)){
+    //    std::cout << "Program terminated because outfile already exists!" 
+    //              << std::endl;  
+    //    exit(0);
+    //  }
+    //}
+    corr_names.emplace_back(std::make_pair(pathname, hdf5_filename));
+    hdf5_dataset_name.emplace_back(filename);
   }
 }
 // -----------------------------------------------------------------------------
@@ -686,6 +690,7 @@ static void build_Q1_lookup(const size_t id_quark_used,
 static void build_C2c_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q2_indices, 
       CorrelatorLookup& corr_lookup){
@@ -695,7 +700,8 @@ static void build_C2c_lookup(
     auto it_C2c = std::find_if(corr_lookup.C2c.begin(), corr_lookup.C2c.end(),
                          [&](CorrInfo corr)
                          {
-                           return (corr.outfile==correlator_names[row].second); 
+                           return (corr.hdf5_dataset_name == 
+                                   hdf5_dataset_name[row]); 
                          });
     if(it_C2c == corr_lookup.C2c.end()){
       auto it = std::find_if(corr_lookup.corrC.begin(), corr_lookup.corrC.end(),
@@ -706,15 +712,15 @@ static void build_C2c_lookup(
       if(it != corr_lookup.corrC.end()){
         corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
                       correlator_names[row].first, correlator_names[row].second,
-                      std::vector<size_t>({(*it).id}),
+                      hdf5_dataset_name[row], std::vector<size_t>({(*it).id}),
                       std::vector<int>({})));
       }
       else {
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                            "", "", indices, quantum_numbers[row][1].gamma));
+                           "", "", "", indices, quantum_numbers[row][1].gamma));
         corr_lookup.C2c.emplace_back(CorrInfo(corr_lookup.C2c.size(), 
                            correlator_names[row].first,
-                           correlator_names[row].second, 
+                           correlator_names[row].second, hdf5_dataset_name[row],
                            std::vector<size_t>({corr_lookup.corrC.back().id}),
                            std::vector<int>({})));
       }
@@ -726,6 +732,7 @@ static void build_C2c_lookup(
 static void build_C4cD_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q2_indices, 
       CorrelatorLookup& corr_lookup){
@@ -737,7 +744,8 @@ static void build_C4cD_lookup(
                                 corr_lookup.C4cD.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second); 
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
 
     if(it_C4cD == corr_lookup.C4cD.end()){
@@ -750,7 +758,7 @@ static void build_C4cD_lookup(
                               });
       if(it1 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                           "", "", indices1, quantum_numbers[row][1].gamma));
+                          "", "", "", indices1, quantum_numbers[row][1].gamma));
         id1 = corr_lookup.corrC.back().id;
       }
       else 
@@ -764,7 +772,7 @@ static void build_C4cD_lookup(
                               });
       if(it2 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                           "", "", indices2, quantum_numbers[row][3].gamma));
+                          "", "", "", indices2, quantum_numbers[row][3].gamma));
         id2 = corr_lookup.corrC.back().id;
       }
       else 
@@ -772,7 +780,8 @@ static void build_C4cD_lookup(
 
       corr_lookup.C4cD.emplace_back(CorrInfo(corr_lookup.C4cD.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      std::vector<size_t>({id1, id2}), std::vector<int>({})));
+                      hdf5_dataset_name[row], std::vector<size_t>({id1, id2}), 
+                      std::vector<int>({})));
     }
   }  
 }
@@ -781,6 +790,7 @@ static void build_C4cD_lookup(
 static void build_C4cV_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q2_indices, 
       CorrelatorLookup& corr_lookup){
@@ -792,7 +802,8 @@ static void build_C4cV_lookup(
                                 corr_lookup.C4cV.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second); 
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
 
     if(it_C4cV == corr_lookup.C4cV.end()){
@@ -805,7 +816,7 @@ static void build_C4cV_lookup(
                               });
       if(it1 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                           "", "", indices1, quantum_numbers[row][1].gamma));
+                         "", "", "", indices1, quantum_numbers[row][1].gamma));
         id1 = corr_lookup.corrC.back().id;
       }
       else 
@@ -819,7 +830,7 @@ static void build_C4cV_lookup(
                               });
       if(it2 == corr_lookup.corrC.end()){
         corr_lookup.corrC.emplace_back(CorrInfo(corr_lookup.corrC.size(), 
-                           "", "", indices2, quantum_numbers[row][3].gamma));
+                         "", "", "", indices2, quantum_numbers[row][3].gamma));
         id2 = corr_lookup.corrC.back().id;
       }
       else 
@@ -827,7 +838,8 @@ static void build_C4cV_lookup(
 
       corr_lookup.C4cV.emplace_back(CorrInfo(corr_lookup.C4cV.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      std::vector<size_t>({id1, id2}), std::vector<int>({})));
+                      hdf5_dataset_name[row], std::vector<size_t>({id1, id2}), 
+                      std::vector<int>({})));
     }
   }  
 }
@@ -836,6 +848,7 @@ static void build_C4cV_lookup(
 static void build_C4cC_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q2_indices, 
       CorrelatorLookup& corr_lookup){
@@ -847,7 +860,8 @@ static void build_C4cC_lookup(
                                 corr_lookup.C4cC.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second); 
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
 
     if(it_C4cC == corr_lookup.C4cC.end()){
@@ -855,7 +869,7 @@ static void build_C4cC_lookup(
                                   quantum_numbers[row][3].gamma[0]}};
       corr_lookup.C4cC.emplace_back(CorrInfo(corr_lookup.C4cC.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      indices, gammas));
+                      hdf5_dataset_name[row], indices, gammas));
     }
   }  
 }
@@ -864,6 +878,7 @@ static void build_C4cC_lookup(
 static void build_C4cB_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q2_indices, 
       CorrelatorLookup& corr_lookup){
@@ -875,7 +890,8 @@ static void build_C4cB_lookup(
                                 corr_lookup.C4cB.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second); 
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
 
     if(it_C4cB == corr_lookup.C4cB.end()){
@@ -883,7 +899,7 @@ static void build_C4cB_lookup(
                                   quantum_numbers[row][3].gamma[0]}};
       corr_lookup.C4cB.emplace_back(CorrInfo(corr_lookup.C4cB.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      indices, gammas));
+                      hdf5_dataset_name[row], indices, gammas));
     }
   } 
 }
@@ -892,6 +908,7 @@ static void build_C4cB_lookup(
 static void build_C3c_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& rvdvr_indices,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       const std::vector<std::vector<size_t> >& Q2_indices, 
@@ -904,13 +921,14 @@ static void build_C3c_lookup(
                                corr_lookup.C3c.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second); 
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it_C3c == corr_lookup.C3c.end()){
       std::vector<int> gammas = {{quantum_numbers[row][2].gamma[0]}};
       corr_lookup.C3c.emplace_back(CorrInfo(corr_lookup.C3c.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      indices, gammas));
+                      hdf5_dataset_name[row], indices, gammas));
     }
   } 
 }
@@ -926,6 +944,7 @@ static void build_C3c_lookup(
 // -----------------------------------------------------------------------------
 static void build_C20_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -935,7 +954,8 @@ static void build_C20_lookup(
     auto it_C20 = std::find_if(corr_lookup.C20.begin(), corr_lookup.C20.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it_C20 == corr_lookup.C20.end()){
       auto it = std::find_if(corr_lookup.corr0.begin(), corr_lookup.corr0.end(),
@@ -946,15 +966,15 @@ static void build_C20_lookup(
       if(it != corr_lookup.corr0.end()){
         corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
                       correlator_names[row].first, correlator_names[row].second,
-                      std::vector<size_t>({(*it).id}), 
+                      hdf5_dataset_name[row], std::vector<size_t>({(*it).id}), 
                       std::vector<int>({})));
       }
       else {
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                     "", "", indices, std::vector<int>({})));
+                                   "", "", "", indices, std::vector<int>({})));
         corr_lookup.C20.emplace_back(CorrInfo(corr_lookup.C20.size(), 
                            correlator_names[row].first,
-                           correlator_names[row].second, 
+                           correlator_names[row].second, hdf5_dataset_name[row],  
                            std::vector<size_t>({corr_lookup.corr0.back().id}),
                            std::vector<int>({})));
       }
@@ -966,6 +986,7 @@ static void build_C20_lookup(
 // -----------------------------------------------------------------------------
 static void build_C30_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -974,12 +995,13 @@ static void build_C30_lookup(
     auto it = std::find_if(corr_lookup.C30.begin(), corr_lookup.C30.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it == corr_lookup.C30.end()){
       corr_lookup.C30.emplace_back(CorrInfo(corr_lookup.C30.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      Q1, std::vector<int>({})));
+                      hdf5_dataset_name[row], Q1, std::vector<int>({})));
     }
     row++;
   }  
@@ -988,6 +1010,7 @@ static void build_C30_lookup(
 // -----------------------------------------------------------------------------
 static void build_C40D_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -999,7 +1022,8 @@ static void build_C40D_lookup(
                                 corr_lookup.C40D.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it_C40D == corr_lookup.C40D.end()){
       size_t id1, id2;
@@ -1011,7 +1035,7 @@ static void build_C40D_lookup(
                               });
       if((it1 == corr_lookup.corr0.end())){
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                     "", "", indices1, std::vector<int>({})));
+                                  "", "", "", indices1, std::vector<int>({})));
         id1 = corr_lookup.corr0.back().id;
       }
       else
@@ -1024,7 +1048,7 @@ static void build_C40D_lookup(
                               });
       if((it2 == corr_lookup.corr0.end())){
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                     "", "", indices2, std::vector<int>({})));
+                                  "", "", "", indices2, std::vector<int>({})));
         id2 = corr_lookup.corr0.back().id;
       }
       else
@@ -1032,7 +1056,8 @@ static void build_C40D_lookup(
 
       corr_lookup.C40D.emplace_back(CorrInfo(corr_lookup.C40D.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      std::vector<size_t>({id1, id2}), std::vector<int>({})));
+                      hdf5_dataset_name[row], std::vector<size_t>({id1, id2}), 
+                      std::vector<int>({})));
     }
     row++;
   }  
@@ -1041,6 +1066,7 @@ static void build_C40D_lookup(
 // -----------------------------------------------------------------------------
 static void build_C40V_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -1052,7 +1078,8 @@ static void build_C40V_lookup(
                                 corr_lookup.C40V.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it_C40V == corr_lookup.C40V.end()){
       size_t id1, id2;
@@ -1064,7 +1091,7 @@ static void build_C40V_lookup(
                               });
       if((it1 == corr_lookup.corr0.end())){
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                     "", "", indices1, std::vector<int>({})));
+                                 "", "", "", indices1, std::vector<int>({})));
         id1 = corr_lookup.corr0.back().id;
       }
       else
@@ -1077,7 +1104,7 @@ static void build_C40V_lookup(
                               });
       if((it2 == corr_lookup.corr0.end())){
         corr_lookup.corr0.emplace_back(CorrInfo(corr_lookup.corr0.size(), 
-                                     "", "", indices2, std::vector<int>({})));
+                                  "", "", "", indices2, std::vector<int>({})));
         id2 = corr_lookup.corr0.back().id;
       }
       else
@@ -1085,7 +1112,8 @@ static void build_C40V_lookup(
 
       corr_lookup.C40V.emplace_back(CorrInfo(corr_lookup.C40V.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      std::vector<size_t>({id1, id2}), std::vector<int>({})));
+                      hdf5_dataset_name[row], std::vector<size_t>({id1, id2}), 
+                      std::vector<int>({})));
     }
     row++;
   }  
@@ -1094,6 +1122,7 @@ static void build_C40V_lookup(
 // -----------------------------------------------------------------------------
 static void build_C40C_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -1102,12 +1131,13 @@ static void build_C40C_lookup(
     auto it = std::find_if(corr_lookup.C40C.begin(), corr_lookup.C40C.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it == corr_lookup.C40C.end()){
       corr_lookup.C40C.emplace_back(CorrInfo(corr_lookup.C40C.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      Q1, std::vector<int>({})));
+                      hdf5_dataset_name[row], Q1, std::vector<int>({})));
     }
     row++;
   }  
@@ -1116,6 +1146,7 @@ static void build_C40C_lookup(
 // -----------------------------------------------------------------------------
 static void build_C40B_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -1124,12 +1155,13 @@ static void build_C40B_lookup(
     auto it = std::find_if(corr_lookup.C40B.begin(), corr_lookup.C40B.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it == corr_lookup.C40B.end()){
       corr_lookup.C40B.emplace_back(CorrInfo(corr_lookup.C40B.size(), 
                       correlator_names[row].first, correlator_names[row].second, 
-                      Q1, std::vector<int>({})));
+                      hdf5_dataset_name[row], Q1, std::vector<int>({})));
     }
     row++;
   }  
@@ -1139,6 +1171,7 @@ static void build_C40B_lookup(
 static void build_C1_lookup(
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
+      const std::vector<std::string>& hdf5_dataset_name,
       const std::vector<std::vector<size_t> >& Q1_indices, 
       CorrelatorLookup& corr_lookup){
 
@@ -1148,12 +1181,14 @@ static void build_C1_lookup(
     auto it_C1 = std::find_if(corr_lookup.C1.begin(), corr_lookup.C1.end(),
                           [&](CorrInfo corr)
                           {
-                            return (corr.outfile==correlator_names[row].second);
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
                           });
     if(it_C1 == corr_lookup.C1.end()){
       corr_lookup.C1.emplace_back(CorrInfo(corr_lookup.C1.size(), 
                       correlator_names[row].first, correlator_names[row].second,
-                      indices, quantum_numbers[row][0].gamma));
+                      hdf5_dataset_name[row], indices, 
+                      quantum_numbers[row][0].gamma));
     }
     row++;
   }  
@@ -1183,8 +1218,10 @@ void GlobalData::init_lookup_tables() {
     for(const auto& id : correlator.quark_numbers)
       quark_types.emplace_back(quarks[id].type);
     std::vector<std::pair<std::string, std::string> > correlator_names;
+    std::vector<std::string> hdf5_dataset_name;
     build_correlator_names(correlator.type, start_config, path_output, 
-                     overwrite, quark_types, quantum_numbers, correlator_names);
+                     overwrite, quark_types, quantum_numbers, correlator_names,
+                     hdf5_dataset_name);
 
     // 2. build the lookuptable for VdaggerV and return an array of indices
     //    corresponding to the 'quantum_numbers' computed in step 1. In 
@@ -1208,8 +1245,8 @@ void GlobalData::init_lookup_tables() {
                       0, true, quantum_numbers, quarks, rvdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
-      build_C1_lookup(quantum_numbers, correlator_names, Q1_indices, 
-                                                        correlator_lookuptable);
+      build_C1_lookup(quantum_numbers, correlator_names, hdf5_dataset_name,
+                      Q1_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C2+") {
       // 3. build the lookuptable for rVdaggerVr and return an array of indices
@@ -1232,8 +1269,8 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
       // 5. build the lookuptable for the correlation functions
-      build_C2c_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                       Q2_indices, correlator_lookuptable);
+      build_C2c_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                       rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C3+") {
       std::vector<size_t> rnd_vec_id;
@@ -1272,8 +1309,9 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2L, Q2_indices);
 
-      build_C3c_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                       Q1_indices, Q2_indices, correlator_lookuptable);
+      build_C3c_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                       rvdvr_indices, Q1_indices, Q2_indices, 
+                       correlator_lookuptable);
     }
     else if (correlator.type == "C4+D") {
       std::vector<size_t> rnd_vec_id;
@@ -1299,8 +1337,8 @@ void GlobalData::init_lookup_tables() {
                       2, quantum_numbers, quarks, vdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
-      build_C4cD_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                        Q2_indices, correlator_lookuptable);
+      build_C4cD_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                        rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C4+V") {
       std::vector<size_t> rnd_vec_id;
@@ -1326,8 +1364,8 @@ void GlobalData::init_lookup_tables() {
                       2, quantum_numbers, quarks, vdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
-      build_C4cV_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                        Q2_indices, correlator_lookuptable);
+      build_C4cV_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                        rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C4+C") {
       std::vector<size_t> rnd_vec_id;
@@ -1353,8 +1391,8 @@ void GlobalData::init_lookup_tables() {
                       2, quantum_numbers, quarks, vdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
-      build_C4cC_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                        Q2_indices, correlator_lookuptable);
+      build_C4cC_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                        rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C4+B") {
       std::vector<size_t> rnd_vec_id;
@@ -1380,8 +1418,8 @@ void GlobalData::init_lookup_tables() {
                       2, quantum_numbers, quarks, vdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2L, Q2_indices);
-      build_C4cB_lookup(quantum_numbers, correlator_names, rvdvr_indices, 
-                        Q2_indices, correlator_lookuptable);
+      build_C4cB_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
+                        rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C20") {
       // 3. build the lookuptable for rVdaggerV and return an array of indices
@@ -1413,7 +1451,8 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
-      build_C20_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+      build_C20_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                       correlator_lookuptable);
     }
     else if (correlator.type == "C30") {
       std::vector<size_t> rnd_vec_id;
@@ -1446,7 +1485,8 @@ void GlobalData::init_lookup_tables() {
                       2, false, quantum_numbers, quarks, rvdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
-      build_C30_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+      build_C30_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                       correlator_lookuptable);
     }
     else if (correlator.type == "C40D" || correlator.type == "C40V") {
 
@@ -1488,9 +1528,11 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       if (correlator.type == "C40D")
-        build_C40D_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+        build_C40D_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                          correlator_lookuptable);
       else
-        build_C40V_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+        build_C40V_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                          correlator_lookuptable);
     }
     else if (correlator.type == "C40C" || correlator.type == "C40B") {
       std::vector<size_t> rnd_vec_id;
@@ -1531,9 +1573,11 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       if (correlator.type == "C40C")
-        build_C40C_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+        build_C40C_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                          correlator_lookuptable);
       else
-        build_C40B_lookup(correlator_names, Q1_indices, correlator_lookuptable);
+        build_C40B_lookup(correlator_names, hdf5_dataset_name, Q1_indices, 
+                          correlator_lookuptable);
     }
     else {
       std::cout << "Correlator type not known!" << std::endl;

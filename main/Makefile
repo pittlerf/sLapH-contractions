@@ -26,7 +26,7 @@ GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 
 RANDOM = RandomVector ranlxs
 
-GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines
+GENERAL = Correlators EigenVector OperatorsForMesons Perambulator Quarklines
 
 MODULES = $(GLOBALDATA) $(RANDOM) $(GENERAL)
 
@@ -43,14 +43,16 @@ LIMEPATH = /home/knippsch/ExternLibraries/lime
 # additional include directories
 INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
           /home/knippsch/ExternLibraries/boost_1_55_0 \
+          /home/knippsch/ExternLibraries/hdf5-1.8.17/include \
           $(LIMEPATH)/include/ ../include ../include/GlobalData
 
 # additional libraries
 
-LIBS = boost_program_options lime 
+LIBS = hdf5_cpp hdf5 sz z dl m boost_program_options lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
-          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/
+          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/ \
+          /home/knippsch/ExternLibraries/hdf5-1.8.17/lib
 
 # scheduling and optimization options
 CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
@@ -76,14 +78,14 @@ $(addsuffix .d,$(PGMS)): %.d: %.cpp Makefile
 # rule to compile source programs
 
 $(addsuffix .o,$(PGMS)): %.o: %.cpp Makefile
-	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) -static
+	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH))
 
 
 # rule to link object files
 
 $(MAIN): %: %.o $(addsuffix .o,$(MODULES)) Makefile
 	$(CLINKER) $< $(addsuffix .o,$(MODULES)) $(CFLAGS) $(LOGOPTION) \
-	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ -static
+	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ 
 
 # produce executables
 
