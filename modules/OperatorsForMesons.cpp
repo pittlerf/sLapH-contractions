@@ -301,55 +301,78 @@ void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
   #pragma omp for schedule(dynamic)
   for(size_t i = 0; i < operator_lookuptable.vdaggerv_lookup.size(); ++i){
     const auto op = (operator_lookuptable.vdaggerv_lookup[i]);
-      // For zero momentum and displacement VdaggerV is the unit matrix, thus
-      // the calculation is not performed
-      if(op.id != id_unity){
+    // For zero momentum and displacement VdaggerV is the unit matrix, thus
+    // the calculation is not performed
+    if(op.id != id_unity){
 
-        // creating full filename for vdaggerv and reading them in
-        int sign = 1;
-        if(op.momentum[0] == -1 && op.momentum[1] == 1 && op.momentum[2] ==1)
-          sign = -1;
-        std::string dummy = full_path + "p" + 
-                            std::to_string(-sign*op.momentum[0]) + "p" +
-                            std::to_string(-sign*op.momentum[1]) + "p" +
-                            std::to_string(-sign*op.momentum[2]) + ".conf";
-        char infile[200];
-        sprintf(infile, "%s%04d", dummy.c_str(), config);
-
-        // writing the data
-        std::ifstream file(infile, std::ifstream::binary);
-      
-        if(file.is_open()){
-          std::cout << "\treading VdaggerV from file:" << infile << std::endl;
-          for(size_t t = 0; t < Lt; ++t){
-            // buffer for reading
-            vec eigen_vec(vdaggerv[op.id][t].size());
-            file.read(reinterpret_cast<char*>(&eigen_vec[0]), 
-                      vdaggerv[op.id][t].size()*sizeof(cmplx));
-            for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
-              for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
-                 (vdaggerv[op.id][t])(nrow, ncol) = 
-                              eigen_vec.at(nrow*vdaggerv[op.id][t].cols() + ncol);
-              }
+      // creating full filename for vdaggerv and reading them in
+      // both possibilities must be checked
+      std::string dummy1 = full_path + "p" + 
+                          std::to_string(-op.momentum[0]) + "p" +
+                          std::to_string(-op.momentum[1]) + "p" +
+                          std::to_string(-op.momentum[2]) + ".conf";
+      char infile1[200];
+      sprintf(infile1, "%s%04d", dummy1.c_str(), config);
+      std::ifstream file1(infile1, std::ifstream::binary);
+      // second possibility for a name
+      std::string dummy2 = full_path + "p" + 
+                          std::to_string(op.momentum[0]) + "p" +
+                          std::to_string(op.momentum[1]) + "p" +
+                          std::to_string(op.momentum[2]) + ".conf";
+      char infile2[200];
+      sprintf(infile2, "%s%04d", dummy2.c_str(), config);
+      std::ifstream file2(infile2, std::ifstream::binary);
+    
+      if(file1.is_open()){
+        std::cout << "\treading VdaggerV from file:" << infile1 << std::endl;
+        for(size_t t = 0; t < Lt; ++t){
+          // buffer for reading
+          vec eigen_vec(vdaggerv[op.id][t].size());
+          file1.read(reinterpret_cast<char*>(&eigen_vec[0]), 
+                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+          for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+            for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
+               (vdaggerv[op.id][t])(nrow, ncol) = 
+                            eigen_vec.at(nrow*vdaggerv[op.id][t].cols() + ncol);
             }
-            // TODO: check if this is really neccessary
-            if(!(op.momentum[0] == -1 && op.momentum[1] == 1 && op.momentum[2] ==1))
-              vdaggerv[op.id][t].adjointInPlace();
-            if(!file.good()){
-              std::cout << "Problems while reading from " << infile << std::endl;
-              exit(0);
-            }
-          } // loop over time
-          file.close();
-        }
-        else{
-          std::cout << "can't open " << infile << std::endl;
-          exit(0);
-        }
+          }
+          if(!file1.good()){
+            std::cout << "Problems while reading from " << infile1 << std::endl;
+            exit(0);
+          }
+        } // loop over time
+        file1.close();
       }
-      else // zero momentum
-        for(size_t t = 0; t < Lt; ++t)
-          vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
+      else if(file2.is_open()){
+        std::cout << "\treading VdaggerV from file:" << infile2 << std::endl;
+        for(size_t t = 0; t < Lt; ++t){
+          // buffer for reading
+          vec eigen_vec(vdaggerv[op.id][t].size());
+          file2.read(reinterpret_cast<char*>(&eigen_vec[0]), 
+                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+          for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+            for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
+               (vdaggerv[op.id][t])(nrow, ncol) = 
+                            eigen_vec.at(nrow*vdaggerv[op.id][t].cols() + ncol);
+            }
+          }
+          vdaggerv[op.id][t].adjointInPlace();
+          if(!file2.good()){
+            std::cout << "Problems while reading from " << infile2 << std::endl;
+            exit(0);
+          }
+        } // loop over time
+        file2.close();
+      }
+      else{
+        std::cout << "can't open " << infile1 << " NOR " << infile2 
+                  << std::endl;
+        exit(0);
+      }
+    }
+    else // zero momentum
+      for(size_t t = 0; t < Lt; ++t)
+        vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
     }
 }// pragma omp parallel ends here
 
