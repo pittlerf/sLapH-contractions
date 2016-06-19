@@ -828,9 +828,9 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
        else                                                                  
          id_Q2L_1 = ((dir)*dilT + t1);                                                          
        if(t2_min != 0)                                                               
-         id_Q2L_2 = (dir+1)%dilT*dilT + t2%t2_min;                           
+         id_Q2L_2 = (dir+1)%2*dilT + t2%t2_min;                           
        else                                                                     
-         id_Q2L_2 = (dir+1)%dilT*dilT + t2;               
+         id_Q2L_2 = (dir+1)%2*dilT + t2;               
     }                                                  
 
     // build M1 ----------------------------------------------------------------
@@ -1048,9 +1048,9 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
        else                                                                  
          id_Q2L_1 = ((bla)*dilT + t1);                                                          
        if(t2_min != 0)                                                               
-         id_Q2L_2 = (bla+1)%dilT*dilT + t2%t2_min;                           
+         id_Q2L_2 = (bla+1)%2*dilT + t2%t2_min;                           
        else                                                                     
-         id_Q2L_2 = (bla+1)%dilT*dilT + t2;               
+         id_Q2L_2 = (bla+1)%2*dilT + t2;               
     }                                                  
 
     // build M1 ----------------------------------------------------------------
