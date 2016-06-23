@@ -56,6 +56,8 @@ private:
   std::string path_output;
   std::string overwrite;
   std::string path_config;
+  std::string handling_vdaggerv;
+  std::string path_vdaggerv;
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
@@ -172,6 +174,12 @@ public:
   }
   inline std::string get_name_perambulators() {
     return name_perambulators;
+  }
+  inline std::string get_handling_vdaggerv() {
+    return handling_vdaggerv;
+  }
+  inline std::string get_path_vdaggerv() {
+    return path_vdaggerv;
   }
   inline std::vector<quark> get_quarks() {
     return quarks;
