@@ -89,8 +89,11 @@ int main (int ac, char* av[]) {
         break;
       }
     }
-    if(continue_flag)
+    if(continue_flag){
+      global_data->change_correlator_paths(config_i, 
+                                      config_i+global_data->get_delta_config());
       continue;
+    }
 
     // read perambulators
     perambulators.read_perambulators_from_separate_files(
