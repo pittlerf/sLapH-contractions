@@ -302,16 +302,16 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 
         correlator[t].rere += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+                   corr0[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].reim += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
+                   corr0[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         correlator[t].imre += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+                   corr0[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].imim += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
+                   corr0[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
@@ -353,16 +353,16 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
         correlator[t].rere += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].reim += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
+                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         correlator[t].imre += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].imim += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
+                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
@@ -534,16 +534,16 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 
         correlator[t].rere += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+                   corrC[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].reim += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).real() *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
+                   corrC[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         correlator[t].imre += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).real();
+                   corrC[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].imim += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]).imag();
+                   corrC[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
@@ -586,16 +586,16 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
 
         correlator[t].rere += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+                   corrC[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].reim += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
+                   corrC[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         correlator[t].imre += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).real();
+                   corrC[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
         correlator[t].imim += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]).imag();
+                   corrC[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
         norm++;
       }
     }}
@@ -832,7 +832,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
        else                                                                     
          id_Q2L_2 = (dir+1)%2*dilT + t2;               
     }                                                  
-
+std::cout << t1 << " " << t2 << " " << t << " " << id_Q2L_1 << " " << id_Q2L_2 << std::endl;
     // build M1 ----------------------------------------------------------------
     for(const auto& look : M1_look){
       const auto& ric0 = operator_lookup.ricQ2_lookup[
@@ -1067,7 +1067,6 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
         const size_t idr0 = &rnd0 - &ric0[0];
         const size_t idr1 = &rnd1 - &ric1[0];
         for(size_t col = 0; col < 4; col++){
-  
           const cmplx value = quarklines.return_gamma_val(5, col); // TODO: gamma hardcoded
           const size_t gamma_index = quarklines.return_gamma_row(
                                                           5, col); // TODO: gamma hardcoded
