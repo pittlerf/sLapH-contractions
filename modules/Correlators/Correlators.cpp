@@ -161,7 +161,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 
         correlator[t] += 
                    corr0[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]) *
-                   corr0[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]);
+                   corr0[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]);
         norm++;
       }
     }}
@@ -199,7 +199,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
         correlator[t] += 
                    corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]) *
-                   corr0[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]);
+                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]);
         norm++;
       }
     }}
@@ -325,7 +325,7 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 
         correlator[t] += 
                    corrC[c_look.lookup[0]][t1][t2].at(&rnd0 - &ric0[0]) *
-                   corrC[c_look.lookup[0]][t1][t2].at(&rnd1 - &ric1[0]);
+                   corrC[c_look.lookup[1]][t1][t2].at(&rnd1 - &ric1[0]);
         norm++;
       }
     }}
@@ -364,7 +364,7 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
 
         correlator[t] += 
                    corrC[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]) *
-                   corrC[c_look.lookup[0]][t2][t2].at(&rnd1 - &ric1[0]);
+                   corrC[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]);
         norm++;
       }
     }}
