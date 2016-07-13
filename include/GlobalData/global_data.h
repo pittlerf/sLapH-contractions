@@ -200,8 +200,8 @@ public:
     return correlator_lookuptable;
   }
   void change_correlator_paths(const size_t old_cnfg, const size_t new_cnfg){
-    std::string o = std::to_string(old_cnfg);
-    std::string n = std::to_string(new_cnfg);
+    std::string o = "cnfg" + std::to_string(old_cnfg);
+    std::string n = "cnfg" + std::to_string(new_cnfg);
     for(auto& C : correlator_lookuptable.C1)
       boost::replace_all(C.outpath, o, n);
     for(auto& C : correlator_lookuptable.C1T)
