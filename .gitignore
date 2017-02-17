@@ -9,4 +9,6 @@
 *.npy
 # executables
 LapHs
+# spam
+*.swp
 
