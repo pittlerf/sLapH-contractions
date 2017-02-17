@@ -20,9 +20,17 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
               << filename << "\n" << std::endl;
     exit(0);
   }
-  int blabla = fread(&(perambulator_read[0]), sizeof(cmplx),
+  int check_read = fread(&(perambulator_read[0]), sizeof(cmplx),
                                                       peram[entity].size(), fp);
   fclose(fp);
+  // check if all data were read in
+  if(check_read != peram[entity].size()){
+    std::cout << "\n\nFailed to read perambulator\n" << std::endl;
+    exit(0);
+  }
+  
+  // setting peram to zero
+  peram[entity].setZero();
 
   // re-sorting and copy into matrix structure 
   // TODO: At this point it is very easy to included different dilution schemes.

@@ -15,6 +15,10 @@ delta_config = 4
 number_of_eigen_vec = 220
 path_eigenvectors   = /hiskp2/eigensystems/B25.32t
 name_eigenvectors   = eigenvectors
+handling_vdaggerv   = liuming
+#path_vdaggerv       = /data/LapHs/contraction_Markus/test_data/operators
+path_vdaggerv       = /data2/test5/liuming_operators
+
 # output path
 output_path = /hiskp2/werner/check
 overwrite_old = yes

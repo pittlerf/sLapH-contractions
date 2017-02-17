@@ -56,6 +56,8 @@ private:
   std::string path_output;
   std::string overwrite;
   std::string path_config;
+  std::string handling_vdaggerv;
+  std::string path_vdaggerv;
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
@@ -173,6 +175,12 @@ public:
   inline std::string get_name_perambulators() {
     return name_perambulators;
   }
+  inline std::string get_handling_vdaggerv() {
+    return handling_vdaggerv;
+  }
+  inline std::string get_path_vdaggerv() {
+    return path_vdaggerv;
+  }
   inline std::vector<quark> get_quarks() {
     return quarks;
   }
@@ -192,8 +200,8 @@ public:
     return correlator_lookuptable;
   }
   void change_correlator_paths(const size_t old_cnfg, const size_t new_cnfg){
-    std::string o = std::to_string(old_cnfg);
-    std::string n = std::to_string(new_cnfg);
+    std::string o = "cnfg" + std::to_string(old_cnfg);
+    std::string n = "cnfg" + std::to_string(new_cnfg);
     for(auto& C : correlator_lookuptable.C1)
       boost::replace_all(C.outpath, o, n);
     for(auto& C : correlator_lookuptable.C1T)
