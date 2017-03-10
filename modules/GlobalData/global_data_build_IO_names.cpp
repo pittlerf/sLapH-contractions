@@ -15,7 +15,7 @@ static std::vector<std::string> create_rnd_vector_file_names (
 
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // building paths and filenames for rnd vecs
-      sprintf(temp1, "cnfg%d/rnd_vec_%01d/", config, rnd_vec_i);
+      sprintf(temp1, "cnfg%04d/rnd_vec_%02d/", config, rnd_vec_i);
       sprintf(temp2, "randomvector.rndvecnb%02d.%s.nbev%04d.%04d", rnd_vec_i, 
                                        q.type.c_str(), nb_of_eigen_vec, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
@@ -40,7 +40,7 @@ static std::vector<std::string> create_perambulator_file_names (
 
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // data path for qbig contractions
-      sprintf(temp1, "cnfg%d/rnd_vec_%01d/", config, rnd_vec_i);
+      sprintf(temp1, "cnfg%04d/rnd_vec_%02d/", config, rnd_vec_i);
 
       sprintf(temp2,
           "perambulator.rndvecnb%02d.%s.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
