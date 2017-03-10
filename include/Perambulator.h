@@ -14,8 +14,8 @@
 
 namespace LapH {
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/*! Memory allocation and reading routines for perambulators
+ */
 class Perambulator {
 
 private:

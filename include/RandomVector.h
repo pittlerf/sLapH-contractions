@@ -13,8 +13,8 @@ namespace LapH {
 
 typedef std::complex<double> cmplx;
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/*! Memory allocation and IO routines for perambulators
+ */
 class RandomVector {
 
 private:
