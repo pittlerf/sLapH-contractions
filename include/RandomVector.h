@@ -1,3 +1,11 @@
+/*! @file Randomvector.h
+ *  Class decleration of LapH::Randomvector
+ *
+ *  @author Bastian Knippschild
+ *  @author Markus Werner
+ */
+
+
 #ifndef RANDOMVECTOR_H_
 #define RANDOMVECTOR_H_
 
@@ -13,8 +21,7 @@ namespace LapH {
 
 typedef std::complex<double> cmplx;
 
-/*! Memory allocation and IO routines for perambulators
- */
+/*! Memory allocation and IO routines for random vectors */
 class RandomVector {
 
 private:
@@ -24,58 +31,74 @@ private:
   const size_t length;
 
 public:
-  // standard ctor and dtor are enough - all else is handled by std::vector
-  RandomVector() : vec(0, cmplx(0.0,0.0)), nb_entities(0), length(0) {
-    std::cout << "The standard ctor of random vectors is useless!" << std::endl;
-    exit(0);
-  };
-  // NOTE: It is assumed that all random vector have the same length!
+
+  /*! Constructor which delegates memory allocation to std::vector
+   *
+   *  @param nb_entities  Number of random vectors
+   *  @param length       Number of complex entries in each random vector
+   *
+   *  @warning It is assumed that all random vector have the same length!
+   */
   RandomVector(const size_t nb_entities, const size_t length) : 
                                      vec(nb_entities*length, cmplx(0.0,0.0)), 
                                      nb_entities(nb_entities), length(length) {
     std::cout << "\tRandom vectors initialised" << std::endl;
   };
+
+  /*! Default deconstructor */
   ~RandomVector() {};
 
-  // () operator to directly access the elements of vec
+  /*! Overloading () operator to directly access the elements of vec */
   inline cmplx operator()(const size_t entity, const size_t entry) const {
     return vec.at(entity*length+entry);
   }
 
-  // computes the random vectors for the sources
-  // input: entity -> the random vector you want to set
-  //        seed   -> seed for the random vector
-  //        length -> length of the random vector
+  /*! Computes the random vectors for the sources
+   *
+   *  @param entity The random vector you want to set
+   *  @param seed   Seed for the random vector
+   *  @param length Length of the random vector
+   */
   void set(const size_t entity, const int seed);
-  // computes the random vectors for the sources and stores them
-  // input: entity   -> the random vector you want to set
-  //        seed     -> seed for the random vector
-  //        length   -> length of the random vector
-  //        filename -> the random vector is direlty stored in this file
+
+  /*! Computes the random vectors for the sources and stores them to file
+   *
+   *  @param entity   The random vector you want to set
+   *  @param seed     Seed for the random vector
+   *  @param length   Length of the random vector
+   *  @param filename The random vector is directly stored in this file
+   */
   void set(const size_t entity, const int seed, const std::string& filename);
-  // writing all random vector to some file
-  // input: filename -> the filename
+
+  /*! Write all random vectors to some file */
   void write_random_vector(const std::string& filename) const;
-  // writing one random vector (entity) to some file
-  // input: entity   -> the random vector which will be stored on disk
-  //        filename -> the filename
+
+  /*! Write one random vector to some file
+   *
+   *  @param entity   The random vector to be stored on disk
+   *  @param filename The filename
+   */
   void write_random_vector(const size_t entity, 
                            const std::string& filename) const;
-  // reading all random vectors from some file
-  // input: filename -> the filename
+
+  /*! Read all random vectors from some file */
   void read_random_vector(const std::string& filename);
-  // reading one random vector from some file
-  // input: entity   -> the place where this random vector will be stored
-  //        filename -> the filename
+
+  /*! Read one random vector from some file
+   *
+   *  @param entity   The random vector to be read from disk
+   *  @param filename The filename
+   */
   void read_random_vector(const size_t entity, const std::string& filename);
-  // rading random vectors where each vector is stored in a different file
-  // input: filename_list -> vector which contains all file names
+
+  /*! Read random vectors where each vector is stored in a different file
+   *
+   *  @param filename_list Vector which contains all file names
+   */
   void read_random_vectors_from_separate_files(
                                  const std::vector<std::string>& filename_list);
 
 };
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
 } // end of namespace
 

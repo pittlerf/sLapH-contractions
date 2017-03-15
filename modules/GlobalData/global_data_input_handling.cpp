@@ -225,8 +225,14 @@ void config_input_data_handling (const int start_config,
 } // end of unnamed namespace
 
 /******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
+/*!
+ *  @param[in,out] quark_configs            List of quarks
+ *  @param[in,out] operator_list_configs    List of operators
+ *  @param[in,out] correlator_list_configs  List of correlators
+ *
+ *  The lists are filled in this function. These lists are needed to build the
+ *  lookup tables in init_lookup_tables.
+ */
 void GlobalData::input_handling(
     const std::vector<std::string>& quark_configs,
     const std::vector<std::string>& operator_list_configs,

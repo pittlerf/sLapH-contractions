@@ -67,6 +67,10 @@ static std::string create_eigenvector_file_name (
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*!
+ * @param config Configuration number for which paths and file names shall be
+ *               constructed
+ */
 void GlobalData::build_IO_names(const size_t config){
 
   rnd_vec_construct.filename_list = create_rnd_vector_file_names(

@@ -1,8 +1,12 @@
-/*! @file contract
+/*! @file contract.cpp
  *  Main function of Contraction code for Laphs Perambulators
  *
- *  @author Bastian Knippschild, Christopher Helmes, Christian Jost, 
- *           Liuming Liu, Markus Werner
+ *  @author Bastian Knippschild
+ *  @author Christopher Helmes
+ *  @author Christian Jost
+ *  @author Liuming Liu
+ *  @author Markus Werner
+ *
  *  @version 0.1
  *  @copyright Copies are prohibited so far
  */ 
