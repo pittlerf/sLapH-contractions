@@ -5,7 +5,6 @@
  *  @author Markus Werner
  */
 
-
 #ifndef RANDOMVECTOR_H_
 #define RANDOMVECTOR_H_
 

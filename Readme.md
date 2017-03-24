@@ -10,3 +10,5 @@ nonzero momentum is wanted eigenvectors or vdaggerv.
 In the class GlobalData the information are processed to vectors of 
 self-defined structs for Quarklines, Correlators and Operators. Internally all
 physical loops are replaced with auto-loops over these structs.
+
+Operators are constructed in LapH::OperatorsForMesons

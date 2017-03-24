@@ -30,9 +30,6 @@ inline std::ostream& operator<< (std::ostream& stream, const quark& quark) {
          << quark.path <<  "\n";
 }
 
-
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 inline std::array<int, 3> create_3darray_from_string(std::string in) { 
 
@@ -83,18 +80,36 @@ inline void create_mom_array_from_string(std::string in,
   }
 
 }
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
+
+
 } // end of unnamed namespace
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
+/******************************************************************************/
+/******************************************************************************/
 
 namespace global_data_utils {
 
-// *****************************************************************************
-/// @brief Makes a quark object from a string
+/*! 
+ *  @param quark_string Quark as specified in the infile
+ *                      quark = @em flavor : @em nb_rnd_vec : T @em diltT_type : 
+ *                              @em dilT : E @em dilE_type : @em dilE : 
+ *                              D @em dilD_type : @em dilD : @em path
+ *  where the following abbreviations where used
+ *  - @em flavor     {u,s,c,b} : Quark flavor
+ *  - @em nb_rnd_vec       : Number of random vectors
+ *  - @em dilT_type  {I,B} : Dilution type in time 
+ *  - @em dilT             : Number of dilution blocks in time
+ *  - @em dilE_type  {I,B} : Dilution type in eigenvetor space 
+ *  - @em dilE             : Number of dilution blocks in eigenvector space 
+ *  - @em dilD_type  {I,B} : Dilution type in dirac space 
+ *  - @em dilD             : Number of dilution blocks in Dirac space
+ *  - @em path             : Path to perambulator
+ *  The validity of the values is checked in quark_check()
+ *
+ *  @returns A quark object constructed with the data obtained from 
+ *           @em quark_string
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ */       
 quark make_quark (const std::string& quark_string) {
   // Tokenize the string on the ":" delimiter.
   std::vector<std::string> tokens;
@@ -115,8 +130,6 @@ quark make_quark (const std::string& quark_string) {
       boost::lexical_cast<int>(tokens[7]), 0, tokens[8]);
 }
 
-// *****************************************************************************
-// simplifies and cleans read_parameters function
 void quark_check (quark quarks) {
 
   try{
@@ -166,16 +179,33 @@ void quark_check (quark quarks) {
 
 }
 
-// *****************************************************************************
-/// @brief Makes an operator list object from a string
+/*****************************************************************************/
+/*!
+ *  @param operator_string  Operator as specified in the infile:
+ *                          A ';'-sperated list with individual operators. The
+ *                          individual operators are composed of '.'-seperated 
+ *                          parts. E.g. 
+ *                          @code
+ *                            operator_list = g4.d0.p(0,0,1);g5.d0.p0,1
+ *                          @endcode
+ *                          Momenta (<em>p</em>) can be specified as 3-momentum or
+ *                          by (one or more) scalar number(s). In the latter 
+ *                          case all 3-momenta with corresponding absolute 
+ *                          value are constructed
+ *
+ *  @returns An Operator_list object constructed with the data obtained from
+ *           @em operator_string
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ */
 Operator_list make_operator_list(const std::string& operator_string) {
 
   Operator_list op_list; // return object
 
-  // Two steps are necessary: 1. Getting all operators in one list which are 
-  //                             separated by ";"
-  //                          2. Separating the individual operators into its
-  //                             smaller bits, which are separated by "."
+  // Two steps are necessary: 
+  // 1. Getting all operators in one list which are separated by ";"
+  // 2. Separating the individual operators into its smaller bits, which are 
+  //    separated by "."
   // Tokenize the string on the ";" delimiter -> Individual operators
   std::vector<std::string> operator_tokens;
   boost::split(operator_tokens, operator_string, boost::is_any_of(":"));

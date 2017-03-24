@@ -1,5 +1,8 @@
 #include "Correlators.h"
 
+/*! @TODO Why is the hdf5 stuff not in an unnamed namespace or a seperate 
+ *        file? 
+ */
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // ugly way to check if group exists and if not to create it -
@@ -1378,15 +1381,12 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/******************************************************************************/ 
+/*!
+ *  If a diagram is not specified in the infile, corr_lookup contains an empty
+ *  vector for this diagram and the build function immediately returns
+ */
 void LapH::Correlators::contract (Quarklines& quarklines, 
                      const OperatorsForMesons& meson_operator,
                      const Perambulator& perambulators,

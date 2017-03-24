@@ -1,3 +1,11 @@
+/*! @file Correlators.h
+ *  Class declaration of LapH::Correlators
+ *
+ *  @author Bastian Knippschild
+ *  @author Markus Werner
+ *
+ */
+
 #ifndef CORRELATORS_H_
 #define CORRELATORS_H_
 
@@ -21,15 +29,17 @@
 #include "H5Cpp.h"
 
 namespace LapH {
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/ 
 // This is just a workaround for complex numbers to get it running for hdf5
+/*! @TODO: Why is this in a named namespace in the include file and not in an
+ *         unnamed namespace in the source file?
+ */
 typedef struct { 
   double re; 
   double im; 
 } complex_t; 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 // This is the datatype to write 4pt functions and that alike directly
 struct compcomp_t { 
   double rere;   
@@ -40,9 +50,22 @@ struct compcomp_t {
              const double imre, const double imim) : 
                               rere(rere), reim(reim), imre(imre), imim(imim) {};
 }; 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/******************************************************************************/
 
+/*! Calculates correlation functions according to the stochastic Laplacian 
+ *  Heaviside method
+ *
+ *  Given lookup tables for Correlators, Quarklines and Operators and the data 
+ *  specified within this is the central computation.
+ *
+ *  The diagrams corr0, corrC (and thus C20, C2+) as well as C3c and C4cB are 
+ *  memory optimized calling quarklines within an outer loop over time and thus
+ *  only need 1/Lt the memory.
+ *
+ *  @TODO check whether other correlators are still functional
+ *  @TODO make other correlators call one_t quarklines as well
+ *
+ */
 class Correlators {
 
 private:
@@ -109,11 +132,14 @@ private:
                   const QuarklineLookup& quark_lookup);
 
 public:
+  // Constructor
   Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
                const size_t nev, const CorrelatorLookup& corr_lookup) :
                Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {};
-  ~Correlators () {}; // dtor
+  // Standard Destructor
+  ~Correlators () {};
 
+  /*! Call all functions building a correlator */
   void contract(Quarklines& quarklines, 
                 const OperatorsForMesons& meson_operator,
                 const Perambulator& perambulators,

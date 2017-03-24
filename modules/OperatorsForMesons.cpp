@@ -1,22 +1,30 @@
+/*! @file OperatorsForMesons.cpp
+ *  Class definition of LapH::OperatorsForMesons
+ *
+ *  @author Bastian Knippschild
+ *  @author Markus Werner
+ */
+
 #include "OperatorsForMesons.h"
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 namespace {
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// creates a two-dimensional vector containing the momenta for the operators
-// input: Lx, Ly, Lz      -> lattice extend in x, y, and z direction
-//        vdaggerv_lookup -> contains the momenta
-// output: momentum -> two dimensional array where the momenta are stored
+
+/*! Creates a two-dimensional vector containing the momenta for the operators 
+ *
+ *  @param[in] Lx, Ly, Lz      Lattice extent in spatial directions
+ *  @param[in] vdaggerv_lookup Contains the momenta
+ *  @param[in,out] momentum    Two dimensional array where the momenta are 
+ *                             stored
+ */
 void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz, 
                     const std::vector<VdaggerVQuantumNumbers>& vdaggerv_lookup, 
                     array_cd_d2& momentum){
   static const std::complex<double> I(0.0, 1.0);
 
-  // To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
-  // quantum number id in op_VdaggerV will be used. The rest can be obtained
-  // by adjoining
+  /*! To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
+   *  quantum number id in op_VdaggerV will be used. The rest can be obtained
+   *  by adjoining
+   */
   for(const auto& op : vdaggerv_lookup){
     // op_VdaggerV contains the index of one (redundancy) op_Corr which
     // allows to deduce the quantum numbers (momentum)
@@ -36,8 +44,8 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
     }}}//loops over spatial vectors end here
   }//loop over redundant quantum numbers ends here
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 void write_vdaggerv(const std::string& pathname, const std::string& filename, 
                     const Eigen::MatrixXcd& Vt){
 
@@ -66,11 +74,22 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
     std::cout << "can't open " << (pathname+filename).c_str() 
               << std::endl;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 } // internal namespace ends here
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*!
+ * @param Lt, Lx, Ly, Lz  Temporal and spatial lattice extent
+ * @param nb_ev           Number of eigenvectors
+ * @param dilE            Number of diluted blocks in eigenvector space
+ * @param operator_lookuptable ?
+ * @param handling_vdaggerv
+ * @param path_vdaggerv
+ *
+ * The initialization of the container attributes of LapH::OperatorsForMesons
+ * is done in the member initializer list of the constructor. The allocation
+ * of heap memory is delegated to boost::multi_array::resize
+ */
 LapH::OperatorsForMesons::OperatorsForMesons
                         (const size_t Lt, const size_t Lx, const size_t Ly, 
                          const size_t Lz, const size_t nb_ev, const size_t dilE,
@@ -501,9 +520,22 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
   std::cout << std::setprecision(1) << "\t\tSUCCESS - " << std::fixed 
     << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
 }
+
 // ------------------------ INTERFACE ------------------------------------------
 // -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/*! 
+ *  @param filename The name to write to / read from the V^\dagger V operators
+ *  @param rnd_vec  The random vector
+ *  @param config   The configuration number to be read. Unused if 
+ *                  handling_vdaggerv is "build" or "write"
+ *
+ *  Behavior of this function depends on handling_vdaggerv flag.
+ *  - "read" | "liuming" The operators are read in the corresponding format.
+ *  - "build"            The operators are constructed from the eigenvectors
+ *  - "write"            The operators are constructed and additionaly written 
+ *                       out.
+ */
 void LapH::OperatorsForMesons::create_operators(const std::string& filename, 
                                             const LapH::RandomVector& rnd_vec,
                                             const int config) {
@@ -522,16 +554,27 @@ void LapH::OperatorsForMesons::create_operators(const std::string& filename,
   build_rvdaggerv(rnd_vec);
   build_rvdaggervr(rnd_vec);
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::free_memory_rvdaggerv(){
+
+/******************************************************************************/
+/*!
+ *  E.g. after building Quarkline Q1, vdaggerv is no longer needed and can be 
+ *  deleted to free up space
+ *
+ *  Resizes rvdaggerv to 0
+ */void LapH::OperatorsForMesons::free_memory_rvdaggerv(){
   for(auto& rvdv_level1 : rvdaggerv)
     for(auto& rvdv_level2 : rvdv_level1)
       for(auto& rvdv_level3 : rvdv_level2)
         rvdv_level3.resize(0, 0);
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*!
+ *  E.g. after building Quarkline Q2, vdaggerv is no longer needed and can be 
+ *  deleted to free up space
+ *
+ *  Resizes vdaggerv to 0
+ */
 void LapH::OperatorsForMesons::free_memory_vdaggerv(){
   std::for_each(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
                 [](Eigen::MatrixXcd m){m.resize(0, 0);});
