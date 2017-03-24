@@ -27,9 +27,10 @@ namespace LapH {
 /*! Calculates operators as they emerge in correlation functions using the 
  *  stochastic estimates from the stochastic Laplacian Heaviside method
  *
- *  Basically this calculates every operator of the form V^\dagger exp(ipx) V
- *  (P^(b)\rho V)^\dagger exp(ipx) V and 
- *  (P^(b)\rho V)^\dagger exp(ipx) (P^(b)\rho V)
+ *  Basically this calculates every operator of the form 
+ *  - VdaggerV    : @f$ V^\dagger exp(ipx) V @f$
+ *  - rVdaggerV   : @f$ (P^(b)\rho V)^\dagger exp(ipx) V @f$
+ *  - rVdaggerVr  : @f$ (P^(b)\rho V)^\dagger exp(ipx) (P^(b)\rho V) @f$
  *
  *  It is straightforward to generalize the operators for Displacement, but 
  *  not implemented
@@ -84,7 +85,7 @@ public:
   /****************************************************************************/
   /**************** INTERFACE FOR BUILDING ALL OPERATORS **********************/
 
-  /*! Builds or reads V^\dagger exp(ipx) V and performs dilution i.e. 
+  /*! Builds or reads @f$ V^\dagger exp(ipx) V @f$ and performs dilution i.e. 
    *  calculates rvdaggerv and rvdaggervr
    */
   void create_operators(const std::string& filename,

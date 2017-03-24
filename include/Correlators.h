@@ -53,17 +53,28 @@ struct compcomp_t {
 /******************************************************************************/
 
 /*! Calculates correlation functions according to the stochastic Laplacian 
- *  Heaviside method
+ *  Heaviside (sLapH) method.
  *
- *  Given lookup tables for Correlators, Quarklines and Operators and the data 
- *  specified within this is the central computation.
+ *  Within the sLapH framework every hadronic correlation function can be 
+ *  rewritten as trace of a product of perambulators and operators. In this 
+ *  class said traces are calculated.
+ *
+ *  The central function is performed in contract(). Here, all the single 
+ *  diagrams are calculated successively. To this end, lookup tables for 
+ *  Correlators, Quarklines and Operators are needed that specify which 
+ *  combinations of physical quantum numbers are to be evaluated. These lists 
+ *  are built from the infile in GlobalData::init_lookup_tables().
+ *  
+ *  Additionally the necessary data is passed in the form of 
+ *  instances of LapH::Quarklines, LapH::OperatorsForMesons and 
+ *  LapH::Perambulators 
  *
  *  The diagrams corr0, corrC (and thus C20, C2+) as well as C3c and C4cB are 
  *  memory optimized calling quarklines within an outer loop over time and thus
  *  only need 1/Lt the memory.
  *
- *  @TODO check whether other correlators are still functional
- *  @TODO make other correlators call one_t quarklines as well
+ *  @todo check whether other correlators are still functional
+ *  @todo make other correlators call one_t quarklines as well
  *
  */
 class Correlators {

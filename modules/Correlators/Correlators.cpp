@@ -156,15 +156,10 @@ static void write_4pt_correlators(const std::vector<LapH::compcomp_t>& corr,
      error.printError();
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
+/******************************************************************************/
+/******************************************************************************/
 
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 void LapH::Correlators::build_C1(const Quarklines& quarklines,
                     const std::vector<CorrInfo>& corr_lookup,
                     const QuarklineLookup& quark_lookup,
@@ -1384,6 +1379,17 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
 
 /******************************************************************************/ 
 /*!
+ *  @param quarklines       Instance of Quarklines. Contains prebuilt 
+ *                          combinations of operators and perambulators
+ *  @param meson_operator   Instance of LapH::OperatorsForMesons. Contains 
+ *                          operators (@f$ V^\dagger V $f$) with momenta 
+ *                          and with/without dilution. 
+ *  @param perambulators    Instance of LapH::Perambulator class. Contains 
+ *                          Perambulator data
+ *  @param operator_lookup   
+ *  @param corr_lookup
+ *  @param quark_lookup
+ *
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
