@@ -384,6 +384,13 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*! 
+ *  @param
+ *  @param
+ *  @param
+ *  @param
+ *  @param
+ */
 void LapH::Correlators::build_corrC(const Perambulator& perambulators,
                                     const OperatorsForMesons& meson_operator,
                                     const OperatorLookup& operator_lookup,

@@ -1,6 +1,9 @@
 #include "global_data.h"
 #include "global_data_utils.h"
 
+/*! @todo rewrite the momenta with eigen or at least overload +, - and abs for 
+ *        them 
+ */
 struct QuantumNumbers{
   std::array<int, 3> momentum;
   std::array<int, 3> displacement;

@@ -37,10 +37,13 @@ struct PerambulatorConstruction {
 
 };
 
-/*! Quark type that contains all quark propagator informations */
+/*! Quark type that contains all quark propagator informations: 
+ *
+ *  Flavor, number of random vectors, dilution scheme, path and a unique id. 
+ */
 struct quark {
 
-  std::string type;
+  std::string type; /*!< Flavor */
   int number_of_rnd_vec;
 
   std::string dilution_T;
@@ -67,7 +70,11 @@ struct quark {
       id(id), path(path) {}
 };
 
-/*! Struct that contains all operator informations */
+/*! Struct that contains all information operator specifying the field operator 
+ *  in the infile:
+ *
+ *  Dirac structure, displacement and momentum vector as 3-vectors
+ */
 struct Operators {
 
 public: // TODO: should be changed to private at a later point
@@ -83,9 +90,17 @@ public:
 
 };
 
-/*! Struct that contains all correlator informations */
+/*! Struct that contains all information specifying the correlator in the 
+ *  infile:
+ *
+ *  Internal name of the diagram (@ref LapH::Correlators), and which quark from 
+ *  quarks and operator from oeprator_list are to be used
+ *
+ *  @todo Are GEVP and tot_mom used at the moment? They should support 
+ *        building off-diagonal elements as well or resticting to a certain 
+ *        CMS momentum 
+ */
 struct Correlators {
-
 
 /*! @{ */
 /*! @todo Change to private at a later point

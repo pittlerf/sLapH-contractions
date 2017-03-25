@@ -1,8 +1,11 @@
-/*
- * GlobalData.cpp
+/*! @file
  *
- *  Created on: Mar 28, 2013
- *      Author: knippsch
+ *  Class definition of GlobalData
+ *
+ *  @author Bastian Knippschild, 
+ *  @author Markus Werner
+ *  
+ *  @date Mar 28, 2013
  */
 
 #include "global_data.h"
@@ -183,7 +186,8 @@ void GlobalData::read_parameters (int ac, char* av[]) {
   }
   ifs.close();
 
-  // reading input file options
+  // checks, terminal output and munging of strings for quarks, operators and 
+  // correlators
   input_handling(quark_configs, operator_list_configs, 
                  correlator_list_configs);
 

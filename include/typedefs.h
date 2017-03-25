@@ -111,7 +111,9 @@ struct VdaggerVRandomLookup{
 };
 
 /******************************************************************************/
+/*! Struct that contains all information for a sLapH operator */
 struct OperatorLookup{
+
 
   std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup;
 

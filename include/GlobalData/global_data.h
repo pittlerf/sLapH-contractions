@@ -78,8 +78,10 @@ private:
   std::vector<quark> quarks;
   std::vector<Operator_list> operator_list;
   Correlator_list correlator_list;
-  /*! Creates quarks, operator_lists and correlator_lists from the strings 
-   *  created from the infile
+
+  /*! Check and print lattice, config and path data and fills quarks, 
+   *  operator_lists and correlator_lists with the strings created from the 
+   *  infile
    */
   void input_handling(const std::vector<std::string>& quark_configs,
                       const std::vector<std::string>& operator_list_configs,
