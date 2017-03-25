@@ -1,4 +1,4 @@
-################################################################################
+###############################################################################
 #
 # Makefile to compile and link C programs with MPI subroutines
 #
@@ -19,7 +19,7 @@ all: rmxeq mkdep mkxeq
 # main programs and modules to be compiled
 
 
-MAIN = contract 4pt_D_all VdaggerV
+MAIN = contract
 
 GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 	           global_data_input_handling_utils init_lookup_tables
@@ -38,12 +38,12 @@ VPATH = .:$(MDIR):$(MDIR)/GlobalData:$(MDIR)/Correlators
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
 
-LIMEPATH = /home/knippsch/ExternLibraries/lime
+LIMEPATH = /hiskp2/werner/libraries/lime
 
 # additional include directories
-INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
-          /home/knippsch/ExternLibraries/boost_1_55_0 \
-          /home/knippsch/ExternLibraries/hdf5-1.8.17/include \
+INCPATH = /hiskp2/werner/libraries/eigen-3.2.7 \
+	  /hiskp2/werner/libraries/boost_1_60_0 \
+	  /hiskp2/knippsch/hdf5-1.8.17/include \
           $(LIMEPATH)/include/ ../include ../include/GlobalData
 
 # additional libraries
@@ -51,8 +51,8 @@ INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
 LIBS = hdf5_cpp hdf5 sz z dl m boost_program_options lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
-          /home/knippsch/ExternLibraries/boost_1_55_0/stage/lib/ \
-          /home/knippsch/ExternLibraries/hdf5-1.8.17/lib
+	  /hiskp2/werner/libraries/boost_1_60_0/stage/lib/ \
+	  /hiskp2/knippsch/hdf5-1.8.17/lib
 
 # scheduling and optimization options
 CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
@@ -61,7 +61,7 @@ CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
 ############################## do not change ###################################
 
 SHELL=/bin/bash
-CC=g++
+CC=g++-4.7
 CLINKER=$(CC)
 
 PGMS= $(MAIN) $(MODULES)
