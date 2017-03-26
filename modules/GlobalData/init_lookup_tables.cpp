@@ -1,6 +1,24 @@
+/*! @file
+ *
+ *  Functions translating lists build from the infile into lookup_tables.
+ *
+ *  @author Bastian Knippschild
+ *  @author Markus Werner
+ *  
+ *  The lookup tables only contain unique quantum number combinations and 
+ *  from the lists and latter are replaced by indexlists referring to those 
+ *  lookup tables.
+ *
+ *  This automatically avoids recalculation of operators or even complete 
+ *  correlators 
+ *
+ *  @todo Why are most functions static and not simply in an unnamed namespace?
+ */
+
 #include "global_data.h"
 #include "global_data_utils.h"
 
+/******************************************************************************/
 /*! @todo rewrite the momenta with eigen or at least overload +, - and abs for 
  *        them 
  */
@@ -18,39 +36,57 @@ struct QuantumNumbers{
     std::cout << "\n" << std::endl;
   }
 };
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! @{
+ *  Linear algebra functions for 3-momenta
+ *  
+ *  @todo Replace that by operator overloading or Eigen
+ */
 static std::array<int, 3> change_sign_array(const std::array<int, 3>& in){
   return {{-in[0], -in[1], -in[2]}};
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 static int compute_norm_squ(const std::array<int, 3>& in){
   return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 static int add_momenta_squared(const std::array<int, 3>& in1, 
                                const std::array<int, 3>& in2){
   return (in1[0]+in2[0]) * (in1[0]+in2[0]) + 
          (in1[1]+in2[1]) * (in1[1]+in2[1]) + 
          (in1[2]+in2[2]) * (in1[2]+in2[2]);
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
 static std::array<int, 3> add_momenta(const std::array<int, 3>& in1, 
                                       const std::array<int, 3>& in2){
   return {{in1[0]+in2[0], in1[1]+in2[1], in1[2]+in2[2]}};
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/*! @} */
+
+/******************************************************************************/
+/*! Build an array with all the quantum numbers needed for a particular 
+ *  correlation function respecting physical conservation laws
+ *
+ *  @param[in]  correlator      A single correlator specified in the infile 
+ *                              and processed into the Correlators struct
+ *  @param[in]  operator_list   List of all operators specified in the infile
+ *                              and processed into Operators struct
+ *  @param[out] quantum_numbers A list of all physical quantum numbers as 
+ *                              specified in the QuantumNumbers struct that are
+ *                              possible for @em correlator
+ *
+ *  @em correlator contains multiple operator_numbers. From combinatorics a 
+ *  large number of combinations arise. In general only a subset of them are 
+ *  physically allowed or necessary to calculate. 
+ *  In this function momentum conservation is enforced and multiple cutoffs
+ *  introduced.
+ */
 void build_quantum_numbers_from_correlator_list(const Correlators& correlator, 
                     const std::vector<Operator_list>& operator_list,
                     std::vector<std::vector<QuantumNumbers> >& quantum_numbers){
 
-  // Extracting all possible quantum number combinations for this correlation
-  // function. The separation of what is actually computed is done in the
-  // if statements below because it depends on the number of quarks.
+  // Extracting all possible quantum number combinations 
   std::vector<std::vector<QuantumNumbers> > qn_op;
   QuantumNumbers write;
   for(const auto& op_number : correlator.operator_numbers){
@@ -67,7 +103,11 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     qn_op.emplace_back(single_vec_qn);
   }
 
-  // TODO: think about a way to avoid these if conditions 
+  /*! Restriction to what shall actually be computed is done in if statements 
+   *  for each diagram because it depends on the number of quarks.
+   *
+   *  @todo Think about a way to avoid these if conditions. 
+   */
   if (correlator.type == "C1" || correlator.type == "C1T") {
     for(const auto& op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
@@ -325,6 +365,10 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     std::cout << "combination mom3: " << counter_mom3 << std::endl;
     std::cout << "combination mom4: " << counter_mom4 << std::endl;
   }
+  /*! @todo: For C40D, C40B, C40V, C40C, C4+V, C4+C still all combinations
+   *         are built. 
+   *         This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
+   */
   else if (correlator.type == "C40D" || correlator.type == "C40V" ||
            correlator.type == "C40B" || correlator.type == "C40C" ||
            correlator.type == "C4+V" ||
@@ -333,14 +377,33 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
     for(const auto& op3 : qn_op[3]){ // all combinations of operators
-      // TODO: This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
       std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
       quantum_numbers.emplace_back(single_vec_qn);
     }}}}
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! Create the names for output files and hdf5 datasets.
+ *
+ *  @param[in]  corr_type {C1,C2+,C20,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,
+ *                         C40C,C40B} :
+ *  @param[in]  cnfg :            Number of first gauge configuration
+ *  @param[in]  outpath           Output path from the infile.
+ *  @param[in]  overwrite {yes,no} : deprecated
+ *  @param[in]  quark_types       Flavor of the quarks
+ *  @param[in]  quantum_numbers   Physical quantum numbers 
+ *  @param[out] corr_names        Pair of output path and output filename
+ *  @param[out] hdf5_dataset_name Names for the datasets in one-to-one
+ *                                correspondence to @em quantum_numbers
+ *
+ *  The output path is constructed by appending a "/" to @em outpath.
+ *  The output filename is built from @em corr_type and @em cnfg.
+ *  The dataset name is built from @em corr_type, a letter for each 
+ *  @em quark_type, and the quantum numbers.
+ *
+ *  @todo Why don't we just build the complete path here already?
+ */
 static void build_correlator_names(const std::string& corr_type, int cnfg,  
                const std::string& outpath, const std::string& overwrite,
                const std::vector<std::string>& quark_types, 
@@ -389,8 +452,22 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
     hdf5_dataset_name.emplace_back(filename);
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! Translate list of QuantumNumbers into lookuptable for VdaggerV 
+ *
+ *  @param[in]  quantum_numbers List of all quantum numbers operators are needed
+ *                              for
+ *  @param[out] vdaggerv_lookup Unique list of all VdaggerV operators needed.
+ *                              Corresponds to @em quantum_numbers, but in 
+ *                              contrast does not contain Dirac structure.
+ *                              Part of GlobalData::operator_lookup
+ *  @param[out] vdv_indices     Indexlist referring to @em vdaggerv_lookup
+ *                              to replace @em quantum_numbers
+ *                              The first index is the id of VdaggerV, the 
+ *                              second tells us if VdaggerV must be daggered to 
+ *                              get the desired quantum numbers.
+ */
 void build_VdaggerV_lookup(
              const std::vector<std::vector<QuantumNumbers> >& quantum_numbers,
              std::vector<VdaggerVQuantumNumbers>& vdaggerv_lookup,
@@ -440,9 +517,30 @@ void build_VdaggerV_lookup(
     vdv_indices.emplace_back(vdv_indices_row);
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// function to obtain index combinations of random vectors for charged corr
+
+/******************************************************************************/
+/*! @brief  Obtain index combinations of random vectors for charged correlator 
+ *          i.e. correlator utilizing @f$ \gamma_5 @f$-trick
+ *
+ *  @param[in]  quarks      Quarks as read from the infile and processed into 
+ *                          quark struct
+ *  @param[in]  id_q1       Specifies which quark the first random index 
+ *                          belongs to
+ *  @param[in]  id_q2       Specifies which quark the second random index 
+ *                          belongs to
+ *  @param[in]  C1          Flag distinguishing whether the indexcombinations
+ *                          are for C1 or not. 
+ *  @param[out] rnd_vec_ids 
+ *
+ *  For every quark propagator a statistical 1 in the form 
+ *  @f$ ( P^{(b)} \rho) \cdot (P^{(b)} \rho)^\dagger @f$
+ *  is introduced. 
+ *  
+ *  As explained in GlobalData, when factorizing the correlators this ones 
+ *  are always split. To reconstruct the correct random index combinations, 
+ *  this function constructs all allowed combinations of random indices for
+ *  a quarkline with two random indices
+ */
 static size_t set_rnd_vec_charged(const std::vector<quark>& quarks, 
                           const size_t id_q1, const size_t id_q2, const bool C1,
                           std::vector<RandomIndexCombinationsQ2>& rnd_vec_ids) {
@@ -503,9 +601,27 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   else
     return (*it).id;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// function to obtain index combinations of random vectors for uncharged corrs
+
+/******************************************************************************/
+/*! @brief  Obtain index combinations of random vectors for an uncharged 
+ *          correlator i.e. correlator utilizing @f$ \gamma_5 @f$-trick
+ *
+ *  @param[in]  quarks      Quarks as read from the infile and processed into 
+ *                          quark struct
+ *  @param[in]  id_q1       Specifies which quark the first random index 
+ *                          belongs to
+ *  @param[out] rnd_vec_ids 
+ *
+ *  For every quark propagator a statistical 1 in the form 
+ *  @f$ ( P^{(b)} \rho) \cdot (P^{(b)} \rho)^\dagger @f$
+ *  is introduced. 
+ *  
+ *  As explained in GlobalData, when factorizing the correlators this ones 
+ *  are always split. To reconstruct the correct random index combinations, 
+ *  this function constructs all allowed combinations of random indices for
+ *  a quarkline with two random indices
+ */
+
 static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks, 
                           const size_t id_q1, 
                           std::vector<RandomIndexCombinationsQ1>& rnd_vec_ids) {
@@ -515,10 +631,10 @@ static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks,
     if(r_id.id_q1 == id_q1) 
       return r_id.id;
 
-  // set start and end points of rnd numbers
+  // Set start and end points of rnd numbers
   auto rndq1_start = 0;
   for(auto i = 0; i < id_q1; i++)
-    rndq1_start =+ quarks[i].number_of_rnd_vec;
+    rndq1_start += quarks[i].number_of_rnd_vec;
   auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
 
   if(quarks[id_q1].number_of_rnd_vec < 2){
@@ -1199,19 +1315,23 @@ static void build_C1_lookup(
 
 /******************************************************************************/
 /*!
- *  @
+ *  Build the lookuptables defined in typedefs.h from 
+ *  GlobalData::correlators_list, GlobalData::operator::list and 
+ *  GlobalData::quarks
+ *
  */
 void GlobalData::init_lookup_tables() {
 
   for (const auto& correlator : correlator_list){
 
-    // 1. build an array (quantum_numbers) with all the quantum numbers needed 
-    //    for this particular correlation function.
+    /*! 1. Build an array (quantum_numbers) with all the quantum numbers needed 
+     *      for this particular correlation function.
+     */
     std::vector<std::vector<QuantumNumbers> > quantum_numbers;
     build_quantum_numbers_from_correlator_list(correlator, operator_list, 
                                                quantum_numbers);
 
-    // Build the correlator names
+    // Build the correlator and dataset names for hdf5 output files
     std::vector<std::string> quark_types; 
     for(const auto& id : correlator.quark_numbers)
       quark_types.emplace_back(quarks[id].type);
@@ -1221,10 +1341,11 @@ void GlobalData::init_lookup_tables() {
                      overwrite, quark_types, quantum_numbers, correlator_names,
                      hdf5_dataset_name);
 
-    // 2. build the lookuptable for VdaggerV and return an array of indices
-    //    corresponding to the 'quantum_numbers' computed in step 1. In 
-    //    'vdv_indices' the first entry is the id of vdv, the second tells us
-    //    if vdv must be daggered to get the correct quantum numbers.
+    /*! 2. Build the lookuptable for VdaggerV and return an array of indices
+     *      corresponding to @em quantum_numbers computed in step 1. In 
+     *      @em vdv_indices the first entry is the id of vdv, the second tells 
+     *      us if vdv must be daggered to get the correct quantum numbers.
+     */
     std::vector<std::vector<std::pair<size_t, bool> > > vdv_indices;
     build_VdaggerV_lookup(quantum_numbers, operator_lookuptable.vdaggerv_lookup,
                                                                    vdv_indices);
@@ -1247,8 +1368,9 @@ void GlobalData::init_lookup_tables() {
                       Q1_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C2+") {
-      // 3. build the lookuptable for rVdaggerVr and return an array of indices
-      //    corresponding to the 'quantum_numbers' computed in step 1.
+      /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
+       *      corresponding to the 'quantum_numbers' computed in step 1.
+       */
       std::vector<size_t> rnd_vec_id;
       rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 
                                             correlator.quark_numbers[0], 
@@ -1258,18 +1380,23 @@ void GlobalData::init_lookup_tables() {
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
                               operator_lookuptable.rvdaggervr_lookuptable,
                               rvdvr_indices);
-      // 4. build the lookuptable for Q2 and return an array of indices
-      //    corresponding to the 'quantum_numbers' computed in step 1.
+      /*! 4. Build the lookuptable for Q2 and return an array of indices
+       *      corresponding to the 'quantum_numbers' computed in step 1.
+       */
       std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
                                   std::vector<size_t>(rvdvr_indices[0].size()));
       build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
                       0, quantum_numbers, quarks, vdv_indices, 
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q2V, Q2_indices);
-      // 5. build the lookuptable for the correlation functions
+      /*! 5. Build the lookuptable for the correlation functions */
       build_C2c_lookup(quantum_numbers, correlator_names, hdf5_dataset_name, 
                        rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
+    /*! 6. Repeat steps 1.-5. for all correlators in correlator_list. Where 
+     *      applicable rVdaggerVr must be replaced by rVdaggerV in step 3. and 
+     *      Q2 by Q1 in step 4.
+     */
     else if (correlator.type == "C3+") {
       std::vector<size_t> rnd_vec_id;
       rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
