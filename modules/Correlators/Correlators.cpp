@@ -384,13 +384,6 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-/*! 
- *  @param
- *  @param
- *  @param
- *  @param
- *  @param
- */
 void LapH::Correlators::build_corrC(const Perambulator& perambulators,
                                     const OperatorsForMesons& meson_operator,
                                     const OperatorLookup& operator_lookup,
@@ -648,7 +641,7 @@ void LapH::Correlators::build_C4cC(const Quarklines& quarklines,
                                                     id_ricQ_lookup].rnd_vec_ids;
     if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
        ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
+      std::cout << "rnd combinations are not the same in C4+C" 
                 << std::endl;
       }
 
@@ -1261,7 +1254,7 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                                                      id_ric_lookup].rnd_vec_ids;
     if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
        ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
+      std::cout << "rnd combinations are not the same in C40C" 
                 << std::endl;
       exit(0);
     }

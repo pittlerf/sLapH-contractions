@@ -530,7 +530,11 @@ void build_VdaggerV_lookup(
  *                          belongs to
  *  @param[in]  C1          Flag distinguishing whether the indexcombinations
  *                          are for C1 or not. 
- *  @param[out] rnd_vec_ids 
+ *  @param[out] rnd_vec_ids The random index combinations possible. If 
+ *                          operator_list.rnd_vec_ids already contained these
+ *                          combinations, just return the corresponding index
+ *  @return                 index to operator_list.rnd_vec_ids pointing to the
+ *                          random vector combinations built
  *
  *  For every quark propagator a statistical 1 in the form 
  *  @f$ ( P^{(b)} \rho) \cdot (P^{(b)} \rho)^\dagger @f$
@@ -539,7 +543,12 @@ void build_VdaggerV_lookup(
  *  As explained in GlobalData, when factorizing the correlators this ones 
  *  are always split. To reconstruct the correct random index combinations, 
  *  this function constructs all allowed combinations of random indices for
- *  a quarkline with two random indices
+ *  a quarkline with two random indices. To avoid bias, two different random
+ *  vectors must always have different seed and thus different indices.
+ *
+ *  The random indices are uniquely identifying quark and random vector. Thus
+ *  There are @f$ \sum_i q_i N_\text{rnd}(q_i) @f$ random indices.
+ *  
  */
 static size_t set_rnd_vec_charged(const std::vector<quark>& quarks, 
                           const size_t id_q1, const size_t id_q2, const bool C1,
@@ -557,21 +566,12 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   auto rndq2_end = rndq2_start + quarks[id_q2].number_of_rnd_vec;
 
   // check if there are enough random vectors
-  // TODO: if statements can be joined to make it shorter
-  if(id_q1 == id_q2){
-    if(quarks[id_q1].number_of_rnd_vec < 2){
+  if( (quarks[id_q1].number_of_rnd_vec < 1) || 
+      (quarks[id_q2].number_of_rnd_vec < 1) ||
+      (id_q1 == id_q2 && quarks[id_q1].number_of_rnd_vec < 2) ){
       std::cerr << "There are not enough random vectors for charged correlators"
                 << std::endl;
       exit(-1);
-    }
-  }
-  else{
-    if((quarks[id_q1].number_of_rnd_vec < 1 && 
-        quarks[id_q2].number_of_rnd_vec < 1)){
-      std::cerr << "There are not enough random vectors for charged correlators"
-                << std::endl;
-      exit(-1);
-    }
   }
 
   // finally filling the array
@@ -580,11 +580,14 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   if(!C1){
     for(size_t i = rndq1_start; i < rndq1_end; ++i)
       for(size_t j = rndq2_start; j < rndq2_end; ++j)
+        // To avoid bias, different random vectors must have different indices.
         if(i != j)
           rnd_vec_comb.emplace_back(i, j);
   }
   else {
     for(size_t i = rndq1_start; i < rndq1_end; ++i)
+      // if C1 == True there is only one random vector and thus only same index
+      // combinations are possible
       rnd_vec_comb.emplace_back(i, i);
   }
 
@@ -610,7 +613,11 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
  *                          quark struct
  *  @param[in]  id_q1       Specifies which quark the first random index 
  *                          belongs to
- *  @param[out] rnd_vec_ids 
+ *  @param[out] rnd_vec_ids The random index combinations possible. If 
+ *                          operator_list.rnd_vec_ids already contained these
+ *                          combinations, just return the corresponding index
+ *  @return                 index to operator_list.rnd_vec_ids pointing to the
+ *                          random vector combinations built
  *
  *  For every quark propagator a statistical 1 in the form 
  *  @f$ ( P^{(b)} \rho) \cdot (P^{(b)} \rho)^\dagger @f$
@@ -620,8 +627,8 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
  *  are always split. To reconstruct the correct random index combinations, 
  *  this function constructs all allowed combinations of random indices for
  *  a quarkline with two random indices
+ *
  */
-
 static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks, 
                           const size_t id_q1, 
                           std::vector<RandomIndexCombinationsQ1>& rnd_vec_ids) {
@@ -651,24 +658,48 @@ static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks,
                                                                  rnd_vec_comb));
   return rnd_vec_ids.back().id;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! For each correlator create lookuptable where to find the VdaggerV-operators
+ *  and random index combinations necessary to build rVdaggerVr
+ *  
+ *  @param[in]  rnd_vec_id        Indices of random index combinations wanted 
+ *                                for rVdaggerVr
+ *  @param[in]  vdv_indices       Indices of QuantumNumbers  wanted for 
+ *                                rVdaggerVr
+ *  @param[out] rvdaggervr_lookup Unique list of combinations of @em rnd_vec_id
+ *                                and @em vdv_indices needed
+ *  @param[out] rvdvr_indices     List of indices referring to 
+ *                                @em rvdaggervr_lookup. Entries correspond to
+ *                                entries of @em vdv_indices
+ */
 static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id, 
          const std::vector<std::vector<std::pair<size_t, bool> > >& vdv_indices,
          std::vector<VdaggerVRandomLookup>& rvdaggervr_lookup,
          std::vector<std::vector<size_t> >& rvdvr_indices) {
 
+  // vdv_row contains one operator for each quark
+  /*! Every correlator is treated seperately. */
   for(const auto& vdv_row : vdv_indices){
     std::vector<size_t> rvdvr_indices_row;
 
     for(size_t vdv_id = 0; vdv_id < vdv_row.size(); vdv_id++){
 
+      /*! In case of multi-meson correlation functions multiple quarklines and 
+       *  VdaggerV-operators must be combined into a single correlation 
+       *  function. In these cases rnd_vec_id contains multiple entries. The 
+       *  first two vdv_id's correspond to the first ricQ2lookup referenced by
+       *  rnd_index, the next two to the second.
+       */
       size_t rnd_index = 0; // construct to get correct random number indices
       if(vdv_id == 2 || vdv_id == 3)
         rnd_index = 1;
 
       const auto vdv = vdv_row[vdv_id];
      
+      /*! Checks if the vdv and random vector index combination already are in 
+       *  rvdaggervr_lookup
+       */
       auto it = std::find_if(rvdaggervr_lookup.begin(), rvdaggervr_lookup.end(),
                              [&](VdaggerVRandomLookup vdv_qn)
                              {
@@ -680,9 +711,13 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
                                return (c1 && c2 && c3);
                              });
 
+      /*! If yes, the corresponding index are saved to rvdvr_indices */
       if(it != rvdaggervr_lookup.end()) {
         rvdvr_indices_row.emplace_back((*it).id);
       }
+      /*! If not, a new entry in rvdaggervr_lookup is created and then the 
+       *  corresponding index is saved to rvdvr_indices 
+       */
       else {
         rvdaggervr_lookup.emplace_back(VdaggerVRandomLookup(
                                        rvdaggervr_lookup.size(), vdv.first, 
@@ -693,18 +728,37 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
     rvdvr_indices.emplace_back(rvdvr_indices_row);
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! For each correlator create lookuptable where to find the VdaggerV-operators
+ *  and random index combinations necessary to build rVdaggerV
+ *  
+ *  @param[in]  rnd_vec_id        Indices of random index combinations wanted 
+ *                                for rVdaggerV
+ *  @param[in]  vdv_indices       Indices of QuantumNumbers  wanted for 
+ *                                rVdaggerV
+ *  @param[out] rvdaggervr_lookup Unique list of combinations of @em rnd_vec_id
+ *                                and @em vdv_indices needed
+ *  @param[out] rvdvr_indices     List of indices referring to 
+ *                                @em rvdaggerv_lookup. Entries correspond to
+ *                                entries of @em vdv_indices
+ *
+ *  For detailed summary @see build_rVdaggerVr_lookup(). In contrast 
+ *  @em rnd_vec_id refers to RandomIndexCombinationsQ1 and thus there is 
+ *  exactly the same number of entries as for @vdv_indices
+ *
+ *  @todo Think about merging this and build_rVdaggerVr_lookup into one
+ *        function. For n-point functions also the other one needs a vector
+ *        of rnd_vec_id!
+ */
 static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id, 
          const std::vector<std::vector<std::pair<size_t, bool> > >& vdv_indices,
          std::vector<VdaggerVRandomLookup>& rvdaggerv_lookup,
          std::vector<std::vector<size_t> >& rvdv_indices) {
 
   for(const auto& vdv_row : vdv_indices){
+
     std::vector<size_t> rvdv_indices_row;
-    // TODO: Think about merging this and build_rVdaggerVr_lookup into one
-    //       function. For n-point functions also the other one needs a vector
-    //       of rnd_vec_id!
     for(size_t i = 0; i < vdv_row.size(); i++){
       const auto& vdv = vdv_row.at(i);
       const auto& rnd = rnd_vec_id.at(i);
@@ -731,8 +785,40 @@ static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id,
     rvdv_indices.emplace_back(rvdv_indices_row);
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/******************************************************************************/
+/*! Create lookuptable where to find the perambulators, VdaggerV-operators
+ *  and random index combinations necessary to build Q2 quarkline
+ *
+ *  @param[in]  id_quark1       Identifies perambulator with gamma_5 trick
+ *  @param[in]  id_quark2       Identifies perambulator without gamma_5 trick
+ *  @param[in]  operator_id     Identifies needed operator from @em vdv_indices
+ *  @param[in]  quantum_numbers Physical field operators for all correlators 
+ *                              with Dirac structure factored out
+ *  @param[in]  quarks          Quarks as specified in the infile munged into 
+ *                              quark struct
+ *  @param[in]  vdv_indices     Indices identifying VdaggerV operators
+ *  @param[in]  ric_lookup      Indices identifying random vector index 
+ *                              combinations
+ *  @param[out] Q2V             Lookuptable containing unique combinations of 
+ *                              peram-, vdv-, and ric-indices needed to built Q2
+ *  @param[out] Q2_indices      List of indices refering to @em Q2V. Entries' 
+ *                              outer vector corresponds to entries of 
+ *                              @em quantum_numbers, the inner is specified by 
+ *                              @em operator_id
+ *
+ *  The Quarkline with to quarks is given by
+ *
+ *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv * 
+ *          gamma * peram2
+ *
+ *  This function creates a Lookup table of all unique index combination Q2 is 
+ *  needed for and a list referring to the lookup table which gives relates
+ *  the entries of the lookup table to each correlator specified in the infile
+ *
+ *  @todo Are id_quark1 and id_quark2 deprecated?
+ */
 static void build_Q2_lookup(const size_t id_quark1, const size_t id_quark2,
          const size_t operator_id,
          const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
@@ -746,6 +832,9 @@ static void build_Q2_lookup(const size_t id_quark1, const size_t id_quark2,
     const auto qn = quantum_numbers[row][operator_id];
     const auto vdv = vdv_indices[row][operator_id];
 
+    // If Q2V already contains the particular row and physical content, just 
+    // set the index to the existing QuarklineQ2Indicies, otherwise generate
+    // it and set the index to the new one.
     auto it = std::find_if(Q2V.begin(), Q2V.end(),
                          [&](QuarklineQ2Indices q2)
                          {
@@ -760,6 +849,8 @@ static void build_Q2_lookup(const size_t id_quark1, const size_t id_quark2,
       Q2_indices[row][operator_id] = (*it).id;
     }
     else {
+      // Find out which index of ric_lookup contains the desired quantum 
+      // numbers and use that for Q2V
       size_t rnd_index = set_rnd_vec_charged(quarks, id_quark1, id_quark2, 
                                              false, ric_lookup);
       Q2V.emplace_back(QuarklineQ2Indices(Q2V.size(), vdv.first, id_quark1, 
@@ -768,8 +859,48 @@ static void build_Q2_lookup(const size_t id_quark1, const size_t id_quark2,
     }
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*! Create lookuptable where to find the perambulators, VdaggerV-operators
+ *  and random index combinations necessary to build Q1 quarkline with field 
+ *  operator @em operator_id
+ *
+ *  @param[in]  id_quark1       Specifies which quark the first random index 
+ *                              belongs to    
+ *  @param[in]  id_quark_connected Specifies which quark the second random index 
+ *                              belongs to
+ *  @param[in]  operator_id     Identifies needed operator from @em vdv_indices
+ *  @param[in]  const bool C1   Flag distinguishing whether the 
+ *                              indexcombinations are for C1 or not. 
+ *  @param[in]  quantum_numbers Physical field operators for all correlators 
+ *                              with Dirac structure factored out
+ *  @param[in]  quarks          Quarks as specified in the infile munged into 
+ *                              quark struct
+ *  @param[in]  rvdv_indices    Indices identifying rVdaggerV operators
+ *  @param[in]  ric_lookup      Indices identifying random vector index 
+ *                              combinations
+ *  @param[out] Q1              Lookuptable containing unique combinations of 
+ *                              peram-, vdv-, and ric-indices needed to built Q1
+ *  @param[out] Q1_indices      List of indices refering to @em Q1. Entries' 
+ *                              outer vector corresponds to entries of 
+ *                              @em quantum_numbers, the inner is specified by 
+ *                              @em operator_id
+ *
+ *  The Quarkline with one quark is given by
+ *
+ *    Q1 =  rvdaggerv * gamma * peram
+ *
+ *  This function creates a Lookup table of all unique index combination Q2 is 
+ *  needed for and a list referring to the lookup table which gives relates
+ *  the entries of the lookup table to each correlator specified in the infile
+ *
+ *  @todo Is id_quark_used deprecated? Maybe it is only necessary with 
+ *        different flavors supported
+ *  @alert I think there is a bug in the order of quark ids. The first one 
+ *          should be connected as it belongs to rVdV, while the second one 
+ *          should belong to the quark as it is part of the perambulator. 
+ *          Currently it is the other way round (MW, 27.3.17)
+ */
 static void build_Q1_lookup(const size_t id_quark_used, 
          const size_t id_quark_connected, const size_t operator_id, 
          const bool C1,
@@ -783,8 +914,14 @@ static void build_Q1_lookup(const size_t id_quark_used,
   for(size_t row = 0; row < quantum_numbers.size(); row++){
     const auto qn = quantum_numbers[row][operator_id];
     const auto rvdv = rvdv_indices[row][operator_id];
+    // Find out which index of ric_lookup contains the desired quantum 
+    // numbers and use that for Q2V. Bug with order?
     const size_t rnd_index = set_rnd_vec_charged(quarks, id_quark_used,
                                            id_quark_connected, C1, ric_lookup);
+
+    // If Q2V already contains the particular row and physical content, just 
+    // set the index to the existing QuarklineQ2Indicies, otherwise generate
+    // it and set the index to the new one.
     auto it = std::find_if(Q1.begin(), Q1.end(),
                          [&](QuarklineQ1Indices q1)
                          {
@@ -804,8 +941,8 @@ static void build_Q1_lookup(const size_t id_quark_used,
     }
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C2c_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -846,8 +983,8 @@ static void build_C2c_lookup(
     }
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C4cD_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -904,8 +1041,8 @@ static void build_C4cD_lookup(
     }
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C4cV_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -962,8 +1099,8 @@ static void build_C4cV_lookup(
     }
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C4cC_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -992,8 +1129,8 @@ static void build_C4cC_lookup(
     }
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C4cB_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -1022,8 +1159,8 @@ static void build_C4cB_lookup(
     }
   } 
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C3c_lookup( 
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -1051,16 +1188,9 @@ static void build_C3c_lookup(
     }
   } 
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-
-
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/******************************************************************************/
+/******************************************************************************/
 static void build_C20_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1101,8 +1231,8 @@ static void build_C20_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C30_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1125,8 +1255,8 @@ static void build_C30_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C40D_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1181,8 +1311,8 @@ static void build_C40D_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C40V_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1237,8 +1367,8 @@ static void build_C40V_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C40C_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1261,8 +1391,8 @@ static void build_C40C_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C40B_lookup(
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
       const std::vector<std::string>& hdf5_dataset_name,
@@ -1285,8 +1415,8 @@ static void build_C40B_lookup(
     row++;
   }  
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
 static void build_C1_lookup(
       const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
       const std::vector<std::pair<std::string, std::string> >& correlator_names,
@@ -1313,6 +1443,7 @@ static void build_C1_lookup(
   }  
 }
 
+/******************************************************************************/
 /******************************************************************************/
 /*!
  *  Build the lookuptables defined in typedefs.h from 
@@ -1370,6 +1501,10 @@ void GlobalData::init_lookup_tables() {
     else if (correlator.type == "C2+") {
       /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
+       *
+       *  @todo There should be a warning if more than 2 entries are to be 
+       *        written into rnd_vec_id, as this will break 
+       *        build_rVdaggerVr_lookup
        */
       std::vector<size_t> rnd_vec_id;
       rnd_vec_id.emplace_back(set_rnd_vec_charged(quarks, 

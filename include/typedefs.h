@@ -82,12 +82,33 @@ struct VdaggerVQuantumNumbers{
 };
 
 /******************************************************************************/
+/*! Struct containing random index combinations for quarklines depending on two
+ *  indices.
+ *
+ *  The random indices are uniquely identifying quark and random vector. Thus
+ *  There are @f$ \sum_i q_i nb_rnd(q_i) @f$ random indices.
+ *
+ *  @todo is the offset still needed?
+ */
 struct RandomIndexCombinationsQ2{
   size_t id;
+  /*! @{ 
+   *  Numbers identifying quarks in quark_list
+   */
   size_t id_q1, id_q2;
+  /*! @} */
+  /*! The entries of the pair correspond to the first and second random index.
+   *  Contains the first random index corresponding to @em id_q1 and @em id_q2
+   *  respectively, so that rnd_vec_id - offset is the actual random seed number
+   */
   std::pair<size_t, size_t> offset;
+  /*! The entries of the pair correspond to the first and second random index.
+   *  List of all possible combinations of random vector indices for quarks
+   *  specified by @em id_q1 and @em id_q2
+   */
   std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
-  // just a small constructor to ensure easy filling of its vector form
+
+  /*! Just a small constructor to ensure easy filling of its vector form */
   RandomIndexCombinationsQ2(const size_t id, 
                  const size_t id_q1, const size_t id_q2, 
                  const std::pair<size_t, size_t> offset, 
@@ -97,23 +118,53 @@ struct RandomIndexCombinationsQ2{
 };  
 
 /******************************************************************************/
+/*! Struct containing random index combinations for quarklines depending on one
+ *  index.
+ *
+ *  The random indices are uniquely identifying quark and random vector. Thus
+ *  There are @f$ \sum_i q_i nb_rnd(q_i) @f$ random indices.
+ *
+ *  @todo why is here no offset like in RandomIndexCombinationsQ2? 
+ */
 struct RandomIndexCombinationsQ1{
   size_t id;
+
+  /*!  Identifier of quark in quark_list */
   size_t id_q1;
+  /*! List of all possible random vector indices for a quark specified by 
+   *  @em id_q1
+   */
   std::vector<size_t> rnd_vec_ids;
-  // just a small constructor to ensure easy filling of its vector form
+
+  /*! just a small constructor to ensure easy filling of its vector form */
   RandomIndexCombinationsQ1(const size_t id, const size_t id_q1,
                         const std::vector<size_t>& rnd_vec_ids) :
                             id(id), id_q1(id_q1), rnd_vec_ids(rnd_vec_ids) {};
 };  
 
 /******************************************************************************/
+/*! Struct that holds all information on which VdaggerV must be diluted with 
+ *  which random vector.
+ *
+ *  For rVdaggerV and rVdaggerVr the VdaggerV-operators are additionaly 
+ *  multiplied with random vectors. For both, VdaggerV and random index
+ *  combinations there are lookuptables in OperatorLookup. This struct contains
+ *  the id's of vdaggerv and ric which belong together.
+ */
 struct VdaggerVRandomLookup{
   size_t id;
-  size_t id_vdaggerv;
+  /*! id of vdaggerv_lookup in OperatorLookup */
+  size_t id_vdaggerv;           
+  /*! id of ricQ1_lookup for rvdaggerv or ricQ2_lookup for rvdaggervr in 
+   *  OperatorLookup 
+   */
   size_t id_ricQ_lookup;
+  /*! Flag that indicates whether VdaggerV must be daggered (prior to 
+   *  multiplication with random vectors) to get the correct quantum numbers
+   */
   bool need_vdaggerv_daggering;
-  // just a small constructor to ensure easy filling of its vector form
+
+  /*! Just a small constructor to ensure easy filling of its vector form */
   VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
             const size_t id_ricQ_lookup, const bool need_vdaggerv_daggering) :
              id(id), id_vdaggerv(id_vdaggerv), id_ricQ_lookup(id_ricQ_lookup),
@@ -121,18 +172,39 @@ struct VdaggerVRandomLookup{
 };
 
 /******************************************************************************/
-/*! Struct that contains all information for a sLapH operator */
+/*! Struct that contains all information for a sLapH operator 
+ *
+ *  @todo confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable
+ *        contain indices of vdaggerv_lookup and ricQ_lookup. Multiple 
+ *        hierarchy levels in a single struct
+ *  @todo confusing because either Q1 and rvdaggerv OR Q2 and rvdaggervr are
+ *        used, but in both cases half the members are spurious
+ */
 struct OperatorLookup{
 
-
+  /*! Specifies physical content of quark field operator (with Dirac structure
+   *  factored out)
+   */
   std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup;
 
+  /*! Specifies the random vector index in case of rvdaggerv */
   std::vector<RandomIndexCombinationsQ1> ricQ1_lookup;
+  /*! Specifies the random vector indices in case of rvdaggervr */
   std::vector<RandomIndexCombinationsQ2> ricQ2_lookup;
 
+  /*! @{ 
+   *  Specifies which entries of @em vdaggerv_lookup and @em ricQ_lookup shall
+   *  be combined
+   */
   std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  
   std::vector<VdaggerVRandomLookup> rvdaggervr_lookuptable;  
+  /*! @} */
 
+  /*! For @f$ \vec{p} = 0 @f$, @f$ V^\dagger exp(ipx) V = \mathbb{1} @f$. If 
+   *  applicable This contains the index of @em vdaggerv_lookup where it can 
+   *  be replaced by a unit matrix. If @f$ \vec{p} = 0 @f$ is not needed, 
+   *  @em index_of_unity is set to -1
+   */
   int index_of_unity;
 
 };
@@ -147,8 +219,10 @@ struct OperatorLookup{
  */
 struct QuarklineQ1Indices {
   size_t id;
-  size_t id_rvdaggerv;    /*!< Identifies physical content of vdaggerv */
-  size_t id_peram;        /*!< Identifies physical contanet of peram   */
+  /*! Identifies physical content and random index of rvdaggerv */
+  size_t id_rvdaggerv;    
+  /*! Identifies physical content and random index of peram */
+  size_t id_peram;        
   /*! Pair of random vectors: 
    *  - First used for rvdaggerv 
    *  - Second used for peram
@@ -174,10 +248,10 @@ struct QuarklineQ1Indices {
  *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv * 
  *          gamma * peram2
  */
-
 struct QuarklineQ2Indices {
   size_t id;
-  size_t id_vdaggerv;     /*!< Identifies physical content of vdaggerv */
+  /*! Identifies physical content of vdaggerv */
+  size_t id_vdaggerv;     
   /*! Identifies perambulator with @f$\gamma_5@f$-trick 
    *
    *  @todo Is that deprecated?
@@ -188,7 +262,11 @@ struct QuarklineQ2Indices {
    *  @todo Is that deprecated?
    */
   size_t id_peram2; 
+  /*! id specifying the random vector indicies for peram1 and peram2 */
   size_t id_ric_lookup;
+  /*! Flag that indicates whether VdaggerV must be daggered (prior to 
+   *  multiplication with random vectors) to get the correct physical content 
+   */
   bool need_vdaggerv_dag;
   std::vector<int> gamma; /*!< List of necessarry gamma combinations */
 
