@@ -1756,8 +1756,8 @@ static void build_C40B_lookup(
 
 /******************************************************************************/
 /******************************************************************************/
-/*! Build the lookuptables defined in typedefs.h from 
- *  GlobalData::correlators_list, GlobalData::operator::list and 
+/*! 
+ *  from GlobalData::correlators_list, GlobalData::operator::list and 
  *  GlobalData::quarks
  *
  *  @bug In build_Q1_lookup the order of quarks given is consistently switched.

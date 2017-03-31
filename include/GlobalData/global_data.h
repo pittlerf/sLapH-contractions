@@ -99,7 +99,9 @@ public:
    */
   static GlobalData* Instance ();
 
-  //! reading the input parameters from the infile in the main routine
+  /*! Reading the input parameters from the infile in the main routine and 
+   *  initializing GlobalData
+   */
   void read_parameters(int ac, char* av[]);
 
   /*! Fills the random vector and perambulator structs with the paths and
@@ -164,11 +166,11 @@ public:
   inline int get_verbose() {
     return verbose;
   }
-  /*! @todo what is that? */
+  /*! Returns all information needed to build and read random vectors */
   inline RandomVectorConstruction get_rnd_vec_construct(){
     return rnd_vec_construct;
   }
-  /*! @todo what is that? */
+  /*! Returns all information needed to build and read perambulators */
   inline PerambulatorConstruction get_peram_construct() {
     return peram_construct;
   }
@@ -187,33 +189,46 @@ public:
   inline std::string get_name_perambulators() {
     return name_perambulators;
   }
+  /*! Return the mode how to treat VdaggerV: Reading, or constructing anew.
+   *
+   *  @see LapH::OperatorsForMesons::create_operators()
+   */
   inline std::string get_handling_vdaggerv() {
     return handling_vdaggerv;
   }
   inline std::string get_path_vdaggerv() {
     return path_vdaggerv;
   }
-  /*! @todo what is that? */
+  /*! Return munged list of quarks as specified in the infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline std::vector<quark> get_quarks() {
     return quarks;
   }
-  /*! @todo what is that? */
+  /*! Return munged list of field operators as read from infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline std::vector<Operator_list>& get_operator_list() {
     return operator_list;
   }
-  /*! @todo what is that? */
+  /*! Return munged list of correlators as read from infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline Correlator_list& get_correlator_list() {
     return correlator_list;
   }
-  /*! @todo what is that? */
+  /*! Return vector of unique sLapH operators */
   inline const OperatorLookup get_operator_lookuptable(){
     return operator_lookuptable;
   }
-  /*! @todo what is that? */
+  /*! Return vector of unique physical contents needed for quarklines */
   inline const QuarklineLookup get_quarkline_lookuptable(){
     return quarkline_lookuptable;
   }
-  /*! @todo what is that? */
+  /*! Return vector of unique physical contents needed for correlators */
   inline const CorrelatorLookup get_correlator_lookuptable(){
     return correlator_lookuptable;
   }

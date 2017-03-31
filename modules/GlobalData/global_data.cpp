@@ -20,13 +20,14 @@ GlobalData* GlobalData::Instance () {
 
   return instance_;
 }
-// *****************************************************************************
-/// @brief Convenience function for when a 'store_to' value is being provided
-///        to typed_value.
-///
-/// @param store_to The variable that will hold the parsed value upon notify.
-///
-/// @return Pointer to a type_value.
+/*****************************************************************************/
+/*! Convenience function for when a @em store_to value is being provided
+ *  to typed_value.
+ *
+ *  @param store_to The variable that will hold the parsed value upon notify.
+ *  
+ *  @return Pointer to a type_value.
+ */
 template<typename T>
 boost::program_options::typed_value<T>* make_value (T* store_to) {
   return boost::program_options::value<T>(store_to);
@@ -34,7 +35,11 @@ boost::program_options::typed_value<T>* make_value (T* store_to) {
 
 /******************************************************************************/
 /******************************************************************************/
-/******************************************************************************/
+/*! Reading of infile is delegated to boost::program_options.
+ *
+ *  @see GlobalData::input_handling()
+ *  @see GlobalData::init_lookup_tables()
+ */
 void GlobalData::read_parameters (int ac, char* av[]) {
 
   std::string input_file;
@@ -56,9 +61,13 @@ void GlobalData::read_parameters (int ac, char* av[]) {
       po::value<std::string>(&output_file)->default_value("LapHs.out"),
       "name of output file.");
 
-  // Declare a group of options that will be
-  // allowed both on command line and in input file
+  // Declare a group of options that will be allowed both on command line and 
+  // in input file
   po::options_description config("Input file options");
+
+  ////////////////////////////////////////////////////////////////////////////// 
+  // Options for infile //////////////////////////////////////////////////////// 
+  
   // parallelisation options
   config.add_options()
     ("nb_omp_threads",  
@@ -67,6 +76,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     ("nb_eigen_threads",
       po::value<size_t>(&nb_eigen_threads)->default_value(1),
       "nb_eigen_threads: number of threads Eigen uses internally");
+
   // lattice options
   config.add_options()
     ("output_path",
@@ -94,6 +104,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     ("Lz",
       po::value<int>(&Lz)->default_value(0),
       "Lz: lattice extend in z direction");
+
   // eigenvector options
   config.add_options()
     ("number_of_eigen_vec",
@@ -116,6 +127,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     ("path_vdaggerv",
       po::value<std::string>(&path_vdaggerv)->default_value(""),
       "Path of vdaggerv");
+
   // quark options
   config.add_options()
     ("quarks.quark", make_value(&quark_configs),
@@ -125,14 +137,17 @@ void GlobalData::read_parameters (int ac, char* av[]) {
      " dil type ev:number of dil ev:\n"
      " dil type Dirac:number of dil Dirac:\n"
      " path of the perambulators for these quarks");
+
   // operator list options
   config.add_options()
     ("operator_lists.operator_list", make_value(&operator_list_configs),
      "operator input is rather complicated - see documentation!!");
+  
   // correlator list options
   config.add_options()
     ("correlator_lists.correlator_list", make_value(&correlator_list_configs),
      "correlator input is rather complicated - see documentation!!");
+
   // configuration options
   config.add_options()
     ("start_config",
@@ -144,6 +159,8 @@ void GlobalData::read_parameters (int ac, char* av[]) {
     ("delta_config",
       po::value<int>(&delta_config)->default_value(0),
       "Stepsize between two configurations");
+
+  ////////////////////////////////////////////////////////////////////////////// 
 
   po::options_description cmdline_options;
   cmdline_options.add(generic).add(config);
@@ -161,8 +178,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
                                             positional(p).run(), vm);
   po::notify(vm);
 
-  // *************************************************************************
-  // command line options ****************************************************
+  // command line options 
   if(vm.count("help")){
     std::cout << visible << "\n";
     exit(0);
@@ -186,6 +202,8 @@ void GlobalData::read_parameters (int ac, char* av[]) {
   }
   ifs.close();
 
+  /****************************************************************************/
+
   // checks, terminal output and munging of strings for quarks, operators and 
   // correlators
   input_handling(quark_configs, operator_list_configs, 
@@ -195,8 +213,10 @@ void GlobalData::read_parameters (int ac, char* av[]) {
   // the wanted correlators
   init_lookup_tables();
 
-  // TODO: should be put in a separate function
   // setting the sizes and numbers of random vectors and perambulators
+  /*! @todo: setting the sizes and numbers of rnd_vecs and perams should be 
+   *          put in a separate function
+   */
   rnd_vec_construct.nb_entities = 0;
   for(const auto& q: quarks)
     rnd_vec_construct.nb_entities += q.number_of_rnd_vec;
