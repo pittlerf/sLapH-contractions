@@ -32,9 +32,9 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
   // re-sorting and copy into matrix structure 
   // TODO: At this point it is very easy to included different dilution schemes.
   //       However, due to simplicity this will be postponed!
-  const size_t nb_dil_T = q.number_of_dilution_T;
-  const size_t nb_dil_E = q.number_of_dilution_E;
-  const size_t nb_dil_D = q.number_of_dilution_D;
+  const size_t nb_dil_T = quark.number_of_dilution_T;
+  const size_t nb_dil_E = quark.number_of_dilution_E;
+  const size_t nb_dil_D = quark.number_of_dilution_D;
   size_t col_i, row_i;
   const int nb_inversions = Lt * nb_dil_E * nb_dil_D / nb_dil_T;
   for(size_t t1 = 0; t1 < Lt; ++t1)
