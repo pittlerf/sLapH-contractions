@@ -138,13 +138,18 @@ void quark_check (quark quarks) {
       std::cout << "quarks.quark.type must be u, d, s or c" << std::endl;
       exit(0);
     }
+    /*! @todo Check that the number of random vectors is greater than the 
+     *  largest required diagram
+     */
     else if(quarks.number_of_rnd_vec < 1){
       std::cout << "quarks.quark.number_of_rnd_vec must be greater than 0"
           << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_T != "TI" && quarks.dilution_T != "TB"){
-      std::cout << "quarks.quark.dilutione_T must be TI or TB" << std::endl;
+    else if(quarks.dilution_T != "TI" && 
+            quarks.dilution_T != "TB" &&
+            quarks.dilution_T != "TF"){
+      std::cout << "quarks.quark.dilution_T must be TI, TB, TF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_T < 1){
@@ -152,8 +157,10 @@ void quark_check (quark quarks) {
           "and smaller than the temporal extend" << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_E != "EI" && quarks.dilution_E != "EB"){
-      std::cout << "quarks.quark.dilutione_E must be EI or EB" << std::endl;
+    else if(quarks.dilution_E != "EI" && 
+            quarks.dilution_E != "EB" &&
+            quarks.dilution_E != "EF"){
+      std::cout << "quarks.quark.dilution_E must be EI, EB or EF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_E < 1){
@@ -161,8 +168,10 @@ void quark_check (quark quarks) {
           "and smaller than number of eigen vectors" << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_D != "DI" && quarks.dilution_D != "DI"){
-      std::cout << "quarks.quark.dilutione_D must be DI or DB" << std::endl;
+    else if(quarks.dilution_D != "DI" && 
+            quarks.dilution_D != "DB" &&
+            quarks.dilution_D != "DF"){
+      std::cout << "quarks.quark.dilution_D must be DI, DB or DF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_D < 1 || quarks.number_of_dilution_D > 4){

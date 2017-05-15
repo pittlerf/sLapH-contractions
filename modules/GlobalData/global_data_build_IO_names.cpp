@@ -32,9 +32,14 @@ static std::vector<std::string> create_perambulator_file_names (
                                               const std::vector<quark> quarks) {
 
   std::vector<std::string> filename_list; // the return vector of file names
+
   // running over all quarks
   for(const auto& q: quarks){
 
+    char dil_scheme_T = q.dilution_T.back();
+    char dil_scheme_E = q.dilution_E.back();
+    char dil_scheme_D = q.dilution_D.back();
+    
     char temp1[200];
     char temp2[200];
 
@@ -44,10 +49,11 @@ static std::vector<std::string> create_perambulator_file_names (
       //sprintf(temp1, "");
 
       sprintf(temp2,
-          "perambulator.rndvecnb%02d.u.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
+          "perambulator.rndvecnb%02d.u.Tso%c%04d.Vso%c%04d.DsoF%1d.TsiF%04d."
           "SsiF%d.DsiF4.CsiF3.smeared0.%05d", 
-          rnd_vec_i, Lt / q.number_of_dilution_T, q.number_of_dilution_E,
-          q.number_of_dilution_D, Lt, 13824, config);
+          rnd_vec_i, dil_scheme_T, Lt / q.number_of_dilution_T, dil_scheme_E, 
+          q.number_of_dilution_E, dil_scheme_D, q.number_of_dilution_D, Lt, 
+          13824, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
