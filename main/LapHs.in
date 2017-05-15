@@ -1,37 +1,32 @@
 # This is an example input file
 
-# perallelisation: Be carefull - Atm I would only use one thread for Eigen. It 
-#                                usually is much slower than simple omp!
-nb_omp_threads = 4
-nb_eigen_threads = 1
-
 # lattice parameters:
-Lt = 48
-Lx = 24
-Ly = 24 
-Lz = 24 
+Lt = 64
+Lx = 32
+Ly = 32 
+Lz = 32 
 
-# configuration handling: 
+# configuration handling:
 start_config = 714
 end_config   = 714
 delta_config = 4
-path_config = ./
 
 # eigenvector handling:
-number_of_eigen_vec = 120
-path_eigenvectors   = 
+number_of_eigen_vec = 220
+path_eigenvectors   = /hiskp2/eigensystems/B25.32t
 name_eigenvectors   = eigenvectors
-handling_vdaggerv   = read
-path_vdaggerv       = /hiskp2/werner/vdaggerv/A40.24
+handling_vdaggerv   = liuming
+#path_vdaggerv       = /data/LapHs/contraction_Markus/test_data/operators
+path_vdaggerv       = /data2/test5/liuming_operators
 
 # output path
-output_path = .
+output_path = /hiskp2/werner/check
 overwrite_old = yes
 
 # quarks to be used - The file at the and is the location of the perambulators.
 [quarks]
-quark = u:6:TI:2:EI:6:DI:4:/hiskp2/perambulators/A40.24_sorted/light
-quark = s:4:TI:2:EI:6:DI:4:/hiskp2/perambulators/A40.24_sorted/strange_2250
+quark = s:3:TI:2:EI:4:DI:4:/hiskp2/perambulators/B25.32t/nev_220/strange_186
+#quark = u:4:TI:2:EI:4:DI:4:/
 
 # operators to be used
 [operator_lists]
@@ -49,15 +44,17 @@ operator_list = g9.d0.p0
 # all correlation functions which will be computed
 [correlator_lists]
 #correlator_list = C1:Q0:Op4
-#correlator_list = C2+:Q0:Op6:Q0:Op6 #pion
+correlator_list = C2+:Q0:Op5:Q0:Op5 #pion
 #correlator_list = C2+:Q0:Op5:Q1:Op5 #kaon
-#correlator_list = C40D:Q0:Op4:Q1:Op4:Q0:Op4:Q0:Op4
+#correlator_list = C4+D:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+V:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+C:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
 #correlator_list = C4+B:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
-
-#correlator_list = C40D:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
-#correlator_list = C40V:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
-#correlator_list = C40C:Q0:Op5:Q0:Op5:Q0:Op5:Q0:Op5
+#
+correlator_list = C20:Q0:Op4:Q0:Op4 #pion
+#correlator_list = C20:Q0:Op4:Q1:Op4 #kaon
+#correlator_list = C30:Q0:Op4:Q0:Op4:Q0:Op4
+#correlator_list = C40D:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
+#correlator_list = C40V:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
+#correlator_list = C40C:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
 #correlator_list = C40B:Q0:Op4:Q0:Op4:Q0:Op4:Q0:Op4
-

@@ -24,6 +24,7 @@
 #include <Eigen/SparseCore>
 
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
@@ -70,7 +71,10 @@ private:
   std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
+<<<<<<< HEAD
   //! @endcond
+=======
+>>>>>>> master
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
@@ -199,6 +203,7 @@ public:
   inline std::string get_path_vdaggerv() {
     return path_vdaggerv;
   }
+
   /*! Return munged list of quarks as specified in the infile
    * 
    * @todo make that private and delete get function
@@ -206,6 +211,7 @@ public:
   inline std::vector<quark> get_quarks() {
     return quarks;
   }
+
   /*! Return munged list of field operators as read from infile
    * 
    * @todo make that private and delete get function

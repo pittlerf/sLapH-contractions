@@ -16,9 +16,8 @@ static std::vector<std::string> create_rnd_vector_file_names (
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // building paths and filenames for rnd vecs
       sprintf(temp1, "cnfg%04d/rnd_vec_%02d/", config, rnd_vec_i);
-//      sprintf(temp1, "");
-      sprintf(temp2, "randomvector.rndvecnb%02d.u.nbev%04d.%04d", rnd_vec_i, 
-                                                     nb_of_eigen_vec, config);
+      sprintf(temp2, "randomvector.rndvecnb%02d.%s.nbev%04d.%04d", rnd_vec_i, 
+                                       q.type.c_str(), nb_of_eigen_vec, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
@@ -29,6 +28,8 @@ static std::vector<std::string> create_rnd_vector_file_names (
 // -----------------------------------------------------------------------------
 static std::vector<std::string> create_perambulator_file_names (
                                               const int config, const int Lt,
+                                              const int Lx, const int Ly, 
+                                              const int Lz, 
                                               const std::vector<quark> quarks) {
 
   std::vector<std::string> filename_list; // the return vector of file names
@@ -46,14 +47,11 @@ static std::vector<std::string> create_perambulator_file_names (
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // data path for qbig contractions
       sprintf(temp1, "cnfg%04d/rnd_vec_%02d/", config, rnd_vec_i);
-      //sprintf(temp1, "");
-
       sprintf(temp2,
-          "perambulator.rndvecnb%02d.u.Tso%c%04d.Vso%c%04d.DsoF%1d.TsiF%04d."
+          "perambulator.rndvecnb%02d.%s.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
           "SsiF%d.DsiF4.CsiF3.smeared0.%05d", 
-          rnd_vec_i, dil_scheme_T, Lt / q.number_of_dilution_T, dil_scheme_E, 
-          q.number_of_dilution_E, dil_scheme_D, q.number_of_dilution_D, Lt, 
-          13824, config);
+          rnd_vec_i, q.type.c_str(), Lt / q.number_of_dilution_T, 
+          q.number_of_dilution_E, q.number_of_dilution_D, Lt, Lx*Ly*Lz, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
@@ -82,20 +80,7 @@ void GlobalData::build_IO_names(const size_t config){
   rnd_vec_construct.filename_list = create_rnd_vector_file_names(
                                            config, number_of_eigen_vec, quarks);
   peram_construct.filename_list = create_perambulator_file_names(
-                                                            config, Lt, quarks);
+                                                config, Lt, Lx, Ly, Lz, quarks);
   filename_eigenvectors = create_eigenvector_file_name(config, 
                                                        path_eigenvectors, 
                                                        name_eigenvectors);
-
-
-  // changing the outpath of the correlator according to config - Note: for
-  // the first config nothin happens here. It is done in build_correlator_names
-  // in init_lookup_tables.cpp .
-//  for(const auto& correlator : correlator_lookuptable){
-//    for(const auto& name : correlator){
-//      name.
-//    std::string pathname = outpath + "/cnfg" + std::to_string(config)  + "/" 
-//                                   + corr_type + "/";
-//    }
-//  }  
-}

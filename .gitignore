@@ -7,3 +7,9 @@
 # Doxygen Output
 doxygen/html
 doxygen/latex
+# plots
+*.pdf
+# data files
+*.dat
+# executables
+LapHs

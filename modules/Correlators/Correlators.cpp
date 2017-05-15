@@ -268,7 +268,7 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
     }}
     // normalisation
     for(auto& corr : correlator)
-      corr /= Lt*corr0[c_look.id][0][0].size();
+      corr /= Lt*corr0[c_look.lookup[0]][0][0].size();
     // write data to file
     write_correlators(correlator, c_look);
   }
@@ -375,12 +375,6 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     write_4pt_correlators(correlator, c_look);
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-
-
-
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -490,18 +484,32 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
-    for(int t1 = 0; t1 < Lt; t1++){
-    for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
-      for(const auto& corr : corrC[c_look.lookup[0]][t1][t2]){
-        correlator[t] += corr;
+    if(c_look.outfile.find("Check") == 0){
+      for(int t1 = 0; t1 < Lt; t1++){
+        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
+          correlator[t1] += corr;
+        }
       }
-    }}
-    // normalisation
-    for(auto& corr : correlator)
-      corr /= Lt*corrC[c_look.id][0][0].size();
-    // write data to file
-    write_correlators(correlator, c_look);
+      // normalisation
+      for(auto& corr : correlator)
+        corr /= corrC[c_look.lookup[0]][0][0].size();
+      // write data to file
+      write_correlators(correlator, c_look);
+    }
+    else{
+      for(int t1 = 0; t1 < Lt; t1++){
+      for(int t2 = 0; t2 < Lt; t2++){
+        int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
+        for(const auto& corr : corrC[c_look.lookup[0]][t1][t2]){
+          correlator[t] += corr;
+        }
+      }}
+      // normalisation
+      for(auto& corr : correlator)
+        corr /= Lt*corrC[c_look.lookup[0]][0][0].size();
+      // write data to file
+      write_correlators(correlator, c_look);
+    }
   }
 }
 // -----------------------------------------------------------------------------
@@ -1324,12 +1332,12 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
                                                      id_ric_lookup].rnd_vec_ids;
     const auto& ric3 = ric_lookup[quark_lookup.Q1[c_look.lookup[3]].
                                                      id_ric_lookup].rnd_vec_ids;
-    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
-       ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
-                << std::endl;
-      exit(0);
-    }
+//    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
+//       ric0.size() != ric3.size()){
+//      std::cout << "rnd combinations are not the same in build_corr0" 
+//                << std::endl;
+//      exit(0);
+//    }
 
     size_t norm = 0;
 // This is necessary to ensure the correct summation of the correlation function

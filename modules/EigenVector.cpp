@@ -5,15 +5,22 @@
 void LapH::EigenVector::read_eigen_vector(const std::string& filename, 
                                           const size_t t, const size_t verbose){
 
-  //buffer for read in
+  // buffer for read in
   vec eigen_vec(V[t].rows());
   std::cout << "\tReading eigenvectors from files:" << filename << std::endl;
 
-  //setting up file
+  // setting V[t] to zero
+  V[t].setZero();
+  // setting up file
   std::ifstream infile(filename, std::ifstream::binary); 
   if (infile) {
     for (size_t ncol = 0; ncol < V[t].cols(); ++ncol) {
+      std::fill(eigen_vec.begin(), eigen_vec.end(), cmplx(.0, .0));
       infile.read( (char*) &(eigen_vec[0]), 2*V[t].rows()*sizeof(double));
+      if(!infile){
+        std::cout << "\n\nProblem while reading Eigenvectors\n" << std::endl;
+        exit(0);
+      }
       for(size_t nrow = 0; nrow < V[t].rows(); ++nrow){
         (V[t])(nrow, ncol) = eigen_vec[nrow];
       }

@@ -177,9 +177,12 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
   for(size_t t = 0; t < Lt; ++t){
 
     // creating full filename for eigenvectors and reading them in
-    char inter_name[200];
-    sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
-    V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
+    if(!(operator_lookuptable.vdaggerv_lookup.size() == 1 &&
+       operator_lookuptable.vdaggerv_lookup[0].id == id_unity)){
+      char inter_name[200];
+      sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
+      V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
+    }
 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
@@ -218,8 +221,8 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
   std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed 
     << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
   is_vdaggerv_set = true;
-
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::OperatorsForMesons::read_vdaggerv(const int config){
@@ -293,9 +296,8 @@ void LapH::OperatorsForMesons::read_vdaggerv(const int config){
   std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed 
     << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
   is_vdaggerv_set = true;
-  
-
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
@@ -355,6 +357,7 @@ void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
                             eigen_vec.at(nrow*vdaggerv[op.id][t].cols() + ncol);
             }
           }
+          vdaggerv[op.id][t].adjointInPlace();
           if(!file1.good()){
             std::cout << "Problems while reading from " << infile1 << std::endl;
             exit(0);
@@ -375,6 +378,8 @@ void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
                             eigen_vec.at(nrow*vdaggerv[op.id][t].cols() + ncol);
             }
           }
+          // @todo Check whether that must be adjoint before file 1 is closed 
+          // (master branch)
           vdaggerv[op.id][t].adjointInPlace();
           if(!file2.good()){
             std::cout << "Problems while reading from " << infile2 << std::endl;

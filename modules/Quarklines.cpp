@@ -258,8 +258,18 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
   std::cout << "\tcomputing Q1:";
   clock_t time = clock();
 
-
-//    std::cout << "\n" << std::endl;
+// setting memory to zero
+#pragma omp parallel for schedule(dynamic)
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q1[t1][t2][op][rnd1].setZero(); 
+      } 
+    }
+  }}
 #pragma omp parallel for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(size_t t2 = 0; t2 < Lt/dilT; t2++){
@@ -400,6 +410,21 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
 #pragma omp parallel 
   {
   Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
+
+// setting memory to zero
+#pragma omp for schedule(dynamic)
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q2V[t1][t2][op][rnd1].setZero(); 
+      } 
+    }
+  }}               
+
+
 #pragma omp for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(size_t t2 = 0; t2 < Lt/dilT; t2++){
@@ -583,6 +608,18 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
 #pragma omp parallel 
   {
   Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
+
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q2L[t1][t2][op][rnd1].setZero(); 
+      } 
+    }               
+  }}              
+
 #pragma omp for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(const auto& qll : ql_lookup){

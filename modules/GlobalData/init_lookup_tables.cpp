@@ -112,7 +112,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     for(const auto& op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
   }
-  else if (correlator.type == "C2+" || correlator.type == "C20") {
+  else if (correlator.type == "C2+" || correlator.type == "C20" ||
+           correlator.type == "Check") {
     for(const auto& op0 : qn_op[0]){
       for(const auto& op1 : qn_op[1]){ // all combinations of operators
         std::vector<QuantumNumbers> single_vec_qn;
@@ -365,14 +366,104 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     std::cout << "combination mom3: " << counter_mom3 << std::endl;
     std::cout << "combination mom4: " << counter_mom4 << std::endl;
   }
+  /*! @todo Check whether that is identical to C4+D */
+  else if (correlator.type == "C4+C") {
+    // momentum combinations on source side ------------------------------------
+    size_t counter_test = 0;
+    size_t counter_mom0 = 0;
+    size_t counter_mom1 = 0;
+    size_t counter_mom2 = 0;
+    size_t counter_mom3 = 0;
+    size_t counter_mom4 = 0;
+    for(const auto& op0 : qn_op[0]){
+    for(const auto& op2 : qn_op[2]){
+      const int mom0 = compute_norm_squ(op0.momentum);
+      const int mom2 = compute_norm_squ(op2.momentum);
+      const int tot_mom_l = add_momenta_squared(op0.momentum, op2.momentum);
+      std::array<int, 3> tot_mom_v_l = add_momenta(op0.momentum, op2.momentum);
+      
+      if(tot_mom_l == 0){
+        if(mom0 > 4)
+          continue;
+        counter_mom0++;
+      }
+      else if(tot_mom_l == 1){
+        if((mom0 + mom2) > 5)
+          continue;
+        counter_mom1++;
+      }
+      else if(tot_mom_l == 2){
+        if((mom0 + mom2) > 6)
+          continue;
+        counter_mom2++;
+      }
+      else if(tot_mom_l == 3){
+        if((mom0 + mom2) > 7)
+          continue;
+        counter_mom3++;
+      }
+      else if(tot_mom_l == 4){
+        if((mom0 + mom2) > 4)
+          continue;
+        counter_mom4++;
+      }
+      else
+        continue; // maximum momentum is 4
+
+    // momentum combinations on sink side --------------------------------------
+    for(const auto& op1 : qn_op[1]){ 
+    for(const auto& op3 : qn_op[3]){ // all combinations of operators
+      const int mom1 = compute_norm_squ(op1.momentum);
+      const int mom3 = compute_norm_squ(op3.momentum);
+      const int tot_mom_r = add_momenta_squared(op1.momentum, op3.momentum);
+      std::array<int, 3> tot_mom_v_r = add_momenta(op1.momentum, op3.momentum);
+      if((tot_mom_v_r[0] != -tot_mom_v_l[0]) ||
+         (tot_mom_v_r[1] != -tot_mom_v_l[1]) ||
+         (tot_mom_v_r[2] != -tot_mom_v_l[2]))
+        continue; // both total momenta must be equal
+
+      if(tot_mom_r == 0){
+        if(mom1 > 4)
+          continue;
+      }
+      else if(tot_mom_r == 1){
+        if((mom1 + mom3) > 5)
+          continue;
+      }
+      else if(tot_mom_r == 2){
+        if((mom1 + mom3) > 6)
+          continue;
+      }
+      else if(tot_mom_r == 3){
+        if((mom1 + mom3) > 7)
+          continue;
+      }
+      else if(tot_mom_r == 4){
+        if((mom1 + mom3) > 4)
+          continue;
+      }
+      else
+        continue; // maximum momentum is 4
+
+      // create combinations ---------------------------------------------------
+      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
+      quantum_numbers.emplace_back(single_vec_qn);
+      counter_test++;
+    }}}}
+    std::cout << "test finished - combinations: " << counter_test << std::endl;
+    std::cout << "combination mom0: " << counter_mom0 << std::endl;
+    std::cout << "combination mom1: " << counter_mom1 << std::endl;
+    std::cout << "combination mom2: " << counter_mom2 << std::endl;
+    std::cout << "combination mom3: " << counter_mom3 << std::endl;
+    std::cout << "combination mom4: " << counter_mom4 << std::endl;
+  }
   /*! @todo: For C40D, C40B, C40V, C40C, C4+V, C4+C still all combinations
    *         are built. 
    *         This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
    */
   else if (correlator.type == "C40D" || correlator.type == "C40V" ||
            correlator.type == "C40B" || correlator.type == "C40C" ||
-           correlator.type == "C4+V" ||
-           correlator.type == "C4+C") {
+           correlator.type == "C4+V") {
     for(const auto& op0 : qn_op[0]){
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
@@ -485,12 +576,12 @@ void build_VdaggerV_lookup(
                              auto c1 = (vdv_qn.displacement == qn.displacement);
                              auto c2 = (vdv_qn.momentum == qn.momentum);
                              // also negative momentum is checked
-                             const std::array<int, 3> pm = {-qn.momentum[0],
+                             const std::array<int, 3> pm = {{-qn.momentum[0],
                                                             -qn.momentum[1],
-                                                            -qn.momentum[2]};
+                                                            -qn.momentum[2]}};
                              auto c3 = (vdv_qn.momentum == pm);
                              // TODO: Think about the daggering!!
-                             const std::array<int, 3> zero = {0,0,0};
+                             const std::array<int, 3> zero = {{0,0,0}};
                              if (c1 and c2){
                                dagger = false;
                                return true;
@@ -1809,7 +1900,7 @@ void GlobalData::init_lookup_tables() {
       build_C1_lookup(quantum_numbers, correlator_names, hdf5_dataset_name,
                       Q1_indices, correlator_lookuptable);
     }
-    else if (correlator.type == "C2+") {
+    else if (correlator.type == "C2+" || correlator.type == "Check") {
       /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
        *
