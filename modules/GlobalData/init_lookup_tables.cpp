@@ -183,8 +183,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
   }
   else if (correlator.type == "C40V" ||
            correlator.type == "C40B" ||
-           correlator.type == "C4+D" || correlator.type == "C4+V" ||
-           correlator.type == "C4+B" || correlator.type == "C4+C") {
+           correlator.type == "C40D" || correlator.type == "C4+V" ||
+           correlator.type == "C4+B" || correlator.type == "C40C") {
     for(const auto& op0 : qn_op[0]){
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
@@ -298,10 +298,10 @@ static size_t set_rnd_vec_charged(const std::vector<quark>& quarks,
   // set start and end points of rnd numbers
   auto rndq1_start = 0;
   for(auto i = 0; i < id_q1; i++)
-    rndq1_start =+ quarks[i].number_of_rnd_vec;
+    rndq1_start += quarks[i].number_of_rnd_vec;
   auto rndq2_start = 0;
   for(auto i = 0; i < id_q2; i++)
-    rndq2_start =+ quarks[i].number_of_rnd_vec;
+    rndq2_start += quarks[i].number_of_rnd_vec;
   auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
   auto rndq2_end = rndq2_start + quarks[id_q2].number_of_rnd_vec;
 
@@ -365,7 +365,7 @@ static size_t set_rnd_vec_uncharged(const std::vector<quark>& quarks,
   // set start and end points of rnd numbers
   auto rndq1_start = 0;
   for(auto i = 0; i < id_q1; i++)
-    rndq1_start =+ quarks[i].number_of_rnd_vec;
+    rndq1_start += quarks[i].number_of_rnd_vec;
   auto rndq1_end = rndq1_start + quarks[id_q1].number_of_rnd_vec;
 
   if(quarks[id_q1].number_of_rnd_vec < 2){
@@ -438,7 +438,7 @@ static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id,
     for(size_t i = 0; i < vdv_row.size(); i++){
       const auto& vdv = vdv_row[i];
       const auto& rnd = rnd_vec_id[i];
- 
+
       auto it = std::find_if(rvdaggerv_lookup.begin(), rvdaggerv_lookup.end(),
                            [&](VdaggerVRandomLookup vdv_qn)
                            {

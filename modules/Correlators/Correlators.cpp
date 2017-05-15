@@ -659,12 +659,12 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                                                      id_ric_lookup].rnd_vec_ids;
     const auto& ric3 = ric_lookup[quark_lookup.Q1[c_look.lookup[3]].
                                                      id_ric_lookup].rnd_vec_ids;
-    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
-       ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
-                << std::endl;
-      exit(0);
-    }
+//    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
+//       ric0.size() != ric3.size()){
+//      std::cout << "rnd combinations are not the same in build_corr0" 
+//                << std::endl;
+//      exit(0);
+//    }
 
     size_t norm = 0;
 // This is necessary to ensure the correct summation of the correlation function
@@ -731,12 +731,12 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
                                                      id_ric_lookup].rnd_vec_ids;
     const auto& ric3 = ric_lookup[quark_lookup.Q1[c_look.lookup[3]].
                                                      id_ric_lookup].rnd_vec_ids;
-    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
-       ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
-                << std::endl;
-      exit(0);
-    }
+//    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
+//       ric0.size() != ric3.size()){
+//      std::cout << "rnd combinations are not the same in build_corr0" 
+//                << std::endl;
+//      exit(0);
+//    }
 
     size_t norm = 0;
 // This is necessary to ensure the correct summation of the correlation function

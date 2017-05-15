@@ -44,7 +44,7 @@ static std::vector<std::string> create_perambulator_file_names (
 
       sprintf(temp2,
           "perambulator.rndvecnb%02d.%s.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
-          "SsiF%d.DsiF4.CsiF3.smeared1.%05d", 
+          "SsiF%d.DsiF4.CsiF3.smeared0.%05d", 
           rnd_vec_i, q.type.c_str(), Lt / q.number_of_dilution_T, 
           q.number_of_dilution_E, q.number_of_dilution_D, Lt, Lx*Ly*Lz, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);

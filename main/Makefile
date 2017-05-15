@@ -56,7 +56,7 @@ LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
 # scheduling and optimization options
 CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
          -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare \
-         -lboost_system -lboost_filesystem
+         -lboost_system -lboost_filesystem -g
 ############################## do not change ###################################
 
 SHELL=/bin/bash
