@@ -1,8 +1,10 @@
-/*
- * GlobalData.h
+/*! @file global_data.h
+ *  Class declaration of GlobalData
  *
- *  Created on: Mar 28, 2013
- *      Author: knippsch
+ *  @author Bastian Knippschild, 
+ *  @author Markus Werner
+ *  
+ *  @date Mar 28, 2013
  */
 
 #ifndef GLOBALDATA_H_
@@ -31,12 +33,23 @@
 #include "global_data_typedefs.h"
 #include "typedefs.h"
 
+/*! Class containing all metadata for contractions and functions to set them 
+ *  from infile
+ *
+ *  Metadata roughly characterized by either
+ *  - physical parameters
+ *  - flags
+ *  - paths
+ */
 class GlobalData {
 
 private:
-  //! A pointer on the class itself
+  /*! A pointer on the class itself. Definition in Instance(). Deletion in 
+   * ~GlobalData()
+   */
   static GlobalData* instance_;
 
+  //! @cond
   //! globally accessible data - naming should be clear and understandable
   int Lx, Ly, Lz, Lt;
   int dim_row, V_TS, V_for_lime;
@@ -57,45 +70,45 @@ private:
   std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
+  //! @endcond
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
  
-  // The function input handling creates quarks, operator_lists and
-  // correlator_lists from the strings created from the infile!
-  // in: vectors of strings of: quark_configs
-  //                            operator_list_configs
-  //                            correlator_list_configs
-  // out: there is no output but the vectors of: quarks
-  //                                             operator_list
-  //                                             correlator_list
-  //      are filled in this function. These lists are needed to build the
-  //      lookup tables in init_lookup_tables.
   std::vector<quark> quarks;
   std::vector<Operator_list> operator_list;
   Correlator_list correlator_list;
+
+  /*! Check and print lattice, config and path data and fills quarks, 
+   *  operator_lists and correlator_lists with the strings created from the 
+   *  infile
+   */
   void input_handling(const std::vector<std::string>& quark_configs,
                       const std::vector<std::string>& operator_list_configs,
                       const std::vector<std::string>& correlator_list_configs);
 
-  // The function init_lookup_tables creates the lookup tables from quarks, 
-  // operator_list and correlator_list.
-  OperatorLookup operator_lookuptable;
   QuarklineLookup quarkline_lookuptable;
+  OperatorLookup operator_lookuptable;
   CorrelatorLookup correlator_lookuptable;
+  /*! Creates the lookup tables for quarklines, operators and correlators */
   void init_lookup_tables();
 
 public:
+  /*! Checks whether GlobalData was initialized before. If yes, returns the 
+   *   existing object. If not, allocates new object on the stack.
+   */
   static GlobalData* Instance ();
 
-  // reading the input parameters from the infile in the main routine
+  /*! Reading the input parameters from the infile in the main routine and 
+   *  initializing GlobalData
+   */
   void read_parameters(int ac, char* av[]);
 
-  // This fills the random vector and prambulator structs with the paths and
-  // file names to read the data in depending on the config.
+  /*! Fills the random vector and perambulator structs with the paths and
+   *  file names to read the data 
+   */
   void build_IO_names(const size_t config);
 
-  // return functions for parameters
   inline std::string get_name_lattice() {
     return name_lattice;
   }
@@ -153,9 +166,11 @@ public:
   inline int get_verbose() {
     return verbose;
   }
+  /*! Returns all information needed to build and read random vectors */
   inline RandomVectorConstruction get_rnd_vec_construct(){
     return rnd_vec_construct;
   }
+  /*! Returns all information needed to build and read perambulators */
   inline PerambulatorConstruction get_peram_construct() {
     return peram_construct;
   }
@@ -174,36 +189,65 @@ public:
   inline std::string get_name_perambulators() {
     return name_perambulators;
   }
+  /*! Return the mode how to treat VdaggerV: Reading, or constructing anew.
+   *
+   *  @see LapH::OperatorsForMesons::create_operators()
+   */
   inline std::string get_handling_vdaggerv() {
     return handling_vdaggerv;
   }
   inline std::string get_path_vdaggerv() {
     return path_vdaggerv;
   }
+  /*! Return munged list of quarks as specified in the infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline std::vector<quark> get_quarks() {
     return quarks;
   }
+  /*! Return munged list of field operators as read from infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline std::vector<Operator_list>& get_operator_list() {
     return operator_list;
   }
+  /*! Return munged list of correlators as read from infile
+   * 
+   * @todo make that private and delete get function
+   */
   inline Correlator_list& get_correlator_list() {
     return correlator_list;
   }
+  /*! Return vector of unique sLapH operators */
   inline const OperatorLookup get_operator_lookuptable(){
     return operator_lookuptable;
   }
+  /*! Return vector of unique physical contents needed for quarklines */
   inline const QuarklineLookup get_quarkline_lookuptable(){
     return quarkline_lookuptable;
   }
+  /*! Return vector of unique physical contents needed for correlators */
   inline const CorrelatorLookup get_correlator_lookuptable(){
     return correlator_lookuptable;
   }
-  //! All con/de-structors are protected to assure that only one instance exists
-  //! at once. DO NOT CHANGE!!
+  
+  /*! @cond  
+   *  All con/de-structors are protected to assure that only one instance exists
+   *  at once. DO NOT CHANGE!!
+   */
 protected:
   GlobalData () {}
   GlobalData (const GlobalData& other) {}
-  virtual ~GlobalData () {}
+  /*! @endcond 
+   * Destruktor needs to delete @ref instance_ manually because it is 
+   * allocated on the stack
+   */
+  virtual ~GlobalData () {
+    // In GlobalData::Instance the object is allocated on the stack
+    delete instance_;
+  }
 
 };
 

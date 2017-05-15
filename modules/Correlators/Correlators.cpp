@@ -1,5 +1,8 @@
 #include "Correlators.h"
 
+/*! @TODO Why is the hdf5 stuff not in an unnamed namespace or a seperate 
+ *        file? 
+ */
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // ugly way to check if group exists and if not to create it -
@@ -153,15 +156,10 @@ static void write_4pt_correlators(const std::vector<LapH::compcomp_t>& corr,
      error.printError();
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
+/******************************************************************************/
+/******************************************************************************/
 
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 void LapH::Correlators::build_C1(const Quarklines& quarklines,
                     const std::vector<CorrInfo>& corr_lookup,
                     const QuarklineLookup& quark_lookup,
@@ -643,7 +641,7 @@ void LapH::Correlators::build_C4cC(const Quarklines& quarklines,
                                                     id_ricQ_lookup].rnd_vec_ids;
     if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
        ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
+      std::cout << "rnd combinations are not the same in C4+C" 
                 << std::endl;
       }
 
@@ -1256,7 +1254,7 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                                                      id_ric_lookup].rnd_vec_ids;
     if(ric0.size() != ric1.size() || ric0.size() != ric2.size() || 
        ric0.size() != ric3.size()){
-      std::cout << "rnd combinations are not the same in build_corr0" 
+      std::cout << "rnd combinations are not the same in C40C" 
                 << std::endl;
       exit(0);
     }
@@ -1378,15 +1376,23 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/******************************************************************************/ 
+/*!
+ *  @param quarklines       Instance of Quarklines. Contains prebuilt 
+ *                          combinations of operators and perambulators
+ *  @param meson_operator   Instance of LapH::OperatorsForMesons. Contains 
+ *                          operators (@f$ V^\dagger V $f$) with momenta 
+ *                          and with/without dilution. 
+ *  @param perambulators    Instance of LapH::Perambulator class. Contains 
+ *                          Perambulator data
+ *  @param operator_lookup   
+ *  @param corr_lookup
+ *  @param quark_lookup
+ *
+ *  If a diagram is not specified in the infile, corr_lookup contains an empty
+ *  vector for this diagram and the build function immediately returns
+ */
 void LapH::Correlators::contract (Quarklines& quarklines, 
                      const OperatorsForMesons& meson_operator,
                      const Perambulator& perambulators,

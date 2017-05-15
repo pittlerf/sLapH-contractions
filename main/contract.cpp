@@ -1,11 +1,15 @@
-// *****************************************************************************
-// Name         : contract.cpp
-// Author       : Bastian Knippschild
-// Contributors : Christopher Helmes, Christian Jost, Liuming Liu, Markus Werner
-// Version      : 0.1
-// Copyright    : Copies are prohibited so far
-// Description  : Contraction code for Laphs Perambulators
-// *****************************************************************************
+/*! @file contract.cpp
+ *  Main function of Contraction code for Laphs Perambulators
+ *
+ *  @author Bastian Knippschild
+ *  @author Christopher Helmes
+ *  @author Christian Jost
+ *  @author Liuming Liu
+ *  @author Markus Werner
+ *
+ *  @version 0.1
+ *  @copyright Copies are prohibited so far
+ */ 
 
 #include <iostream>
 
@@ -14,6 +18,21 @@
 #include "Correlators.h" // contains all other headers
 #include "global_data.h"
 
+
+/*! Read parameters from infile and perform the specified contractions
+ *
+ *  In succession instanciate GlobalData, LapH::Perambulator,
+ *  LapH::RandomVector, LapH::OperatorsForMesons, LapH::Quarklines (deprecated) 
+ *  and LapH::Correlators. 
+ *  - Get paths, physical quantum numbers and desired operators from infile 
+ *  - Loop over Configuration
+ *  - Read perambulators, randomvectors and contract
+ *
+ *  The flow of this function is depicted in the Flowchart below. The colors
+ *  uniquely encode the class a member function belongs to. Beige fields are 
+ *  not classmembers
+ *  @image html contract.pdf "Flow chart of main()"
+ */
 int main (int ac, char* av[]) {
 
   // reading global parameters from input file

@@ -41,14 +41,15 @@ LOGOPTION =
 LIMEPATH = /hiskp2/werner/libraries/lime
 
 # additional include directories
-INCPATH = /hiskp2/werner/libraries/eigen-3.2.7 \
-	  /hiskp2/werner/libraries/boost_1_60_0 \
-	  /hiskp2/knippsch/hdf5-1.8.17/include \
-          $(LIMEPATH)/include/ ../include ../include/GlobalData
+INCPATH = /home/knippsch/ExternLibraries/eigen-3.2.1 \
+          /home/knippsch/ExternLibraries/boost_1_55_0 \
+          /home/knippsch/ExternLibraries/hdf5-1.8.17/include \
+          $(LIMEPATH)/include/ ../include ../include/GlobalData \
+	  /usr/include/eigen3
 
 # additional libraries
 
-LIBS = hdf5_cpp hdf5 sz z dl m boost_program_options lime 
+LIBS = hdf5_cpp hdf5 z dl m boost_program_options lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
 	  /hiskp2/werner/libraries/boost_1_60_0/stage/lib/ \

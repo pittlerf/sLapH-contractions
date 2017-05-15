@@ -1,0 +1,9 @@
+# Spam
+*.swp
+*.swo
+# Compilespam
+*.o
+*.d
+# Doxygen Output
+doxygen/html
+doxygen/latex

@@ -1,3 +1,11 @@
+/*! @file global_data_utils.h
+ *  Functions for input handling
+ *
+ *  @author Bastian Knippschild
+ *  @author Markus Werner
+ */
+
+
 #ifndef GLOBALDATA_UTILS_H_
 #define GLOBALDATA_UTILS_H_
 
@@ -10,9 +18,13 @@
 
 namespace global_data_utils {
 
-  // functions for input handling
+  /*! Makes a quark object from a string */
   quark make_quark (const std::string& quark_string);
+  /*! Enforces that @em quarks is filled with valid values and terminates the
+   *  program with an errormessage otherwise
+   */
   void quark_check(quark quarks);
+  /*! Makes an operator list object from a string */
   Operator_list make_operator_list(const std::string& operator_string);
 
 } // end of namespace global_data_utils
