@@ -1104,7 +1104,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
        else                                                                     
          id_Q2L_2 = (dir+1)%2*dilT + t2;               
     }                                                  
-std::cout << t1 << " " << t2 << " " << t << " " << id_Q2L_1 << " " << id_Q2L_2 << std::endl;
+
     // build M1 ----------------------------------------------------------------
     for(const auto& look : M1_look){
       const auto& ric0 = operator_lookup.ricQ2_lookup[
@@ -1667,6 +1667,7 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
+//void LapH::Correlators::contract (Quarklines& quarklines, 
 void LapH::Correlators::contract (Quarklines& quarklines, 
                      const OperatorsForMesons& meson_operator,
                      const Perambulator& perambulators,

@@ -103,12 +103,12 @@ int main (int ac, char* av[]) {
     /*! Building quarklines from operators and perambulators
      *  @todo Can be deleted after all correlators are memory optimized 
      */
-//    quarklines.create_quarklines(perambulators, meson_operators, 
-//                          global_data->get_quarkline_lookuptable(),
-//                          global_data->get_operator_lookuptable().ricQ2_lookup);
+    quarklines.create_quarklines(perambulators, meson_operators, 
+                          global_data->get_quarkline_lookuptable(),
+                          global_data->get_operator_lookuptable().ricQ2_lookup);
     // this memory is not needed anymore
-    meson_operators.free_memory_rvdaggerv();
-    meson_operators.free_memory_vdaggerv();
+//    meson_operators.free_memory_rvdaggerv();
+//    meson_operators.free_memory_vdaggerv();
 
     // doing all the contractions
     correlators.contract(quarklines, meson_operators, perambulators,

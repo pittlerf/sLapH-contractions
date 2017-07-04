@@ -476,8 +476,8 @@ void LapH::Quarklines::create_quarklines(const Perambulator& peram,
                       const std::vector<RandomIndexCombinationsQ2>& ric_lookup){
 
   build_Q1(peram, meson_operator, quarkline_lookuptable.Q1, ric_lookup);
-  build_Q2L(peram, meson_operator, quarkline_lookuptable.Q2L, ric_lookup);
-  build_Q2V(peram, meson_operator, quarkline_lookuptable.Q2V, ric_lookup);
+//  build_Q2L(peram, meson_operator, quarkline_lookuptable.Q2L, ric_lookup);
+//  build_Q2V(peram, meson_operator, quarkline_lookuptable.Q2V, ric_lookup);
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
