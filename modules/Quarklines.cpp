@@ -315,6 +315,7 @@ void LapH::Quarklines::build_Q1_one_t(const Perambulator& peram,
       const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
       for(size_t row = 0; row < 4; row++){
       for(size_t col = 0; col < 4; col++){
+
         Q1[0][0][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
           gamma[gamma_id].value[row] *  
           meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t_source, rid1).

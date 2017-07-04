@@ -414,7 +414,7 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
 
   // check if vdaggerv is already build
   if(not is_vdaggerv_set){
-    std::cout << "\n\n\tCaution: vdaggerv is not set and rvdaggervr cannot be" 
+    std::cout << "\n\n\tCaution: vdaggerv is not set and rvdaggerv cannot be" 
               << " computed\n\n" << std::endl;
     exit(0);
   }
@@ -430,8 +430,8 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
 #pragma omp parallel for schedule(dynamic)
   for(size_t t = 0; t < Lt; t++){
 
-  // rvdaggervr is calculated by multiplying vdaggerv with the same quantum
-  // numbers with random vectors from right and left.
+  // rvdaggerv is calculated by multiplying vdaggerv with the same quantum
+  // numbers with random vectors from the left.
   for(const auto& op : operator_lookuptable.rvdaggerv_lookuptable){
 
     Eigen::MatrixXcd vdv;

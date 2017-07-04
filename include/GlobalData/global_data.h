@@ -71,10 +71,7 @@ private:
   std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
-<<<<<<< HEAD
   //! @endcond
-=======
->>>>>>> master
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;

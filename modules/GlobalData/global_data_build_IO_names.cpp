@@ -48,10 +48,11 @@ static std::vector<std::string> create_perambulator_file_names (
       // data path for qbig contractions
       sprintf(temp1, "cnfg%04d/rnd_vec_%02d/", config, rnd_vec_i);
       sprintf(temp2,
-          "perambulator.rndvecnb%02d.%s.TsoB%04d.VsoI%04d.DsoF%1d.TsiF%04d."
+          "perambulator.rndvecnb%02d.%s.Tso%c%04d.Vso%c%04d.Dso%c%1d.TsiF%04d."
           "SsiF%d.DsiF4.CsiF3.smeared0.%05d", 
-          rnd_vec_i, q.type.c_str(), Lt / q.number_of_dilution_T, 
-          q.number_of_dilution_E, q.number_of_dilution_D, Lt, Lx*Ly*Lz, config);
+          rnd_vec_i, q.type.c_str(), dil_scheme_T, Lt / q.number_of_dilution_T, 
+          dil_scheme_E, q.number_of_dilution_E, dil_scheme_D, q.number_of_dilution_D, 
+          Lt, Lx*Ly*Lz, config);
       filename_list.push_back(q.path + "/" + temp1 + temp2);
     }
   }
@@ -82,5 +83,5 @@ void GlobalData::build_IO_names(const size_t config){
   peram_construct.filename_list = create_perambulator_file_names(
                                                 config, Lt, Lx, Ly, Lz, quarks);
   filename_eigenvectors = create_eigenvector_file_name(config, 
-                                                       path_eigenvectors, 
-                                                       name_eigenvectors);
+                                          path_eigenvectors, name_eigenvectors);
+}
