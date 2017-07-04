@@ -216,7 +216,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
   corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 #pragma omp parallel
 {
-  Quarklines quarklines_intern(2, dilT, dilE, nev, quark_lookup, 
+  Quarklines_one_t quarklines_intern(2, dilT, dilE, nev, quark_lookup, 
                                operator_lookup.ricQ2_lookup);
 
   #pragma omp for schedule(dynamic) 
@@ -403,7 +403,7 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
 #pragma omp parallel
 {
   // building the quark line directly frees up a lot of memory
-  Quarklines quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
+  Quarklines_one_t quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
                         operator_lookup.ricQ2_lookup);
   #pragma omp for schedule(dynamic)
   for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
@@ -643,7 +643,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
+  Quarklines_one_t quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
                         operator_lookup.ricQ2_lookup);
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
@@ -1006,7 +1006,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
+  Quarklines_one_t quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
                         operator_lookup.ricQ2_lookup);
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
@@ -1210,7 +1210,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
+  Quarklines_one_t quarklines(2*dilT, dilT, dilE, nev, quark_lookup, 
                         operator_lookup.ricQ2_lookup);
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;

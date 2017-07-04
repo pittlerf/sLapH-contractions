@@ -71,6 +71,51 @@ public:
                                    const size_t op_id, const size_t rnd) const {
     return Q2L[t1][t2][op_id].at(rnd);
   }
+
+  void create_quarklines(const Perambulator& peram, 
+                      const OperatorsForMesons& meson_operator,
+                      const QuarklineLookup& quarkline_lookuptable,
+                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+};
+
+class Quarklines_one_t {
+
+private:
+  // containers for the three types of quark lines
+  array_quarkline Q1;
+  array_quarkline Q2V;
+  array_quarkline Q2L;
+  const size_t Lt, dilT, dilE, nev;
+  std::vector<LapH::gamma_lookup>  gamma;
+
+public:
+
+  Quarklines_one_t (const size_t Lt, const size_t dilT, const size_t dilE, 
+              const size_t nev, const QuarklineLookup& quarkline_lookuptable,
+              const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+  ~Quarklines_one_t () {}; // dtor
+
+  inline const cmplx& return_gamma_val(const size_t gamma_id, 
+                                       const size_t row) const {
+    return gamma[gamma_id].value[row];
+  }
+  inline const int& return_gamma_row(const size_t gamma_id, 
+                                     const size_t row) const{
+    return gamma[gamma_id].row[row];
+  }
+  inline const Eigen::MatrixXcd& return_Q1(const size_t t1, const size_t t2,
+                                   const size_t op_id, const size_t rnd) const {
+    return Q1[t1][t2][op_id].at(rnd);
+  }
+  inline const Eigen::MatrixXcd& return_Q2V(const size_t t1, const size_t t2,
+                                   const size_t op_id, const size_t rnd) const {
+    return Q2V[t1][t2][op_id].at(rnd);
+  }
+  inline const Eigen::MatrixXcd& return_Q2L(const size_t t1, const size_t t2,
+                                   const size_t op_id, const size_t rnd) const {
+    return Q2L[t1][t2][op_id].at(rnd);
+  }
+
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator& peram,
@@ -93,11 +138,6 @@ public:
                        const int t1_block, const int t2_block,
                        const std::vector<QuarklineQ2Indices>& ql_lookup,
                        const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
-
-  void create_quarklines(const Perambulator& peram, 
-                      const OperatorsForMesons& meson_operator,
-                      const QuarklineLookup& quarkline_lookuptable,
-                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 };
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

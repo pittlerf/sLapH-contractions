@@ -26,7 +26,7 @@ GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 
 RANDOM = RandomVector ranlxs
 
-GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines
+GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines Quarklines_one_t
 
 MODULES = $(GLOBALDATA) $(RANDOM) $(GENERAL)
 

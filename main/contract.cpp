@@ -64,12 +64,12 @@ int main (int ac, char* av[]) {
                             global_data->get_handling_vdaggerv(),
                             global_data->get_path_vdaggerv());  
   /*! @todo Quarklines Can be deleted after memory optimizing all diagrams */
-//  LapH::Quarklines quarklines(global_data->get_Lt(), 
-//                         (global_data->get_quarks())[0].number_of_dilution_T,
-//                         (global_data->get_quarks())[0].number_of_dilution_E,
-//                          global_data->get_number_of_eigen_vec(),
-//                          global_data->get_quarkline_lookuptable(),
-//                          global_data->get_operator_lookuptable().ricQ2_lookup);
+  LapH::Quarklines quarklines(global_data->get_Lt(), 
+                         (global_data->get_quarks())[0].number_of_dilution_T,
+                         (global_data->get_quarks())[0].number_of_dilution_E,
+                          global_data->get_number_of_eigen_vec(),
+                          global_data->get_quarkline_lookuptable(),
+                          global_data->get_operator_lookuptable().ricQ2_lookup);
 
   LapH::Correlators correlators(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,
