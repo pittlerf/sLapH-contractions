@@ -11,6 +11,7 @@ ubuntu_packages=(
     cmake
     libhdf5-dev 
     libeigen3-dev
+    libboost-filesystem-dev libboost-system-dev libboost-program-options-dev
 )
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
