@@ -20,7 +20,9 @@ sudo apt-get install -y "${ubuntu_packages[@]}"
 sourcedir="$(pwd)"
 
 cd ..
-mkdir build
+rm -rf build-contraction
+mkdir -p build-contraction
 cd build
 
 cmake "$sourcedir"
+make -j $(nproc)
