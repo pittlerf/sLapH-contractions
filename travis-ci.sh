@@ -19,11 +19,12 @@ sudo apt-get update
 sudo apt-get install -y "${ubuntu_packages[@]}"
 
 sourcedir="$(pwd)"
+builddir=build-contraction
 
 cd ..
-rm -rf build-contraction
-mkdir -p build-contraction
-cd build
+rm -rf "$builddir"
+mkdir -p "$builddir"
+cd "$builddir"
 
 cmake "$sourcedir"
 make -j $(nproc)
