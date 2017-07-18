@@ -29,5 +29,5 @@ rm -rf "$builddir"
 mkdir -p "$builddir"
 cd "$builddir"
 
-cmake "$sourcedir"
+cmake "$sourcedir" -DCMAKE_MODULE_PATH=$(dirname $(locate FindEigen3.cmake))
 make -j $(nproc)
