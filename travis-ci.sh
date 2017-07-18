@@ -17,7 +17,7 @@ ubuntu_packages=(
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install -y "${ubuntu_packages[@]}"
-sudo apt-get update libeigen3-dev
+sudo apt-get upgrade -y libeigen3-dev
 
 sourcedir="$(pwd)"
 builddir=build-contraction
