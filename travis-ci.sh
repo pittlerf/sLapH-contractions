@@ -1,5 +1,6 @@
 #!/bin/bash
 # Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Licensed under the MIT/Expat license.
 
 set -e
 set -u
