@@ -25,9 +25,15 @@ sudo updatedb
 locate FindEigen3.cmake
 
 cd ..
+
+
+mkdir cmake-module
+cp $(locate FindEigen3.cmake) cmake-module
+
+
 rm -rf "$builddir"
 mkdir -p "$builddir"
 cd "$builddir"
 
-cmake "$sourcedir" -DCMAKE_MODULE_PATH=$(dirname $(locate FindEigen3.cmake))
+cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module
 make -j $(nproc)
