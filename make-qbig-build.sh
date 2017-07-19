@@ -19,7 +19,7 @@ for buildtype in release debug; do
 
     cmake \
         ../cntr.v0.1 \
-        -DEIGEN3_INCLUDE_DIRS='/hiskp2/werner/libraries/eigen-3.2.7' \
+        -DEIGEN3_INCLUDE_DIR='/hiskp2/werner/libraries/eigen-3.2.7' \
         -DHDF5_INCLUDE_DIRS=/hiskp2/knippsch/hdf5-1.8.17/include \
         -DHDF5_LIBRARIES='-L/hiskp2/knippsch/hdf5-1.8.17/lib -lhdf5_cpp -lhdf5 -lsz -lz' \
         -DCMAKE_CXX_COMPILER=g++-4.7 \

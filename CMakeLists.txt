@@ -18,10 +18,10 @@ if(NOT DEFINED Boost_INCLUDE_DIRS OR NOT DEFINED Boost_LIBRARIES)
 endif()
 include_directories(${Boost_INCLUDE_DIRS})
 
-if(NOT DEFINED EIGEN3_INCLUDE_DIRS)
+if(NOT DEFINED EIGEN3_INCLUDE_DIR)
     find_package(Eigen3 REQUIRED)
 endif()
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 find_package(OpenMP)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
