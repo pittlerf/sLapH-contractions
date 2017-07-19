@@ -30,6 +30,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 add_definitions(-Wall -pedantic --std=c++11)
 add_definitions(-Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare)
 
+string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower )
+if(cmake_build_type_lower STREQUAL "release")
+    add_definitions(-O3 -march=native)
+endif()
+
 add_executable(contract
     modules/RandomVector.cpp
     modules/Correlators/Correlators.cpp
