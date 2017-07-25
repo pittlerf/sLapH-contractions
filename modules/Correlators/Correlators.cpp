@@ -38,7 +38,7 @@ static void write_correlators(const std::vector<cmplx>& corr,
       std::cout << "\tdirectory " << corr_info.outpath.c_str() 
                 << " does not exist and will be created";
       boost::filesystem::path dir(corr_info.outpath.c_str());
-      if(!boost::filesystem::create_directories(dir))
+      if(boost::filesystem::create_directories(dir))
         std::cout << "\tSuccess" << std::endl;
       else
         std::cout << "\tFailure" << std::endl;
@@ -266,6 +266,9 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
 
+  std::cout << "\tcomputing C20:";
+  clock_t time = clock();
+
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
     for(int t1 = 0; t1 < Lt; t1++){
@@ -280,12 +283,19 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
     // write data to file
     write_correlators(correlator, c_look);
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  std::cout << "\tcomputing C40D:";
+  clock_t time = clock();
 
   for(const auto& c_look : corr_lookup.C40D){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -331,12 +341,19 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  std::cout << "\tcomputing C40V:";
+  clock_t time = clock();
 
   for(const auto& c_look : corr_lookup.C40V){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -382,6 +399,10 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -481,7 +502,8 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
       }}// t1, t2 end here
     }// dir (directions) end here
   }}// block times end here
-}// omp paralle ends here
+}// omp parall ends here
+
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
@@ -489,6 +511,9 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
+
+  std::cout << "\tcomputing C2c:";
+  clock_t time = clock();
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -519,12 +544,19 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
       write_correlators(correlator, c_look);
     }
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  std::cout << "\tcomputing C4cD:";
+  clock_t time = clock();
 
   for(const auto& c_look : corr_lookup.C4cD){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -571,12 +603,19 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  std::cout << "\tcomputing C4cV:";
+  clock_t time = clock();
 
   for(const auto& c_look : corr_lookup.C4cV){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -623,6 +662,10 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
     // write data to file
     write_4pt_correlators(correlator, c_look);
   }
+
+  time = clock() - time;
+  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
+            << " seconds" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

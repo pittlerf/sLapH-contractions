@@ -503,8 +503,10 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
                std::vector<std::string>& hdf5_dataset_name){
   
   for(const auto& qn_row : quantum_numbers){
+    std::stringstream cnfg_string;
+    cnfg_string << std::setw(4) << std::setfill('0') << std::to_string(cnfg);
     std::string hdf5_filename =  corr_type + "_cnfg" + 
-                                 std::to_string(cnfg) + ".h5";
+                                 cnfg_string.str() + ".h5";
     std::string pathname = outpath + "/";
     std::string filename =  corr_type + "_";
     for(const auto& qt : quark_types) // adding quark content

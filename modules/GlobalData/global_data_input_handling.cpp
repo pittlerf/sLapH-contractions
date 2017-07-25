@@ -34,7 +34,7 @@ void lattice_input_data_handling (const std::string path_output,
           << "\n\n";
       exit(0);
     }
-    else std::cout << "\n\ttemporal lattice extend .................. " << Lt
+    else std::cout << "\n\ttemporal lattice extent .................. " << Lt
         << "\n";
     //
     if(Lx < 1){
@@ -43,7 +43,7 @@ void lattice_input_data_handling (const std::string path_output,
           << "\n\n";
       exit(0);
     }
-    else std::cout << "\tspatial lattice extend in x direction .... " << Lx
+    else std::cout << "\tspatial lattice extent in x direction .... " << Lx
         << "\n";
     //
     if(Ly < 1){
@@ -52,7 +52,7 @@ void lattice_input_data_handling (const std::string path_output,
           << "\n\n";
       exit(0);
     }
-    else std::cout << "\tspatial lattice extend in y direction .... " << Ly
+    else std::cout << "\tspatial lattice extent in y direction .... " << Ly
         << "\n";
     //
     if(Lz < 1){
@@ -61,7 +61,7 @@ void lattice_input_data_handling (const std::string path_output,
           << "\n\n\n";
       exit(0);
     }
-    else std::cout << "\tspatial lattice extend in z direction .... " << Lz
+    else std::cout << "\tspatial lattice extent in z direction .... " << Lz
         << "\n\n";
     std::cout << "\tEnsemble ...................................... " <<
       name_lattice << std::endl;

@@ -14,9 +14,11 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include <Eigen/Dense>
