@@ -1,161 +1,134 @@
 #include "Correlators.h"
 
-/*! @TODO Why is the hdf5 stuff not in an unnamed namespace or a seperate 
- *        file? 
- */
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// ugly way to check if group exists and if not to create it -
-// Alternative: use c API (don't want to)
-inline void open_or_create_hdf5_group(const std::string& GROUP_NAME,
-                                      const H5::H5File& file, H5::Group& group){
-  try{
-    group = file.openGroup(GROUP_NAME.c_str());
-  }
-  catch(H5::Exception& e){
-    group = file.createGroup(GROUP_NAME.c_str());
-  }
-}
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// ugly stays ugly :(
-inline void open_or_create_hdf5_file(const H5std_string FILE_NAME, 
-                                     H5::H5File&file){
+namespace
+{
 
-  try{
-    file = H5::H5File(FILE_NAME, H5F_ACC_EXCL);
-  }
-  catch(H5::Exception& e){
-    file = H5::H5File(FILE_NAME, H5F_ACC_RDWR);
-  }
+/*! Creates compound datatype to write complex numbers from LapH::complex_t 
+ *  vectors to HDF5 file
+ *
+ *  @Returns cmplx_w   HDF5 compound datatype for complex numbers
+ */
+H5::CompType comp_type_factory_tr(){
+  H5::CompType cmplx_w(2*sizeof(double));
+  auto type = H5::PredType::NATIVE_DOUBLE;
+  cmplx_w.insertMember("re", HOFFSET(LapH::complex_t, re), type);
+  cmplx_w.insertMember("im", HOFFSET(LapH::complex_t, im), type);
+
+  return cmplx_w;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-static void write_correlators(const std::vector<cmplx>& corr, 
-                              const CorrInfo& corr_info){
-  // check if directory exists
-  if(access( corr_info.outpath.c_str(), 0 ) != 0) {
-      std::cout << "\tdirectory " << corr_info.outpath.c_str() 
+
+/*! Creates compound datatype to write complex numbers from LapH::compcomp_t
+ *  vectors to HDF5 file
+ *
+ *  @Returns cmplx_w   HDF5 compound datatype for structs of four doubles
+ */
+H5::CompType comp_type_factory_trtr(){
+  H5::CompType cmplxcmplx_w(4*sizeof(double));
+  auto type = H5::PredType::NATIVE_DOUBLE;
+  cmplxcmplx_w.insertMember("rere", HOFFSET(LapH::compcomp_t, rere), type);
+  cmplxcmplx_w.insertMember("reim", HOFFSET(LapH::compcomp_t, reim), type);
+  cmplxcmplx_w.insertMember("imre", HOFFSET(LapH::compcomp_t, imre), type);
+  cmplxcmplx_w.insertMember("imim", HOFFSET(LapH::compcomp_t, imim), type);
+
+  return cmplxcmplx_w;
+}
+
+class WriteHDF5Correlator{
+
+public:
+  WriteHDF5Correlator(const CorrInfo& corr_info, const H5::CompType& _comp_type) :
+      comp_type(_comp_type){
+
+    create_folder_for_hdf5_file(corr_info.outpath.c_str());
+
+    const H5std_string file_name((corr_info.outpath+corr_info.outfile).c_str());
+    open_or_create_hdf5_file(file_name);
+  }
+
+  /*! Writes data to file
+   *
+   *  @Param corr       The data to write
+   *  @Param corr_info  Contains the hdf5_dataset_name
+   *
+   *  @todo It is sufficient to pass the hdf5_dataset_name
+   *
+   *  @remark The type corr_datatype is always either LapH::complex_t or 
+   *          LapH::compcomp_t. The function body is identical for both types 
+   *          as everything is specified by corr_info. Thus the template 
+   *          overload
+   */
+  template < typename corr_datatype >
+  void write(const std::vector<corr_datatype>& corr, const CorrInfo& corr_info){
+
+    // Turn off the autoprinting when an exception occurs because fuck you 
+    // thats why
+    H5::Exception::dontPrint(); 
+    // That's right bitches!
+    
+    // create the dataset to write data ----------------------------------------
+    H5::Group group;
+    H5::DataSet dset;
+    H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
+    hsize_t dim(corr.size());
+    H5::DataSpace dspace(1, &dim);
+
+    // actual write
+    try
+    {
+      dset = file.createDataSet(dataset_name, comp_type, dspace);
+      dset.write(&corr[0], comp_type);
+  
+      // closing of dset is delegated to destructor ~DataSet
+  
+    } 
+    catch(H5::Exception& e){
+      e.printError();
+    }
+  }
+
+private:
+
+  /*! Checks whether output path exists and if not creates it 
+   * 
+   *  @param[in] path Path where hdf5 file shall be written
+   */
+  void create_folder_for_hdf5_file(const char* path){
+    if(access(path, 0 ) != 0) {
+      std::cout << "\tdirectory " << path 
                 << " does not exist and will be created";
-      boost::filesystem::path dir(corr_info.outpath.c_str());
+      boost::filesystem::path dir(path);
       if(boost::filesystem::create_directories(dir))
         std::cout << "\tSuccess" << std::endl;
       else
         std::cout << "\tFailure" << std::endl;
+    }
   }
-  // writing the data ----------------------------------------------------------
-  try
-  {
-    // exceptins will be catched at the end and not printed
-    H5::Exception::dontPrint(); 
-    // hdf5 data
-    H5::H5File file;
-    H5::Group group;
-    H5::DataSet dset;
-    // create new memory data type for writing for COMPLEX numbers -------------
-    H5::CompType cmplx_w(sizeof(std::complex<double>));
-    auto type = H5::PredType::NATIVE_DOUBLE;
-    cmplx_w.insertMember("re", HOFFSET(LapH::complex_t, re), type);
-    cmplx_w.insertMember("im", HOFFSET(LapH::complex_t, im), type);
-    // open file or create the file if it does not exist -----------------------
-    const H5std_string FILE_NAME((corr_info.outpath+corr_info.outfile).c_str());
-    open_or_create_hdf5_file(FILE_NAME, file);
-    // create the dataset to write data ----------------------------------------
-    H5std_string DATASET_NAME((corr_info.hdf5_dataset_name).c_str());
-    hsize_t dim(corr.size());
-    H5::DataSpace dspace(1, &dim);
-    dset = file.createDataSet(DATASET_NAME, cmplx_w, dspace);
-    dset.write(&corr[0], cmplx_w);
-    dset.close();
-    file.close();
+ 
+  /*! Open file or create the file if it does not exist 
+   *
+   *  @param[in]  name String containing path+filename of the desired file
+   *  @param[out] file File pointer to hdf5 file
+   */
+  void open_or_create_hdf5_file(const H5std_string& name){
 
-  } // end of try block - catching all the bad things --------------------------
-  // catch failure caused by the H5File operations
-  catch(H5::FileIException error){
-     error.printError();
+    /*! Opens output file
+     *
+     *  @todo Incorporate CorrInfo.overwrite by using another Access Flag
+     */
+    try{
+      file = H5::H5File(name, H5F_ACC_EXCL);
+    }
+    catch(H5::Exception& e){
+      file = H5::H5File(name, H5F_ACC_RDWR);
+    }
   }
-  // catch failure caused by the DataSet operations
-  catch(H5::DataSetIException error){
-     error.printError();
-  }
-  // catch failure caused by the DataSpace operations
-  catch(H5::DataSpaceIException error){
-     error.printError();
-  }
-  // catch failure caused by the DataSpace operations
-  catch(H5::DataTypeIException error){
-     error.printError();
-  }
-  // catch failure caused by the Group operations
-  catch(H5::GroupIException error){
-     error.printError();
-  }
-}
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// TODO: Bad style: code duplication - see write_correlators
-static void write_4pt_correlators(const std::vector<LapH::compcomp_t>& corr, 
-                                  const CorrInfo& corr_info){
-  // check if directory exists
-  if(access( corr_info.outpath.c_str(), 0 ) != 0) {
-      std::cout << "\tdirectory " << corr_info.outpath.c_str() 
-                << " does not exist and will be created";
-      boost::filesystem::path dir(corr_info.outpath.c_str());
-      if(!boost::filesystem::create_directories(dir))
-        std::cout << "\tSuccess" << std::endl;
-      else
-        std::cout << "\tFailure" << std::endl;
-  }
-  // writing the data ----------------------------------------------------------
-  try
-  {
-    // exceptins will be catched at the end and not printed
-    H5::Exception::dontPrint(); 
-    // hdf5 data
-    H5::H5File file;
-    H5::Group group;
-    H5::DataSet dset;
-    // create new memory data type for writing for COMPLEX numbers -------------
-    H5::CompType cmplxcmplx_w(4*sizeof(double));
-    auto type = H5::PredType::NATIVE_DOUBLE;
-    cmplxcmplx_w.insertMember("rere", HOFFSET(LapH::compcomp_t, rere), type);
-    cmplxcmplx_w.insertMember("reim", HOFFSET(LapH::compcomp_t, reim), type);
-    cmplxcmplx_w.insertMember("imre", HOFFSET(LapH::compcomp_t, imre), type);
-    cmplxcmplx_w.insertMember("imim", HOFFSET(LapH::compcomp_t, imim), type);
-    // open file or create the file if it does not exist -----------------------
-    const H5std_string FILE_NAME((corr_info.outpath+corr_info.outfile).c_str());
-    open_or_create_hdf5_file(FILE_NAME, file);
-    // create the dataset to write data ----------------------------------------
-    H5std_string DATASET_NAME((corr_info.hdf5_dataset_name).c_str());
-    hsize_t dim(corr.size());
-    H5::DataSpace dspace(1, &dim);
-    dset = file.createDataSet(DATASET_NAME, cmplxcmplx_w, dspace);
-    dset.write(&corr[0], cmplxcmplx_w);
-    dset.close();
-    file.close();
 
-  } // end of try block - catching all the bad things --------------------------
-  // catch failure caused by the H5File operations
-  catch(H5::FileIException error){
-     error.printError();
-  }
-  // catch failure caused by the DataSet operations
-  catch(H5::DataSetIException error){
-     error.printError();
-  }
-  // catch failure caused by the DataSpace operations
-  catch(H5::DataSpaceIException error){
-     error.printError();
-  }
-  // catch failure caused by the DataSpace operations
-  catch(H5::DataTypeIException error){
-     error.printError();
-  }
-  // catch failure caused by the Group operations
-  catch(H5::GroupIException error){
-     error.printError();
-  }
-}
+  H5::H5File file;
+  H5::CompType comp_type;
+
+}; // end of class WriteHDF5Correlator
+
+} // end of anonymous namespace
 
 /******************************************************************************/
 /******************************************************************************/
@@ -176,6 +149,10 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
   std::cout << "\tcomputing C1:";
   clock_t time = clock();
 
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+
   for(const auto& c_look : corr_lookup){
     const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
                                                      id_ric_lookup].rnd_vec_ids;
@@ -186,8 +163,9 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
          quarklines.return_Q1(t, t/dilT, c_look.lookup[0], &id-&ric[0]).trace();
       }
     }
+
     // write data to file
-    write_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -269,6 +247,10 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
   std::cout << "\tcomputing C20:";
   clock_t time = clock();
 
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
     for(int t1 = 0; t1 < Lt; t1++){
@@ -278,10 +260,12 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
         correlator[t] += corr;
     }}
     // normalisation
-    for(auto& corr : correlator)
+    for(auto& corr : correlator){
       corr /= Lt*corr0[c_look.lookup[0]][0][0].size();
+    }
+
     // write data to file
-    write_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
@@ -296,6 +280,10 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 
   std::cout << "\tcomputing C40D:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup.C40D[0], comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C40D){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -338,8 +326,9 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
       corr1.imre /= norm/Lt;
       corr1.imim /= norm/Lt;
     }
+
     // write data to file
-    write_4pt_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
@@ -354,6 +343,10 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
   std::cout << "\tcomputing C40V:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup.C40V[0], comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C40V){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -397,7 +390,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
       corr1.imim /= norm/Lt;
     }
     // write data to file
-    write_4pt_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
@@ -515,6 +508,10 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
   std::cout << "\tcomputing C2c:";
   clock_t time = clock();
 
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
     if(c_look.outfile.find("Check") == 0){
@@ -524,10 +521,11 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
         }
       }
       // normalisation
-      for(auto& corr : correlator)
+      for(auto& corr : correlator){
         corr /= corrC[c_look.lookup[0]][0][0].size();
+      }
       // write data to file
-      write_correlators(correlator, c_look);
+      filehandle.write(correlator, c_look);
     }
     else{
       for(int t1 = 0; t1 < Lt; t1++){
@@ -538,10 +536,11 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
         }
       }}
       // normalisation
-      for(auto& corr : correlator)
+      for(auto& corr : correlator){
         corr /= Lt*corrC[c_look.lookup[0]][0][0].size();
+      }
       // write data to file
-      write_correlators(correlator, c_look);
+      filehandle.write(correlator, c_look);
     }
   }
 
@@ -557,6 +556,10 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 
   std::cout << "\tcomputing C4cD:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup.C4cD[0], comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C4cD){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -601,7 +604,7 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
       corr1.imim /= norm/Lt;
     }
     // write data to file
-    write_4pt_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
@@ -616,6 +619,10 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
 
   std::cout << "\tcomputing C4cV:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup.C4cV[0], comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C4cV){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -660,7 +667,7 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
       corr1.imim /= norm/Lt;
     }
     // write data to file
-    write_4pt_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
@@ -678,7 +685,11 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 
   std::cout << "\tcomputing C4cC:";
   clock_t time = clock();
-  
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
 
 // This is necessary to ensure the correct summation of the correlation function
@@ -922,10 +933,11 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 
   // normalisation
   for(const auto& c_look : corr_lookup){
-    for(auto& corr : correlator[c_look.id])
+    for(auto& corr : correlator[c_look.id]){
       corr /= (6*5*4*3)*Lt; // TODO: Hard Coded atm - Be carefull
+    }
     // write data to file
-    write_correlators(correlator[c_look.id], c_look);
+    filehandle.write(correlator[c_look.id], c_look);
   }
 
   time = clock() - time;
@@ -1038,6 +1050,10 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                                   const QuarklineLookup& quark_lookup) {
   if(corr_lookup.size() == 0)
     return;
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   std::cout << "\tcomputing C3c:";
   clock_t time = clock();
@@ -1222,11 +1238,11 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 
   // normalisation
   for(const auto& c_look : corr_lookup){
-    for(auto& corr : correlator[c_look.id])
-      //corr /= (3)*Lt; // TODO: Hard Coded atm - Be carefull
+    for(auto& corr : correlator[c_look.id]){
       corr /= (6*5*4)*Lt; // TODO: Hard Coded atm - Be carefull
+    }
     // write data to file
-    write_correlators(correlator[c_look.id], c_look);
+    filehandle.write(correlator[c_look.id], c_look);
   }
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -1245,6 +1261,10 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 
   std::cout << "\tcomputing C4cB:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
 
@@ -1476,10 +1496,11 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 
   // normalisation
   for(const auto& c_look : corr_lookup){
-    for(auto& corr : correlator[c_look.id])
+    for(auto& corr : correlator[c_look.id]){
       corr /= (6*5*4*3)*Lt; // TODO: Hard Coded atm - Be carefull
+    }
     // write data to file
-    write_correlators(correlator[c_look.id], c_look);
+    filehandle.write(correlator[c_look.id], c_look);
   }
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -1494,6 +1515,10 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 
   std::cout << "\tcomputing C30:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1540,10 +1565,11 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 }// parallel part ends here
 
     // normalisation
-    for(auto& corr : correlator)
+    for(auto& corr : correlator){
       corr /= norm/Lt;
+    }
     // write data to file
-    write_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -1558,6 +1584,10 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
 
   std::cout << "\tcomputing C40C:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1612,10 +1642,11 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
 }// parallel part ends here
 
     // normalisation
-    for(auto& corr : correlator)
+    for(auto& corr : correlator){
       corr /= norm/Lt;
+    }
     // write data to file
-    write_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -1630,6 +1661,10 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
 
   std::cout << "\tcomputing C40B:";
   clock_t time = clock();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // first element
+  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1684,10 +1719,11 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
 }// parallel part ends here
 
     // normalisation
-    for(auto& corr : correlator)
+    for(auto& corr : correlator){
       corr /= norm/Lt;
+    }
     // write data to file
-    write_correlators(correlator, c_look);
+    filehandle.write(correlator, c_look);
   }
   time = clock() - time;
   std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
