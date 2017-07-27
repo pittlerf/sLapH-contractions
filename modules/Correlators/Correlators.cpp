@@ -133,18 +133,16 @@ private:
 /******************************************************************************/
 /******************************************************************************/
 
-/*******************************************************************************/
-/**
- *
- * @Param quarklines
- * @Param corr_lookup
- * @Param quark_lookup
- * @Param ric_lookup
+/*!
+ *  @deprecated
  */
 void LapH::Correlators::build_C1(const Quarklines& quarklines,
                     const std::vector<CorrInfo>& corr_lookup,
                     const QuarklineLookup& quark_lookup,
                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+
+  if(corr_lookup.empty())
+    return;
 
   std::cout << "\tcomputing C1:";
   clock_t time = clock();
@@ -156,16 +154,18 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
   for(const auto& c_look : corr_lookup){
     const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
                                                      id_ric_lookup].rnd_vec_ids;
-    std::vector<cmplx> correlator(Lt*ric.size(), cmplx(.0,.0));
-    for(size_t t = 0; t < Lt; t++){
-      for(const auto& id : ric){
-        correlator[(&id-&ric[0])*Lt + t] +=
+    for(const auto& id : ric){
+
+      std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
+      for(size_t t = 0; t < Lt; t++){
+        correlator[t] +=
          quarklines.return_Q1(t, t/dilT, c_look.lookup[0], &id-&ric[0]).trace();
       }
+
+      // write data to file
+      filehandle.write(correlator, c_look);
     }
 
-    // write data to file
-    filehandle.write(correlator, c_look);
   }
   time = clock() - time;
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
@@ -244,6 +244,9 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
 
+  if(corr_lookup.empty())
+    return;
+
   std::cout << "\tcomputing C20:";
   clock_t time = clock();
 
@@ -277,6 +280,9 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
 void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  if(corr_lookup.C40D.empty())
+    return;
 
   std::cout << "\tcomputing C40D:";
   clock_t time = clock();
@@ -340,6 +346,9 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  if(corr_lookup.C40V.empty())
+    return;
 
   std::cout << "\tcomputing C40V:";
   clock_t time = clock();
@@ -505,6 +514,9 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
 
+  if(corr_lookup.empty())
+    return;
+
   std::cout << "\tcomputing C2c:";
   clock_t time = clock();
 
@@ -553,6 +565,9 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
 void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  if(corr_lookup.C4cD.empty())
+    return;
 
   std::cout << "\tcomputing C4cD:";
   clock_t time = clock();
@@ -616,6 +631,9 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  if(corr_lookup.C4cV.empty())
+    return;
 
   std::cout << "\tcomputing C4cV:";
   clock_t time = clock();
@@ -682,6 +700,9 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
                                    const OperatorLookup& operator_lookup,
                                    const std::vector<CorrInfo>& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
+
+  if(corr_lookup.empty())
+    return;
 
   std::cout << "\tcomputing C4cC:";
   clock_t time = clock();
@@ -1048,7 +1069,8 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                                   const OperatorLookup& operator_lookup,
                                   const std::vector<CorrInfo>& corr_lookup,
                                   const QuarklineLookup& quark_lookup) {
-  if(corr_lookup.size() == 0)
+
+  if(corr_lookup.empty())
     return;
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
@@ -1256,7 +1278,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
                                    const std::vector<CorrInfo>& corr_lookup,
                                    const QuarklineLookup& quark_lookup) {
 
-  if(corr_lookup.size() == 0)
+  if(corr_lookup.empty())
     return;
 
   std::cout << "\tcomputing C4cB:";
@@ -1513,6 +1535,9 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
                      const QuarklineLookup& quark_lookup,
                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
 
+  if(corr_lookup.empty())
+    return;
+
   std::cout << "\tcomputing C30:";
   clock_t time = clock();
 
@@ -1581,6 +1606,9 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+
+  if(corr_lookup.empty())
+    return;
 
   std::cout << "\tcomputing C40C:";
   clock_t time = clock();
@@ -1658,6 +1686,9 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+
+  if(corr_lookup.empty())
+    return;
 
   std::cout << "\tcomputing C40B:";
   clock_t time = clock();
@@ -1770,8 +1801,8 @@ void LapH::Correlators::contract (Quarklines& quarklines,
   build_C40D(operator_lookup, corr_lookup, quark_lookup);
   build_C40V(operator_lookup, corr_lookup, quark_lookup);
   // 3. Build all other correlation functions.
-  build_C1(quarklines, corr_lookup.C1, quark_lookup, 
-                                                 operator_lookup.ricQ2_lookup);
+//  build_C1(quarklines, corr_lookup.C1, quark_lookup, 
+//                                                 operator_lookup.ricQ2_lookup);
   build_C4cC(meson_operator, perambulators, operator_lookup, corr_lookup.C4cC, 
                                                                  quark_lookup);
 //  build_C4cC(quarklines, meson_operator, operator_lookup, corr_lookup.C4cC, 
