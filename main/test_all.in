@@ -26,7 +26,7 @@ path_vdaggerv       = /hiskp2/werner/output/
 #path_vdaggerv       = /data2/test5/liuming_operators
 
 # output path
-output_path = /hiskp2/werner/output/sLapH_contraction-test/TravisCI/
+output_path = /hiskp2/werner/output/sLapH_contraction-test/WriteHDF5Correlators/
 overwrite_old = yes
 
 # quarks to be used - The file at the and is the location of the perambulators.
@@ -83,8 +83,8 @@ correlator_list = C4+C:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
 # neutral 4pt diagrams
 correlator_list = C40D:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
 correlator_list = C40V:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
-correlator_list = C40B:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
-correlator_list = C40C:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
+#correlator_list = C40B:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
+#correlator_list = C40C:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
 
 
 #correlator_list = C2+:Q0:Op10:Q0:Op10 #unitary pion

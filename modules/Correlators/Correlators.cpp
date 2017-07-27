@@ -33,6 +33,11 @@ H5::CompType comp_type_factory_trtr(){
   return cmplxcmplx_w;
 }
 
+/*! Class to write correlations function to files in hdf5 format
+ * 
+ *  @Warning  Dependency inversion principle is violated: Class depends on the 
+ *            concrete implementation of hdf5
+ */
 class WriteHDF5Correlator{
 
 public:
@@ -50,7 +55,8 @@ public:
    *  @Param corr       The data to write
    *  @Param corr_info  Contains the hdf5_dataset_name
    *
-   *  @todo It is sufficient to pass the hdf5_dataset_name
+   *  @todo   It is sufficient to pass the hdf5_dataset_name
+   *  @todo   corr_datatype would be better as class template typename
    *
    *  @remark The type corr_datatype is always either LapH::complex_t or 
    *          LapH::compcomp_t. The function body is identical for both types 
@@ -104,26 +110,28 @@ private:
     }
   }
  
-  /*! Open file or create the file if it does not exist 
+  /*! Opens output file in Truncation mode by default
    *
    *  @param[in]  name String containing path+filename of the desired file
    *  @param[out] file File pointer to hdf5 file
+   *
+   *  @todo If overwrite=no flag is set, rather than H5F_ACC_TRUNC should be 
+   *        replaced by H5F_ACC_EXCL
+   *
+   *  @throws H5::exception if something goes wrong
    */
   void open_or_create_hdf5_file(const H5std_string& name){
 
-    /*! Opens output file
-     *
-     *  @todo Incorporate CorrInfo.overwrite by using another Access Flag
-     */
-    try{
-      file = H5::H5File(name, H5F_ACC_EXCL);
-    }
-    catch(H5::Exception& e){
-      file = H5::H5File(name, H5F_ACC_RDWR);
-    }
+    file = H5::H5File(name, H5F_ACC_TRUNC);
   }
 
+  /*! The hdf5 file pointer */
   H5::H5File file;
+  /*! The hdf5 compound datatype.
+   *
+   *  @see  H5::CompType comp_type_factory_tr()
+   *  @see  H5::CompType comp_type_factory_trtr()
+   */
   H5::CompType comp_type;
 
 }; // end of class WriteHDF5Correlator
@@ -1602,6 +1610,9 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*! 
+ *  @note Not optimised.
+ */
 void LapH::Correlators::build_C40C(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
@@ -1682,6 +1693,9 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*! 
+ *  @note Not optimised.
+ */
 void LapH::Correlators::build_C40B(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
