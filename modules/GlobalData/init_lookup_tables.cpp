@@ -283,8 +283,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
         for(const auto& op1 : qn_op[1]){ 
         for(const auto& op3 : qn_op[3]){
-          std::array<int, 3> p_si_1 = op0.momentum;
-          std::array<int, 3> p_si_2 = op2.momentum;
+          std::array<int, 3> p_si_1 = op1.momentum;
+          std::array<int, 3> p_si_2 = op3.momentum;
           std::array<int, 3> p_si = add_momenta(p_si_1, p_si_2);
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
@@ -406,8 +406,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
         for(const auto& op1 : qn_op[1]){ 
         for(const auto& op3 : qn_op[3]){
-          std::array<int, 3> p_si_1 = op0.momentum;
-          std::array<int, 3> p_si_2 = op2.momentum;
+          std::array<int, 3> p_si_1 = op1.momentum;
+          std::array<int, 3> p_si_2 = op3.momentum;
           std::array<int, 3> p_si = add_momenta(p_si_1, p_si_2);
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
