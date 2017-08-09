@@ -51,6 +51,7 @@ static int compute_norm_squ(const std::array<int, 3>& in){
   return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
 }
 
+/*! @deprecated */
 static int add_momenta_squared(const std::array<int, 3>& in1, 
                                const std::array<int, 3>& in2){
   return (in1[0]+in2[0]) * (in1[0]+in2[0]) + 
@@ -62,6 +63,72 @@ static std::array<int, 3> add_momenta(const std::array<int, 3>& in1,
                                       const std::array<int, 3>& in2){
   return {{in1[0]+in2[0], in1[1]+in2[1], in1[2]+in2[2]}};
 }
+
+static bool desired_total_momentum(const std::array<int, 3>& p_tot,
+                                 const std::vector<int>& P){
+
+  const int p_tot_abs_squared = compute_norm_squ(p_tot);
+
+  /*! If no total momentum is specified, there is no selection.
+   *  @todo It is better to force the user to specify P. Catch that in 
+   *        global_data_input_handling
+   */
+  if( P.empty() ){
+    return true;
+  }
+
+  if( std::find(P.begin(), P.end(), p_tot_abs_squared) == P.end() ){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+static bool same_total_momentum(const std::array<int, 3>& p_so,
+                                const std::array<int, 3>& p_si){
+
+  // momenta at source and sink must be equal - sign comes from daggering
+  if((p_so[0] != -p_si[0]) ||
+     (p_so[1] != -p_si[1]) ||
+     (p_so[2] != -p_si[2])){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
+static bool momenta_below_cutoff(const std::array<int, 3>& p1,
+                                 const std::array<int, 3>& p2) {
+
+  const int p1_abs_squared = compute_norm_squ(p1);
+  const int p2_abs_squared = compute_norm_squ(p2);
+
+  std::map<int,int> cutoff;
+  // default value is the default initializer of type int: cutoff[default] = 0;
+  cutoff[0] = 4;
+  cutoff[1] = 5;
+  cutoff[2] = 6;
+  cutoff[3] = 7;
+  cutoff[4] = 4;
+
+  const std::array<int, 3> p_tot = add_momenta(p1, p2);
+  const int p_tot_abs_squared = compute_norm_squ(p_tot);
+
+  if(p_tot_abs_squared > 4){
+    std::cout << "In momenta_below_cutoff(): WARNING! No cutoffs for P > 4"
+              << " implemented" << std::endl;
+  }
+
+  if( (p1_abs_squared + p2_abs_squared) > cutoff[p_tot_abs_squared] ) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 /*! @} */
 
 /******************************************************************************/
@@ -125,67 +192,103 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
         }
     }}
   }
+
   else if (correlator.type == "C3+" || correlator.type == "C30") {
-    size_t counter_test = 0;
-    size_t counter_mom0 = 0;
-    size_t counter_mom1 = 0;
-    size_t counter_mom2 = 0;
-    size_t counter_mom3 = 0;
-    size_t counter_mom4 = 0;
+    std::map<int, int> counter; /*! initialized with zero */
+
     for(const auto& op0 : qn_op[0]){
     for(const auto& op2 : qn_op[2]){ 
-      const int mom0 = compute_norm_squ(op0.momentum);
-      const int mom2 = compute_norm_squ(op2.momentum);
-      const int tot_mom_l = add_momenta_squared(op0.momentum, op2.momentum);
-      std::array<int, 3> tot_mom_v_l = add_momenta(op0.momentum, op2.momentum);
-      
-    for(const auto& op1 : qn_op[1]){ // all combinations of operators
+      std::array<int, 3> p_so_1 = op0.momentum;
+      std::array<int, 3> p_so_2 = op2.momentum;
 
-      // momenta at source and sink must be equal - sign comes from daggering
-      if((tot_mom_v_l[0] != -op1.momentum[0]) ||
-         (tot_mom_v_l[1] != -op1.momentum[1]) ||
-         (tot_mom_v_l[2] != -op1.momentum[2]))
-        continue;
+      if( desired_total_momentum(add_momenta(p_so_1, p_so_2), correlator.tot_mom) &&
+          momenta_below_cutoff(p_so_1, p_so_2) ){
 
-      if(tot_mom_l == 0){
-        if(mom0 > 3 || mom0 == 0)
-          continue;
-        counter_mom0++;
-      }
-      else if(tot_mom_l == 1){
-        if((mom0 + mom2) > 5)
-          continue;
-        counter_mom1++;
-      }
-      else if(tot_mom_l == 2){
-        if((mom0 + mom2) > 6)
-          continue;
-        counter_mom2++;
-      }
-      else if(tot_mom_l == 3){
-        if((mom0 + mom2) > 7)
-          continue;
-        counter_mom3++;
-      }
-      else if(tot_mom_l == 4){
-        if((mom0 + mom2) > 4)
-          continue;
-        counter_mom4++;
-      }
-      else
-        continue; // maximum momentum is 4
+        for(const auto& op1 : qn_op[1]){ // all combinations of operators
+          std::array<int, 3> p_si = op1.momentum;
 
-      counter_test++;
-      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
-      quantum_numbers.emplace_back(single_vec_qn);
-    }}}
-    std::cout << "test finished - combinations: " << counter_test << std::endl;
-    std::cout << "combination mom0: " << counter_mom0 << std::endl;
-    std::cout << "combination mom1: " << counter_mom1 << std::endl;
-    std::cout << "combination mom2: " << counter_mom2 << std::endl;
-    std::cout << "combination mom3: " << counter_mom3 << std::endl;
-    std::cout << "combination mom4: " << counter_mom4 << std::endl;
+          if( desired_total_momentum(p_si, correlator.tot_mom) ){
+
+            const int p_tot = compute_norm_squ(p_si);
+            counter[p_tot]++;
+
+            std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
+            quantum_numbers.emplace_back(single_vec_qn);
+          }
+        }
+      }
+    }}
+
+    int total_number_of_combinations = 0;
+    for(const auto c : counter){
+      std::cout << "Combinations for P = " << c.first << ": " << c.second 
+                << std::endl;
+      total_number_of_combinations += c.second;
+    }
+    std::cout << "Test finished - Combinations: " 
+              << total_number_of_combinations << std::endl;
   }
+//  else if (correlator.type == "C3+" || correlator.type == "C30") {
+//    size_t counter_test = 0;
+//    size_t counter_mom0 = 0;
+//    size_t counter_mom1 = 0;
+//    size_t counter_mom2 = 0;
+//    size_t counter_mom3 = 0;
+//    size_t counter_mom4 = 0;
+//    for(const auto& op0 : qn_op[0]){
+//    for(const auto& op2 : qn_op[2]){ 
+//      const int mom0 = compute_norm_squ(op0.momentum);
+//      const int mom2 = compute_norm_squ(op2.momentum);
+//      const int tot_mom_l = add_momenta_squared(op0.momentum, op2.momentum);
+//      std::array<int, 3> tot_mom_v_l = add_momenta(op0.momentum, op2.momentum);
+//      
+//    for(const auto& op1 : qn_op[1]){ // all combinations of operators
+//
+//      // momenta at source and sink must be equal - sign comes from daggering
+//      if((tot_mom_v_l[0] != -op1.momentum[0]) ||
+//         (tot_mom_v_l[1] != -op1.momentum[1]) ||
+//         (tot_mom_v_l[2] != -op1.momentum[2]))
+//        continue;
+//
+//      if(tot_mom_l == 0){
+//        if(mom0 > 3 || mom0 == 0)
+//          continue;
+//        counter_mom0++;
+//      }
+//      else if(tot_mom_l == 1){
+//        if((mom0 + mom2) > 5)
+//          continue;
+//        counter_mom1++;
+//      }
+//      else if(tot_mom_l == 2){
+//        if((mom0 + mom2) > 6)
+//          continue;
+//        counter_mom2++;
+//      }
+//      else if(tot_mom_l == 3){
+//        if((mom0 + mom2) > 7)
+//          continue;
+//        counter_mom3++;
+//      }
+//      else if(tot_mom_l == 4){
+//        if((mom0 + mom2) > 4)
+//          continue;
+//        counter_mom4++;
+//      }
+//      else
+//        continue; // maximum momentum is 4
+//
+//      counter_test++;
+//      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
+//      quantum_numbers.emplace_back(single_vec_qn);
+//    }}}
+//    std::cout << "test finished - combinations: " << counter_test << std::endl;
+//    std::cout << "combination mom0: " << counter_mom0 << std::endl;
+//    std::cout << "combination mom1: " << counter_mom1 << std::endl;
+//    std::cout << "combination mom2: " << counter_mom2 << std::endl;
+//    std::cout << "combination mom3: " << counter_mom3 << std::endl;
+//    std::cout << "combination mom4: " << counter_mom4 << std::endl;
+//  }
   else if (correlator.type == "C4+D") {
     // momentum combinations on source side ------------------------------------
     size_t counter_test = 0;
