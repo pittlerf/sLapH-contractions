@@ -156,6 +156,8 @@ static bool momenta_below_cutoff(const std::array<int, 3>& p1,
 
 /*! @} */
 
+} // end of unnamed namespace
+
 /******************************************************************************/
 /*! Build an array with all the quantum numbers needed for a particular 
  *  correlation function respecting physical conservation laws
