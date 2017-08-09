@@ -194,14 +194,18 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
   }
 
   else if (correlator.type == "C3+" || correlator.type == "C30") {
+
+    std::cout << "Constructing momentum combinations for C3"  << std::endl;
+    
     std::map<int, int> counter; /*! initialized with zero */
 
     for(const auto& op0 : qn_op[0]){
     for(const auto& op2 : qn_op[2]){ 
       std::array<int, 3> p_so_1 = op0.momentum;
       std::array<int, 3> p_so_2 = op2.momentum;
+      std::array<int, 3> p_so = add_momenta(p_so_1, p_so_2);
 
-      if( desired_total_momentum(add_momenta(p_so_1, p_so_2), correlator.tot_mom) &&
+      if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
 
         for(const auto& op1 : qn_op[1]){ // all combinations of operators
@@ -209,11 +213,14 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
           if( desired_total_momentum(p_si, correlator.tot_mom) ){
 
-            const int p_tot = compute_norm_squ(p_si);
-            counter[p_tot]++;
+            if( same_total_momentum(p_so, p_si) ){
 
-            std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
-            quantum_numbers.emplace_back(single_vec_qn);
+              const int p_tot = compute_norm_squ(p_si);
+              counter[p_tot]++;
+  
+              std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
+              quantum_numbers.emplace_back(single_vec_qn);
+            }
           }
         }
       }
@@ -221,11 +228,11 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
 
     int total_number_of_combinations = 0;
     for(const auto c : counter){
-      std::cout << "Combinations for P = " << c.first << ": " << c.second 
+      std::cout << "\tCombinations for P = " << c.first << ": " << c.second 
                 << std::endl;
       total_number_of_combinations += c.second;
     }
-    std::cout << "Test finished - Combinations: " 
+    std::cout << "\tTest finished - Combinations: " 
               << total_number_of_combinations << std::endl;
   }
 //  else if (correlator.type == "C3+" || correlator.type == "C30") {
