@@ -1,0 +1,21 @@
+#!/bin/bash
+maxJobN={{ maxJobN }} # maximum of jobs in queue
+name={{ jobname }} 
+
+# loop for the configs
+for cfg in { {{ config_start }}..{{ config_end }}..{{ config_step }} }; do
+  echo "submitting conf ${cfg}"
+ 
+    ## check whether at maximum of jobs in queue
+    while [ $(qstat -u werner | grep -v "R" | grep $name | wc -l) -gt $maxJobN ]; do
+      echo Waiting, queue is at maximum.
+      sleep 30
+    done
+  
+    j=`printf %04d ${cfg}`
+  
+    cd cnfg${j}
+    qsub job_script.pbs
+    cd ../
+  
+done
