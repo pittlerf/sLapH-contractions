@@ -1,5 +1,5 @@
-#PBS -N rho_contraction
-#PBS -l walltime=48:00:00,mem=30gb
+#PBS -N {{ jobname }}
+#PBS -l walltime=48:00:00,mem=60gb
 #PBS -l nodes=1:ppn=4
 {% if email_address != '' %}
 #PBS -M {{ email_address }}

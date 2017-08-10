@@ -316,16 +316,17 @@ Correlators make_correlator(const std::string& correlator_string){
       GEVP = corr_t;
     // getting total momenta for moving frames
     else if (corr_t.compare(0,1,"P") == 0) {
-      corr_t.erase(0,1);
-      std::vector<std::string> tokens;
-      boost::split(tokens, corr_t, boost::is_any_of(","));
-      for(auto token : tokens){
-        if(token.compare(1,1,"(") == 0){
-          tot_mom.push_back(create_3darray_from_string(token));
+      if(corr_t.compare(1,1,"(") == 0){
+        tot_mom.push_back(create_3darray_from_string(corr_t));
+      }
+      else{
+        corr_t.erase(0,1);
+        std::vector<std::string> tokens;
+        boost::split(tokens, corr_t, boost::is_any_of(","));
+        for(auto token : tokens){
+            create_all_momentum_combinations(boost::lexical_cast<int>(token), 
+                                             tot_mom);
         }
-        else 
-          create_all_momentum_combinations(boost::lexical_cast<int>(token), 
-                                           tot_mom);
       }
     }
 

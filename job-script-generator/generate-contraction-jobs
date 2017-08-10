@@ -30,6 +30,12 @@ def main():
     # through, we may do things that change files on disk.
     do_consistency_checks(options)
 
+    # Write the command line parameters the script was exected with
+    with open(os.path.join(options.rundir, 'generate-contraction-jobs.log'), 'w') as f:
+        f.write("Job scripts where generated with command line options:\n\n")
+        for arg in sys.argv:
+            f.write("%s " % arg)
+
     # Load the templates from the directory that this script is located in.
     # This path can be queried from the zeroth command line argument.
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(
@@ -89,6 +95,7 @@ def main():
 
         # Create a job script for the scheduler.
         rendered_pbs = template_pbs.render(
+            jobname=options.jobname,
             email_address=options.email,
             rundir=config_path,
         )

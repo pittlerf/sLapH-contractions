@@ -29,7 +29,7 @@ overwrite_old = yes
 # quarks to be used - The file at the and is the location of the perambulators.
 [quarks]
 {% for quark in quarks -%}
-{{ quark }}
+quark = {{ quark }}
 {% endfor -%}
 
 # operators to be used
