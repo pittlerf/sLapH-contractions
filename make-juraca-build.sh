@@ -1,5 +1,6 @@
 #!/bin/bash
 # Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Modified by Christian Jost
 # Licensed under The MIT/Expat License
 
 # Sets up a debug and a release build outside of the source code with the paths
@@ -11,6 +12,13 @@ set -e
 set -u
 set -x
 
+module load CMake
+# Load standard compiler
+module load defaults
+module load HDF5
+module load Boost
+module load Eigen
+
 sourcedir=$(pwd)
 
 for buildtype in release; do
@@ -21,10 +29,9 @@ for buildtype in release; do
 
     cmake \
         "$sourcedir" \
-        -DEIGEN3_INCLUDE_DIR='/hiskp2/werner/libraries/eigen-3.2.7' \
-        -DHDF5_INCLUDE_DIRS=/hiskp2/knippsch/hdf5-1.8.17/include \
-        -DHDF5_LIBRARIES='-L/hiskp2/knippsch/hdf5-1.8.17/lib -lhdf5_cpp -lhdf5 -lsz -lz' \
-        -DCMAKE_CXX_COMPILER=g++-4.7 \
+         -DEIGEN3_INCLUDE_DIR='${EBROOTEIGEN}/include/' \
+        -DCMAKE_C_COMPILER=mpicc \
+        -DCMAKE_CXX_COMPILER=mpicxx \
         -DCMAKE_BUILD_TYPE=$buildtype
 
     make -j $(nproc)
