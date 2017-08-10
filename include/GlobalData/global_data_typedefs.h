@@ -110,14 +110,14 @@ public:
   std::vector<int> quark_numbers;
   std::vector<int> operator_numbers;
   std::string GEVP;
-  std::vector<int> tot_mom;
+  std::vector<std::array<int, 3> > tot_mom;
 /*! @} */
 
 public:
 /*! Constructor */
   Correlators(std::string type, std::vector<int> quark_numbers, 
               std::vector<int> operator_numbers, std::string GEVP, 
-              std::vector<int> tot_mom) :
+              std::vector< std::array<int, 3> > tot_mom) :
       type(type), quark_numbers(quark_numbers), 
       operator_numbers(operator_numbers), GEVP(GEVP), tot_mom(tot_mom) {}
 

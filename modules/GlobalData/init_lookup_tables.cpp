@@ -46,20 +46,8 @@ struct QuantumNumbers{
  *  @todo Replace that by operator overloading or Eigen
  */
 
-std::array<int, 3> change_sign_array(const std::array<int, 3>& in){
-  return {{-in[0], -in[1], -in[2]}};
-}
-
 int compute_norm_squ(const std::array<int, 3>& in){
   return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
-}
-
-/*! @deprecated */
-int add_momenta_squared(const std::array<int, 3>& in1, 
-                               const std::array<int, 3>& in2){
-  return (in1[0]+in2[0]) * (in1[0]+in2[0]) + 
-         (in1[1]+in2[1]) * (in1[1]+in2[1]) + 
-         (in1[2]+in2[2]) * (in1[2]+in2[2]);
 }
 
 std::array<int, 3> add_momenta(const std::array<int, 3>& in1, 
@@ -77,9 +65,7 @@ std::array<int, 3> add_momenta(const std::array<int, 3>& in1,
  *  @returns     true if @f$|\mathtt{p_tot}|^2 \in \mathtt{P}@f$, false otherwise     
  */
 bool desired_total_momentum(const std::array<int, 3>& p_tot,
-                                 const std::vector<int>& P){
-
-  const int p_tot_abs_squared = compute_norm_squ(p_tot);
+                            const std::vector< std::array<int, 3> >& P){
 
   /*! If no total momentum is specified, there is no selection.
    *  @todo It is better to force the user to specify P. Catch that in 
@@ -89,7 +75,7 @@ bool desired_total_momentum(const std::array<int, 3>& p_tot,
     return true;
   }
 
-  if( std::find(P.begin(), P.end(), p_tot_abs_squared) == P.end() ){
+  if( std::find(P.begin(), P.end(), p_tot) == P.end() ){
     return false;
   }
   else{
@@ -212,16 +198,19 @@ void build_quantum_numbers_from_correlator_list(const Correlators& correlator,
     for(const auto& op0 : qn_op[0]){
       std::array<int, 3> p_so = op0.momentum;
 
-      for(const auto& op1 : qn_op[1]){ 
-        std::array<int, 3> p_si = op1.momentum;
+      if( desired_total_momentum(p_so, correlator.tot_mom) ){
 
-        // momentum at source and sink must always be the same for 2pt fcts.
-        if( equal(p_so, p_si) ){
-
-          std::vector<QuantumNumbers> single_vec_qn = {op0, op1};
-          quantum_numbers.emplace_back(single_vec_qn);
-        }
-      } 
+        for(const auto& op1 : qn_op[1]){ 
+          std::array<int, 3> p_si = op1.momentum;
+  
+          // momentum at source and sink must always be the same for 2pt fcts.
+          if( equal(p_so, p_si) ){
+  
+            std::vector<QuantumNumbers> single_vec_qn = {op0, op1};
+            quantum_numbers.emplace_back(single_vec_qn);
+          }
+        } 
+      }
     }
   }
 

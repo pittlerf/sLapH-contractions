@@ -19,6 +19,7 @@ namespace {
 using gdu::make_quark;
 using gdu::quark_check;
 using gdu::make_operator_list;
+using gdu::make_correlator;
 
 /*! Simplifies and cleans GlobalData::read_parameters()
  *
@@ -225,57 +226,25 @@ void operator_input_data_handling (
  *  @endparblock
  *  @param[in,out]  correlator_list   Correlators munged into a Correlators 
  *                                    struct. 
- *
- *  Internally uses boost to split the string and process the parts. 
- *  @todo Refactor the splitting into global_data_input_handling_utils.cpp
  */
 void correlator_input_data_handling (
-    const std::vector<std::string>& correlator_string, 
+    const std::vector<std::string>& correlator_strings, 
     Correlator_list& correlator_list){
 
-  for(auto str : correlator_string){
-  
-    std::vector<std::string> correlator_tokens;
-    boost::split(correlator_tokens, str, boost::is_any_of(":"));
-  
-    std::string type;
-    std::vector<int> quark_number;
-    std::vector<int> operator_number;
-    std::string GEVP;
-    std::vector<int> tot_mom;
-    for (auto corr_t : correlator_tokens){
-      // getting the type name
-      if (corr_t.compare(0,1,"C") == 0)
-        type = corr_t;
-      // getting quark numbers
-      else if (corr_t.compare(0,1,"Q") == 0) 
-        quark_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,1)));
-      // getting operator numbers
-      else if (corr_t.compare(0,2,"Op") == 0)
-        operator_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,2)));
-      // getting the GEVP type
-      else if (corr_t.compare(0,1,"G") == 0)
-        GEVP = corr_t;
-      // getting total momenta for moving frames
-      else if (corr_t.compare(0,1,"P") == 0) {
-        corr_t.erase(0,1);
-        std::vector<std::string> tokens;
-        boost::split(tokens, corr_t, boost::is_any_of(","));
-        for(auto t : tokens)
-          tot_mom.push_back(boost::lexical_cast<int>(t));
-      }
-      // catching wrong entries
-      else {
-        std::cout << "There is something wrong with the correlators in the" \
-                     " input file!" << std::endl;
-        exit(0);
-      }
+  try{
+
+    // Transform each configured correlator into an Correlator_list via 
+    // make_correlator()
+    for(auto correlator_string : correlator_strings){
+      correlator_list.push_back(make_correlator(correlator_string));
     }
-    correlator_list.push_back(Correlators
-                          (type, quark_number, operator_number, GEVP, tot_mom));
+  } 
+  catch(std::exception& e){
+    std::cout << "correlator_input_data_handling: " << e.what() << "\n";
+    exit(0);
   }
-  /*! @todo Write check for correctness of correlator_string */
 }
+
 
 } // end of unnamed namespace
 

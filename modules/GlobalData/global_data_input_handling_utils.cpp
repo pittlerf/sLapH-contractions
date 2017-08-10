@@ -206,6 +206,9 @@ void quark_check (quark quarks) {
  *           @em operator_string
  *
  *  Internally uses boost to split the string and process the parts. 
+ *
+ *  This is a factory function which returns by value and uses named return 
+ *  value optimization in order to call the constructor within the scope
  */
 Operator_list make_operator_list(const std::string& operator_string) {
 
@@ -260,6 +263,81 @@ Operator_list make_operator_list(const std::string& operator_string) {
     op_list.push_back(Operators(gammas, dil_vec, mom_vec));
   }
   return op_list;
+}
+
+/*!
+ *  @param          correlator_string @parblock
+ *    Correlators as read from the infile
+ *
+ *    correlator_list = @em type : @em quark : @em operator : ... : [@em GEVP] : 
+ *                      [@em P] 
+ *    where the following abbreviationswhere used
+ *    - @em type {C1,C2+,C20,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,C40C,C40B} :
+ *                              Identifier for the Wick diagram to be 
+ *                              calculated. @see { LapH::Correlators }
+ *    - @em quark {"Q%d"} :     Specifies which of the quarks from the infile
+ *                              to use
+ *    - @em operator {"Op%d"} : Specifies which of the operators from the 
+ *                              infile to use
+ *    - @em GEVP                @todo is that even supported?
+ *    - @em P                   @todo is that even supported?
+ *    
+ *    The number of quarks and operators to be specified depends on the diagram 
+ *    chosen.
+ *  @endparblock
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ *
+ *  @todo Write check for correctness of correlator_string
+ */
+Correlators make_correlator(const std::string& correlator_string){
+
+  std::vector<std::string> correlator_tokens;
+  boost::split(correlator_tokens, correlator_string, boost::is_any_of(":"));
+
+  std::string type;
+  std::vector<int> quark_number;
+  std::vector<int> operator_number;
+  std::string GEVP;
+  std::vector< std::array<int, 3> > tot_mom;
+
+  for (auto corr_t : correlator_tokens){
+    // getting the type name
+    if (corr_t.compare(0,1,"C") == 0)
+      type = corr_t;
+    // getting quark numbers
+    else if (corr_t.compare(0,1,"Q") == 0) 
+      quark_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,1)));
+    // getting operator numbers
+    else if (corr_t.compare(0,2,"Op") == 0)
+      operator_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,2)));
+    // getting the GEVP type
+    else if (corr_t.compare(0,1,"G") == 0)
+      GEVP = corr_t;
+    // getting total momenta for moving frames
+    else if (corr_t.compare(0,1,"P") == 0) {
+      corr_t.erase(0,1);
+      std::vector<std::string> tokens;
+      boost::split(tokens, corr_t, boost::is_any_of(","));
+      for(auto token : tokens){
+        if(token.compare(1,1,"(") == 0){
+          tot_mom.push_back(create_3darray_from_string(token));
+        }
+        else 
+          create_all_momentum_combinations(boost::lexical_cast<int>(token), 
+                                           tot_mom);
+      }
+    }
+
+    // catching wrong entries
+    else {
+      std::cout << "There is something wrong with the correlators in the" \
+                   " input file!" << std::endl;
+      exit(0);
+    }
+  }
+
+  return Correlators(type, quark_number, operator_number, GEVP, tot_mom);
 }
 
 } // end of namespace global_data_utils
