@@ -2,7 +2,7 @@
 
 # parallelisation: Be carefull - Atm I would only use one thread for Eigen. It 
 #                                usually is much slower than simple omp!
-nb_omp_threads = 4
+nb_omp_threads = {{ omp_num_threads }}
 nb_eigen_threads = 1
 
 # lattice parameters:
@@ -19,9 +19,16 @@ delta_config = {{ config_step }}
 # eigenvector handling: path not neede right now
 number_of_eigen_vec = {{ ev_count }}
 {% if ev_path != '' %}
-path_eigenvectors = {{ ev_path }}
-{% endif %}
 name_eigenvectors = eigenvectors
+path_eigenvectors = {{ ev_path }}
+{%- endif -%}
+{% if vdv_path != None %}
+handling_vdaggerv = liuming
+{%- endif -%}
+{% if vdv_path != '' %}
+path_vdaggerv = {{ vdv_path }}
+{% endif %}
+
 # output path
 output_path = {{ rundir }}
 overwrite_old = yes

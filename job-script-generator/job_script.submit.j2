@@ -1,0 +1,29 @@
+#!/bin/bash
+#SBATCH -J {{ jobname }}
+#SBATCH --time=02:00:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=12
+{% if email_address != '' %}
+#SBATCH --mail-user={{ email_address }}
+#SBATCH --mail-type=FAIL
+{% endif %}
+#SBATCH --output={{ jobname }}.out
+#SBATCH --error={{ jobname }}.out
+
+module load defaults
+module load Boost
+module load Eigen
+module load HDF5
+
+#export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+export OMP_NUM_THREADS=12
+export KMP_AFFINITY=compact,0
+cd {{ rundir }}
+
+date
+
+srun -N1 -n1 -c12 --exclusive -o {{ rundir }}/contract.out ./contract -i {{ rundir }}/contract.in &
+
+wait
+
+date

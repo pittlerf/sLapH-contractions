@@ -42,7 +42,11 @@ def main():
         os.path.dirname(os.path.abspath(sys.argv[0]))))
 
     template_contract = env.get_template('contract.in.j2')
-    template_pbs = env.get_template('job_script.pbs.j2')
+    if options.machine == 'qbig':
+      jobscriptfile = 'job_script.pbs'
+    elif options.machine == 'jureca':
+      jobscriptfile = 'job_script.submit'
+    template_jobscript = env.get_template(jobscriptfile + '.j2')
     template_start = env.get_template('start_runs.sh.j2')
 
     # Load the list with correlators.
@@ -79,6 +83,7 @@ def main():
 
         # Create an input file for the contraction code.
         rendered_contract = template_contract.render(
+            omp_num_threads=options.omp_num_threads,
             lattice_time=options.lattice_time,
             lattice_space=options.lattice_space,
             config_start=config_id,
@@ -86,6 +91,8 @@ def main():
             config_step=1,
             ev_count=options.ev_count,
             ev_path=options.ev_path,
+            vdv_hanling=options.vdv_handling,
+            vdv_path=options.vdv_path,
             quarks=options.quarks,
             correlator_list=correlator_list,
             rundir=config_path,
@@ -94,13 +101,13 @@ def main():
             f.write(rendered_contract)
 
         # Create a job script for the scheduler.
-        rendered_pbs = template_pbs.render(
-            jobname=options.jobname,
+        rendered_jobscript = template_jobscript.render(
+            jobname=options.jobname + '_' + str(config_id),
             email_address=options.email,
             rundir=config_path,
         )
-        with open(os.path.join(config_path, 'job_script.pbs'), 'w') as f:
-            f.write(rendered_contract)
+        with open(os.path.join(config_path, jobscriptfile), 'w') as f:
+            f.write(rendered_jobscript)
 
 
 def do_consistency_checks(options):
@@ -141,10 +148,11 @@ def _parse_args():
     group_config.add_argument('--conf-skip', type=int, nargs='+', help='Skip the given gauge configurations.', default=[])
 
     group_job = parser.add_argument_group('Job', 'Options for the jobs to create.')
+    group_job.add_argument('--machine', required=True, choices=['qbig', 'jureca'], type=str.lower, help='Name of the machine the code shall be executed on')
     group_job.add_argument('--rundir', required=True, help='Base path for output.')
     group_job.add_argument('--exe', required=True, help='Path to the executable. This will be copied into the hierarchy to prevent accidential overwrites.')
-    group_job.add_argument('--jobname', default='contraction', help='Name of the PBS job. Default: %(default)s')
-    group_job.add_argument('--jobcount', type=int, default='60', help='Maximal number of jobs submitted to the queue. Default: %(default)')
+    group_job.add_argument('--jobname', default='contraction', help='Name of the submitted job. Default: %(default)s')
+    group_job.add_argument('--jobcount', type=int, default='60', help='Maximal number of jobs submitted to the queue. Default: %(default)s')
     group_job.add_argument('--email', default='', help='Email address to send job notifications to. If this is not given, no emails will be send.')
     
 
@@ -152,7 +160,13 @@ def _parse_args():
     group_ev.add_argument('--ev-count', type=int, required=True, help='Number of eigenvectors')
     group_ev.add_argument('--ev-path', default='', help='Path to eigenvectors. These are only required when looking at moving frames.')
 
+    group_vdv = parser.add_argument_group('Eigenvector', 'Information about the eigenvectors.')
+    group_vdv.add_argument('--vdv-handling', choices=['read', 'liuming', 'build', 'write'], help='Which convention shall be used for the VdaggerV objects.')
+    group_vdv.add_argument('--vdv-path', default='', help='Path to VdaggerV objects. These are only required when looking at moving frames.')
+
+
     group_contraction = parser.add_argument_group('Contraction', 'Options for the contractions themselves.')
+    group_contraction.add_argument('--omp-num-threads', type=int, default=4, help='Number of OpenMP threads. Default: %(default)s')
     group_contraction.add_argument('--quark', nargs='+', required=True, dest='quarks', metavar='QUARK', help='Quark line including the path. Example: u:6:TF:1:EI:6:DF:4:/hiskp2/bartek/peram_generation/0120-Mpi270-L24-T96/light.ranlxd2.apbc_no_compression')
     group_contraction.add_argument('--correlator-list', required=True, help='Path to text file which contains the correlator definitions')
 
