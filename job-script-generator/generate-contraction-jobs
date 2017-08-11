@@ -66,6 +66,7 @@ def main():
         config_start=options.conf_start,
         config_end=options.conf_end,
         config_step=options.conf_step,
+        machine = options.machine,
     )
     with open(os.path.join(options.rundir, 'start_runs.sh'), 'w') as f:
         f.write(rendered_start)
@@ -95,7 +96,7 @@ def main():
             vdv_path=options.vdv_path,
             quarks=options.quarks,
             correlator_list=correlator_list,
-            rundir=config_path,
+            outdir=options.outdir,
         )
         with open(os.path.join(config_path, 'contract.in'), 'w') as f:
             f.write(rendered_contract)
@@ -103,6 +104,7 @@ def main():
         # Create a job script for the scheduler.
         rendered_jobscript = template_jobscript.render(
             jobname=options.jobname + '_' + str(config_id),
+            omp_num_threads = options.omp_num_threads,
             email_address=options.email,
             rundir=config_path,
         )
@@ -149,7 +151,8 @@ def _parse_args():
 
     group_job = parser.add_argument_group('Job', 'Options for the jobs to create.')
     group_job.add_argument('--machine', required=True, choices=['qbig', 'jureca'], type=str.lower, help='Name of the machine the code shall be executed on')
-    group_job.add_argument('--rundir', required=True, help='Base path for output.')
+    group_job.add_argument('--rundir', required=True, help='Base path for infiles.')
+    group_job.add_argument('--outdir', required=True, help='Base path for output.')
     group_job.add_argument('--exe', required=True, help='Path to the executable. This will be copied into the hierarchy to prevent accidential overwrites.')
     group_job.add_argument('--jobname', default='contraction', help='Name of the submitted job. Default: %(default)s')
     group_job.add_argument('--jobcount', type=int, default='60', help='Maximal number of jobs submitted to the queue. Default: %(default)s')
