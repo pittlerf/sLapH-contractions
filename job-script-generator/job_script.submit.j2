@@ -2,13 +2,13 @@
 #SBATCH -J {{ jobname }}
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task={{ omp_num_threads }}
+#SBATCH --cpus-per-task={{ cpus_per_task }}
 {% if email_address != '' %}
 #SBATCH --mail-user={{ email_address }}
 #SBATCH --mail-type=FAIL
 {% endif %}
-#SBATCH --output={{ jobname }}.out
-#SBATCH --error={{ jobname }}.out
+#SBATCH --output={{ config_path }}/{{ jobname }}.out
+#SBATCH --error={{ config_path }}/{{ jobname }}.err
 
 module load defaults
 module load Boost
@@ -16,12 +16,16 @@ module load Eigen
 module load HDF5
 
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-export KMP_AFFINITY=compact,0
+export KMP_AFFINITY=balanced,verbose
+#export KMP_AFFINITY=compact,0
 
 cd {{ rundir }}
 
 date
 
-srun -o {{ rundir }}/contract.out ./contract -i {{ rundir }}/contract.in 
+{% for config_id in config_ids_for_one_job %}
+srun -N1 -n1 -c{{ cpus_per_task }} --exclusive -o {{ config_path }}/contract_{{ config_id }}.out ./contract -i {{ config_path }}/contract_{{ config_id }}.in &
+{% endfor %}
+#srun -o {{ config_path }}/contract.out ./contract -i {{ config_path }}/contract.in 
 
 date

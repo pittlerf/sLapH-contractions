@@ -13,6 +13,6 @@ export OMP_NUM_THREADS={{ omp_num_threads }}
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/hiskp2/werner/libraries/boost_1_60_0/stage/lib
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/hiskp2/knippsch/hdf5-1.8.17/lib 
 
-./contract -i contract.in &> contract.out
+./contract -i {{ config_path }}/contract.in &> {{ config_path }}/contract.out
 
 chmod -R g+rwx *

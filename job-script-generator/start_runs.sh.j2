@@ -3,11 +3,12 @@ maxJobN={{ maxJobN }} # maximum of jobs in queue
 name={{ jobname }} 
 
 # loop for the configs
-for cfg in { {{ config_start }}..{{ config_end }}..{{ config_step }} }; do
+#for cfg in {{ '{' }}{{ config_start }}..{{ config_end }}..{{ config_step }}{{ '}' }}; do
+for cfg in {% for config in config_ids %}{{ config }} {% endfor %}; do
   echo "submitting conf ${cfg}"
  
     ## check whether at maximum of jobs in queue
-    while [ 
+    while [{{ ' ' }} 
       {%- if machine == 'qbig' -%}
       $(qstat -u ${USER} {{ ' ' }}
       {%- elif machine  == 'jureca' -%}
