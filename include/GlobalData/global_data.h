@@ -79,7 +79,7 @@ private:
   PerambulatorConstruction peram_construct;
  
   std::vector<quark> quarks;
-  std::vector<Operator_list> operator_list;
+  Operator_list operator_list;
   Correlator_list correlator_list;
 
   /*! Check and print lattice, config and path data and fills quarks, 
@@ -215,7 +215,7 @@ public:
    * 
    * @todo make that private and delete get function
    */
-  inline std::vector<Operator_list>& get_operator_list() {
+  inline Operator_list& get_operator_list() {
     return operator_list;
   }
   /*! Return munged list of correlators as read from infile

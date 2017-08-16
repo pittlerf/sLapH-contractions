@@ -247,6 +247,8 @@ LapH::Quarklines::Quarklines(
   gamma.resize(16);
   for(int i = 0; i < 16; ++i)
     create_gamma(gamma, i);
+
+  std::cout << "\tQuarklines initialised" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

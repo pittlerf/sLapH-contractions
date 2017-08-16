@@ -210,9 +210,9 @@ void quark_check (quark quarks) {
  *  This is a factory function which returns by value and uses named return 
  *  value optimization in order to call the constructor within the scope
  */
-Operator_list make_operator_list(const std::string& operator_string) {
+Operators make_operator_list(const std::string& operator_string) {
 
-  Operator_list op_list; // return object
+  Operators op_list; // return object
 
   // Two steps are necessary: 
   // 1. Getting all operators in one list which are separated by ";"
@@ -260,9 +260,17 @@ Operator_list make_operator_list(const std::string& operator_string) {
         exit(0);
       }
     }
-    op_list.push_back(Operators(gammas, dil_vec, mom_vec));
+
+    for(const auto& mom_vec_tmp : mom_vec){ // momenta
+      for(auto mom : mom_vec_tmp){
+
+        op_list.push_back(QuantumNumbers(gammas, dil_vec, mom));
+      }
+    }
   }
+
   return op_list;
+
 }
 
 /*!

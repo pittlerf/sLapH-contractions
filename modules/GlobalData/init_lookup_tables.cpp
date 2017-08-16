@@ -21,25 +21,6 @@
 namespace {
 
 /******************************************************************************/
-/*! @todo rewrite the momenta with eigen or at least overload +, - and abs for 
- *        them 
- */
-struct QuantumNumbers{
-  std::array<int, 3> momentum;
-  std::array<int, 3> displacement;
-  std::vector<int> gamma;
-
-  inline void write() const{
-    std::cout << "\tmomentum: " << momentum[0] << momentum[1] << momentum[2];
-    std::cout << "\n\tdisplacement: " << displacement[0] << displacement[1] 
-              << displacement[2] << "\n\tgamma struct: ";
-    for(const auto& g : gamma)
-      std::cout << g;
-    std::cout << "\n" << std::endl;
-  }
-};
-
-/******************************************************************************/
 /*! @{
  *  Linear algebra functions for 3-momenta
  *  
@@ -161,24 +142,13 @@ static bool momenta_below_cutoff(const std::array<int, 3>& p1,
  *  introduced.
  */
 void build_quantum_numbers_from_correlator_list(const Correlators& correlator, 
-                    const std::vector<Operator_list>& operator_list,
+                    const Operator_list& operator_list,
                     std::vector<std::vector<QuantumNumbers> >& quantum_numbers){
 
-  // Extracting all possible quantum number combinations 
-  std::vector<std::vector<QuantumNumbers> > qn_op;
-  QuantumNumbers write;
+
+  std::vector<Operators> qn_op;
   for(const auto& op_number : correlator.operator_numbers){
-    std::vector<QuantumNumbers> single_vec_qn;
-    for(const auto& op : operator_list[op_number]){ 
-      write.gamma = op.gammas; // Dirac Matrices
-      write.displacement = op.dil_vec; // displacement Vector
-      for(const auto& mom_vec : op.mom_vec){ // momenta
-        for(auto mom : mom_vec){
-          write.momentum = mom;
-          single_vec_qn.emplace_back(write);
-      }}
-    }
-    qn_op.emplace_back(single_vec_qn);
+    qn_op.emplace_back(operator_list[op_number]);
   }
 
   /*! Restriction to what shall actually be computed is done in if statements 

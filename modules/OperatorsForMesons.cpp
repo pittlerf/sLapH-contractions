@@ -138,6 +138,7 @@ LapH::OperatorsForMesons::OperatorsForMesons
                        operator_lookuptable.vdaggerv_lookup.size()][Lx*Ly*Lz]);
   create_momenta(Lx, Ly, Lz, operator_lookuptable.vdaggerv_lookup, momentum);
 
+  std::cout << "\tMeson operators initialised" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

@@ -26,7 +26,7 @@ namespace global_data_utils {
   void quark_check(quark quarks);
 
   /*! Makes an operator list object from a string */
-  Operator_list make_operator_list(const std::string& operator_string);
+  Operators make_operator_list(const std::string& operator_string);
 
   /*! Makes an Correlators object from a string */
   Correlators make_correlator(const std::string& correlator_string);

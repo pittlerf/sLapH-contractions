@@ -70,23 +70,36 @@ struct quark {
       id(id), path(path) {}
 };
 
-/*! Struct that contains all information operator specifying the field operator 
- *  in the infile:
+/******************************************************************************/
+/*! Struct that contains all physical information specifying a quantum field 
+ *  operator in the infile:
  *
  *  Dirac structure, displacement and momentum vector as 3-vectors
+ *
+ *  @todo rewrite the momenta with eigen or at least overload +, - and abs for 
+ *        them 
  */
-struct Operators {
-
-public: // TODO: should be changed to private at a later point
-  std::vector<int> gammas;
-  std::array<int, 3> dil_vec;
-  std::vector< std::vector<std::array<int, 3> > > mom_vec;
+struct QuantumNumbers{
 
 public:
+
+  std::vector<int> gamma;
+  std::array<int, 3> displacement;
+  std::array<int, 3> momentum;
+
+  inline void write() const{
+    std::cout << "\tmomentum: " << momentum[0] << momentum[1] << momentum[2];
+    std::cout << "\n\tdisplacement: " << displacement[0] << displacement[1] 
+              << displacement[2] << "\n\tgamma struct: ";
+    for(const auto& g : gamma)
+      std::cout << g;
+    std::cout << "\n" << std::endl;
+  }
+
   /*! Constructor */
-  Operators (std::vector<int> gammas, std::array<int, 3> dil_vec, 
-                       std::vector<std::vector<std::array<int, 3> > > mom_vec) :
-      gammas(gammas), dil_vec(dil_vec), mom_vec(mom_vec) {}
+  QuantumNumbers (std::vector<int> _gamma, std::array<int, 3> _displacement, 
+                  std::array<int, 3> _momentum) :
+      gamma(_gamma), displacement(_displacement), momentum(_momentum) {}
 
 };
 
@@ -123,6 +136,7 @@ public:
 
 };
 
+typedef std::vector<QuantumNumbers> Operators;
 typedef std::vector<Operators> Operator_list;
 typedef std::vector<Correlators> Correlator_list;
 
