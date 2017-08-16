@@ -17,15 +17,15 @@ module load HDF5
 
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 export KMP_AFFINITY=balanced,verbose
-#export KMP_AFFINITY=compact,0
 
 cd {{ rundir }}
 
 date
 
 {% for config_id in config_ids_for_one_job %}
-srun -N1 -n1 -c{{ cpus_per_task }} --exclusive -o {{ config_path }}/contract_{{ config_id }}.out ./contract -i {{ config_path }}/contract_{{ config_id }}.in &
+srun -N1 -n1 -c{{ cpus_per_task }} --exclusive -o {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.out ./contract -i {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.in &
 {% endfor %}
-#srun -o {{ config_path }}/contract.out ./contract -i {{ config_path }}/contract.in 
+
+wait
 
 date
