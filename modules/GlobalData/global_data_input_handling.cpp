@@ -184,17 +184,14 @@ void quark_input_data_handling (
  *  handled by gdu::make_operator_list
  */
 void operator_input_data_handling (
-    const std::vector<std::string> operator_list_configs, 
-    std::vector<Operator_list>& operator_list) {
-  try{
+    const std::vector<std::string> operator_strings, 
+    Operator_list& operator_list) {
 
-//    std::transform(operator_list_configs.begin(), operator_list_configs.end(),
-//        std::back_inserter(operator_list), make_operator_list);
-    
+  try{
     // Transform each configured operator into an Operator_list via 
     // make_operator_list()
-    for(auto op_list : operator_list_configs)
-      operator_list.push_back(make_operator_list(op_list));
+    for(auto operator_string : operator_strings)
+      operator_list.push_back(make_operator_list(operator_string));
     // TODO write a check for correctness of input    
   }
   catch(std::exception& e){
