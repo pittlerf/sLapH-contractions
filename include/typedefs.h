@@ -293,6 +293,9 @@ struct QuarklineLookup{
   std::vector<QuarklineQ2Indices> Q2L;
 };
 
+
+enum class QuarkLineType {Q1, Q2L, Q2V};
+
 /******************************************************************************/
 /*! All information needed to build and write the correlator given the 
  *  quarklines were calculated beforehand

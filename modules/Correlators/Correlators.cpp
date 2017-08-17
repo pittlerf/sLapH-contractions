@@ -202,7 +202,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
   corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 #pragma omp parallel
 {
-  Quarklines_one_t quarklines_intern(dilT, dilE, nev, quark_lookup, 
+  QuarkLine_one_t<QuarkLineType::Q1> quarklines_intern(dilT, dilE, nev, quark_lookup.Q1, 
                                operator_lookup.ricQ2_lookup);
 
   #pragma omp for schedule(dynamic) 
@@ -239,8 +239,8 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
           exit(0);
         }
         corr0[c_look.id][t1][t2][id] += 
-                    (quarklines_intern.return_Q1(0, c_look.lookup[0], id) *
-                     quarklines_intern.return_Q1(1, c_look.lookup[1], 
+                    (quarklines_intern.return_Ql(0, c_look.lookup[0], id) *
+                     quarklines_intern.return_Ql(1, c_look.lookup[1], 
                                                      it1-ric1.begin())).trace();
       }
     }
@@ -436,12 +436,12 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
 #pragma omp parallel
 {
   // building the quark line directly frees up a lot of memory
-  Quarklines_one_t quarklines(dilT, dilE, nev, quark_lookup, 
+  QuarkLine_one_t<QuarkLineType::Q2V> quarklines(dilT, dilE, nev, quark_lookup.Q2V, 
                         operator_lookup.ricQ2_lookup);
   #pragma omp for schedule(dynamic)
   for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
   for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
-    quarklines.build_Q2V_one_t(perambulators, meson_operator, t1_i, t2_i,
+    quarklines.build(perambulators, meson_operator, t1_i, t2_i,
                               quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
     for(int dir = 0; dir < 2; dir++){
   
@@ -504,7 +504,7 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
                            quarklines.return_gamma_row(c_look.gamma[0], block);
               corrC[c_look.id][t1][t2][id] += 
                    quarklines.return_gamma_val(c_look.gamma[0], block) *
-                   (quarklines.return_Q2V(id_Q2L_1, c_look.lookup[0], id).
+                   (quarklines.return_Ql(id_Q2L_1, c_look.lookup[0], id).
                               block(block*dilE, gamma_index*dilE, dilE, dilE) *
                    meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id).
                       block(gamma_index*dilE, block*dilE, dilE, dilE)).trace();
@@ -728,7 +728,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines_one_t quarklines(dilT, dilE, nev, quark_lookup, 
+  QuarkLine_one_t<QuarkLineType::Q2V> quarklines(dilT, dilE, nev, quark_lookup.Q2V, 
                         operator_lookup.ricQ2_lookup);
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
@@ -793,7 +793,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
   for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
   for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
     // creating quarklines
-    quarklines.build_Q2V_one_t(perambulators, meson_operator, t1_i, t2_i,
+    quarklines.build(perambulators, meson_operator, t1_i, t2_i,
                                quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
 
   for(int bla = 0; bla < 2; bla++){
@@ -866,7 +866,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 //          const size_t gamma_index = quarklines.return_gamma_row(
 //                                                          c_look.gamma[0], col);
           M1[look[0]][M1_rnd_counter].block(0, col*dilE, 4*dilE, dilE) = value *
-            quarklines.return_Q2V(id_Q2V_1, look[1], idr0).
+            quarklines.return_Ql(id_Q2V_1, look[1], idr0).
                                block(0, gamma_index*dilE, 4*dilE, dilE) *
             meson_operator.return_rvdaggervr(look[2], t2, idr1).
                                 block(gamma_index*dilE, col*dilE, dilE, dilE);
@@ -896,7 +896,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 //                                                            c_look.gamma[1], col);
 
           M2[look[0]][M2_rnd_counter].block(0, col*dilE, 4*dilE, dilE) = value * 
-            quarklines.return_Q2V(id_Q2V_2, look[1], idr2).
+            quarklines.return_Ql(id_Q2V_2, look[1], idr2).
                                block(0, gamma_index*dilE, 4*dilE, dilE) *
             meson_operator.return_rvdaggervr(look[2], t2, idr3).
                                 block(gamma_index*dilE, col*dilE, dilE, dilE);
@@ -1097,8 +1097,11 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines_one_t quarklines(dilT, dilE, nev, quark_lookup, 
+  QuarkLine_one_t<QuarkLineType::Q2L> quarklines_Q2L(dilT, dilE, nev, quark_lookup.Q2L, 
                         operator_lookup.ricQ2_lookup);
+  QuarkLine_one_t<QuarkLineType::Q1> quarklines_Q1(dilT, dilE, nev, quark_lookup.Q1, 
+                        operator_lookup.ricQ2_lookup);
+
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
   std::vector<std::array<size_t, 3> > M1_look;
@@ -1142,9 +1145,9 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
   for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
   for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
     // creating quarklines
-    quarklines.build_Q2L_one_t(perambulators, meson_operator, t1_i, t2_i,
+    quarklines_Q2L.build(perambulators, meson_operator, t1_i, t2_i,
                                quark_lookup.Q2L, operator_lookup.ricQ2_lookup);
-    quarklines.build_Q1_mult_t(perambulators, meson_operator, t1_i, t2_i,
+    quarklines_Q1.build(perambulators, meson_operator, t1_i, t2_i,
                                quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 
   for(int dir = 0; dir < 2; dir++){
@@ -1211,14 +1214,14 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
         const size_t idr2 = &rnd2 - &ric2[0];
         for(size_t col = 0; col < 4; col++){
   
-          const cmplx value = quarklines.return_gamma_val(5, col); // TODO: gamma hardcoded
-          const size_t gamma_index = quarklines.return_gamma_row(
+          const cmplx value = quarklines_Q2L.return_gamma_val(5, col); // TODO: gamma hardcoded
+          const size_t gamma_index = quarklines_Q2L.return_gamma_row(
                                                           5, col); // TODO: gamma hardcoded
 
           M1[look[0]][M1_rnd_counter].block(col*dilE, 0, dilE, 4*dilE) = value *
               meson_operator.return_rvdaggervr(look[2], t1, idr2).
                                  block(col*dilE, gamma_index*dilE, dilE, dilE) *
-              quarklines.return_Q2L(id_Q2L_1, look[1], idr0).
+              quarklines_Q2L.return_Ql(id_Q2L_1, look[1], idr0).
                                  block(gamma_index*dilE, 0, dilE, 4*dilE);
         }
         M1_rnd_counter++;
@@ -1252,7 +1255,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
         if(rnd1.first != rnd2.first  && rnd1.second == rnd2.second &&
            rnd1.first == rnd0.second && rnd1.second != rnd0.first){
           C[c_look.id][t] += (M1[(*it1)[0]][M1_rnd_counter]*
-                    quarklines.return_Q1(id_Q2L_2, c_look.lookup[1], idr1)).trace();
+                    quarklines_Q1.return_Ql(id_Q2L_2, c_look.lookup[1], idr1)).trace();
         }}
         M1_rnd_counter++;
       }}}
@@ -1305,7 +1308,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 {
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
-  Quarklines_one_t quarklines(dilT, dilE, nev, quark_lookup, 
+  QuarkLine_one_t<QuarkLineType::Q2L> quarklines(dilT, dilE, nev, quark_lookup.Q2L, 
                         operator_lookup.ricQ2_lookup);
   // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
   std::vector<std::vector<Eigen::MatrixXcd> > M1, M2;
@@ -1368,7 +1371,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
   for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
   for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
     // creating quarklines
-    quarklines.build_Q2L_one_t(perambulators, meson_operator, t1_i, t2_i,
+    quarklines.build(perambulators, meson_operator, t1_i, t2_i,
                                quark_lookup.Q2L, operator_lookup.ricQ2_lookup);
 
   for(int bla = 0; bla < 2; bla++){
@@ -1440,7 +1443,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
           M1[look[0]][M1_rnd_counter].block(col*dilE, 0, dilE, 4*dilE) = value *
               meson_operator.return_rvdaggervr(look[1], t1, idr1).
                                  block(col*dilE, gamma_index*dilE, dilE, dilE) *
-              quarklines.return_Q2L(id_Q2L_1, look[2], idr0).
+              quarklines.return_Ql(id_Q2L_1, look[2], idr0).
                                  block(gamma_index*dilE, 0, dilE, 4*dilE);
         }
         M1_rnd_counter++;
@@ -1467,7 +1470,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
             block(col*dilE, 0, dilE, 4*dilE) = value *
             meson_operator.return_rvdaggervr(look[1], t2, idr3).
                                 block(col*dilE, gamma_index*dilE, dilE, dilE)*
-            quarklines.return_Q2L(id_Q2L_2, look[2], idr2).
+            quarklines.return_Ql(id_Q2L_2, look[2], idr2).
                                block(gamma_index*dilE, 0, dilE, 4*dilE);
         }
         M2_rnd_counter++;
