@@ -214,9 +214,9 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
             for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
               // LapH::EigenVector W_t(1,dim_row, nb_ev);
               if(nb_derv_one_dir == 0)
-                W_t = gauge.disp(V_t[0], t, dir, true);
+                W_t = gauge.disp(V_t[0], t, dir, false);
               else
-                W_t = gauge.disp(W_t, t, dir, true);
+                W_t = gauge.disp(W_t, t, dir, false);
             }
           }
           dir++;
