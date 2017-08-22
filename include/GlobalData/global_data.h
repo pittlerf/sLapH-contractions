@@ -62,6 +62,7 @@ private:
   int start_config, end_config, delta_config;
   int verbose;
   size_t nb_omp_threads, nb_eigen_threads;
+  std::string path_gaugefields;
   std::string path_eigenvectors;
   std::string name_eigenvectors;
   std::string filename_eigenvectors;
@@ -70,7 +71,6 @@ private:
   std::string name_lattice;
   std::string path_output;
   std::string overwrite;
-  std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
   //! @endcond
@@ -117,9 +117,6 @@ public:
   }
   inline std::string get_output_path() {
     return path_output;
-  }
-  inline std::string get_config_path() {
-    return path_config;
   }
   inline size_t get_nb_omp_threads() {
     return nb_omp_threads;
@@ -202,7 +199,9 @@ public:
   inline std::string get_path_vdaggerv() {
     return path_vdaggerv;
   }
-
+  inline std::string get_path_gaugefields() {
+    return path_gaugefields;
+  }
   /*! Return munged list of quarks as specified in the infile
    * 
    * @todo make that private and delete get function

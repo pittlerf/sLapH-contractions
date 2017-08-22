@@ -26,7 +26,7 @@ using gdu::make_correlator;
  *  @todo Does this actually make it easier?
  */
 void lattice_input_data_handling (const std::string path_output,
-    const std::string name_lattice, const std::string path_config, int Lt,
+    const std::string name_lattice, const std::string path_gaugefields, int Lt,
     int Lx, int Ly, int Lz) {
   try{
     if(Lt < 1){
@@ -68,8 +68,8 @@ void lattice_input_data_handling (const std::string path_output,
       name_lattice << std::endl;
     std::cout << "\tResults will be saved to path:\n\t\t"
         << path_output << "/" << std::endl;
-    std::cout << "\tConfigurations will be read from:\n\t\t"
-        << path_config << "/" << std::endl;
+    std::cout << "\tGauge Configurations will be read from:\n\t\t"
+        << path_gaugefields << "/" << std::endl;
   }
   catch(std::exception& e){
     std::cout << e.what() << "\n";
@@ -266,7 +266,7 @@ void GlobalData::input_handling(
     const std::vector<std::string>& correlator_list_configs) {
 
   // Checks and terminal output for lattice, config and paths
-  lattice_input_data_handling(path_output, name_lattice, path_config, 
+  lattice_input_data_handling(path_output, name_lattice, path_gaugefields, 
                                                                 Lt, Lx, Ly, Lz);
   config_input_data_handling(start_config, end_config, delta_config);
   eigenvec_perambulator_input_data_handling(
