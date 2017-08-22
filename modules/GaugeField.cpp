@@ -2,12 +2,19 @@
 
 static GlobalData * const global_data = GlobalData::Instance();
 
-GaugeField::GaugeField(const size_t t0, const size_t tf, const size_t v3,
-                      const size_t ndir) : tslices(),
-                                           iup(boost::extents[v3][ndir]),
-                                           idown(boost::extents[v3][ndir]) {
+// member initializer is executed from left to right. Is used to set constant members
+GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _Lz, 
+                       const std::string _config_path, const size_t t0, const size_t tf,
+                       const size_t ndir) : Lt(_Lt), Lx(_Lx), Ly(_Ly), Lz(_Lz), 
+                        V3(Lx * Ly * Lz), dim_row(V3 * 3), 
+                        V_TS(dim_row * 4 * 3 * 2), V_for_lime(V_TS * Lt), 
+                        config_path( _config_path){
+
+  tslices();
+  iup(boost::extents[V3][ndir]);
+  idown(boost::extents[V3][ndir]);
   tslices.resize(tf-t0+1);
-  for(auto& t: tslices) t.resize(boost::extents[v3][ndir]);
+  for(auto& t: tslices) t.resize(boost::extents[V3][ndir]);
 
 }
 
@@ -81,13 +88,7 @@ int GaugeField::get_dn(const int pos, const int dir){
 
 //mapping from gauge config to Eigen 3x3 complex matrix arrays
 void GaugeField::map_timeslice_to_eigen(const size_t t, const double* timeslice) {
-  int L1 = global_data->get_Lx();
-  int L2 = global_data->get_Ly();
-  int L3 = global_data->get_Lz();
-  
-  const int V3 = L1 * L2 * L3;
-  const int V_TS = global_data->get_V_TS();
-  
+ 
   //Number of directions
   const int NDIR = 4;
   //Number of colors
@@ -95,19 +96,19 @@ void GaugeField::map_timeslice_to_eigen(const size_t t, const double* timeslice)
 
   //read in elements
   int el_input = 0;
-  for (int z = 0; z < L3; ++z) {//spatial loops
-    for (int y = 0; y < L2; ++y) {
-      for (int x = 0; x < L1; ++x) {
+  for (int z = 0; z < Lz; ++z) {//spatial loops
+    for (int y = 0; y < Ly; ++y) {
+      for (int x = 0; x < Lx; ++x) {
         for (int mu = 1; mu < 4; ++mu) {//direction loop
           std::complex< double > array[9];
           for (int a = 0; a < 3; ++a) {//colour loops
             for (int b = 0; b < 3; ++b) {
               //timeslice index of real part
-              int ind_r = z*V_TS/L3+y*V_TS/(L3*L2)+x*V_TS/(V3)+
+              int ind_r = z*V_TS/Lz+y*V_TS/(Lz*Ly)+x*V_TS/(V3)+
                 mu*V_TS/(V3*NDIR)+a*V_TS/(V3*NDIR*NCOL)
                 +b*V_TS/(V3*NDIR*NCOL*NCOL)+0;
               //timeslice index of imaginary part
-              int ind_i = z*V_TS/L3+y*V_TS/(L3*L2)+x*V_TS/(V3)+
+              int ind_i = z*V_TS/Lz+y*V_TS/(Lz*Ly)+x*V_TS/(V3)+
                 mu*V_TS/(V3*NDIR)+a*V_TS/(V3*NDIR*NCOL)
                 +b*V_TS/(V3*NDIR*NCOL*NCOL)+1;
 		
@@ -119,7 +120,7 @@ void GaugeField::map_timeslice_to_eigen(const size_t t, const double* timeslice)
           }
           Eigen::Map<Eigen::Matrix3cd> dummy(array);
           //spatial index
-          int ind = z*L2*L1+y*L1+x;
+          int ind = z*Ly*Lx+y*Lx+x;
            tslices.at(t)[ind][mu-1] = dummy;
         }
       }
@@ -210,12 +211,6 @@ static Eigen::Matrix3cd construct_random_su3() {
 //Stout-Smearing
 void GaugeField::smearing_stout(const size_t t, const double rho, const size_t iter) {
 
-  //parameter passing still to be improved
-  const size_t LX = global_data -> get_Lx();
-  const size_t LY = global_data -> get_Ly();
-  const size_t LZ = global_data -> get_Lz();
-  const size_t V3 = LX * LY * LZ;
-
   std::complex<double> im_half(0,0.5);
   array_3cd_d2_eigen eigen_timeslice_ts(boost::extents[V3][3]);
  // Eigen::Matrix3cd **eigen_timeslice_ts = new Eigen::Matrix3cd *[V3]; 
@@ -265,11 +260,6 @@ void GaugeField::smearing_stout(const size_t t, const double rho, const size_t i
 //APE-Smearing
 void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t iter){
 
-  //parameter passing still to be improved
-  const size_t LX = global_data -> get_Lx();
-  const size_t LY = global_data -> get_Ly();
-  const size_t LZ = global_data -> get_Lz();
-  const size_t V3 = LX * LY * LZ;
   //Eigen::Matrix3cd **eigen_timeslice_ts = new Eigen::Matrix3cd *[V3]; 
   //for ( auto i = 0; i < V3; ++i ) {
   //  eigen_timeslice_ts[i] = new Eigen::Matrix3cd[3];
@@ -313,11 +303,7 @@ void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t
 
 void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const double alpha_2,
                                const size_t iter) {
-  //parameter passing still to be improved
-  const int LX = global_data -> get_Lx();
-  const int LY = global_data -> get_Ly();
-  const int LZ = global_data -> get_Lz();
-  const int V3 = LX * LY * LZ;
+
   //temporal timeslice twice the size for decorated links
   array_3cd_d2_eigen dec_timeslice(boost::extents[V3][6]);
 
@@ -420,14 +406,8 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
                                      const size_t t, const size_t dir, bool sym ) {
-  //parameter passing still to be improved
-  const int LX = global_data -> get_Lx();
-  const int LY = global_data -> get_Ly();
-  const int LZ = global_data -> get_Lz();
-  const int V3 = LX * LY * LZ;
 
   //Information on Matrix size
-  const int dim_row = V3*3;
   const int dim_col = v.cols();
   //Loop over all eigenvectors in 
     //storing eigenvector
@@ -470,10 +450,7 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
 //build gauge array
 void GaugeField::build_gauge_array(const size_t trange) {
   //parameter passing still to be improved
-  const size_t LX = global_data -> get_Lx();
-  const size_t LY = global_data -> get_Ly();
-  const size_t LZ = global_data -> get_Lz();
-  const size_t V3 = LX * LY * LZ;
+  const size_t V3 = Lx * Ly * Lz;
   srand(1227);
   //resize omega
   omega.resize(boost::extents[trange][V3]);
@@ -487,11 +464,7 @@ void GaugeField::build_gauge_array(const size_t trange) {
 //Gauge-transform config for every timeslice
 void GaugeField::trafo(const size_t t0, const size_t tf) {
 
-  //parameter passing still to be improved
-  const size_t LX = global_data -> get_Lx();
-  const size_t LY = global_data -> get_Ly();
-  const size_t LZ = global_data -> get_Lz();
-  const size_t V3 = LX * LY * LZ;
+  const size_t V3 = Lx * Ly * Lz;
 
   build_gauge_array(tf-t0);
   for(size_t t = t0; t < tf; ++t){
@@ -510,8 +483,8 @@ void GaugeField::trafo(const size_t t0, const size_t tf) {
 //transform matrix of eigenvectors with gauge array
 Eigen::MatrixXcd GaugeField::trafo_ev(const Eigen::MatrixXcd& eig_sys) {
 
-  const size_t dim_col = eig_sys.cols();
   const size_t dim_row = eig_sys.rows();
+  const size_t dim_col = eig_sys.cols();
   Eigen::MatrixXcd ret(dim_row,dim_col);
   if (omega.shape()[0] == 0) build_gauge_array(1);
   //write_gauge_matrices("ev_trafo_log.bin",Omega);
@@ -553,11 +526,7 @@ double GaugeField::plaque_pnt(const size_t mu, const size_t nu, const size_t vol
 
 double GaugeField::plaque_ts(const size_t t){
 
-  //parameter passing still to be improved
-  const size_t LX = global_data -> get_Lx();
-  const size_t LY = global_data -> get_Ly();
-  const size_t LZ = global_data -> get_Lz();
-  const size_t V3 = LX * LY * LZ;
+  const size_t V3 = Lx * Ly * Lz;
 
   double plaquette = 0;
   double cnt = 0;
@@ -585,9 +554,7 @@ void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
   char filename[200];
   std::string name = global_data->get_config_path()+"/conf";
   sprintf(filename,"%s.%04d", name.c_str(), config_i);
-  const int vol4 = global_data -> get_V_for_lime();
-  const int V_TS = global_data -> get_V_TS();
-  double* configuration = new double[vol4];
+  double* configuration = new double[V_for_lime];
   read_lime_gauge_field_doubleprec_timeslices(configuration, filename,
                                               slice_i, slice_f);
   for (auto t = slice_i; t <= slice_f; ++t) {

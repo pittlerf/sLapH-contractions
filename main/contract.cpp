@@ -97,6 +97,7 @@ int main (int ac, char* av[]) {
     // read random vectors
     randomvectors.read_random_vectors_from_separate_files(
                             global_data->get_rnd_vec_construct().filename_list);
+
     // read eigenvectors and build operators
     meson_operators.create_operators(global_data->get_filename_eigenvectors(),
                                                        randomvectors, config_i);

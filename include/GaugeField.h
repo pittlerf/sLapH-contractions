@@ -51,11 +51,10 @@ class GaugeField {
   public:
     //! \brief Constructor
 
-    //!t0 is first, tf is last timeslice to be read in, v3 denotes the spatial
-    //!lattice sites LX * LY * LZ
-    //!
-    GaugeField(const size_t t0, const size_t tf, const size_t v3,
-               const size_t ndir);
+    //!t0 is first, tf is last timeslice to be read in
+    GaugeField(const int Lt, const int Lx, const int Ly, const int Lz, 
+               const std::string config_path, const size_t t0, 
+               const size_t tf, const size_t ndir);
     ~GaugeField() {};
     //! \brief overloaded access operator
     //!
@@ -158,6 +157,10 @@ class GaugeField {
     //! Used internally by plaque_ts
     double plaque_pnt(const size_t mu, const size_t nu, const size_t vol, const size_t t);
 
+  //! \brief Parameters specifying size of the Lattice
+  const int Lt, Lx, Ly, Lz, V3, dim_row, V_TS, V_for_lime;
+  //! \brief Path to gauge configurations
+  const std::string config_path;
   //! \brief Vector holding boost multi_arrays for range of timeslices
   std::vector<array_3cd_d2_eigen> tslices;
   //! \brief One 3d timeslice of Gaugelinks as 2d boost multi_array of 3x3
