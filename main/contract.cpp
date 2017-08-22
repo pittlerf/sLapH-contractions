@@ -62,7 +62,8 @@ int main (int ac, char* av[]) {
                             (global_data->get_quarks())[0].number_of_dilution_E,
                             global_data->get_operator_lookuptable(),
                             global_data->get_handling_vdaggerv(),
-                            global_data->get_path_vdaggerv());  
+                            global_data->get_path_vdaggerv(),
+                            global_data->get_path_gaugefields());  
   /*! @todo Quarklines Can be deleted after memory optimizing all diagrams */
   LapH::Quarklines quarklines(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,

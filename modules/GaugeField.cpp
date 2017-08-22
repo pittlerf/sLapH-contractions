@@ -6,11 +6,9 @@ GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _L
                        const size_t ndir) : Lt(_Lt), Lx(_Lx), Ly(_Ly), Lz(_Lz), 
                         V3(Lx * Ly * Lz), dim_row(V3 * 3), 
                         V_TS(dim_row * 4 * 3 * 2), V_for_lime(V_TS * Lt), 
-                        config_path( _config_path){
-
-  tslices();
-  iup(boost::extents[V3][ndir]);
-  idown(boost::extents[V3][ndir]);
+                        config_path( _config_path), tslices(), iup(), idown(){
+  iup.resize(boost::extents[V3][ndir]);
+  idown.resize(boost::extents[V3][ndir]);
   tslices.resize(tf-t0+1);
   for(auto& t: tslices) t.resize(boost::extents[V3][ndir]);
 
@@ -550,8 +548,8 @@ void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
                                   const size_t slice_f){
 
   char filename[200];
-  std::string name = config_path()+"/conf";
-  sprintf(filename,"%s.%04d", name.c_str(), config_i);
+  const std::string name = config_path+"/conf";
+  sprintf(filename,"%s.%04lu", name.c_str(), config_i);
   double* configuration = new double[V_for_lime];
   read_lime_gauge_field_doubleprec_timeslices(configuration, filename,
                                               slice_i, slice_f);

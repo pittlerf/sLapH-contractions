@@ -2205,6 +2205,15 @@ void GlobalData::init_lookup_tables() {
   if(!found)
     operator_lookuptable.index_of_unity = -1;
 
+  /*! Sets index_of_unity to the index of operator_lookuptable.vdaggerv_lookup
+   *  where momentum and displacement are both zero, or to -1 if no such entry
+   *  is found.
+   */
+  for(const auto& op_vdv : operator_lookuptable.vdaggerv_lookup)
+    if( op_vdv.displacement != zero ){
+      operator_lookuptable.need_gaugefields = true;
+      break;
+    }
 }
 
 

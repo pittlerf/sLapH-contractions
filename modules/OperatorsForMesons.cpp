@@ -95,13 +95,15 @@ LapH::OperatorsForMesons::OperatorsForMesons
                          const size_t Lz, const size_t nb_ev, const size_t dilE,
                          const OperatorLookup& operator_lookuptable,
                          const std::string& handling_vdaggerv,
-                         const std::string& path_vdaggerv) : 
+                         const std::string& path_vdaggerv,
+                         const std::string& path_gaugefields) : 
                                vdaggerv(), momentum(), 
                                operator_lookuptable(operator_lookuptable),
                                Lt(Lt), Lx(Lx), Ly(Ly), Lz(Lz), nb_ev(nb_ev), 
                                dilE(dilE), handling_vdaggerv(handling_vdaggerv),
-                               path_vdaggerv(path_vdaggerv){
-
+                               path_vdaggerv(path_vdaggerv),
+                               path_gaugefields(path_gaugefields){
+  // if path_gaugefields is not empty
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[
                              operator_lookuptable.vdaggerv_lookup.size()][Lt]);
@@ -148,6 +150,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
+  const bool need_gaugefields = operator_lookuptable.need_gaugefields;
 
   // prepare full path for writing
   char dummy_path[200];
@@ -184,7 +187,12 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
       sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
       V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
     }
-
+    GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
+               path_gaugefields, size_t(0), 
+               size_t(Lt-1), size_t(4));
+    if(need_gaugefields){
+      gauge.read_gauge_field(config,size_t(0),size_t(Lt-1));
+    } 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
     // calculation must only be performed for a subset of quantum numbers given
@@ -193,6 +201,30 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
       if(op.id != id_unity){
+        // check whether displacement is wanted and determine the direction
+        // (parallel to gamma)
+        size_t dir = 0;
+        //TODO: Order of displacements matters
+        //TODO: At the moment only support for d > 0!!!!
+        Eigen::MatrixXcd W_t = V_t[0];
+        //for(auto& d : op_Corr[op.index].dis3){ 
+        for(auto& d : op.displacement){ 
+          if(d > 0){
+            // displace d times in direction dir
+            for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
+              // LapH::EigenVector W_t(1,dim_row, nb_ev);
+              if(nb_derv_one_dir == 0)
+                W_t = gauge.disp(V_t[0], t, dir, true);
+              else
+                W_t = gauge.disp(W_t, t, dir, true);
+            }
+          }
+          dir++;
+        }
+        vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+       // Eigen::MatrixXcd Trash = vdaggerv[op.id][t].adjoint();
+       // vdaggerv[op.id][t] -= Trash; 
+
         // momentum vector contains exp(-i p x). Divisor 3 for colour index. 
         // All three colours on same lattice site get the same momentum.
         for(size_t x = 0; x < dim_row; ++x) {

@@ -19,6 +19,7 @@
 #include "Eigen/Dense"
 
 #include "EigenVector.h"
+#include "GaugeField.h"
 #include "RandomVector.h"
 #include "typedefs.h"
 
@@ -59,6 +60,7 @@ private:
   bool is_vdaggerv_set = false;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
+  std::string path_gaugefields;
 
   // Internal functions to build individual operators --> The interface to these
   // functions is 'create_Operators'
@@ -75,7 +77,8 @@ public:
                      const size_t Lz, const size_t nb_ev, const size_t dilE,
                      const OperatorLookup& operator_lookuptable,
                      const std::string& handling_vdaggerv,
-                     const std::string& path_vdaggerv);
+                     const std::string& path_vdaggerv,
+                     const std::string& path_gaugefields);
   /*! Standard Destructor
    *
    *  Everything should be handled by Eigen, std::vector, and boost::multi_array
