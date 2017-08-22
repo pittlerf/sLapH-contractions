@@ -15,7 +15,7 @@ Lz = 24
 start_config = 714
 end_config   = 714
 delta_config = 2
-path_config = ./
+path_gaugefields = /hiskp2/gauges/A40.24_L24_T48_beta190_mul0040_musig150_mudel190_kappa1632700/
 
 # eigenvector handling:
 number_of_eigen_vec = 120

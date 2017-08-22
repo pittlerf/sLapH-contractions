@@ -1,7 +1,5 @@
 #include "GaugeField.h"
 
-static GlobalData * const global_data = GlobalData::Instance();
-
 // member initializer is executed from left to right. Is used to set constant members
 GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _Lz, 
                        const std::string _config_path, const size_t t0, const size_t tf,
@@ -550,9 +548,9 @@ double GaugeField::plaque_ts(const size_t t){
 //Read in gauge field to vector of timeslices
 void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
                                   const size_t slice_f){
-  const int verbose = global_data -> get_verbose();
+
   char filename[200];
-  std::string name = global_data->get_config_path()+"/conf";
+  std::string name = config_path()+"/conf";
   sprintf(filename,"%s.%04d", name.c_str(), config_i);
   double* configuration = new double[V_for_lime];
   read_lime_gauge_field_doubleprec_timeslices(configuration, filename,
@@ -562,10 +560,8 @@ void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
     map_timeslice_to_eigen(t, timeslice);
   }   
   delete[] configuration;
-  if(verbose){
-    std::cout << slice_f+1-slice_i << " timeslice(s) read in from config " << config_i 
-              << std::endl;
-  }
+  std::cout << slice_f+1-slice_i << " timeslice(s) read in from config " << config_i 
+            << std::endl;
 }
 
 //Read in the gaugefield, deprecated tmLqcd routine
@@ -575,11 +571,6 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
                                                              const size_t slice_f) {
 
   try{
-    const size_t Lt = global_data -> get_Lt();
-    const size_t Lx = global_data -> get_Lx();
-    const size_t Ly = global_data -> get_Ly();
-    const size_t Lz = global_data -> get_Lz();
-    const int verbose = global_data -> get_verbose();
 
     //const int slice_i = 0;
     //const int slice_f = Lt+1;
@@ -593,12 +584,13 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
     double tmp[72], tmp2[72];
     int words_bigendian;
 
-    if(verbose){
-      printf("reading gauge fields from files:\n");
-    }
-    else{
-      printf("\treading gauge fields:\n");
-    }
+    printf("reading gauge fields from files:\n");
+//    if(verbose){
+//      printf("reading gauge fields from files:\n");
+//    }
+//    else{
+//      printf("\treading gauge fields:\n");
+//    }
 
     words_bigendian = big_endian();
     ifs = fopen(filename, "r");
