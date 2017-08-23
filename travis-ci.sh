@@ -26,6 +26,10 @@ locate FindEigen3.cmake
 
 cd ..
 
+# Download the `local` directory if desired.
+wget http://qphix.martin-ueding.de/local.tar.gz
+tar -xzf local.tar.gz
+
 
 mkdir cmake-module
 cp $(locate FindEigen3.cmake) cmake-module
@@ -35,5 +39,7 @@ rm -rf "$builddir"
 mkdir -p "$builddir"
 cd "$builddir"
 
-cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module
+cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module \
+    -DLIME_INCLUDE_DIRS='../local/include/' \
+    -DLIME_LIBRARIES='-L../local/lib/ -llime'
 make -j $(nproc)
