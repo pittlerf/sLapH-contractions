@@ -43,4 +43,4 @@ cd "$builddir"
 cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module \
     -DLIME_INCLUDE_DIRS='../local/include/' \
     -DLIME_LIBRARIES='-L../local/lib/ -llime'
-make -j $(nproc)
+make -j $(nproc) VERBOSE=1
