@@ -24,12 +24,14 @@
 #include <complex>
 #include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <vector>
 
 //#include "Eigen/Dense"
 //#include "Eigen/Core"
 //#include "Eigen/SparseCore"
+#include <unsupported/Eigen/MatrixFunctions>
 #include "boost/multi_array.hpp" 
 
 //#include "lime.h"

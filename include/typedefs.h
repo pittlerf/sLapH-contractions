@@ -206,6 +206,7 @@ struct OperatorLookup{
    *  @em index_of_unity is set to -1
    */
   int index_of_unity;
+  bool need_gaugefields = false;
 
 };
 

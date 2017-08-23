@@ -24,6 +24,8 @@ for buildtype in release; do
         -DEIGEN3_INCLUDE_DIR='/hiskp2/werner/libraries/eigen-3.2.7' \
         -DHDF5_INCLUDE_DIRS=/hiskp2/knippsch/hdf5-1.8.17/include \
         -DHDF5_LIBRARIES='-L/hiskp2/knippsch/hdf5-1.8.17/lib -lhdf5_cpp -lhdf5 -lsz -lz' \
+        -DLIME_INCLUDE_DIRS=/hiskp2/helmes/programm_libs/lime-1.3.2/include \
+        -DLIME_LIBRARIES='-L/hiskp2/helmes/programm_libs/lime-1.3.2/lib -llime' \
         -DCMAKE_CXX_COMPILER=g++-4.7 \
         -DCMAKE_BUILD_TYPE=$buildtype
 

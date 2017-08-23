@@ -13,6 +13,11 @@ if(NOT DEFINED HDF5_INCLUDE_DIRS OR NOT DEFINED HDF5_LIBRARIES)
 endif()
 include_directories(${HDF5_INCLUDE_DIRS})
 
+if(NOT DEFINED LIME_INCLUDE_DIRS OR NOT DEFINED LIME_LIBRARIES)
+  message(FATAL_ERROR "lime directories not specified")
+endif()
+include_directories(${LIME_INCLUDE_DIRS})
+
 if(NOT DEFINED Boost_INCLUDE_DIRS OR NOT DEFINED Boost_LIBRARIES)
     find_package(Boost REQUIRED COMPONENTS filesystem system program_options)
 endif()
@@ -45,6 +50,8 @@ add_executable(contract
     modules/RandomVector.cpp
     modules/Correlators/Correlators.cpp
     modules/EigenVector.cpp
+    modules/GaugeField.cpp
+    modules/io_utils.cpp
     modules/Quarklines_one_t.cpp
     modules/ranlxs.cpp
     modules/Quarklines.cpp
@@ -61,6 +68,7 @@ add_executable(contract
 target_link_libraries(contract 
     ${Boost_LIBRARIES}
     ${HDF5_LIBRARIES}
+    ${LIME_LIBRARIES}
     )
 
 install(TARGETS contract DESTINATION bin)

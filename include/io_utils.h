@@ -10,8 +10,9 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <cmath>
-
+extern "C" {
 #include "lime.h"
+}
 
 #ifndef isnan
 # define isnan(x)						 \
