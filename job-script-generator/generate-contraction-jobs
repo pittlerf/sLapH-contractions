@@ -82,6 +82,10 @@ def main():
     with open(options.correlator_list) as f:
         correlator_list = f.read()
 
+    # Load the list with correlators.
+    with open(options.operator_list) as f:
+        operator_list = f.read()
+
     for config_base_id in config_ids:
 
         # Create a directory for the configuration.
@@ -93,6 +97,7 @@ def main():
         # Create a job script for the scheduler.
         rendered_jobscript = template_jobscript.render(
             jobname=options.jobname + '_' + str(config_base_id),
+            omp_num_threads=options.omp_num_threads,
             cpus_per_task = options.omp_num_threads // options.jobs_per_node,
             email_address=options.email,
             rundir=options.rundir,
@@ -119,13 +124,16 @@ def main():
                 config_step=1,
                 ev_count=options.ev_count,
                 ev_path=options.ev_path,
-                vdv_hanling=options.vdv_handling,
+                vdv_handling=options.vdv_handling,
                 vdv_path=options.vdv_path,
                 quarks=options.quarks,
                 correlator_list=correlator_list,
+                operator_list=operator_list,
                 outdir=options.outdir,
+                path_gaugefields=options.gauge_path,
             )
-            with open(os.path.join(config_path, 'contract_%04d.in' % config_id), 'w') as f:
+            # Path is unique should not need configuration number
+            with open(os.path.join(config_path, 'contract.in'), 'w') as f:
                 f.write(rendered_contract)
   
 
@@ -146,11 +154,14 @@ def do_consistency_checks(options):
     if not os.path.isfile(options.correlator_list):
         raise RuntimeError('The file with the correlators at “{}” does not exist! Please make sure that a correct path has been given.'.format(options.correlator_list))
 
+    if not os.path.isfile(options.operator_list):
+        raise RuntimeError('The file with the operators at “{}” does not exist!  Please make sure that a correct path has been given.'.format(options.operator_list))
+
     for quark in options.quarks:
         segments = quark.split(':')
         path = segments[-1]
         if not os.path.isdir(path):
-            raise RuntimeError('The quark path “{}” does not exist! Please make sure that a correct path has been given.'.format(options.correlator_list))
+            raise RuntimeError('The quark path “{}” does not exist! Please make sure that a correct path has been given.'.format(options.quarks))
 
 
 def _parse_args():
@@ -162,6 +173,7 @@ def _parse_args():
     group_config.add_argument('conf_start', type=int, help='First configuration, inclusive')
     group_config.add_argument('conf_end', type=int, help='Last configuration, inclusive')
     group_config.add_argument('conf_step', type=int, nargs='?', default=8, help='default: %(default)s')
+    group_config.add_argument('--gauge_path', default='./', help='Full path to configuration files, default: %(default)s')
     group_config.add_argument('--lattice-space', type=int, required=True, help='Size of the lattice in the space directions. Currently only lattices with equal space extents are supported.')
     group_config.add_argument('--lattice-time', type=int, required=True, help='Size of the lattice in time direction.')
     group_config.add_argument('--conf-skip', type=int, nargs='+', help='Skip the given gauge configurations.', default=[])
@@ -190,6 +202,7 @@ def _parse_args():
     group_contraction.add_argument('--jobs-per-node', type=int, default=1, help='Number of configurations started in a job. Default: %(default)s')
     group_contraction.add_argument('--quark', nargs='+', required=True, dest='quarks', metavar='QUARK', help='Quark line including the path. Example: u:6:TF:1:EI:6:DF:4:/hiskp2/bartek/peram_generation/0120-Mpi270-L24-T96/light.ranlxd2.apbc_no_compression')
     group_contraction.add_argument('--correlator-list', required=True, help='Path to text file which contains the correlator definitions')
+    group_contraction.add_argument('--operator-list', required=True, help='Path to text file which contains the operator definitions')
 
     options = parser.parse_args()
     return options

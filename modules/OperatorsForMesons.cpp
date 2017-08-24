@@ -177,6 +177,13 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
 {
   Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
   LapH::EigenVector V_t(1, dim_row, nb_ev);// each thread needs its own copy
+  GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
+             path_gaugefields, size_t(1), 
+             size_t(Lt), size_t(4));
+  if(need_gaugefields){
+    gauge.read_gauge_field(config,size_t(Lt),size_t(1));
+  } 
+  // Loop over timeslices
   #pragma omp for schedule(dynamic)
   for(size_t t = 0; t < Lt; ++t){
 
@@ -187,12 +194,6 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
       sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
       V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
     }
-    GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
-               path_gaugefields, size_t(0), 
-               size_t(Lt-1), size_t(4));
-    if(need_gaugefields){
-      gauge.read_gauge_field(config,size_t(0),size_t(Lt-1));
-    } 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
     // calculation must only be performed for a subset of quantum numbers given

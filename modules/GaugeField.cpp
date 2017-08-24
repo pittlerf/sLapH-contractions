@@ -9,6 +9,7 @@ GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _L
                         config_path( _config_path), tslices(), iup(), idown(){
   iup.resize(boost::extents[V3][ndir]);
   idown.resize(boost::extents[V3][ndir]);
+  init(Lx,Ly,Lz);
   tslices.resize(tf-t0+1);
   for(auto& t: tslices) t.resize(boost::extents[V3][ndir]);
 
