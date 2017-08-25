@@ -172,17 +172,20 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
   std::fill(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 
+  std::cout << "Input to gauge fields: Lt, Lx, Ly, Lz" << Lt << " " << Lx <<
+    " " << Ly << " " << Lz << std::endl;
+  GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
+             path_gaugefields, size_t(0), 
+             size_t(Lt-1), size_t(4));
+  // TODO: enable read in of one timeslice
+  if(need_gaugefields){
+    gauge.read_gauge_field(config,size_t(0),size_t(Lt-1));
+  } 
 
-#pragma omp parallel
+#pragma omp parallel shared(gauge)
 {
   Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
   LapH::EigenVector V_t(1, dim_row, nb_ev);// each thread needs its own copy
-  GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
-             path_gaugefields, size_t(1), 
-             size_t(Lt), size_t(4));
-  if(need_gaugefields){
-    gauge.read_gauge_field(config,size_t(Lt),size_t(1));
-  } 
   // Loop over timeslices
   #pragma omp for schedule(dynamic)
   for(size_t t = 0; t < Lt; ++t){
