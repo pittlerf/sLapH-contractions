@@ -204,6 +204,10 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
     for(const auto& op : operator_lookuptable.vdaggerv_lookup){
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
+      std::cout << "In build_vdaggerv: id_unity is:" << id_unity << std::endl;
+      std::cout << "In build_vdaggerv: displacement is:";
+      for (auto& e : op.displacement) std::cout << e << " ";
+      std::cout << std::endl;
       if(op.id != id_unity){
         // check whether displacement is wanted and determine the direction
         // (parallel to gamma)
@@ -211,16 +215,17 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         //TODO: Order of displacements matters
         //TODO: At the moment only support for d > 0!!!!
         Eigen::MatrixXcd W_t = V_t[0];
-        //for(auto& d : op_Corr[op.index].dis3){ 
+        //for(auto& d : op_Corr[op.index].dis3){
+        //op.displacement is a 3-vector of (x,y,z) displacements
         for(auto& d : op.displacement){ 
           if(d > 0){
             // displace d times in direction dir
             for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
               // LapH::EigenVector W_t(1,dim_row, nb_ev);
-              if(nb_derv_one_dir == 0)
-                W_t = gauge.disp(V_t[0], t, dir, false);
-              else
-                W_t = gauge.disp(W_t, t, dir, false);
+              //if(nb_derv_one_dir == 0)
+              //  W_t = gauge.disp(V_t[0], t, dir, false);
+              //else
+              W_t = gauge.disp(W_t, t, dir, true);
             }
           }
           dir++;
@@ -234,7 +239,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         for(size_t x = 0; x < dim_row; ++x) {
           mom(x) = momentum[op.id][x/3];
         }
-        vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * V_t[0];
+        //vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
         // writing vdaggerv to disk
         if(handling_vdaggerv == "write"){
           char dummy2[200];

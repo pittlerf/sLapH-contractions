@@ -402,7 +402,7 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
 
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
-                                     const size_t t, const size_t dir, bool sym ) {
+                                     const size_t t, const size_t dir, bool forward ) {
 
   //Information on Matrix size
   const int dim_col = v.cols();
@@ -426,13 +426,16 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
 
       quark_up = in.segment(3*up_ind,3);
       quark_down = in.segment(3*down_ind,3);
-      if(sym) {
+      if(forward) {
         tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
             ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
       }
+      // Do we need to introduce the backward derivative? 
       else { 
-        Eigen::Vector3cd quark_point = in.segment(3*spatial_ind,3);
-        tmp = ( (tslices.at(t))[spatial_ind][dir] * quark_up) - quark_point ;
+        tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
+            ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
+        //Eigen::Vector3cd quark_point = in.segment(3*spatial_ind,3);
+        //tmp = ( (tslices.at(t))[spatial_ind][dir] * quark_up) - quark_point ;
       }
       (out.col(ev)).segment(3*spatial_ind,3) = tmp;
     }//end spatial loop
