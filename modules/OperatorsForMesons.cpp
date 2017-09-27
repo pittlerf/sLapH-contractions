@@ -214,23 +214,36 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         size_t dir = 0;
         //TODO: Order of displacements matters
         //TODO: At the moment only support for d > 0!!!!
-        Eigen::MatrixXcd W_t = V_t[0];
+        //Eigen::MatrixXcd W_t = V_t[0];
+        Eigen::MatrixXcd W_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        Eigen::MatrixXcd Coll_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        gauge.smearing_hyp(t,0.62,0.62,3);
+        for(int d = 0; d < 3; ++d){
+          W_t = gauge.disp_2(V_t[0],t,d);
+          Coll_t += W_t;
+        }
         //for(auto& d : op_Corr[op.index].dis3){
         //op.displacement is a 3-vector of (x,y,z) displacements
-        for(auto& d : op.displacement){ 
-          if(d > 0){
-            // displace d times in direction dir
-            for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
-              // LapH::EigenVector W_t(1,dim_row, nb_ev);
-              //if(nb_derv_one_dir == 0)
-              //  W_t = gauge.disp(V_t[0], t, dir, false);
-              //else
-              W_t = gauge.disp(W_t, t, dir, true);
-            }
-          }
-          dir++;
+        //for(auto& d : op.displacement){ 
+        //  if(d > 0){
+        //    // displace d times in direction dir
+        //    for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
+        //      // LapH::EigenVector W_t(1,dim_row, nb_ev);
+        //      //if(nb_derv_one_dir == 0)
+        //      //  W_t = gauge.disp(V_t[0], t, dir, false);
+        //      //else
+        //      W_t = gauge.disp(W_t, t, dir, true);
+        //    }
+        //  }
+        //  dir++;
+        //}
+        //vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+        if (op.displacement.at(0) < 0){
+          vdaggerv[op.id][t] = Coll_t.adjoint() * V_t[0];
         }
-        vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+        else{
+          vdaggerv[op.id][t] = V_t[0].adjoint() * Coll_t;
+        }
        // Eigen::MatrixXcd Trash = vdaggerv[op.id][t].adjoint();
        // vdaggerv[op.id][t] -= Trash; 
 
