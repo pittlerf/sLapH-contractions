@@ -62,14 +62,6 @@ bool desired_total_momentum(const std::array<int, 3>& p_tot,
   else{
     return true;
   }
-<<<<<<< HEAD
-};
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-static std::array<int, 3> change_sign_array(const std::array<int, 3>& in){
-  return {{-in[0], -in[1], -in[2]}};
-=======
->>>>>>> maowerner-cntr/master
 }
 
 static bool equal(const std::array<int, 3>& p_so, 
