@@ -1,0 +1,69 @@
+# This is an example input file
+
+# perallelisation: Be carefull - Atm I would only use one thread for Eigen. It 
+#                                usually is much slower than simple omp!
+nb_omp_threads = 4
+nb_eigen_threads = 1
+
+# lattice parameters:
+Lt = 48
+Lx = 24
+Ly = 24 
+Lz = 24 
+
+# configuration handling: 
+start_config = 714
+end_config   = 714
+delta_config = 4
+path_config = ./
+
+# eigenvector handling:
+number_of_eigen_vec = 120
+path_eigenvectors   = /data/LapHs/contraction_Markus/test_data/ev
+name_eigenvectors   = eigenvectors
+handling_vdaggerv   = build
+path_vdaggerv       = /data/LapHs/contraction_Markus/test_data/operators
+
+# output path
+output_path = /data2/test4
+overwrite_old = yes
+
+# quarks to be used - The file at the and is the location of the perambulators.
+[quarks]
+quark = u:6:TI:2:EI:6:DI:4:/data/LapHs/contraction_Markus/test_data/peram/up
+
+# operators to be used
+[operator_lists]
+# mom 0
+operator_list = g1.d0.p0
+operator_list = g10.d0.p0
+operator_list = g15.d0.p0
+operator_list = g2.d0.p0
+operator_list = g11.d0.p0
+operator_list = g14.d0.p0
+operator_list = g3.d0.p0
+operator_list = g12.d0.p0
+operator_list = g13.d0.p0
+
+
+# all correlation functions which will be computed
+[correlator_lists]
+correlator_list = C20:Q0:Op6:Q0:Op8 #rho 
+correlator_list = C20:Q0:Op7:Q0:Op8 #rho 
+correlator_list = C20:Q0:Op8:Q0:Op6 #rho 
+correlator_list = C20:Q0:Op8:Q0:Op7 #rho 
+correlator_list = C20:Q0:Op8:Q0:Op8 #rho 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

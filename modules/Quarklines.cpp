@@ -10,46 +10,46 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
     switch(i) {
     case 0: // gamma_0
       gamma[0].row[0] = 2;
-      gamma[0].value[0] = -1;
+      gamma[0].value[0] = 1;
       gamma[0].row[1] = 3;
-      gamma[0].value[1] = -1;
+      gamma[0].value[1] = 1;
       gamma[0].row[2] = 0;
-      gamma[0].value[2] = -1;
+      gamma[0].value[2] = 1;
       gamma[0].row[3] = 1;
-      gamma[0].value[3] = -1;
+      gamma[0].value[3] = 1;
       break;
 
     case 1: // gamma_1
       gamma[1].row[0] = 3;
-      gamma[1].value[0] = I;
+      gamma[1].value[0] = -I; 
       gamma[1].row[1] = 2;
-      gamma[1].value[1] = I;
+      gamma[1].value[1] = -I; 
       gamma[1].row[2] = 1;
-      gamma[1].value[2] = -I;
+      gamma[1].value[2] = I;
       gamma[1].row[3] = 0;
-      gamma[1].value[3] = -I;
+      gamma[1].value[3] = I;
       break;
 
     case 2: // gamma_2
       gamma[2].row[0] = 3;
-      gamma[2].value[0] = -1;
+      gamma[2].value[0] = -1; 
       gamma[2].row[1] = 2;
       gamma[2].value[1] = 1;
       gamma[2].row[2] = 1;
       gamma[2].value[2] = 1;
       gamma[2].row[3] = 0;
-      gamma[2].value[3] = -1;
+      gamma[2].value[3] = -1; 
       break;
 
     case 3: // gamma_3
       gamma[3].row[0] = 2;
-      gamma[3].value[0] = I;
+      gamma[3].value[0] = -I; 
       gamma[3].row[1] = 3;
-      gamma[3].value[1] = -I;
+      gamma[3].value[1] = I;
       gamma[3].row[2] = 0;
-      gamma[3].value[2] = -I;
+      gamma[3].value[2] = I;
       gamma[3].row[3] = 1;
-      gamma[3].value[3] = I;
+      gamma[3].value[3] = -I; 
       break;
 
     case 4: // unity
@@ -76,24 +76,24 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
 
     case 6: // gamma_0 * gamma_5
       gamma[6].row[0] = 2;
-      gamma[6].value[0] = 1;
+      gamma[6].value[0] = -1;
       gamma[6].row[1] = 3;
-      gamma[6].value[1] = 1;
+      gamma[6].value[1] = -1;
       gamma[6].row[2] = 0;
-      gamma[6].value[2] = -1;
+      gamma[6].value[2] = 1;
       gamma[6].row[3] = 1;
-      gamma[6].value[3] = -1;
+      gamma[6].value[3] = 1;
       break;
 
     case 7: // gamma_1 * gamma_5
       gamma[7].row[0] = 3;
-      gamma[7].value[0] = -I;
+      gamma[7].value[0] = I;
       gamma[7].row[1] = 2;
-      gamma[7].value[1] = -I;
+      gamma[7].value[1] = I;
       gamma[7].row[2] = 1;
-      gamma[7].value[2] = -I;
+      gamma[7].value[2] = I;
       gamma[7].row[3] = 0;
-      gamma[7].value[3] = -I;
+      gamma[7].value[3] = I;
       break;
 
     case 8: // gamma_2 * gamma_5
@@ -109,13 +109,13 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
 
     case 9: // gamma_3 * gamma_5
       gamma[9].row[0] = 2;
-      gamma[9].value[0] = -I;
+      gamma[9].value[0] = I;
       gamma[9].row[1] = 3;
-      gamma[9].value[1] = I;
+      gamma[9].value[1] = -I;
       gamma[9].row[2] = 0;
-      gamma[9].value[2] = -I;
+      gamma[9].value[2] = I;
       gamma[9].row[3] = 1;
-      gamma[9].value[3] = I;
+      gamma[9].value[3] = -I;
       break;
 
     case 10: // gamma_0 * gamma_1
@@ -131,13 +131,13 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
 
     case 11: // gamma_0 * gamma_2
       gamma[11].row[0] = 1;
-      gamma[11].value[0] = -1;
+      gamma[11].value[0] = 1;
       gamma[11].row[1] = 0;
-      gamma[11].value[1] = 1;
+      gamma[11].value[1] = -1;
       gamma[11].row[2] = 3;
-      gamma[11].value[2] = 1;
+      gamma[11].value[2] = -1;
       gamma[11].row[3] = 2;
-      gamma[11].value[3] = -1;
+      gamma[11].value[3] = 1;
       break;
 
     case 12: // gamma_0 * gamma_3
@@ -151,36 +151,36 @@ static void create_gamma (std::vector<LapH::gamma_lookup>& gamma, const int i) {
       gamma[12].value[3] = I;
       break;
 
-    case 13: // gamma_1 * gamma_2
-      gamma[13].row[0] = 0;
-      gamma[13].value[0] = -I;
-      gamma[13].row[1] = 1;
+    case 13: // gamma_0 * gamma_1 * gamma_5
+      gamma[13].row[0] = 1;
+      gamma[13].value[0] = I;
+      gamma[13].row[1] = 0;
       gamma[13].value[1] = I;
-      gamma[13].row[2] = 2;
-      gamma[13].value[2] = -I;
-      gamma[13].row[3] = 3;
+      gamma[13].row[2] = 3;
+      gamma[13].value[2] = I;
+      gamma[13].row[3] = 2;
       gamma[13].value[3] = I;
       break;
 
-    case 14: // gamma_1 * gamma_3
+    case 14: // gamma_0 * gamma_2 * gamma_5
       gamma[14].row[0] = 1;
-      gamma[14].value[0] = -1;
+      gamma[14].value[0] = 1;
       gamma[14].row[1] = 0;
-      gamma[14].value[1] = 1;
+      gamma[14].value[1] = -1;
       gamma[14].row[2] = 3;
-      gamma[14].value[2] = -1;
+      gamma[14].value[2] = 1;
       gamma[14].row[3] = 2;
-      gamma[14].value[3] = 1;
+      gamma[14].value[3] = -1;
       break;
 
-    case 15: // gamma_2 * gamma_3
-      gamma[15].row[0] = 1;
-      gamma[15].value[0] = -I;
-      gamma[15].row[1] = 0;
+    case 15: // gamma_0 * gamma_3 * gamma_5
+      gamma[15].row[0] = 0;
+      gamma[15].value[0] = I;
+      gamma[15].row[1] = 1;
       gamma[15].value[1] = -I;
-      gamma[15].row[2] = 3;
-      gamma[15].value[2] = -I;
-      gamma[15].row[3] = 2;
+      gamma[15].row[2] = 2;
+      gamma[15].value[2] = I;
+      gamma[15].row[3] = 3;
       gamma[15].value[3] = -I;
       break;
 
@@ -206,11 +206,18 @@ LapH::Quarklines::Quarklines(
                      const std::vector<RandomIndexCombinationsQ2>& ric_lookup) :
                                     Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {
 
-  Q1.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q1.size()]);
-  Q2V.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q2V.size()]);
-  Q2L.resize(boost::extents[Lt][Lt/dilT][quarkline_lookuptable.Q2L.size()]);
+  // needed to construct quarklines on individual time slices
+  int tt2 = 0;
+  if(Lt==1 || Lt==2 || Lt==2*dilT)
+    tt2 = 1;
+  else
+    tt2 = Lt/dilT;
+
+  Q1.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q1.size()]);
+  Q2V.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q2V.size()]);
+  Q2L.resize(boost::extents[Lt][tt2][quarkline_lookuptable.Q2L.size()]);
   for(size_t t1 = 0; t1 < Lt; t1++){                  
-  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+  for(size_t t2 = 0; t2 < tt2; t2++){
     for(size_t op = 0; op < quarkline_lookuptable.Q1.size(); op++){ 
       size_t nb_rnd = ric_lookup[(quarkline_lookuptable.Q1[op]).
                                  id_ric_lookup].rnd_vec_ids.size();
@@ -240,6 +247,8 @@ LapH::Quarklines::Quarklines(
   gamma.resize(16);
   for(int i = 0; i < 16; ++i)
     create_gamma(gamma, i);
+
+  std::cout << "\tQuarklines initialised" << std::endl;
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -251,8 +260,18 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
   std::cout << "\tcomputing Q1:";
   clock_t time = clock();
 
-
-//    std::cout << "\n" << std::endl;
+// setting memory to zero
+#pragma omp parallel for schedule(dynamic)
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q1[t1][t2][op][rnd1].setZero(); 
+      } 
+    }
+  }}
 #pragma omp parallel for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(size_t t2 = 0; t2 < Lt/dilT; t2++){
@@ -273,7 +292,6 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
                                        nev, dilE);
         }}
         rnd_counter++;
-
       }
     }
   }}
@@ -282,6 +300,7 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Quarklines::build_Q2V(const Perambulator& peram,
@@ -294,6 +313,21 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
 #pragma omp parallel 
   {
   Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
+
+// setting memory to zero
+#pragma omp for schedule(dynamic)
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q2V[t1][t2][op][rnd1].setZero(); 
+      } 
+    }
+  }}               
+
+
 #pragma omp for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(size_t t2 = 0; t2 < Lt/dilT; t2++){
@@ -321,7 +355,7 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
               M.block(col*dilE, row*nev, dilE, nev) *= -1.;
           }}
         }
-        Q2V[t1][t2][qll.id][rnd_counter].Zero(4*dilE, 4*dilE);
+        Q2V[t1][t2][qll.id][rnd_counter].setZero(4*dilE, 4*dilE);
 
         const size_t gamma_id = qll.gamma[0]; 
 
@@ -352,6 +386,7 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Quarklines::build_Q2L(const Perambulator& peram,
@@ -364,6 +399,18 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
 #pragma omp parallel 
   {
   Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
+
+  for(size_t t1 = 0; t1 < Lt; t1++){                  
+  for(size_t t2 = 0; t2 < Lt/dilT; t2++){
+    for(size_t op = 0; op < ql_lookup.size(); op++){ 
+      size_t nb_rnd = ric_lookup[(ql_lookup[op]).
+                                 id_ric_lookup].rnd_vec_ids.size();
+      for(size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++){
+        Q2L[t1][t2][op][rnd1].setZero(); 
+      } 
+    }               
+  }}              
+
 #pragma omp for schedule(dynamic)
   for(size_t t1 = 0; t1 < Lt; t1++){                  
   for(const auto& qll : ql_lookup){
@@ -391,7 +438,7 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
         }}
       }
       for(size_t t2 = 0; t2 < Lt/dilT; t2++){
-        Q2L[t1][t2][qll.id][rnd_counter].Zero(4*dilE, 4*dilE);
+        Q2L[t1][t2][qll.id][rnd_counter].setZero(4*dilE, 4*dilE);
 
         const size_t gamma_id = qll.gamma[0]; 
 
@@ -422,6 +469,7 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
   std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
             << " seconds" << std::endl;
 }
+
 // ------------------------------- INTERFACE -----------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Quarklines::create_quarklines(const Perambulator& peram, 
@@ -430,8 +478,8 @@ void LapH::Quarklines::create_quarklines(const Perambulator& peram,
                       const std::vector<RandomIndexCombinationsQ2>& ric_lookup){
 
   build_Q1(peram, meson_operator, quarkline_lookuptable.Q1, ric_lookup);
-  build_Q2L(peram, meson_operator, quarkline_lookuptable.Q2L, ric_lookup);
-  build_Q2V(peram, meson_operator, quarkline_lookuptable.Q2V, ric_lookup);
+//  build_Q2L(peram, meson_operator, quarkline_lookuptable.Q2L, ric_lookup);
+//  build_Q2V(peram, meson_operator, quarkline_lookuptable.Q2V, ric_lookup);
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

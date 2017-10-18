@@ -30,9 +30,6 @@ inline std::ostream& operator<< (std::ostream& stream, const quark& quark) {
          << quark.path <<  "\n";
 }
 
-
-// *****************************************************************************
-// *****************************************************************************
 // *****************************************************************************
 inline std::array<int, 3> create_3darray_from_string(std::string in) { 
 
@@ -83,18 +80,36 @@ inline void create_mom_array_from_string(std::string in,
   }
 
 }
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
+
+
 } // end of unnamed namespace
-// *****************************************************************************
-// *****************************************************************************
-// *****************************************************************************
+/******************************************************************************/
+/******************************************************************************/
 
 namespace global_data_utils {
 
-// *****************************************************************************
-/// @brief Makes a quark object from a string
+/*! 
+ *  @param quark_string Quark as specified in the infile
+ *                      quark = @em flavor : @em nb_rnd_vec : T @em diltT_type : 
+ *                              @em dilT : E @em dilE_type : @em dilE : 
+ *                              D @em dilD_type : @em dilD : @em path
+ *  where the following abbreviations where used
+ *  - @em flavor     {u,s,c,b} : Quark flavor
+ *  - @em nb_rnd_vec       : Number of random vectors
+ *  - @em dilT_type  {I,B} : Dilution type in time 
+ *  - @em dilT             : Number of dilution blocks in time
+ *  - @em dilE_type  {I,B} : Dilution type in eigenvetor space 
+ *  - @em dilE             : Number of dilution blocks in eigenvector space 
+ *  - @em dilD_type  {I,B} : Dilution type in dirac space 
+ *  - @em dilD             : Number of dilution blocks in Dirac space
+ *  - @em path             : Path to perambulator
+ *  The validity of the values is checked in quark_check()
+ *
+ *  @returns A quark object constructed with the data obtained from 
+ *           @em quark_string
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ */       
 quark make_quark (const std::string& quark_string) {
   // Tokenize the string on the ":" delimiter.
   std::vector<std::string> tokens;
@@ -115,8 +130,6 @@ quark make_quark (const std::string& quark_string) {
       boost::lexical_cast<int>(tokens[7]), 0, tokens[8]);
 }
 
-// *****************************************************************************
-// simplifies and cleans read_parameters function
 void quark_check (quark quarks) {
 
   try{
@@ -125,13 +138,18 @@ void quark_check (quark quarks) {
       std::cout << "quarks.quark.type must be u, d, s or c" << std::endl;
       exit(0);
     }
+    /*! @todo Check that the number of random vectors is greater than the 
+     *  largest required diagram
+     */
     else if(quarks.number_of_rnd_vec < 1){
       std::cout << "quarks.quark.number_of_rnd_vec must be greater than 0"
           << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_T != "TI" && quarks.dilution_T != "TB"){
-      std::cout << "quarks.quark.dilutione_T must be TI or TB" << std::endl;
+    else if(quarks.dilution_T != "TI" && 
+            quarks.dilution_T != "TB" &&
+            quarks.dilution_T != "TF"){
+      std::cout << "quarks.quark.dilution_T must be TI, TB, TF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_T < 1){
@@ -139,8 +157,10 @@ void quark_check (quark quarks) {
           "and smaller than the temporal extend" << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_E != "EI" && quarks.dilution_E != "EB"){
-      std::cout << "quarks.quark.dilutione_E must be EI or EB" << std::endl;
+    else if(quarks.dilution_E != "EI" && 
+            quarks.dilution_E != "EB" &&
+            quarks.dilution_E != "EF"){
+      std::cout << "quarks.quark.dilution_E must be EI, EB or EF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_E < 1){
@@ -148,8 +168,10 @@ void quark_check (quark quarks) {
           "and smaller than number of eigen vectors" << std::endl;
       exit(0);
     }
-    else if(quarks.dilution_D != "DI" && quarks.dilution_D != "DI"){
-      std::cout << "quarks.quark.dilutione_D must be DI or DB" << std::endl;
+    else if(quarks.dilution_D != "DI" && 
+            quarks.dilution_D != "DB" &&
+            quarks.dilution_D != "DF"){
+      std::cout << "quarks.quark.dilution_D must be DI, DB or DF" << std::endl;
       exit(0);
     }
     else if(quarks.number_of_dilution_D < 1 || quarks.number_of_dilution_D > 4){
@@ -166,16 +188,36 @@ void quark_check (quark quarks) {
 
 }
 
-// *****************************************************************************
-/// @brief Makes an operator list object from a string
-Operator_list make_operator_list(const std::string& operator_string) {
+/*****************************************************************************/
+/*!
+ *  @param operator_string  Operator as specified in the infile:
+ *                          A ';'-sperated list with individual operators. The
+ *                          individual operators are composed of '.'-seperated 
+ *                          parts. E.g. 
+ *                          @code
+ *                            operator_list = g4.d0.p(0,0,1);g5.d0.p0,1
+ *                          @endcode
+ *                          Momenta (<em>p</em>) can be specified as 3-momentum or
+ *                          by (one or more) scalar number(s). In the latter 
+ *                          case all 3-momenta with corresponding absolute 
+ *                          value are constructed
+ *
+ *  @returns An Operator_list object constructed with the data obtained from
+ *           @em operator_string
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ *
+ *  This is a factory function which returns by value and uses named return 
+ *  value optimization in order to call the constructor within the scope
+ */
+Operators make_operator_list(const std::string& operator_string) {
 
-  Operator_list op_list; // return object
+  Operators op_list; // return object
 
-  // Two steps are necessary: 1. Getting all operators in one list which are 
-  //                             separated by ";"
-  //                          2. Separating the individual operators into its
-  //                             smaller bits, which are separated by "."
+  // Two steps are necessary: 
+  // 1. Getting all operators in one list which are separated by ";"
+  // 2. Separating the individual operators into its smaller bits, which are 
+  //    separated by "."
   // Tokenize the string on the ";" delimiter -> Individual operators
   std::vector<std::string> operator_tokens;
   boost::split(operator_tokens, operator_string, boost::is_any_of(":"));
@@ -218,9 +260,93 @@ Operator_list make_operator_list(const std::string& operator_string) {
         exit(0);
       }
     }
-    op_list.push_back(Operators(gammas, dil_vec, mom_vec));
+
+    for(const auto& mom_vec_tmp : mom_vec){ // momenta
+      for(auto mom : mom_vec_tmp){
+
+        op_list.push_back(QuantumNumbers(gammas, dil_vec, mom));
+      }
+    }
   }
+
   return op_list;
+
+}
+
+/*!
+ *  @param          correlator_string @parblock
+ *    Correlators as read from the infile
+ *
+ *    correlator_list = @em type : @em quark : @em operator : ... : [@em GEVP] : 
+ *                      [@em P] 
+ *    where the following abbreviationswhere used
+ *    - @em type {C1,C2+,C20,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,C40C,C40B} :
+ *                              Identifier for the Wick diagram to be 
+ *                              calculated. @see { LapH::Correlators }
+ *    - @em quark {"Q%d"} :     Specifies which of the quarks from the infile
+ *                              to use
+ *    - @em operator {"Op%d"} : Specifies which of the operators from the 
+ *                              infile to use
+ *    - @em GEVP                @todo is that even supported?
+ *    - @em P                   @todo is that even supported?
+ *    
+ *    The number of quarks and operators to be specified depends on the diagram 
+ *    chosen.
+ *  @endparblock
+ *
+ *  Internally uses boost to split the string and process the parts. 
+ *
+ *  @todo Write check for correctness of correlator_string
+ */
+Correlators make_correlator(const std::string& correlator_string){
+
+  std::vector<std::string> correlator_tokens;
+  boost::split(correlator_tokens, correlator_string, boost::is_any_of(":"));
+
+  std::string type;
+  std::vector<int> quark_number;
+  std::vector<int> operator_number;
+  std::string GEVP;
+  std::vector< std::array<int, 3> > tot_mom;
+
+  for (auto corr_t : correlator_tokens){
+    // getting the type name
+    if (corr_t.compare(0,1,"C") == 0)
+      type = corr_t;
+    // getting quark numbers
+    else if (corr_t.compare(0,1,"Q") == 0) 
+      quark_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,1)));
+    // getting operator numbers
+    else if (corr_t.compare(0,2,"Op") == 0)
+      operator_number.push_back(boost::lexical_cast<int>(corr_t.erase(0,2)));
+    // getting the GEVP type
+    else if (corr_t.compare(0,1,"G") == 0)
+      GEVP = corr_t;
+    // getting total momenta for moving frames
+    else if (corr_t.compare(0,1,"P") == 0) {
+      if(corr_t.compare(1,1,"(") == 0){
+        tot_mom.push_back(create_3darray_from_string(corr_t));
+      }
+      else{
+        corr_t.erase(0,1);
+        std::vector<std::string> tokens;
+        boost::split(tokens, corr_t, boost::is_any_of(","));
+        for(auto token : tokens){
+            create_all_momentum_combinations(boost::lexical_cast<int>(token), 
+                                             tot_mom);
+        }
+      }
+    }
+
+    // catching wrong entries
+    else {
+      std::cout << "There is something wrong with the correlators in the" \
+                   " input file!" << std::endl;
+      exit(0);
+    }
+  }
+
+  return Correlators(type, quark_number, operator_number, GEVP, tot_mom);
 }
 
 } // end of namespace global_data_utils

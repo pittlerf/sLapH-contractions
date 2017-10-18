@@ -1,0 +1,32 @@
+#!/bin/bash
+maxJobN={{ maxJobN }} # maximum of jobs in queue
+name={{ jobname }} 
+
+# loop for the configs
+#for cfg in {{ '{' }}{{ config_start }}..{{ config_end }}..{{ config_step }}{{ '}' }}; do
+for cfg in {% for config in config_ids %}{{ config }} {% endfor %}; do
+  echo "submitting conf ${cfg}"
+ 
+    ## check whether at maximum of jobs in queue
+    while [{{ ' ' }} 
+      {%- if machine == 'qbig' -%}
+      $(qstat -u ${USER} {{ ' ' }}
+      {%- elif machine  == 'jureca' -%}
+      $(squeue -u ${USER} {{ ' ' }}
+      {%- endif -%}
+      | grep -v "R" | grep $name | wc -l) -gt $maxJobN ]; do
+      echo Waiting, queue is at maximum.
+      sleep 30
+    done
+  
+    j=`printf %04d ${cfg}`
+  
+    cd cnfg${j}
+    {% if machine == 'qbig' %}
+    qsub job_script.pbs
+    {% elif machine == 'jureca' %}
+    sbatch job_script.submit
+    {% endif %}
+    cd ../
+  
+done

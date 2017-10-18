@@ -1,0 +1,199 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Licensed under the MIT/Expat license
+
+import argparse
+import errno
+import numpy as np
+import os
+import shutil
+import sys
+
+import jinja2
+
+
+# replaces os.makedirs(..., exist_ok=True) because python2
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+def main():
+    options = _parse_args()
+
+    # Run the consistency checks before doing anything. After all checks are
+    # through, we may do things that change files on disk.
+    do_consistency_checks(options)
+
+    # Create the main work directory.
+    mkdir_p(options.rundir)
+    mkdir_p(options.outdir)
+
+    # Write the command line parameters the script was exected with
+    with open(os.path.join(options.rundir, 'generate-contraction-jobs.log'), 'w') as f:
+        f.write("Job scripts where generated with command line options:\n\n")
+        for arg in sys.argv:
+            f.write("%s " % arg)
+        f.write("\n")
+
+    # Load the templates from the directory that this script is located in.
+    # This path can be queried from the zeroth command line argument.
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(
+        os.path.dirname(os.path.abspath(sys.argv[0]))))
+
+    template_contract = env.get_template('contract.in.j2')
+    if options.machine == 'qbig':
+      jobscriptfile = 'job_script.pbs'
+    elif options.machine == 'jureca':
+      jobscriptfile = 'job_script.submit'
+    template_jobscript = env.get_template(jobscriptfile + '.j2')
+    template_start = env.get_template('start_runs.sh.j2')
+
+    # Copy the executable into the right spot.
+    shutil.copy(options.exe, os.path.join(options.rundir, 'contract'))
+
+    # Create a list with all configuration numbers. Configurations that should
+    # be skipped will be filtered out.
+    config_ids = filter(
+        lambda x: x not in options.conf_skip,
+        (range(options.conf_start, options.conf_end + 1, options.conf_step)))
+
+    config_ids = list(filter(
+        lambda x: (x-options.conf_start) % (options.jobs_per_node*options.conf_step) == 0,
+        config_ids))
+
+    # Create an start script for the contraction code.
+    rendered_start = template_start.render(
+        maxJobN=options.jobcount,
+        jobname=options.jobname,
+        config_ids = config_ids,
+        machine = options.machine,
+    )
+    with open(os.path.join(options.rundir, 'start_runs.sh'), 'w') as f:
+        f.write(rendered_start)
+
+    # Load the list with correlators.
+    with open(options.correlator_list) as f:
+        correlator_list = f.read()
+
+    for config_base_id in config_ids:
+
+        # Create a directory for the configuration.
+        config_path = os.path.join(options.rundir, 'cnfg{:04d}'.format(config_base_id))
+        mkdir_p(config_path)
+
+        config_ids_for_one_job = np.arange(options.jobs_per_node)*options.conf_step + config_base_id 
+
+        # Create a job script for the scheduler.
+        rendered_jobscript = template_jobscript.render(
+            jobname=options.jobname + '_' + str(config_base_id),
+            cpus_per_task = options.omp_num_threads // options.jobs_per_node,
+            email_address=options.email,
+            rundir=options.rundir,
+            config_path=config_path,
+            config_ids_for_one_job=config_ids_for_one_job,
+        )
+        with open(os.path.join(config_path, jobscriptfile), 'w') as f:
+            f.write(rendered_jobscript)
+
+        for config_id in config_ids_for_one_job:
+            
+            if (config_id > options.conf_end):
+                print("Warning! Number of configurations to contract not" \
+                      " divisible by jobs-per-node")
+                break
+
+            # Create an input file for the contraction code.
+            rendered_contract = template_contract.render(
+                cpus_per_task = options.omp_num_threads // options.jobs_per_node,
+                lattice_time=options.lattice_time,
+                lattice_space=options.lattice_space,
+                config_start=config_id,
+                config_end=config_id,
+                config_step=1,
+                ev_count=options.ev_count,
+                ev_path=options.ev_path,
+                vdv_hanling=options.vdv_handling,
+                vdv_path=options.vdv_path,
+                quarks=options.quarks,
+                correlator_list=correlator_list,
+                outdir=options.outdir,
+            )
+            with open(os.path.join(config_path, 'contract_%04d.in' % config_id), 'w') as f:
+                f.write(rendered_contract)
+  
+
+def do_consistency_checks(options):
+    '''
+    This runs various consistency checks.
+
+    If something is off, an exception is raised with an explanation.
+    '''
+    # Skip the tests in case the user wants to ignore them.
+    if options.ignore_checks:
+        return
+
+    # Check that the executable exists.
+    if not os.path.isfile(options.exe):
+        raise RuntimeError('The executable at “{}” does not exist! Please make sure that a correct path has been given.'.format(options.exe))
+
+    if not os.path.isfile(options.correlator_list):
+        raise RuntimeError('The file with the correlators at “{}” does not exist! Please make sure that a correct path has been given.'.format(options.correlator_list))
+
+    for quark in options.quarks:
+        segments = quark.split(':')
+        path = segments[-1]
+        if not os.path.isdir(path):
+            raise RuntimeError('The quark path “{}” does not exist! Please make sure that a correct path has been given.'.format(options.correlator_list))
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description='Generates a hierarchy of input files and job scripts for the contraction code. The script will also make sure that the referenced files actually exist such that the jobs will have a higher chance of succeeding.')
+
+    parser.add_argument('--ignore-checks', action='store_true', help='Do not run the tests for existence of input files.')
+
+    group_config = parser.add_argument_group('Configuration', 'Options that are inherent for the underlying gauge configurations.')
+    group_config.add_argument('conf_start', type=int, help='First configuration, inclusive')
+    group_config.add_argument('conf_end', type=int, help='Last configuration, inclusive')
+    group_config.add_argument('conf_step', type=int, nargs='?', default=8, help='default: %(default)s')
+    group_config.add_argument('--lattice-space', type=int, required=True, help='Size of the lattice in the space directions. Currently only lattices with equal space extents are supported.')
+    group_config.add_argument('--lattice-time', type=int, required=True, help='Size of the lattice in time direction.')
+    group_config.add_argument('--conf-skip', type=int, nargs='+', help='Skip the given gauge configurations.', default=[])
+
+    group_job = parser.add_argument_group('Job', 'Options for the jobs to create.')
+    group_job.add_argument('--machine', required=True, choices=['qbig', 'jureca'], type=str.lower, help='Name of the machine the code shall be executed on')
+    group_job.add_argument('--rundir', required=True, help='Base path for infiles.')
+    group_job.add_argument('--outdir', required=True, help='Base path for output.')
+    group_job.add_argument('--exe', required=True, help='Path to the executable. This will be copied into the hierarchy to prevent accidential overwrites.')
+    group_job.add_argument('--jobname', default='contraction', help='Name of the submitted job. Default: %(default)s')
+    group_job.add_argument('--jobcount', type=int, default='60', help='Maximal number of jobs submitted to the queue. Default: %(default)s')
+    group_job.add_argument('--email', default='', help='Email address to send job notifications to. If this is not given, no emails will be send.')
+    
+
+    group_ev = parser.add_argument_group('Eigenvector', 'Information about the eigenvectors.')
+    group_ev.add_argument('--ev-count', type=int, required=True, help='Number of eigenvectors')
+    group_ev.add_argument('--ev-path', default='', help='Path to eigenvectors. These are only required when looking at moving frames.')
+
+    group_vdv = parser.add_argument_group('Eigenvector', 'Information about the eigenvectors.')
+    group_vdv.add_argument('--vdv-handling', choices=['read', 'liuming', 'build', 'write'], help='Which convention shall be used for the VdaggerV objects.')
+    group_vdv.add_argument('--vdv-path', default='', help='Path to VdaggerV objects. These are only required when looking at moving frames.')
+
+
+    group_contraction = parser.add_argument_group('Contraction', 'Options for the contractions themselves.')
+    group_contraction.add_argument('--omp-num-threads', type=int, default=4, help='Number of OpenMP threads. Default: %(default)s')
+    group_contraction.add_argument('--jobs-per-node', type=int, default=1, help='Number of configurations started in a job. Default: %(default)s')
+    group_contraction.add_argument('--quark', nargs='+', required=True, dest='quarks', metavar='QUARK', help='Quark line including the path. Example: u:6:TF:1:EI:6:DF:4:/hiskp2/bartek/peram_generation/0120-Mpi270-L24-T96/light.ranlxd2.apbc_no_compression')
+    group_contraction.add_argument('--correlator-list', required=True, help='Path to text file which contains the correlator definitions')
+
+    options = parser.parse_args()
+    return options
+
+
+if __name__ == "__main__":
+    main()

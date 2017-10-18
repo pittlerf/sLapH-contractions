@@ -1,0 +1,15 @@
+# Spam
+*.swp
+*.swo
+# Compilespam
+*.o
+*.d
+# Doxygen Output
+doxygen/html
+doxygen/latex
+# plots
+*.pdf
+# data files
+*.dat
+# executables
+LapHs

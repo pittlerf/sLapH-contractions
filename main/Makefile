@@ -19,14 +19,14 @@ all: rmxeq mkdep mkxeq
 # main programs and modules to be compiled
 
 
-MAIN = contract
+MAIN = contract 
 
 GLOBALDATA = global_data global_data_input_handling global_data_build_IO_names \
 	           global_data_input_handling_utils init_lookup_tables
 
 RANDOM = RandomVector ranlxs
 
-GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines
+GENERAL =  Correlators EigenVector OperatorsForMesons Perambulator Quarklines Quarklines_one_t
 
 MODULES = $(GLOBALDATA) $(RANDOM) $(GENERAL)
 
@@ -38,23 +38,27 @@ VPATH = .:$(MDIR):$(MDIR)/GlobalData:$(MDIR)/Correlators
 # Logging option (-mpilog or -mpitrace or -mpianim)
 LOGOPTION =
 
-LIMEPATH = /hiskp2/helmes/programm_libs/lime-1.3.2 
+LIMEPATH = /hiskp2/jost/code/lime #/hiskp2/werner/libraries/lime-1.3.2
 
 # additional include directories
-INCPATH = /hiskp2/helmes/programm_libs/eigen-3.2.0 \
-          /hiskp2/helmes/programm_libs/boost_1_59_0 \
-          $(LIMEPATH)/include/ ../include ../include/GlobalData
+INCPATH = /hiskp2/werner/libraries/eigen-3.2.7 \
+	  /hiskp2/werner/libraries/boost_1_60_0 \
+          /hiskp2/knippsch/hdf5-1.8.17/include \
+	  $(LIMEPATH)/include/ ../include ../include/GlobalData
+
 
 # additional libraries
 
-LIBS = boost_program_options boost_filesystem boost_system lime 
+LIBS = hdf5_cpp hdf5 sz z dl m boost_program_options boost_filesystem boost_system lime 
 
 LIBPATH = /usr/local/lib $(LIMEPATH)/lib \
-					/hiskp2/helmes/programm_libs/boost_1_59_0/stage/lib/ 
+	  /hiskp2/werner/libraries/boost_1_60_0/stage/lib/ \
+          /hiskp2/knippsch/hdf5-1.8.17/lib
 
 # scheduling and optimization options
 CFLAGS = -Wall -pedantic -std=c++11 -fopenmp -O2 -march=native \
-         -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare 
+         -Wno-unused-variable -Wno-unused-local-typedefs -Wno-sign-compare \
+         -lboost_system -lboost_filesystem -g
 ############################## do not change ###################################
 
 SHELL=/bin/bash
@@ -75,14 +79,14 @@ $(addsuffix .d,$(PGMS)): %.d: %.cpp Makefile
 # rule to compile source programs
 
 $(addsuffix .o,$(PGMS)): %.o: %.cpp Makefile
-	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) 
+	$(CC) $< -c $(CFLAGS) $(LOGOPTION) $(addprefix -I,$(INCPATH)) #-static
 
 
 # rule to link object files
 
 $(MAIN): %: %.o $(addsuffix .o,$(MODULES)) Makefile
 	$(CLINKER) $< $(addsuffix .o,$(MODULES)) $(CFLAGS) $(LOGOPTION) \
-	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ 
+	   $(addprefix -L,$(LIBPATH)) $(addprefix -l,$(LIBS)) -lm -o $@ #-static
 
 # produce executables
 

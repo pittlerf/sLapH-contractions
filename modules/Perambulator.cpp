@@ -1,13 +1,18 @@
 #include "Perambulator.h"
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+/******************************************************************************/
+/*!
+ *  @param entity       The entry where this peram will be stored
+ *  @param Lt           Total number of timeslices - for each peram the same
+ *  @param nb_eigen_vec Total number of eigen vecs - for each peram the same
+ *  @param quark        Contains information about dilution scheme and size
+ *  @param filename     Just the file name
+ */
 void LapH::Perambulator::read_perambulator(const size_t entity, 
                                            const size_t Lt,
                                            const size_t nb_eigen_vec,
-                                           const quark& q,
+                                           const quark& quark,
                                            const std::string& filename) {
-
   clock_t t = clock();
   FILE *fp = NULL;
 
@@ -20,16 +25,24 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
               << filename << "\n" << std::endl;
     exit(0);
   }
-  int blabla = fread(&(perambulator_read[0]), sizeof(cmplx),
+  int check_read = fread(&(perambulator_read[0]), sizeof(cmplx),
                                                       peram[entity].size(), fp);
   fclose(fp);
+  // check if all data were read in
+  if(check_read != peram[entity].size()){
+    std::cout << "\n\nFailed to read perambulator\n" << std::endl;
+    exit(0);
+  }
+  
+  // setting peram to zero
+  peram[entity].setZero();
 
   // re-sorting and copy into matrix structure 
   // TODO: At this point it is very easy to included different dilution schemes.
   //       However, due to simplicity this will be postponed!
-  const size_t nb_dil_T = q.number_of_dilution_T;
-  const size_t nb_dil_E = q.number_of_dilution_E;
-  const size_t nb_dil_D = q.number_of_dilution_D;
+  const size_t nb_dil_T = quark.number_of_dilution_T;
+  const size_t nb_dil_E = quark.number_of_dilution_E;
+  const size_t nb_dil_D = quark.number_of_dilution_D;
   size_t col_i, row_i;
   const int nb_inversions = Lt * nb_dil_E * nb_dil_D / nb_dil_T;
   for(size_t t1 = 0; t1 < Lt; ++t1)
@@ -40,9 +53,9 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
             for(size_t dirac2 = 0; dirac2 < nb_dil_D; ++dirac2){
               row_i = 4 * nb_eigen_vec * t1 + 4 * ev1 + dirac1;
               col_i = nb_dil_D * nb_dil_E * t2 + nb_dil_D * ev2 + dirac2;
-              peram[entity](4 * nb_eigen_vec * t1 + nb_eigen_vec * dirac1 + ev1, 
+              peram[entity](4 * nb_eigen_vec * t1 + nb_eigen_vec * dirac1 + ev1,
                     nb_dil_E * nb_dil_D * t2 + nb_dil_E * dirac2 + ev2) = 
-              perambulator_read[row_i * nb_inversions + col_i];
+                               perambulator_read[row_i * nb_inversions + col_i];
             }
 
   // writing out how long it took to read the file
@@ -50,8 +63,17 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
   std::cout << "\n\t\tin: " << std::fixed << std::setprecision(1)
             << ((float) t)/CLOCKS_PER_SEC << " seconds" << std::endl;
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
+/*!
+ *  @param Lt            Total number of timeslices - for each peram the same
+ *  @param nb_eigen_vec  Total number of eigen vecs - for each peram the same
+ *  @param quark         Contains information about dilution scheme and size
+ *  @param filename_list Vector which contains all file names
+ *
+ *  Loops over \code nb_entities = quark.size() * nb_rnd_vec \endcode. For each 
+ *  internally read_perambulator() for a single file is called
+ */
 void LapH::Perambulator::read_perambulators_from_separate_files(
                                  const size_t Lt, const size_t nb_eigen_vec,
                                  const std::vector<quark>& quark,
@@ -69,5 +91,5 @@ void LapH::Perambulator::read_perambulators_from_separate_files(
     }
   }
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
+
+/******************************************************************************/
