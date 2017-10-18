@@ -214,14 +214,14 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         size_t dir = 0;
         //TODO: Order of displacements matters
         //TODO: At the moment only support for d > 0!!!!
-        //Eigen::MatrixXcd W_t = V_t[0];
-        Eigen::MatrixXcd W_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
-        Eigen::MatrixXcd Coll_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
-        gauge.smearing_hyp(t,0.62,0.62,3);
-        for(int d = 0; d < 3; ++d){
-          W_t = gauge.disp_2(V_t[0],t,d);
-          Coll_t += W_t;
-        }
+        Eigen::MatrixXcd W_t = V_t[0];
+        //Eigen::MatrixXcd W_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        //Eigen::MatrixXcd Coll_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        //gauge.smearing_hyp(t,0.62,0.62,3);
+        //for(int d = 0; d < 3; ++d){
+        //  W_t = gauge.disp_2(V_t[0],t,d);
+        //  Coll_t += W_t;
+        //}
         //for(auto& d : op_Corr[op.index].dis3){
         //op.displacement is a 3-vector of (x,y,z) displacements
         //for(auto& d : op.displacement){ 
@@ -237,13 +237,13 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         //  }
         //  dir++;
         //}
-        //vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
-        if (op.displacement.at(0) < 0){
-          vdaggerv[op.id][t] = Coll_t.adjoint() * V_t[0];
-        }
-        else{
-          vdaggerv[op.id][t] = V_t[0].adjoint() * Coll_t;
-        }
+        vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+        //if (op.displacement.at(0) < 0){
+        //  vdaggerv[op.id][t] = V_t[0].adjoint() * Coll_t;
+        //}
+        //else{
+        //  vdaggerv[op.id][t] = Coll_t.adjoint() * V_t[0];
+        //}
        // Eigen::MatrixXcd Trash = vdaggerv[op.id][t].adjoint();
        // vdaggerv[op.id][t] -= Trash; 
 

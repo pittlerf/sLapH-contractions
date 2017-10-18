@@ -48,10 +48,11 @@ def main():
         os.path.dirname(os.path.abspath(sys.argv[0]))))
 
     template_contract = env.get_template('contract.in.j2')
-    if options.machine == 'qbig':
-      jobscriptfile = 'job_script.pbs'
-    elif options.machine == 'jureca':
-      jobscriptfile = 'job_script.submit'
+    # deprecated, qbig uses SLURM
+    #if options.machine == 'qbig':
+    #  jobscriptfile = 'job_script.pbs'
+    #elif options.machine == 'jureca':
+    jobscriptfile = 'job_script.submit'
     template_jobscript = env.get_template(jobscriptfile + '.j2')
     template_start = env.get_template('start_runs.sh.j2')
 
@@ -179,7 +180,7 @@ def _parse_args():
     group_config.add_argument('--conf-skip', type=int, nargs='+', help='Skip the given gauge configurations.', default=[])
 
     group_job = parser.add_argument_group('Job', 'Options for the jobs to create.')
-    group_job.add_argument('--machine', required=True, choices=['qbig', 'jureca'], type=str.lower, help='Name of the machine the code shall be executed on')
+    #group_job.add_argument('--machine', required=True, choices=['qbig', 'jureca'], type=str.lower, help='Name of the machine the code shall be executed on')
     group_job.add_argument('--rundir', required=True, help='Base path for infiles.')
     group_job.add_argument('--outdir', required=True, help='Base path for output.')
     group_job.add_argument('--exe', required=True, help='Path to the executable. This will be copied into the hierarchy to prevent accidential overwrites.')
