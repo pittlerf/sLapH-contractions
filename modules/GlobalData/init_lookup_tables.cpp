@@ -446,6 +446,7 @@ static void build_correlator_names(const std::string& corr_type, int cnfg,
     cnfg_string << std::setw(4) << std::setfill('0') << std::to_string(cnfg);
     std::string hdf5_filename =  corr_type + "_cnfg" + 
                                  cnfg_string.str() + ".h5";
+    std::cout << "Filename used is " << hdf5_filename << std::endl; 
     std::string pathname = outpath + "/";
     std::string filename =  corr_type + "_";
     for(const auto& qt : quark_types) // adding quark content
