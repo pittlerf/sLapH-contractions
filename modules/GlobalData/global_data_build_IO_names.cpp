@@ -1,5 +1,7 @@
 #include "global_data.h"
 
+namespace {
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 static std::vector<std::string> create_rnd_vector_file_names (
@@ -70,6 +72,18 @@ static std::string create_eigenvector_file_name (
   return name;
 
 }
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static std::string create_correlator_file_name (const size_t config) {
+  char name[200];
+  std::string filename = "_cnfg";
+  sprintf(name, "%s%04d.h5", filename.c_str(), (int) config);
+  return name;
+}
+
+} // end anonymous namespace
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /*!
@@ -84,4 +98,7 @@ void GlobalData::build_IO_names(const size_t config){
                                                 config, Lt, Lx, Ly, Lz, quarks);
   filename_eigenvectors = create_eigenvector_file_name(config, 
                                           path_eigenvectors, name_eigenvectors);
+
+  filename_ending_correlators = create_correlator_file_name(config);
+
 }
