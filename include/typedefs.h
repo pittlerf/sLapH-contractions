@@ -306,15 +306,13 @@ enum class QuarkLineType {Q1, Q2L, Q2V};
  */
 struct CorrInfo{
   size_t id;
-  std::string outpath, outfile, hdf5_dataset_name;
+  std::string hdf5_dataset_name;
   std::vector<size_t> lookup;
   std::vector<int> gamma;
   /*! Just a small constructor to ensure easy filling of its vector form */
-  CorrInfo(const size_t id, const std::string& outpath, 
-           const std::string& outfile, const std::string& hdf5_dataset_name,
+  CorrInfo(const size_t id, const std::string& hdf5_dataset_name,
            const std::vector<size_t>& lookup, const std::vector<int>& gamma) :
-                 id(id), outpath(outpath), outfile(outfile), 
-                 hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), 
+                 id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), 
                  gamma(gamma) {};
 };
 
