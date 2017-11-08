@@ -114,7 +114,9 @@ int main (int ac, char* av[]) {
     correlators.contract(quarklines, meson_operators, perambulators,
                          global_data->get_operator_lookuptable(),
                          global_data->get_correlator_lookuptable(),
-                         global_data->get_quarkline_lookuptable());
+                         global_data->get_quarkline_lookuptable(),
+                         global_data->get_output_path(),
+                         global_data->get_filename_ending_correlators());
   }
   // That's all Folks!
   return 0;

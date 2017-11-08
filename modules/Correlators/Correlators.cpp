@@ -41,12 +41,15 @@ H5::CompType comp_type_factory_trtr(){
 class WriteHDF5Correlator{
 
 public:
-  WriteHDF5Correlator(const CorrInfo& corr_info, const H5::CompType& _comp_type) :
-      comp_type(_comp_type){
+  WriteHDF5Correlator(const std::string output_path, 
+                      const std::string diagram,
+                      const std::string output_filename, 
+                      const H5::CompType& _comp_type) : comp_type(_comp_type){
 
-    create_folder_for_hdf5_file(corr_info.outpath.c_str());
+    create_folder_for_hdf5_file(output_path.c_str());
 
-    const H5std_string file_name((corr_info.outpath+corr_info.outfile).c_str());
+    const H5std_string file_name(
+            (output_path + "/" + diagram + output_filename).c_str());
     open_or_create_hdf5_file(file_name);
   }
 
@@ -157,7 +160,7 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+//  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
@@ -171,7 +174,7 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
       }
 
       // write data to file
-      filehandle.write(correlator, c_look);
+//      filehandle.write(correlator, c_look);
     }
 
   }
@@ -252,7 +255,9 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
+void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup, 
+                                  const std::string output_path,
+                                  const std::string output_filename) {
 
   if(corr_lookup.empty())
     return;
@@ -262,7 +267,7 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C20", output_filename, comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -289,7 +294,9 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup) {
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
 
   if(corr_lookup.C40D.empty())
     return;
@@ -299,7 +306,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup.C40D[0], comp_type_factory_trtr() );
+  WriteHDF5Correlator filehandle(output_path, "C40D", output_filename, comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C40D){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -355,7 +362,9 @@ void LapH::Correlators::build_C40D(const OperatorLookup& operator_lookup,
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
 
   if(corr_lookup.C40V.empty())
     return;
@@ -365,7 +374,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup.C40V[0], comp_type_factory_trtr() );
+  WriteHDF5Correlator filehandle(output_path, "C40V", output_filename, comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C40V){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -522,8 +531,9 @@ void LapH::Correlators::build_corrC(const Perambulator& perambulators,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
-
+void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup, 
+                                  const std::string output_path,
+                                  const std::string output_filename) {
   if(corr_lookup.empty())
     return;
 
@@ -532,24 +542,24 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C2+", output_filename, comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
-    if(c_look.outfile.find("Check") == 0){
-      for(int t1 = 0; t1 < Lt; t1++){
-        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
-          correlator[t1] += corr;
-        }
-      }
-      // normalisation
-      for(auto& corr : correlator){
-        corr /= corrC[c_look.lookup[0]][0][0].size();
-      }
-      // write data to file
-      filehandle.write(correlator, c_look);
-    }
-    else{
+//    if(c_look.outfile.find("Check") == 0){
+//      for(int t1 = 0; t1 < Lt; t1++){
+//        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
+//          correlator[t1] += corr;
+//        }
+//      }
+//      // normalisation
+//      for(auto& corr : correlator){
+//        corr /= corrC[c_look.lookup[0]][0][0].size();
+//      }
+//      // write data to file
+//      filehandle.write(correlator, c_look);
+//    }
+//    else{
       for(int t1 = 0; t1 < Lt; t1++){
       for(int t2 = 0; t2 < Lt; t2++){
         int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
@@ -563,7 +573,7 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
       }
       // write data to file
       filehandle.write(correlator, c_look);
-    }
+//    }
   }
 
   time = clock() - time;
@@ -574,7 +584,9 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup) {
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
 
   if(corr_lookup.C4cD.empty())
     return;
@@ -584,7 +596,7 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup.C4cD[0], comp_type_factory_trtr() );
+  WriteHDF5Correlator filehandle(output_path, "C4+D", output_filename, comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C4cD){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -640,8 +652,9 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup, 
                                    const CorrelatorLookup& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
-
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
   if(corr_lookup.C4cV.empty())
     return;
 
@@ -650,7 +663,7 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup.C4cV[0], comp_type_factory_trtr() );
+  WriteHDF5Correlator filehandle(output_path, "C4+V", output_filename, comp_type_factory_trtr() );
 
   for(const auto& c_look : corr_lookup.C4cV){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -709,8 +722,9 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
                                    const Perambulator& perambulators,
                                    const OperatorLookup& operator_lookup,
                                    const std::vector<CorrInfo>& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
-
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
   if(corr_lookup.empty())
     return;
 
@@ -719,7 +733,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C4+C", output_filename, comp_type_factory_tr() );
 
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
 
@@ -1078,14 +1092,15 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                                   const Perambulator& perambulators,
                                   const OperatorLookup& operator_lookup,
                                   const std::vector<CorrInfo>& corr_lookup,
-                                  const QuarklineLookup& quark_lookup) {
-
+                                  const QuarklineLookup& quark_lookup, 
+                                  const std::string output_path,
+                                  const std::string output_filename) {
   if(corr_lookup.empty())
     return;
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C3+", output_filename, comp_type_factory_tr() );
 
   std::cout << "\tcomputing C3c:";
   clock_t time = clock();
@@ -1289,8 +1304,9 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
                                    const Perambulator& perambulators,
                                    const OperatorLookup& operator_lookup,
                                    const std::vector<CorrInfo>& corr_lookup,
-                                   const QuarklineLookup& quark_lookup) {
-
+                                   const QuarklineLookup& quark_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
   if(corr_lookup.empty())
     return;
 
@@ -1299,7 +1315,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C4+B", output_filename, comp_type_factory_tr() );
 
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
 
@@ -1544,10 +1560,11 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C30(const Quarklines& quarklines,
-                     const std::vector<CorrInfo>& corr_lookup,
-                     const QuarklineLookup& quark_lookup,
-                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
-
+                                  const std::vector<CorrInfo>& corr_lookup,
+                                  const QuarklineLookup& quark_lookup,
+                                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup, 
+                                  const std::string output_path,
+                                  const std::string output_filename) {
   if(corr_lookup.empty())
     return;
 
@@ -1556,7 +1573,7 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C30", output_filename, comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1619,9 +1636,11 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
  *  @note Not optimised.
  */
 void LapH::Correlators::build_C40C(const Quarklines& quarklines,
-                     const std::vector<CorrInfo>& corr_lookup,
-                     const QuarklineLookup& quark_lookup,
-                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+                                   const std::vector<CorrInfo>& corr_lookup,
+                                   const QuarklineLookup& quark_lookup,
+                                   const std::vector<RandomIndexCombinationsQ2>& ric_lookup, 
+                                   const std::string output_path,
+                                   const std::string output_filename) {
 
   if(corr_lookup.empty())
     return;
@@ -1631,7 +1650,7 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C40C", output_filename, comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1704,7 +1723,9 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
 void LapH::Correlators::build_C40B(const Quarklines& quarklines,
                      const std::vector<CorrInfo>& corr_lookup,
                      const QuarklineLookup& quark_lookup,
-                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+                     const std::vector<RandomIndexCombinationsQ2>& ric_lookup, 
+                     const std::string output_path,
+                     const std::string output_filename) {
 
   if(corr_lookup.empty())
     return;
@@ -1714,7 +1735,7 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(output_path, "C40B", output_filename, comp_type_factory_tr() );
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -1802,42 +1823,39 @@ void LapH::Correlators::contract (Quarklines& quarklines,
                      const Perambulator& perambulators,
                      const OperatorLookup& operator_lookup,
                      const CorrelatorLookup& corr_lookup, 
-                     const QuarklineLookup& quark_lookup) {
+                     const QuarklineLookup& quark_lookup,
+                     const std::string output_path,
+                     const std::string output_filename) {
 
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(perambulators, meson_operator, operator_lookup, 
               corr_lookup.corrC, quark_lookup);
-  build_C2c(corr_lookup.C2c);
-  build_C4cD(operator_lookup, corr_lookup, quark_lookup);
-  build_C4cV(operator_lookup, corr_lookup, quark_lookup);
+  build_C2c(corr_lookup.C2c, output_path, output_filename);
+  build_C4cD(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
+  build_C4cV(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(meson_operator, perambulators, corr_lookup.corr0, 
               quark_lookup, operator_lookup);
   // in C3c, also corr0 is build, since this is much faster
   build_C3c(meson_operator, perambulators, operator_lookup, corr_lookup.C3c, 
-                                                                 quark_lookup);
-  build_C20(corr_lookup.C20);
-  build_C40D(operator_lookup, corr_lookup, quark_lookup);
-  build_C40V(operator_lookup, corr_lookup, quark_lookup);
+                                           quark_lookup, output_path, output_filename);
+  build_C20(corr_lookup.C20, output_path, output_filename);
+  build_C40D(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
+  build_C40V(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
   // 3. Build all other correlation functions.
 //  build_C1(quarklines, corr_lookup.C1, quark_lookup, 
 //                                                 operator_lookup.ricQ2_lookup);
   build_C4cC(meson_operator, perambulators, operator_lookup, corr_lookup.C4cC, 
-                                                                 quark_lookup);
+                                           quark_lookup, output_path, output_filename);
 //  build_C4cC(quarklines, meson_operator, operator_lookup, corr_lookup.C4cC, 
 //                                                                 quark_lookup);
   build_C4cB(meson_operator, perambulators, operator_lookup, corr_lookup.C4cB, 
-                                                                 quark_lookup);
+                                           quark_lookup, output_path, output_filename);
   build_C30(quarklines, corr_lookup.C30, quark_lookup, 
-                                                 operator_lookup.ricQ2_lookup);
+                           operator_lookup.ricQ2_lookup, output_path, output_filename);
   build_C40C(quarklines, corr_lookup.C40C, quark_lookup, 
-                                                 operator_lookup.ricQ2_lookup);
+                           operator_lookup.ricQ2_lookup, output_path, output_filename);
   build_C40B(quarklines, corr_lookup.C40B, quark_lookup, 
-                                                 operator_lookup.ricQ2_lookup);
+                           operator_lookup.ricQ2_lookup, output_path, output_filename);
 }
-
-
-
-
-
 

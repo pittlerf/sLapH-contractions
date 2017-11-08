@@ -68,6 +68,7 @@ private:
   std::string path_perambulators;
   std::string name_perambulators;
   std::string name_lattice;
+  std::string filename_ending_correlators;
   std::string path_output;
   std::string overwrite;
   std::string path_config;
@@ -117,6 +118,9 @@ public:
   }
   inline std::string get_output_path() {
     return path_output;
+  }
+  inline std::string get_filename_ending_correlators() {
+    return filename_ending_correlators;
   }
   inline std::string get_config_path() {
     return path_config;

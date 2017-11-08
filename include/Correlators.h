@@ -117,7 +117,8 @@ private:
    *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
    *  @f}
    */
-  void build_C20(const std::vector<CorrInfo>& corr_lookup);
+  void build_C20(const std::vector<CorrInfo>& corr_lookup, 
+                     const std::string output_path, const std::string filename);
   /*! Build neutral 3pt correlation function 
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
@@ -128,7 +129,9 @@ private:
   void build_C30(const Quarklines& quarklines, 
                  const std::vector<CorrInfo>& corr_lookup,
                  const QuarklineLookup& quark_lookup,
-                 const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+                 const std::vector<RandomIndexCombinationsQ2>& ric_lookup,
+                 const std::string output_path,
+                 const std::string output_filename);
   /*! Build neutral 4pt correlation function: Direct diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
@@ -139,7 +142,9 @@ private:
    */
   void build_C40D(const OperatorLookup& operator_lookup, 
                   const CorrelatorLookup& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build neutral 4pt correlation function: Vacuum diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
@@ -150,7 +155,9 @@ private:
    */
   void build_C40V(const OperatorLookup& operator_lookup, 
                   const CorrelatorLookup& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build neutral 4pt correlation function: Cross diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
@@ -162,7 +169,9 @@ private:
   void build_C40C(const Quarklines& quarklines, 
                   const std::vector<CorrInfo>& corr_lookup,
                   const QuarklineLookup& quark_lookup,
-                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build neutral 4pt correlation function: Box diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
@@ -174,14 +183,18 @@ private:
   void build_C40B(const Quarklines& quarklines, 
                   const std::vector<CorrInfo>& corr_lookup,
                   const QuarklineLookup& quark_lookup,
-                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build charged 2pt correlation function 
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5  \Gamma_\mathtt{Op0} 
    *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
    *  @f}
    */
-  void build_C2c(const std::vector<CorrInfo>& corr_lookup);
+  void build_C2c(const std::vector<CorrInfo>& corr_lookup,
+                 const std::string output_path,
+                 const std::string output_filename);
   /*! Build neutral 3pt correlation function 
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -193,7 +206,9 @@ private:
                  const Perambulator& perambulators,
                  const OperatorLookup& operator_lookup,
                  const std::vector<CorrInfo>& corr_lookup,
-                 const QuarklineLookup& quark_lookup);
+                 const QuarklineLookup& quark_lookup,
+                 const std::string output_path,
+                 const std::string output_filename);
   /*! Build charged 4pt correlation function: Direct diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -204,7 +219,9 @@ private:
    */
   void build_C4cD(const OperatorLookup& operator_lookup, 
                   const CorrelatorLookup& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build charged 4pt correlation function: Vacuum diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -215,7 +232,9 @@ private:
    */
   void build_C4cV(const OperatorLookup& operator_lookup, 
                   const CorrelatorLookup& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build charged 4pt correlation function: Cross diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -228,7 +247,9 @@ private:
                   const Perambulator& perambulators,
                   const OperatorLookup& operator_lookup,
                   const std::vector<CorrInfo>& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
   /*! Build charged 4pt correlation function: Box diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -241,7 +262,9 @@ private:
                   const Perambulator& perambulators,
                   const OperatorLookup& operator_lookup,
                   const std::vector<CorrInfo>& corr_lookup,
-                  const QuarklineLookup& quark_lookup);
+                  const QuarklineLookup& quark_lookup,
+                  const std::string output_path,
+                  const std::string output_filename);
 
 public:
   // Constructor
@@ -257,7 +280,9 @@ public:
                 const Perambulator& perambulators,
                 const OperatorLookup& operator_lookup,
                 const CorrelatorLookup& corr_lookup, 
-                const QuarklineLookup& quark_lookup);
+                const QuarklineLookup& quark_lookup,
+                const std::string output_path,
+                const std::string output_filename);
 };
 
 } // end of namespace
