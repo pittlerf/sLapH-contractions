@@ -2,137 +2,270 @@
 
 #include <cassert>
 #include <iomanip>
+#include <map>
 #include <iostream>
+#include <stdexcept>
 #include <type_traits>
 
-struct Combination {
-  int block;
-  int source;
-  int sink;
+enum class DilutionType { block, interlace };
+
+class BlockIterator {
+public:
+  struct Element {
+    int source;
+    int sink;
+  };
+
+  BlockIterator(int const slice_source,
+                int const slice_sink,
+                int const block_source,
+                int const block_sink,
+                int const num_slice,
+                int const num_block,
+                int const pass,
+                DilutionType const type)
+      : slice_source_(slice_source),
+        slice_sink_(slice_sink),
+        block_source_(block_source),
+        block_sink_(block_sink),
+        num_slice_(num_slice),
+        num_block_(num_block),
+        pass_(pass),
+        type_(type) {}
+
+  Element operator*() { return {slice_source_, slice_sink_}; }
+
+  BlockIterator operator++() {
+    if (type_ == DilutionType::block) {
+      int const block_size = num_slice_ / num_block_;
+      int const block_source_begin = block_source_ * block_size;
+      int const block_source_end = (block_source_ + 1) * block_size;
+      int const block_sink_begin = block_sink_ * block_size;
+      int const block_sink_end = (block_sink_ + 1) * block_size;
+
+      // Go to the next sink slice.
+      ++slice_sink_;
+
+      // If we iterated through all sinks in this block, we need to go to the
+      // next source.
+      if (slice_sink_ == block_sink_end) {
+        slice_sink_ = block_sink_begin;
+        ++slice_source_;
+      }
+
+      // If we iterated through all the sources in our block, we need to
+      // exchange
+      // source and sink block and repeat.
+      if (slice_source_ == block_source_end) {
+        slice_source_ = block_sink_begin;
+        slice_sink_ = block_source_begin;
+        ++pass_;
+
+        if (block_source_ == block_sink_) {
+          ++pass_;
+        }
+
+        std::swap(block_source_, block_sink_);
+      }
+    } else if (type_ == DilutionType::interlace) {
+      int const block_size = num_slice_ / num_block_;
+      int const block_source_begin = block_source_;
+      int const block_sink_begin = block_sink_;
+
+      // Go to the next sink slice.
+      slice_sink_ += block_size;
+
+      // If we iterated through all sinks in this block, we need to go to the
+      // next source.
+      if (slice_sink_ >= num_slice_) {
+        slice_sink_ = block_sink_begin;
+        slice_source_ += block_size;
+      }
+
+      // If we iterated through all the sources in our block, we need to
+      // exchange
+      // source and sink block and repeat.
+      if (slice_source_ >= num_slice_) {
+        slice_source_ = block_sink_begin;
+        slice_sink_ = block_source_begin;
+        ++pass_;
+
+        if (block_source_ == block_sink_) {
+          ++pass_;
+        }
+
+        std::swap(block_source_, block_sink_);
+      }
+    } else {
+      throw std::domain_error("This dilution scheme is not implemented.");
+    }
+
+    return *this;
+  }
+
+  bool operator!=(BlockIterator const &other) const {
+    return block_source_ != other.block_source_ ||
+           block_sink_ != other.block_sink_ ||
+           num_slice_ != other.num_slice_ || num_block_ != other.num_block_ ||
+           pass_ != other.pass_ || type_ != other.type_;
+  }
+
+private:
+  int slice_source_;
+  int slice_sink_;
+  int block_source_;
+  int block_sink_;
+  int num_slice_;
+  int num_block_;
+  int pass_;
+  DilutionType type_;
 };
 
 class DilutionIterator {
 public:
-  DilutionIterator(int const block,
-                   int const source,
-                   int const sink,
+  struct Element {
+    int source;
+    int sink;
+  };
+
+  DilutionIterator(int const block_source,
+                   int const block_sink,
                    int const num_slice,
-                   int const num_block)
-      : block_(block),
-        source_(source),
-        sink_(sink),
+                   int const num_block,
+                   DilutionType const type)
+      : block_source_(block_source),
+        block_sink_(block_sink),
         num_slice_(num_slice),
-        num_block_(num_block) {}
+        num_block_(num_block),
+        type_(type) {}
 
-  Combination operator*() const { return {block_, source_, sink_}; }
+  DilutionIterator operator*() const { return *this; }
 
-  bool operator!=(DilutionIterator const &other) {
-    return block_ != other.block_ || source_ != other.source_ ||
-           sink_ != other.sink_ || num_slice_ != other.num_slice_ ||
-           num_block_ != other.num_block_;
+  DilutionIterator operator++() {
+    ++block_sink_;
+
+    if (block_sink_ == num_block_) {
+      ++block_source_;
+      block_sink_ = block_source_;
+    }
+
+    return *this;
   }
 
-protected:
-  int block_;
-  int source_;
-  int sink_;
+  bool operator!=(DilutionIterator const &other) const {
+    return block_source_ != other.block_source_ ||
+           block_sink_ != other.block_sink_ ||
+           num_slice_ != other.num_slice_ || num_block_ != other.num_block_;
+  }
+
+  BlockIterator begin() const {
+    int const block_size = num_slice_ / num_block_;
+
+    if (type_ == DilutionType::block) {
+      return BlockIterator(block_source_ * block_size,
+                           block_sink_ * block_size,
+                           block_source_,
+                           block_sink_,
+                           num_slice_,
+                           num_block_,
+                           0,
+                           type_);
+    } else {
+      return BlockIterator(block_source_,
+                           block_sink_,
+                           block_source_,
+                           block_sink_,
+                           num_slice_,
+                           num_block_,
+                           0,
+                           type_);
+    }
+  }
+
+  BlockIterator end() const {
+    int const block_size = num_slice_ / num_block_;
+
+    if (type_ == DilutionType::block) {
+      return BlockIterator(block_source_ * block_size,
+                           block_sink_ * block_size,
+                           block_source_,
+                           block_sink_,
+                           num_slice_,
+                           num_block_,
+                           2,
+                           type_);
+    } else {
+      return BlockIterator(block_source_,
+                           block_sink_,
+                           block_source_,
+                           block_sink_,
+                           num_slice_,
+                           num_block_,
+                           2,
+                           type_);
+    }
+  }
+
+  int source() { return block_source_; }
+
+  int sink() { return block_sink_; }
+
+private:
+  int block_source_;
+  int block_sink_;
   int num_slice_;
   int num_block_;
+  DilutionType type_;
 };
 
-class BlockDilutionIterator : public DilutionIterator {
+class DilutionScheme {
 public:
-  using DilutionIterator::DilutionIterator;
+  DilutionScheme(int const num_slice,
+                 int const num_block,
+                 DilutionType const type)
+      : num_slice_(num_slice), num_block_(num_block), type_(type) {}
 
-  BlockDilutionIterator operator++() {
-    int const block_size = num_slice_ / num_block_;
-    int const block_begin = block_ * block_size;
-    int const block_end = (block_ + 1) * block_size;
-
-    // Go to the next sink.
-    ++sink_;
-
-    // If we iterated through all sinks, we must go to the next source in
-    // our block.
-    if (sink_ == block_end) {
-      sink_ = block_begin;
-      ++source_;
-    }
-
-    // If we iterated through all the sources, we must go to the next
-    // block.
-    if (source_ == block_end) {
-      source_ = block_end;
-      sink_ = block_end;
-      ++block_;
-    }
-
-    return *this;
+  DilutionIterator begin() const {
+    return DilutionIterator(0, 0, num_slice_, num_block_, type_);
   }
-};
 
-class InterlaceDilutionIterator : public DilutionIterator {
-public:
-  using DilutionIterator::DilutionIterator;
-
-  InterlaceDilutionIterator operator++() {
-    // Go to the next sink.
-    sink_ += num_block_;
-
-    // If we iterated through all sinks, we must go to the next source in
-    // our block.
-    if (sink_ >= num_slice_) {
-      sink_ = block_;
-      source_ += num_block_;
-    }
-
-    // If we iterated through all the sources, we must go to the next
-    // block.
-    if (source_ >= num_slice_) {
-      ++block_;
-      sink_ = block_;
-      source_ = block_;
-    }
-
-    return *this;
-  }
-};
-
-template <typename Iterator>
-class Iteration {
-public:
-  Iteration(int const num_slice, int const num_block)
-      : num_slice_(num_slice), num_block_(num_block) {}
-
-  Iterator begin() const { return Iterator{0, 0, 0, num_slice_, num_block_}; }
-
-  Iterator end() const {
-    if (std::is_same<Iterator, BlockDilutionIterator>::value) {
-      return Iterator{num_block_, num_slice_, num_slice_, num_slice_,
-                      num_block_};
-    }
-    else if (std::is_same<Iterator, InterlaceDilutionIterator>::value) {
-      return Iterator{num_block_, num_block_, num_block_, num_slice_,
-                      num_block_};
-    }
+  DilutionIterator end() const {
+    return DilutionIterator(
+        num_block_, num_block_, num_slice_, num_block_, type_);
   }
 
 private:
   int num_slice_;
   int num_block_;
+  DilutionType type_;
 };
 
+std::map<DilutionType const, std::string const> dilution_names = {
+    {DilutionType::block, "B"}, {DilutionType::interlace, "I"}};
+
+void test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type) {
+  auto const name = dilution_names[type];
+  std::cout << "T = " << num_slice << ", T" << name
+            << num_block << " (Morningstar), T" << name << (num_slice / num_block)
+            << " (Other):\n\n";
+
+  for (auto blocks : DilutionScheme(num_slice, num_block, type)) {
+    std::cout << std::setw(2) << blocks.source() << " => " << std::setw(2)
+              << blocks.sink() << "\n";
+
+    for (auto slices : blocks) {
+      std::cout << "  " << std::setw(2) << slices.source << " -> "
+                << std::setw(2) << slices.sink << "\n";
+    }
+  }
+
+  std::cout << "\n\n";
+}
+
 int main() {
-  std::cout << "Block:\n\n";
-  for (auto comb : Iteration<BlockDilutionIterator>(48, 24)) {
-    std::cout << std::setw(2) << comb.block << ": " << std::setw(2)
-              << comb.source << " -> " << std::setw(2) << comb.sink << "\n";
-  }
+    test_dilution_scheme(6, 2, DilutionType::block);
+    test_dilution_scheme(6, 2, DilutionType::interlace);
 
-  std::cout << "\n\nInterlace:\n\n";
-
-  for (auto comb : Iteration<InterlaceDilutionIterator>(8, 2)) {
-    std::cout << std::setw(2) << comb.block << ": " << std::setw(2)
-              << comb.source << " -> " << std::setw(2) << comb.sink << "\n";
-  }
+    test_dilution_scheme(48, 4, DilutionType::block);
+    test_dilution_scheme(48, 4, DilutionType::interlace);
 }
