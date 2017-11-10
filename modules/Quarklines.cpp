@@ -281,8 +281,8 @@ void LapH::Quarklines::build_Q1(const Perambulator& peram,
       for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
         const size_t rid1 = rnd_id.first - offset; 
         const size_t gamma_id = qll.gamma[0]; // TODO: hard coded! VERY BAD!!!
-        for(size_t row = 0; row < 4; row++){
-        for(size_t col = 0; col < 4; col++){
+        for(int row = 0; row < 4; row++){
+        for(int col = 0; col < 4; col++){
           Q1[t1][t2][qll.id][rnd_counter].block(row*dilE, col*dilE, dilE, dilE)=
             gamma[gamma_id].value[row] *  
             meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t1, rid1).
@@ -338,8 +338,8 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
       for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
 
         if(check != rnd_id.first){ // this avoids recomputation
-          for(size_t row = 0; row < 4; row++){
-          for(size_t col = 0; col < 4; col++){
+          for(int row = 0; row < 4; row++){
+          for(int col = 0; col < 4; col++){
             if(!qll.need_vdaggerv_dag)
               M.block(col*dilE, row*nev, dilE, nev) =
                 peram[rnd_id.first].block((t1*4 + row)*nev, (t2*4 + col)*dilE, 
@@ -362,8 +362,8 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
         for(size_t block_dil = 0; block_dil < 4; block_dil++) {
           const cmplx value = gamma[gamma_id].value[block_dil];
           const size_t gamma_index = gamma[gamma_id].row[block_dil];
-          for(size_t row = 0; row < 4; row++){
-          for(size_t col = 0; col < 4; col++){
+          for(int row = 0; row < 4; row++){
+          for(int col = 0; col < 4; col++){
 
           Q2V[t1][t2][qll.id][rnd_counter].
                         block(row*dilE, col*dilE, dilE, dilE) +=
@@ -418,8 +418,8 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
     int check = -1;
     for(const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids){
       if(check != rnd_id.first){ // this avoids recomputation
-        for(size_t row = 0; row < 4; row++){
-        for(size_t col = 0; col < 4; col++){
+        for(int row = 0; row < 4; row++){
+        for(int col = 0; col < 4; col++){
           if(!qll.need_vdaggerv_dag)
             M.block(col*dilE, row*nev, dilE, nev) =
               peram[rnd_id.first].block((t1*4 + row)*nev, 
@@ -445,8 +445,8 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
         for(size_t block_dil = 0; block_dil < 4; block_dil++) {
           const cmplx value = gamma[gamma_id].value[block_dil];
           const size_t gamma_index = gamma[gamma_id].row[block_dil];
-          for(size_t row = 0; row < 4; row++){
-          for(size_t col = 0; col < 4; col++){
+          for(int row = 0; row < 4; row++){
+          for(int col = 0; col < 4; col++){
 
           Q2L[t1][t2][qll.id][rnd_counter].
                         block(row*dilE, col*dilE, dilE, dilE) +=
