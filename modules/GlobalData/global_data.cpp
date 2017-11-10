@@ -194,7 +194,7 @@ void GlobalData::read_parameters (int ac, char* av[]) {
   std::ifstream ifs(input_file.c_str());
   if(!ifs){
     std::cout << "CANNOT open input file: " << input_file << "\n";
-    exit(0);
+    exit(1);
   }
   else{
     po::store(parse_config_file(ifs, input_file_options), vm);
