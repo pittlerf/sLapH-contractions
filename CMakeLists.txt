@@ -1,5 +1,4 @@
 # Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
-# Licensed under the MIT/Expat license.
 
 # Enforce a version that is actually available on QBiG.
 cmake_minimum_required(VERSION 2.8)
