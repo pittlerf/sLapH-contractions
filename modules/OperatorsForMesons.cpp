@@ -172,11 +172,21 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
   std::fill(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 
+  std::cout << "Input to gauge fields: Lt, Lx, Ly, Lz" << Lt << " " << Lx <<
+    " " << Ly << " " << Lz << std::endl;
+  GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
+             path_gaugefields, size_t(0), 
+             size_t(Lt-1), size_t(4));
+  // TODO: enable read in of one timeslice
+  if(need_gaugefields){
+    gauge.read_gauge_field(config,size_t(0),size_t(Lt-1));
+  } 
 
-#pragma omp parallel
+#pragma omp parallel shared(gauge)
 {
   Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
   LapH::EigenVector V_t(1, dim_row, nb_ev);// each thread needs its own copy
+  // Loop over timeslices
   #pragma omp for schedule(dynamic)
   for(size_t t = 0; t < Lt; ++t){
 
@@ -187,12 +197,6 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
       sprintf(inter_name, "%s%03d", filename.c_str(), (int) t);
       V_t.read_eigen_vector(inter_name, 0, 0); // reading eigenvectors
     }
-    GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, 
-               path_gaugefields, size_t(0), 
-               size_t(Lt-1), size_t(4));
-    if(need_gaugefields){
-      gauge.read_gauge_field(config,size_t(0),size_t(Lt-1));
-    } 
     // VdaggerV is independent of the gamma structure and momenta connected by
     // sign flip are related by adjoining VdaggerV. Thus the expensive 
     // calculation must only be performed for a subset of quantum numbers given
@@ -200,6 +204,10 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
     for(const auto& op : operator_lookuptable.vdaggerv_lookup){
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
+      std::cout << "In build_vdaggerv: id_unity is:" << id_unity << std::endl;
+      std::cout << "In build_vdaggerv: displacement is:";
+      for (auto& e : op.displacement) std::cout << e << " ";
+      std::cout << std::endl;
       if(op.id != id_unity){
         // check whether displacement is wanted and determine the direction
         // (parallel to gamma)
@@ -207,21 +215,35 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         //TODO: Order of displacements matters
         //TODO: At the moment only support for d > 0!!!!
         Eigen::MatrixXcd W_t = V_t[0];
-        //for(auto& d : op_Corr[op.index].dis3){ 
-        for(auto& d : op.displacement){ 
-          if(d > 0){
-            // displace d times in direction dir
-            for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
-              // LapH::EigenVector W_t(1,dim_row, nb_ev);
-              if(nb_derv_one_dir == 0)
-                W_t = gauge.disp(V_t[0], t, dir, false);
-              else
-                W_t = gauge.disp(W_t, t, dir, false);
-            }
-          }
-          dir++;
-        }
+        //Eigen::MatrixXcd W_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        //Eigen::MatrixXcd Coll_t = Eigen::MatrixXcd::Zero(dim_row,nb_ev);
+        //gauge.smearing_hyp(t,0.62,0.62,3);
+        //for(int d = 0; d < 3; ++d){
+        //  W_t = gauge.disp_2(V_t[0],t,d);
+        //  Coll_t += W_t;
+        //}
+        //for(auto& d : op_Corr[op.index].dis3){
+        //op.displacement is a 3-vector of (x,y,z) displacements
+        //for(auto& d : op.displacement){ 
+        //  if(d > 0){
+        //    // displace d times in direction dir
+        //    for(size_t nb_derv_one_dir = 0; nb_derv_one_dir < d; nb_derv_one_dir++){ 
+        //      // LapH::EigenVector W_t(1,dim_row, nb_ev);
+        //      //if(nb_derv_one_dir == 0)
+        //      //  W_t = gauge.disp(V_t[0], t, dir, false);
+        //      //else
+        //      W_t = gauge.disp(W_t, t, dir, true);
+        //    }
+        //  }
+        //  dir++;
+        //}
         vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+        //if (op.displacement.at(0) < 0){
+        //  vdaggerv[op.id][t] = V_t[0].adjoint() * Coll_t;
+        //}
+        //else{
+        //  vdaggerv[op.id][t] = Coll_t.adjoint() * V_t[0];
+        //}
        // Eigen::MatrixXcd Trash = vdaggerv[op.id][t].adjoint();
        // vdaggerv[op.id][t] -= Trash; 
 
@@ -230,7 +252,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
         for(size_t x = 0; x < dim_row; ++x) {
           mom(x) = momentum[op.id][x/3];
         }
-        vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * V_t[0];
+        //vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
         // writing vdaggerv to disk
         if(handling_vdaggerv == "write"){
           char dummy2[200];

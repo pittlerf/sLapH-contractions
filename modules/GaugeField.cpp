@@ -9,6 +9,7 @@ GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _L
                         config_path( _config_path), tslices(), iup(), idown(){
   iup.resize(boost::extents[V3][ndir]);
   idown.resize(boost::extents[V3][ndir]);
+  init(Lx,Ly,Lz);
   tslices.resize(tf-t0+1);
   for(auto& t: tslices) t.resize(boost::extents[V3][ndir]);
 
@@ -401,7 +402,7 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
 
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
-                                     const size_t t, const size_t dir, bool sym ) {
+                                     const size_t t, const size_t dir, bool forward ) {
 
   //Information on Matrix size
   const int dim_col = v.cols();
@@ -425,14 +426,63 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
 
       quark_up = in.segment(3*up_ind,3);
       quark_down = in.segment(3*down_ind,3);
-      if(sym) {
+      if(forward) {
         tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
             ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
       }
+      // Do we need to introduce the backward derivative? 
       else { 
-        Eigen::Vector3cd quark_point = in.segment(3*spatial_ind,3);
-        tmp = ( (tslices.at(t))[spatial_ind][dir] * quark_up) - quark_point ;
+        tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
+            ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
+        //Eigen::Vector3cd quark_point = in.segment(3*spatial_ind,3);
+        //tmp = ( (tslices.at(t))[spatial_ind][dir] * quark_up) - quark_point ;
       }
+      (out.col(ev)).segment(3*spatial_ind,3) = tmp;
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///Liumings second derivative returning one Eigenvector/Eigensystem////////////
+///////////////////////////////////////////////////////////////////////////////
+//Derivative, toogle symmetrization via sym
+Eigen::MatrixXcd GaugeField::disp_2(const Eigen::MatrixXcd& v,
+                                     const size_t t, const size_t dir) {
+
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  //Loop over all eigenvectors in 
+    //storing eigenvector
+    Eigen::VectorXcd in(dim_row);
+    Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+
+    //Displace eigenvector
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      //std::cout << "x: " << spatial_ind << std::endl;
+      Eigen::Vector3cd tmp;
+      Eigen::Vector3cd quark_up;
+      Eigen::Vector3cd quark_down;
+      Eigen::Vector3cd quark_double_up;
+      Eigen::Vector3cd quark_double_down;
+
+      //determine needed indices from lookup tables;
+      int up_ind = iup[spatial_ind][dir];
+      int down_ind = idown[spatial_ind][dir];
+      int double_up_ind = iup[up_ind][dir];
+      int double_down_ind = idown[down_ind][dir];
+
+      quark_up = in.segment(3*up_ind,3);
+      quark_down = in.segment(3*down_ind,3);
+      quark_double_up = in.segment(3*double_up_ind,3);
+      quark_double_down = in.segment(3*double_down_ind,3);
+      // Holds only for symmetric derivatives
+      tmp = 0.25*(tslices.at(t)[spatial_ind][dir]*tslices.at(t)[up_ind][dir]*quark_double_up
+                  -(tslices.at(t)[down_ind][dir].adjoint()*tslices.at(t)[down_ind][dir]
+                  +tslices.at(t)[spatial_ind][dir]*tslices.at(t)[spatial_ind][dir].adjoint())*in.segment(3*spatial_ind,3)
+                  +tslices.at(t)[down_ind][dir].adjoint()*tslices.at(t)[double_down_ind][dir].adjoint()*in.segment(3*double_down_ind,3));
       (out.col(ev)).segment(3*spatial_ind,3) = tmp;
     }//end spatial loop
   }//end eigenvector loop

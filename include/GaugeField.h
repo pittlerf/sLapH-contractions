@@ -111,6 +111,12 @@ class GaugeField {
     Eigen::MatrixXcd disp(const Eigen::MatrixXcd& v, const size_t t,
                           const size_t dir, bool sym);
 
+    //! \brief Returns symmetric 2 times displaced vector or matrix
+    //! 
+    //! v is the address of the Object to be displaced, t is the timeslice
+    //! index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively
+    Eigen::MatrixXcd disp_2(const Eigen::MatrixXcd& v, const size_t t,
+                          const size_t dir);
     //! \brief Gauge Transformation of timeslices
     //!
     //! For generating the transformation fields indices of the initial
@@ -141,10 +147,10 @@ class GaugeField {
     //! gaugefield is a pointer to the storage for the gaugefield
     //! filename indicates the path to the configuration
     //! slice_i is the initial, slice_f the final timeslice to be read
-  void read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
-                                                   const char* filename,
-                                                   const size_t slice_i,
-                                                   const size_t slice_f);
+    void read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
+                                                     const char* filename,
+                                                     const size_t slice_i,
+                                                     const size_t slice_f);
 
     //! \brief Build gauge array
     //!
