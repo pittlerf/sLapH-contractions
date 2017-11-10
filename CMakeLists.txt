@@ -56,6 +56,8 @@ if(cmake_build_type_lower STREQUAL "release")
     add_definitions(-O3 -march=native)
 endif()
 
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
+
 ###############################################################################
 #                                 Executables                                 #
 ###############################################################################
@@ -90,6 +92,6 @@ install(TARGETS contract DESTINATION bin)
 
 enable_testing()
 
-add_test( NAME integration-L4
-    COMMAND ./run-integration-test
-    WORKING_DIRECTORY integration-test-L4)
+add_test(NAME integration-L4
+    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/integration-test-L4/run-integration-test" "${CMAKE_CURRENT_BINARY_DIR}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/integration-test-L4")

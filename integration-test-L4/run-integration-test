@@ -8,6 +8,6 @@ set -e
 set -u
 set -x
 
-../contract -i test_all.ini
+"$1/contract" -i test_all.ini
 
 h5diff FILE1 FILE2
