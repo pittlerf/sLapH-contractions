@@ -1,0 +1,13 @@
+#!/bin/bash
+# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+
+# This integration test computes a large number of contractions on a 4^4 test
+# lattice and compares the data to some reference result.
+
+set -e
+set -u
+set -x
+
+../contract -i test_all.ini
+
+h5diff FILE1 FILE2

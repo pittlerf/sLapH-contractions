@@ -87,3 +87,9 @@ install(TARGETS contract DESTINATION bin)
 ###############################################################################
 #                                    Tests                                    #
 ###############################################################################
+
+enable_testing()
+
+add_test( NAME integration-L4
+    COMMAND ./run-integration-test
+    WORKING_DIRECTORY integration-test-L4)
