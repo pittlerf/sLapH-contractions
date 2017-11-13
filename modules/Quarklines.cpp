@@ -351,7 +351,7 @@ void LapH::Quarklines::build_Q2V(const Perambulator& peram,
                                           nev, dilE).adjoint() *
                 meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
             // gamma_5 trick
-            if( ((row + col) == 3) || (abs(row - col) > 1) )
+            if( ((row + col) == 3) || (abs(static_cast<int>(row - col)) > 1) )
               M.block(col*dilE, row*nev, dilE, nev) *= -1.;
           }}
         }
@@ -433,7 +433,7 @@ void LapH::Quarklines::build_Q2L(const Perambulator& peram,
                                         nev, dilE).adjoint() *
               meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
           // gamma_5 trick
-          if( ((row + col) == 3) || (abs(row - col) > 1) )
+          if( ((row + col) == 3) || (abs(static_cast<int>(row - col)) > 1) )
             M.block(col*dilE, row*nev, dilE, nev) *= -1.;
         }}
       }
