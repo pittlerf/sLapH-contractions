@@ -5,6 +5,10 @@
  *  @author Markus Werner
  */
 
+#include <iomanip>
+
+#define MU_DEBUG(x) std::cout << std::setw(20) << #x << ": " << (x) << std::endl;
+
 #include "OperatorsForMesons.h"
 
 namespace {
