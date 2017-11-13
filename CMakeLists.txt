@@ -51,12 +51,9 @@ endif()
 
 # Tune for the local architecture because this code will be used where it is
 # compiled, in most cases.
-string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower)
-if(cmake_build_type_lower STREQUAL "release")
-    add_definitions(-O3 -march=native)
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 
-#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fsanitize=address")
 
 ###############################################################################
 #                                 Executables                                 #
@@ -83,6 +80,11 @@ target_link_libraries(contract
     ${Boost_LIBRARIES}
     ${HDF5_LIBRARIES}
     )
+
+if(cmake_build_type_lower STREQUAL "debug")
+    target_link_libraries(contract -fsanitize=address)
+endif()
+
 
 install(TARGETS contract DESTINATION bin)
 
