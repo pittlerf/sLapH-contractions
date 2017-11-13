@@ -6,4 +6,6 @@ int main() {
 
     test_dilution_scheme(48, 4, DilutionType::block);
     test_dilution_scheme(48, 4, DilutionType::interlace);
+
+    test_dilution_scheme(48, 24, DilutionType::block);
 }
