@@ -211,9 +211,9 @@ public:
     }
   }
 
-  int source() { return block_source_; }
+  int source() const { return block_source_; }
 
-  int sink() { return block_sink_; }
+  int sink() const { return block_sink_; }
 
 private:
   int block_source_;
@@ -230,6 +230,24 @@ public:
                  DilutionType const type)
       : num_slice_(num_slice), num_block_(num_block), type_(type) {}
 
+  DilutionIterator operator[](int const i) const {
+    int block_sink = 0;
+    int block_source = 0;
+    for (int j = 0; j < i; ++j) {
+      ++block_sink;
+
+      if (block_sink == num_block_) {
+        ++block_source;
+        block_sink = block_source;
+      }
+    }
+
+    return DilutionIterator(
+        block_source, block_sink, num_slice_, num_block_, type_);
+  }
+
+  int size() const { return num_block_ * (num_block_ + 1) / 2; }
+
   DilutionIterator begin() const {
     return DilutionIterator(0, 0, num_slice_, num_block_, type_);
   }
@@ -239,7 +257,7 @@ public:
         num_block_, num_block_, num_slice_, num_block_, type_);
   }
 
-private:
+ private:
   int num_slice_;
   int num_block_;
   DilutionType type_;
@@ -251,11 +269,13 @@ inline void test_dilution_scheme(int const num_slice, int const num_block, Dilut
             << num_block << " (Morningstar), T" << name << (num_slice / num_block)
             << " (Other):\n\n";
 
-  for (auto blocks : DilutionScheme(num_slice, num_block, type)) {
+  DilutionScheme dilution_scheme(num_slice, num_block, type);
+  for (int b = 0; b < dilution_scheme.size(); ++b) {
+    auto const blocks = dilution_scheme[b];
     std::cout << std::setw(2) << blocks.source() << " => " << std::setw(2)
               << blocks.sink() << "\n";
 
-    for (auto slices : blocks) {
+    for (auto const slices : blocks) {
       std::cout << "  " << std::setw(2) << slices.source << " -> "
                 << std::setw(2) << slices.sink << "\n";
     }
@@ -263,13 +283,3 @@ inline void test_dilution_scheme(int const num_slice, int const num_block, Dilut
 
   std::cout << "\n\n";
 }
-
-#if 0
-int main() {
-    test_dilution_scheme(6, 2, DilutionType::block);
-    test_dilution_scheme(6, 2, DilutionType::interlace);
-
-    test_dilution_scheme(48, 4, DilutionType::block);
-    test_dilution_scheme(48, 4, DilutionType::interlace);
-}
-#endif

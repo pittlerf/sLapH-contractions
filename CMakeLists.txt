@@ -60,6 +60,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 #                                 Executables                                 #
 ###############################################################################
 
+### contract
+
 add_executable(contract
     modules/RandomVector.cpp
     modules/Correlators/Correlators.cpp
@@ -86,8 +88,13 @@ if(cmake_build_type_lower STREQUAL "debug")
     target_link_libraries(contract)
 endif()
 
-
 install(TARGETS contract DESTINATION bin)
+
+### test-iterator
+
+add_executable(test-iterator
+    main/test-iterator.cpp
+    )
 
 ###############################################################################
 #                                    Tests                                    #
