@@ -16,22 +16,24 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
   clock_t t = clock();
   FILE *fp = NULL;
 
-  std::cout << "\tReading perambulator from file:\n\t\t" << filename;
+  std::cout << "\tReading perambulator from file:\n\t\t" << filename << "\n";
 
   // reading the data into temporary array
   vec perambulator_read(peram[entity].size());
   if((fp = fopen(filename.c_str(), "rb")) == NULL){
-    std::cout << "failed to open file to read perambulaots: " 
+    std::cout << "failed to open file to read perambulator: " 
               << filename << "\n" << std::endl;
-    exit(0);
+    exit(1);
   }
   int check_read = fread(&(perambulator_read[0]), sizeof(cmplx),
                                                       peram[entity].size(), fp);
   fclose(fp);
   // check if all data were read in
   if(check_read != peram[entity].size()){
-    std::cout << "\n\nFailed to read perambulator\n" << std::endl;
-    exit(0);
+    std::cout << "\n\nFailed to read perambulator. Expected size "
+              << peram[entity].size() << " and got " << check_read << " B."
+              << std::endl;
+    exit(1);
   }
   
   // setting peram to zero
