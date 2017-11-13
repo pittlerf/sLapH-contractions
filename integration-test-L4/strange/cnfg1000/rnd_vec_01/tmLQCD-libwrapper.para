@@ -1,0 +1,11 @@
+This is the tmLQCD lib-wrapper code for twisted mass Wilson QCD
+
+Version 5.2.0, commit 7c4c8ae88db23ab56fadfa875d560297d22f9f45
+# the code is compiled for non-blocking MPI calls (spinor and gauge)
+# the code is compiled with openMP support
+# Periodic boundary conditions are used
+# Even/odd preconditioning is used
+# The lattice size is 4 x 4 x 4 x 4
+# The local lattice size is 1 x 4 x 4 x 4
+# g_beta = 6.000000000000 , g_kappa= 0.155000000000, c_sw = -1.000000000000 
+# boundary conditions for fermion fields (t,x,y,z) * pi: 1.000000 0.000000 0.000000 0.000000 
