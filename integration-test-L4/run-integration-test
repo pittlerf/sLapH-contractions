@@ -10,4 +10,4 @@ set -x
 
 "$1/contract" -i test_all.ini
 
-h5diff FILE1 FILE2
+#h5diff FILE1 FILE2
