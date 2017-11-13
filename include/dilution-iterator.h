@@ -225,6 +225,10 @@ private:
 
 class DilutionScheme {
 public:
+  static DilutionScheme make_full_dilution(int const num_slice) {
+    return DilutionScheme{num_slice, num_slice, DilutionType::block};
+  }
+
   DilutionScheme(int const num_slice,
                  int const num_block,
                  DilutionType const type)
