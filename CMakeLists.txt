@@ -54,7 +54,7 @@ endif()
 # compiled, in most cases.
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -fsanitize=address")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 
 ###############################################################################
 #                                 Executables                                 #
@@ -83,7 +83,7 @@ target_link_libraries(contract
     )
 
 if(cmake_build_type_lower STREQUAL "debug")
-    target_link_libraries(contract -fsanitize=address)
+    target_link_libraries(contract)
 endif()
 
 
