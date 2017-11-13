@@ -1,5 +1,7 @@
 // Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
 
+#pragma once
+
 #include <cassert>
 #include <iomanip>
 #include <map>
@@ -8,6 +10,9 @@
 #include <type_traits>
 
 enum class DilutionType { block, interlace };
+
+std::map<DilutionType const, std::string const> dilution_names = {
+    {DilutionType::block, "B"}, {DilutionType::interlace, "I"}};
 
 class BlockIterator {
 public:
@@ -240,10 +245,7 @@ private:
   DilutionType type_;
 };
 
-std::map<DilutionType const, std::string const> dilution_names = {
-    {DilutionType::block, "B"}, {DilutionType::interlace, "I"}};
-
-void test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type) {
+inline void test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type) {
   auto const name = dilution_names[type];
   std::cout << "T = " << num_slice << ", T" << name
             << num_block << " (Morningstar), T" << name << (num_slice / num_block)
@@ -262,6 +264,7 @@ void test_dilution_scheme(int const num_slice, int const num_block, DilutionType
   std::cout << "\n\n";
 }
 
+#if 0
 int main() {
     test_dilution_scheme(6, 2, DilutionType::block);
     test_dilution_scheme(6, 2, DilutionType::interlace);
@@ -269,3 +272,4 @@ int main() {
     test_dilution_scheme(48, 4, DilutionType::block);
     test_dilution_scheme(48, 4, DilutionType::interlace);
 }
+#endif
