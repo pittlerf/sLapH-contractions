@@ -100,6 +100,8 @@ int main (int ac, char* av[]) {
     // read eigenvectors and build operators
     meson_operators.create_operators(global_data->get_filename_eigenvectors(),
                                                        randomvectors, config_i);
+#if 0 // Debugging Martin Ueding <dev@martin-ueding.de> 2017-11-13
+
     /*! Building quarklines from operators and perambulators
      *  @todo Can be deleted after all correlators are memory optimized 
      */
@@ -109,6 +111,8 @@ int main (int ac, char* av[]) {
     // this memory is not needed anymore
 //    meson_operators.free_memory_rvdaggerv();
 //    meson_operators.free_memory_vdaggerv();
+
+#endif
 
     // doing all the contractions
     correlators.contract(quarklines, meson_operators, perambulators,
