@@ -67,6 +67,7 @@ add_executable(contract
     modules/Correlators/Correlators.cpp
     modules/EigenVector.cpp
     modules/Quarklines_one_t.cpp
+    modules/QuarklinesBlock.cpp
     modules/ranlxs.cpp
     modules/Quarklines.cpp
     modules/Perambulator.cpp
