@@ -208,8 +208,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
 #pragma omp parallel
   {
-    // XXX (Bartek 2017-11-13): Is this thread-local allocation really needed?
-    QuarkLine_one_t<QuarkLineType::Q1> quarklines_intern(
+    QuarkLine_one_t<QuarkLineType::Q1> quarklines_local(
         dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -218,21 +217,27 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
       // done eventually, so this is symmetric.
 
       auto const blocks = dilution_scheme[b];
+#pragma omp critical(cout)
+      std::cout << blocks << std::endl;
+
       for (auto const slices : blocks) {
-        quarklines_intern.build_Q1_one_t(perambulators,
-                                         meson_operator,
-                                         size_t{0},
-                                         slices.source(),
-                                         blocks.sink(),
-                                         quark_lookup.Q1,
-                                         operator_lookup.ricQ2_lookup);
-        quarklines_intern.build_Q1_one_t(perambulators,
-                                         meson_operator,
-                                         size_t{1},
-                                         slices.sink(),
-                                         blocks.source(),
-                                         quark_lookup.Q1,
-                                         operator_lookup.ricQ2_lookup);
+#pragma omp critical(cout)
+        std::cout << "\t" << slices << std::endl;
+
+        quarklines_local.build_Q1_one_t(perambulators,
+                                        meson_operator,
+                                        size_t{0},
+                                        slices.source(),
+                                        blocks.sink(),
+                                        quark_lookup.Q1,
+                                        operator_lookup.ricQ2_lookup);
+        quarklines_local.build_Q1_one_t(perambulators,
+                                        meson_operator,
+                                        size_t{1},
+                                        slices.sink(),
+                                        blocks.source(),
+                                        quark_lookup.Q1,
+                                        operator_lookup.ricQ2_lookup);
 
         for (const auto& c_look : corr_lookup) {
           const auto& ric0 =
@@ -245,7 +250,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
                   .rnd_vec_ids;
           if (ric0.size() != ric1.size()) {
             std::cout << "rnd combinations are not the same in build_corr0" << std::endl;
-            exit(0);
+            exit(1);
           }
           corr0[c_look.id][slices.source()][slices.sink()].resize(ric0.size());
           for (auto& corr : corr0[c_look.id][slices.source()][slices.sink()])
@@ -259,11 +264,11 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
             if (it1 == ric1.end()) {
               std::cout << "something wrong with random vectors in build_corr0"
                         << std::endl;
-              exit(0);
+              exit(1);
             }
             corr0[c_look.id][slices.source()][slices.sink()][id] +=
-                (quarklines_intern.return_Ql(0, c_look.lookup[0], id) *
-                 quarklines_intern.return_Ql(1, c_look.lookup[1], it1 - ric1.begin()))
+                (quarklines_local.return_Ql(0, c_look.lookup[0], id) *
+                 quarklines_local.return_Ql(1, c_look.lookup[1], it1 - ric1.begin()))
                     .trace();
           }
         }
