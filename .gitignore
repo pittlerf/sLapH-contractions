@@ -1,15 +1,16 @@
-# Spam
-*.swp
-*.swo
-# Compilespam
-*.o
+*.cpp.orig
 *.d
-# Doxygen Output
+*.dat
+*.o
+*.pdf
+*.srctrlbm
+*.srctrldb
+*.srctrlprj
+*.swo
+*.swp
+.gdb_history
 doxygen/html
 doxygen/latex
-# plots
-*.pdf
-# data files
-*.dat
-# executables
-LapHs
+integration-test-L4/
+integration-test-L4/correlators/
+integration-test-L4/MovingFrameMomentum/
