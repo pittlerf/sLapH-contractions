@@ -16,11 +16,6 @@ std::map<DilutionType const, std::string const> dilution_names = {
 
 class BlockIterator {
 public:
-  struct Element {
-    int source;
-    int sink;
-  };
-
   BlockIterator(int const slice_source,
                 int const slice_sink,
                 int const block_source,
@@ -38,7 +33,7 @@ public:
         pass_(pass),
         type_(type) {}
 
-  Element operator*() { return {slice_source_, slice_sink_}; }
+  BlockIterator operator*() const { return *this; }
 
   BlockIterator operator++() {
     if (type_ == DilutionType::block) {
@@ -114,6 +109,10 @@ public:
            num_slice_ != other.num_slice_ || num_block_ != other.num_block_ ||
            pass_ != other.pass_ || type_ != other.type_;
   }
+
+  int source() const { return slice_source_; }
+
+  int sink() const { return slice_sink_; }
 
 private:
   int slice_source_;
@@ -283,8 +282,8 @@ inline void test_dilution_scheme(int const num_slice, int const num_block, Dilut
               << blocks.sink() << "\n";
 
     for (auto const slices : blocks) {
-      std::cout << "  " << std::setw(2) << slices.source << " -> "
-                << std::setw(2) << slices.sink << "\n";
+      std::cout << "  " << std::setw(2) << slices.source() << " -> "
+                << std::setw(2) << slices.sink() << "\n";
     }
   }
 
