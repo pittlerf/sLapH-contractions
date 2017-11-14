@@ -230,9 +230,11 @@ public:
   }
 
   DilutionScheme(int const num_slice,
-                 int const num_block,
+                 int const block_size,
                  DilutionType const type)
-      : num_slice_(num_slice), num_block_(num_block), type_(type) {}
+      : num_slice_(num_slice),
+        num_block_(num_slice / block_size),
+        type_(type) {}
 
   DilutionIterator operator[](int const i) const {
     int block_sink = 0;
@@ -269,11 +271,12 @@ public:
 
 inline void test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type) {
   auto const name = dilution_names[type];
+  auto const block_size = num_slice / num_block;
   std::cout << "T = " << num_slice << ", T" << name
-            << num_block << " (Morningstar), T" << name << (num_slice / num_block)
+            << num_block << " (Morningstar), T" << name << block_size
             << " (Other):\n\n";
 
-  DilutionScheme dilution_scheme(num_slice, num_block, type);
+  DilutionScheme dilution_scheme(num_slice, block_size, type);
   for (int b = 0; b < dilution_scheme.size(); ++b) {
     auto const blocks = dilution_scheme[b];
     std::cout << std::setw(2) << blocks.source() << " => " << std::setw(2)
