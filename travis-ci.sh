@@ -7,7 +7,7 @@ set -u
 set -x
 
 ubuntu_packages=(
-    gcc-6 g++-6
+    gcc-7 g++-7
     ccache
     cmake
     libhdf5-dev 
@@ -37,5 +37,5 @@ cd "$builddir"
 
 CXX=$(which g++-7)
 
-CXX=$CXX cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
+cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
 make -j $(nproc)
