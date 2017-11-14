@@ -231,13 +231,9 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
                                         blocks.sink(),
                                         quark_lookup.Q1,
                                         operator_lookup.ricQ2_lookup);
-        quarklines_local.build_Q1_one_t(perambulators,
-                                        meson_operator,
-                                        size_t{1},
-                                        slices.sink(),
-                                        blocks.source(),
-                                        quark_lookup.Q1,
-                                        operator_lookup.ricQ2_lookup);
+      }
+
+      for (auto const slices : blocks) {
 
         for (const auto& c_look : corr_lookup) {
           const auto& ric0 =
