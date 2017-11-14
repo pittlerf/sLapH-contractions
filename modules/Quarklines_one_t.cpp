@@ -232,13 +232,6 @@ QuarkLine_one_t<qlt>::QuarkLine_one_t(
   std::cout << "\tQuarklines initialised" << std::endl;
 }
 
-template <QuarkLineType qlt>
-void QuarkLine_one_t<qlt>::build_Q1_one_t(const Perambulator& peram,
-              const OperatorsForMesons& meson_operator, size_t pos, 
-              const int t1, const int t2_block,
-              const typename QuarkLineIndices<qlt>::type& quarkline_indices,
-              const std::vector<RandomIndexCombinationsQ2>& ric_lookup){}
-
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <>
