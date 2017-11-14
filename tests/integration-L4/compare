@@ -1,0 +1,12 @@
+#!/bin/bash
+# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+
+set -e
+set -u
+set -x
+
+for path in correlators-20171113/*.h5; do
+    basename="${path##*/}"
+
+    h5diff -r "$path" "correlators/$basename"
+done

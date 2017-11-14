@@ -12,8 +12,4 @@ set -x
 
 tree
 
-for path in correlators-20171113/*.h5; do
-    basename="${path##*/}"
-
-    h5diff "$path" "correlators/$basename"
-done
+./compare
