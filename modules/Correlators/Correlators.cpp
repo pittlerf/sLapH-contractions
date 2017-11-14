@@ -215,8 +215,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       // Notation is that `t1` is the source and `t2` the sink. Both will be
-      // done
-      // eventually, so this is symmetric.
+      // done eventually, so this is symmetric.
 
       auto const blocks = dilution_scheme[b];
       for (auto const slices : blocks) {
