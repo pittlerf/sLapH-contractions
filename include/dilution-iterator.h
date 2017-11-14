@@ -4,8 +4,8 @@
 
 #include <cassert>
 #include <iomanip>
-#include <map>
 #include <iostream>
+#include <map>
 #include <stdexcept>
 #include <type_traits>
 
@@ -267,6 +267,16 @@ public:
   int num_block_;
   DilutionType type_;
 };
+
+std::ostream &operator<<(std::ostream &os, DilutionIterator const &di) {
+  os << "DilutionIterator(source=" << di.source() << ", sink=" << di.sink() << ")";
+  return os;
+}
+
+std::ostream &operator<<(std::ostream &os, BlockIterator const &bi) {
+  os << "BlockIterator(source=" << bi.source() << ", sink=" << bi.sink() << ")";
+  return os;
+}
 
 inline void test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type) {
   auto const name = dilution_names[type];
