@@ -35,5 +35,7 @@ rm -rf "$builddir"
 mkdir -p "$builddir"
 cd "$builddir"
 
-cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER=$(which g++-7)
+CXX=$(which g++-7)
+
+CXX=$CXX cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
 make -j $(nproc)
