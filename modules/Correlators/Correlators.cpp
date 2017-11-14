@@ -1,5 +1,7 @@
 #include "Correlators.h"
 
+#include "dilution-iterator.h"
+
 namespace
 {
 
@@ -195,64 +197,85 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
                                     const std::vector<CorrInfo>& corr_lookup,
                                     const QuarklineLookup& quark_lookup,
                                     const OperatorLookup& operator_lookup) {
-
-  if(corr_lookup.size() == 0)
-    return;
+  if (corr_lookup.size() == 0) return;
 
   std::cout << "\tcomputing corr0:";
   clock_t time = clock();
 
   corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
+
+  DilutionScheme dilution_scheme(Lt, dilT, DilutionType::block);
+
 #pragma omp parallel
-{
-  QuarkLine_one_t<QuarkLineType::Q1> quarklines_intern(dilT, dilE, nev, quark_lookup.Q1, 
-                               operator_lookup.ricQ2_lookup);
+  {
+    // XXX (Bartek 2017-11-13): Is this thread-local allocation really needed?
+    QuarkLine_one_t<QuarkLineType::Q1> quarklines_intern(
+        dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 
-  #pragma omp for schedule(dynamic) 
-  for(int t1 = 0; t1 < Lt; t1++){
-  for(int t2 = 0; t2 < Lt; t2++){
-    quarklines_intern.build_Q1_one_t(perambulators, meson_operator, size_t {0}, t1, t2/dilT,
-                              quark_lookup.Q1, operator_lookup.ricQ2_lookup);
-    quarklines_intern.build_Q1_one_t(perambulators, meson_operator, size_t {1}, t2, t1/dilT,
-                              quark_lookup.Q1, operator_lookup.ricQ2_lookup);
+#pragma omp for schedule(dynamic)
+    for (int b = 0; b < dilution_scheme.size(); ++b) {
+      // Notation is that `t1` is the source and `t2` the sink. Both will be
+      // done
+      // eventually, so this is symmetric.
 
-    for(const auto& c_look : corr_lookup){
-      const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[
-                                   c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
-      const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[
-                                   c_look.lookup[1]].id_ric_lookup].rnd_vec_ids;
-      if(ric0.size() != ric1.size()){
-        std::cout << "rnd combinations are not the same in build_corr0" 
-                  << std::endl;
-        exit(0);
-      }
-      corr0[c_look.id][t1][t2].resize(ric0.size());
-      for(auto& corr : corr0[c_look.id][t1][t2])
-        corr = cmplx(0.0,0.0);
-      for(const auto& rnd : ric0){
-        const auto id = &rnd - &ric0[0];
-        const auto it1 = std::find_if(ric1.begin(), ric1.end(),
-                                [&](std::pair<size_t, size_t> pair){
-                                  return (pair == 
-                                       std::make_pair(rnd.second, rnd.first));
-                                });
-        if(it1 == ric1.end()){
-          std::cout << "something wrong with random vectors in build_corr0" 
-                    << std::endl;
-          exit(0);
+      auto const blocks = dilution_scheme[b];
+      for (auto const slices : blocks) {
+        quarklines_intern.build_Q1_one_t(perambulators,
+                                         meson_operator,
+                                         size_t{0},
+                                         slices.source(),
+                                         blocks.sink(),
+                                         quark_lookup.Q1,
+                                         operator_lookup.ricQ2_lookup);
+        quarklines_intern.build_Q1_one_t(perambulators,
+                                         meson_operator,
+                                         size_t{1},
+                                         slices.sink(),
+                                         blocks.source(),
+                                         quark_lookup.Q1,
+                                         operator_lookup.ricQ2_lookup);
+
+        for (const auto& c_look : corr_lookup) {
+          const auto& ric0 =
+              operator_lookup
+                  .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
+                  .rnd_vec_ids;
+          const auto& ric1 =
+              operator_lookup
+                  .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+                  .rnd_vec_ids;
+          if (ric0.size() != ric1.size()) {
+            std::cout << "rnd combinations are not the same in build_corr0" << std::endl;
+            exit(0);
+          }
+          corr0[c_look.id][slices.source()][slices.sink()].resize(ric0.size());
+          for (auto& corr : corr0[c_look.id][slices.source()][slices.sink()])
+            corr = cmplx(0.0, 0.0);
+          for (const auto& rnd : ric0) {
+            const auto id = &rnd - &ric0[0];
+            const auto it1 = std::find_if(
+                ric1.begin(), ric1.end(), [&](std::pair<size_t, size_t> pair) {
+                  return (pair == std::make_pair(rnd.second, rnd.first));
+                });
+            if (it1 == ric1.end()) {
+              std::cout << "something wrong with random vectors in build_corr0"
+                        << std::endl;
+              exit(0);
+            }
+            corr0[c_look.id][slices.source()][slices.sink()][id] +=
+                (quarklines_intern.return_Ql(0, c_look.lookup[0], id) *
+                 quarklines_intern.return_Ql(1, c_look.lookup[1], it1 - ric1.begin()))
+                    .trace();
+          }
         }
-        corr0[c_look.id][t1][t2][id] += 
-                    (quarklines_intern.return_Ql(0, c_look.lookup[0], id) *
-                     quarklines_intern.return_Ql(1, c_look.lookup[1], 
-                                                     it1-ric1.begin())).trace();
       }
     }
-  }}
+    time = clock() - time;
+    std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
+              << std::endl;
+  }
 }
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
-}
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup, 
