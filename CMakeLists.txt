@@ -106,5 +106,5 @@ add_test(NAME unit-dilution-iterator
     COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tests/dilution-iterator/run-test" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_test(NAME integration-L4
-    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/integration-test-L4/run-integration-test" "${CMAKE_CURRENT_BINARY_DIR}"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/integration-test-L4")
+    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4/run-integration-test" "${CMAKE_CURRENT_BINARY_DIR}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
