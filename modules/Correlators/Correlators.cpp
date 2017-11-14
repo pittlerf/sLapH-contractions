@@ -270,8 +270,8 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
       }
     }
     time = clock() - time;
-    std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
-              << std::endl;
+    std::cout << "\t\tSUCCESS - " << static_cast<double>(time) / CLOCKS_PER_SEC
+              << " seconds" << std::endl;
   }
 }
 
