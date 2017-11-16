@@ -1,11 +1,11 @@
-#include "QuarklinesBlock.h"
+#include "QuarkLineBlock.h"
 
 namespace {  // some internal namespace
 
 static const std::complex<double> I(0.0, 1.0);
 // Look-up table for gamma matrices. For every Gamma structure (currently 0-15)
 // the four non-zero values are specified.
-static void create_gamma(std::vector<LapH::gamma_lookup>& gamma, const int i) {
+static void create_gamma(std::vector<LapH::gamma_lookup> &gamma, const int i) {
   try {
     switch (i) {
       case 0:  // gamma_0
@@ -189,7 +189,7 @@ static void create_gamma(std::vector<LapH::gamma_lookup>& gamma, const int i) {
         exit(0);
     }
     return;
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     std::cout << e.what() << "in: BasicOperator::create_gamma\n";
     exit(0);
   }
@@ -205,27 +205,32 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
     const size_t dilT,
     const size_t dilE,
     const size_t nev,
-    const typename QuarkLineIndices<qlt>::type& quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2>& ric_lookup)
+    const typename QuarkLineIndices<qlt>::type &quarkline_indices,
+    const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
     : dilT(dilT), dilE(dilE), nev(nev) {
-  int tt2 = 4 * dilT;
+  int const dilD = 4;
+  int const eigenspace_dirac_size = dilD * dilE;
+  int const from_source_or_sink_block = 2;
+  int const to_source_or_sink_block = 2;
+  int const quarklines_per_block_combination =
+      from_source_or_sink_block * to_source_or_sink_block * dilT;
 
-  Ql.resize(boost::extents[tt2][quarkline_indices.size()]);
+  Ql.resize(boost::extents[quarklines_per_block_combination][quarkline_indices.size()]);
 
-  for (size_t t2 = 0; t2 < tt2; t2++) {
-    for (size_t op = 0; op < quarkline_indices.size(); op++) {
-      size_t nb_rnd =
-          ric_lookup[(quarkline_indices[op]).id_ric_lookup].rnd_vec_ids.size();
-      Ql[t2][op].resize(nb_rnd);
-      for (size_t rnd1 = 0; rnd1 < nb_rnd; rnd1++) {
-        Ql[t2][op][rnd1] = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
+  for (int qline = 0; qline < quarklines_per_block_combination; ++qline) {
+    for (int op = 0; op < quarkline_indices.size(); ++op) {
+      int nb_rnd = ric_lookup[(quarkline_indices[op]).id_ric_lookup].rnd_vec_ids.size();
+      Ql[qline][op].resize(nb_rnd);
+      for (int rnd = 0; rnd < nb_rnd; ++rnd) {
+        Ql[qline][op][rnd] =
+            Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       }
     }
   }
 
   // creating gamma matrices
   gamma.resize(16);
-  for (int i = 0; i < 16; ++i) create_gamma(gamma, i);
+  for (int i = 0; i < gamma.size(); ++i) create_gamma(gamma, i);
 
   std::cout << "\tQuarklines initialised" << std::endl;
 }
@@ -234,19 +239,20 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
 // -----------------------------------------------------------------------------
 template <>
 void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
-    const Perambulator& peram,
-    const OperatorsForMesons& meson_operator,
+    const Perambulator &peram,
+    const OperatorsForMesons &meson_operator,
     size_t pos,
     const int t1,
     const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q1>::type& quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
-  for (const auto& qll : quarkline_indices) {
+    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
+    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
+  for (const auto &qll : quarkline_indices) {
     const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
     size_t rnd_counter = 0;
-    for (const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+    for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
       const size_t rid1 = rnd_id.first - offset;
-      const size_t gamma_id = qll.gamma[0];  // TODO: hard coded! VERY BAD!!!
+      //! @todo: hard coded! VERY BAD!!!
+      const size_t gamma_id = qll.gamma[0];
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           Ql[pos][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
@@ -269,12 +275,12 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
 /*! @todo Think about better names for time indices */
 template <>
 void QuarkLineBlock<QuarkLineType::Q1>::build(
-    const Perambulator& peram,
-    const OperatorsForMesons& meson_operator,
+    const Perambulator &peram,
+    const OperatorsForMesons &meson_operator,
     const int t1_block,
     const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q1>::type& quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
+    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
   size_t pos = 0;
   for (const auto pair :
        {std::make_pair(t1_block, t2_block), std::make_pair(t2_block, t1_block)}) {
@@ -292,21 +298,21 @@ void QuarkLineBlock<QuarkLineType::Q1>::build(
 // -----------------------------------------------------------------------------
 template <>
 void QuarkLineBlock<QuarkLineType::Q2V>::build(
-    const Perambulator& peram,
-    const OperatorsForMesons& meson_operator,
+    const Perambulator &peram,
+    const OperatorsForMesons &meson_operator,
     const int t1_block,
     const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q2V>::type& quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+    const typename QuarkLineIndices<QuarkLineType::Q2V>::type &quarkline_indices,
+    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
   size_t pos = 0;
   // t1 -> t2 -----------------------------------------------------------------
   for (int t1 = dilT * t1_block; t1 < dilT * (t1_block + 1); t1++) {
     int t2 = t2_block;
-    for (const auto& qll : quarkline_indices) {
+    for (const auto &qll : quarkline_indices) {
       size_t rnd_counter = 0;
       int check = -1;
       Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
-      for (const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
         if (check != rnd_id.first) {  // this avoids recomputation
           for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -353,11 +359,11 @@ void QuarkLineBlock<QuarkLineType::Q2V>::build(
   // t2 -> t1 -----------------------------------------------------------------
   for (int t1 = dilT * t2_block; t1 < dilT * (t2_block + 1); t1++) {
     int t2 = t1_block;
-    for (const auto& qll : quarkline_indices) {
+    for (const auto &qll : quarkline_indices) {
       size_t rnd_counter = 0;
       int check = -1;
       Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
-      for (const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
         if (check != rnd_id.first) {  // this avoids recomputation
           for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -407,20 +413,20 @@ void QuarkLineBlock<QuarkLineType::Q2V>::build(
 // -----------------------------------------------------------------------------
 template <>
 void QuarkLineBlock<QuarkLineType::Q2L>::build(
-    const Perambulator& peram,
-    const OperatorsForMesons& meson_operator,
+    const Perambulator &peram,
+    const OperatorsForMesons &meson_operator,
     const int t1_block,
     const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q2L>::type& quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+    const typename QuarkLineIndices<QuarkLineType::Q2L>::type &quarkline_indices,
+    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
   // t1 -> t2 -----------------------------------------------------------------
   size_t pos = 0;
   for (int t1 = dilT * t1_block; t1 < dilT * (t1_block + 1); t1++) {
     Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
-    for (const auto& qll : quarkline_indices) {
+    for (const auto &qll : quarkline_indices) {
       size_t rnd_counter = 0;
       int check = -1;
-      for (const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
         if (check != rnd_id.first) {  // this avoids recomputation
           for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -475,10 +481,10 @@ void QuarkLineBlock<QuarkLineType::Q2L>::build(
     // t2 -> t1 -----------------------------------------------------------------
     for (int t1 = dilT * t2_block; t1 < dilT * (t2_block + 1); t1++) {
       Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
-      for (const auto& qll : quarkline_indices) {
+      for (const auto &qll : quarkline_indices) {
         size_t rnd_counter = 0;
         int check = -1;
-        for (const auto& rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+        for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
           if (check != rnd_id.first) {  // this avoids recomputation
             for (int row = 0; row < 4; row++) {
               for (int col = 0; col < 4; col++) {

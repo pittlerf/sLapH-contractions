@@ -16,91 +16,102 @@ std::map<DilutionType const, std::string const> dilution_names = {
 
 class BlockIterator {
 public:
-  BlockIterator(int const slice_source,
-                int const slice_sink,
-                int const block_source,
-                int const block_sink,
-                int const num_slice,
-                int const num_block,
-                int const pass,
-                DilutionType const type)
-      : slice_source_(slice_source),
-        slice_sink_(slice_sink),
-        block_source_(block_source),
-        block_sink_(block_sink),
-        num_slice_(num_slice),
-        num_block_(num_block),
-        pass_(pass),
-        type_(type) {}
+ BlockIterator(int const slice_source,
+               int const slice_sink,
+               int const block_source,
+               int const block_sink,
+               int const num_slice,
+               int const num_block,
+               int const pass,
+               DilutionType const type,
+               bool const one_sink_slice = false)
+     : slice_source_(slice_source),
+       slice_sink_(slice_sink),
+       block_source_(block_source),
+       block_sink_(block_sink),
+       num_slice_(num_slice),
+       num_block_(num_block),
+       pass_(pass),
+       type_(type),
+       one_sink_slice_(one_sink_slice) {}
 
-  BlockIterator operator*() const { return *this; }
+ BlockIterator operator*() const { return *this; }
 
-  BlockIterator operator++() {
-    if (type_ == DilutionType::block) {
-      int const block_size = num_slice_ / num_block_;
-      int const block_source_begin = block_source_ * block_size;
-      int const block_source_end = (block_source_ + 1) * block_size;
-      int const block_sink_begin = block_sink_ * block_size;
-      int const block_sink_end = (block_sink_ + 1) * block_size;
+ BlockIterator operator++() {
+   if (type_ == DilutionType::block) {
+     int const block_size = num_slice_ / num_block_;
+     int const block_source_begin = block_source_ * block_size;
+     int const block_source_end = (block_source_ + 1) * block_size;
+     int const block_sink_begin = block_sink_ * block_size;
+     int const block_sink_end = (block_sink_ + 1) * block_size;
 
-      // Go to the next sink slice.
-      ++slice_sink_;
+     // Go to the next sink slice.
+     if (one_sink_slice_) {
+       slice_sink_ += block_size;
+     } else {
+       ++slice_sink_;
+     }
 
-      // If we iterated through all sinks in this block, we need to go to the
-      // next source.
-      if (slice_sink_ == block_sink_end) {
-        slice_sink_ = block_sink_begin;
-        ++slice_source_;
-      }
+     // If we iterated through all sinks in this block, we need to go to the
+     // next source.
+     if (slice_sink_ == block_sink_end) {
+       slice_sink_ = block_sink_begin;
+       ++slice_source_;
+     }
 
-      // If we iterated through all the sources in our block, we need to
-      // exchange
-      // source and sink block and repeat.
-      if (slice_source_ == block_source_end) {
-        slice_source_ = block_sink_begin;
-        slice_sink_ = block_source_begin;
-        ++pass_;
+     // If we iterated through all the sources in our block, we need to
+     // exchange
+     // source and sink block and repeat.
+     if (slice_source_ == block_source_end) {
+       slice_source_ = block_sink_begin;
+       slice_sink_ = block_source_begin;
+       ++pass_;
 
-        if (block_source_ == block_sink_) {
-          ++pass_;
-        }
+       if (block_source_ == block_sink_) {
+         ++pass_;
+       }
 
-        std::swap(block_source_, block_sink_);
-      }
-    } else if (type_ == DilutionType::interlace) {
-      int const block_size = num_slice_ / num_block_;
-      int const block_source_begin = block_source_;
-      int const block_sink_begin = block_sink_;
+       std::swap(block_source_, block_sink_);
+     }
+   } else if (type_ == DilutionType::interlace) {
+     int const block_size = num_slice_ / num_block_;
+     int const block_source_begin = block_source_;
+     int const block_sink_begin = block_sink_;
 
-      // Go to the next sink slice.
-      slice_sink_ += block_size;
+     // Go to the next sink slice.
+     if (one_sink_slice_) {
+       slice_sink_ += num_slice_;
+     }
+     else {
+       slice_sink_ += block_size;
+     }
 
-      // If we iterated through all sinks in this block, we need to go to the
-      // next source.
-      if (slice_sink_ >= num_slice_) {
-        slice_sink_ = block_sink_begin;
-        slice_source_ += block_size;
-      }
+     // If we iterated through all sinks in this block, we need to go to the
+     // next source.
+     if (slice_sink_ >= num_slice_) {
+       slice_sink_ = block_sink_begin;
+       slice_source_ += block_size;
+     }
 
-      // If we iterated through all the sources in our block, we need to
-      // exchange
-      // source and sink block and repeat.
-      if (slice_source_ >= num_slice_) {
-        slice_source_ = block_sink_begin;
-        slice_sink_ = block_source_begin;
-        ++pass_;
+     // If we iterated through all the sources in our block, we need to
+     // exchange
+     // source and sink block and repeat.
+     if (slice_source_ >= num_slice_) {
+       slice_source_ = block_sink_begin;
+       slice_sink_ = block_source_begin;
+       ++pass_;
 
-        if (block_source_ == block_sink_) {
-          ++pass_;
-        }
+       if (block_source_ == block_sink_) {
+         ++pass_;
+       }
 
-        std::swap(block_source_, block_sink_);
-      }
-    } else {
-      throw std::domain_error("This dilution scheme is not implemented.");
-    }
+       std::swap(block_source_, block_sink_);
+     }
+   } else {
+     throw std::domain_error("This dilution scheme is not implemented.");
+   }
 
-    return *this;
+   return *this;
   }
 
   bool operator!=(BlockIterator const &other) const {
@@ -123,6 +134,7 @@ private:
   int num_block_;
   int pass_;
   DilutionType type_;
+  bool one_sink_slice_;
 };
 
 class DilutionIterator {
@@ -173,7 +185,8 @@ public:
                            num_slice_,
                            num_block_,
                            0,
-                           type_);
+                           type_,
+                           one_sink_slice_);
     } else {
       return BlockIterator(block_source_,
                            block_sink_,
@@ -182,7 +195,8 @@ public:
                            num_slice_,
                            num_block_,
                            0,
-                           type_);
+                           type_,
+                           one_sink_slice_);
     }
   }
 
@@ -197,7 +211,8 @@ public:
                            num_slice_,
                            num_block_,
                            2,
-                           type_);
+                           type_,
+                           one_sink_slice_);
     } else {
       return BlockIterator(block_source_,
                            block_sink_,
@@ -206,7 +221,8 @@ public:
                            num_slice_,
                            num_block_,
                            2,
-                           type_);
+                           type_,
+                           one_sink_slice_);
     }
   }
 
@@ -214,12 +230,19 @@ public:
 
   int sink() const { return block_sink_; }
 
+  DilutionIterator one_sink_slice() const {
+      DilutionIterator copy = *this;
+      copy.one_sink_slice_ = true;
+      return copy;
+  }
+
 private:
   int block_source_;
   int block_sink_;
   int num_slice_;
   int num_block_;
   DilutionType type_;
+  bool one_sink_slice_;
 };
 
 class DilutionScheme {

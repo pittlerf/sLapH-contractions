@@ -1,5 +1,6 @@
 #include "Correlators.h"
 
+#include "QuarkLineBlock.h"
 #include "dilution-iterator.h"
 
 namespace
@@ -208,7 +209,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
 #pragma omp parallel
   {
-    QuarkLine_one_t<QuarkLineType::Q1> quarklines_local(
+    QuarkLineBlock<QuarkLineType::Q1> quarklines_local(
         dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -220,7 +221,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 #pragma omp critical(cout)
       std::cout << blocks << std::endl;
 
-      for (auto const slices : blocks) {
+      for (auto const slices : blocks.one_sink_slice()) {
 #pragma omp critical(cout)
         std::cout << "\t" << slices << std::endl;
 

@@ -6,8 +6,7 @@
  *
  */
 
-#ifndef CORRELATORS_H_
-#define CORRELATORS_H_
+#pragma once
 
 #include <complex>
 #include <fstream>
@@ -286,5 +285,3 @@ public:
 };
 
 } // end of namespace
-
-#endif // CORRELATORS_H_ 

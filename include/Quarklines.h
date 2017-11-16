@@ -1,5 +1,4 @@
-#ifndef QUARKLINES_H_
-#define OUARKLINES_H_
+#pragma once
 
 #include <algorithm>
 #include <fstream>
@@ -218,6 +217,3 @@ public:
 // -----------------------------------------------------------------------------
 
 } // end of namespace
-
-#endif
-
