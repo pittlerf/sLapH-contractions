@@ -392,6 +392,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
   std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
             << std::endl;
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup, 
@@ -419,45 +420,47 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id1].
                                                      id_ric_lookup].rnd_vec_ids;
     size_t norm = 0;
-    for(int t1 = 0; t1 < Lt; t1++){
-    for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
+    DilutionScheme dilution_scheme(Lt, dilT, DilutionType::block);
+    for (auto const block_pair : dilution_scheme) {
+      for (auto const slice_pair : block_pair) {
+        int const t =
+            abs((slice_pair.sink() - slice_pair.source() - static_cast<int>(Lt)) %
+                static_cast<int>(Lt));
+        for (const auto &rnd0 : ric0) {
+          for (const auto &rnd1 : ric1) {
+            if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
+                (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
+              auto const &factor1 =
+                  corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()].at(
+                      &rnd0 - &ric0[0]);
+              auto const &factor2 =
+                  corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()].at(
+                      &rnd1 - &ric1[0]);
 
-      for(const auto& rnd0 : ric0)
-      for(const auto& rnd1 : ric1)
-
-      if((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
-         (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)){
-
-        correlator[t].rere += 
-                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t].reim += 
-                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).real() *
-                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
-        correlator[t].imre += 
-                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).real();
-        correlator[t].imim += 
-                   corr0[c_look.lookup[0]][t1][t1].at(&rnd0 - &ric0[0]).imag() *
-                   corr0[c_look.lookup[1]][t2][t2].at(&rnd1 - &ric1[0]).imag();
-        norm++;
+              correlator[t].rere += factor1.real() * factor2.real();
+              correlator[t].reim += factor1.real() * factor2.imag();
+              correlator[t].imre += factor1.imag() * factor2.real();
+              correlator[t].imim += factor1.imag() * factor2.imag();
+              norm++;
+            }
+          }
+        }
       }
-    }}
+    }
     // normalisation
-    for(auto& corr1 : correlator){
-      corr1.rere /= norm/Lt;
-      corr1.reim /= norm/Lt;
-      corr1.imre /= norm/Lt;
-      corr1.imim /= norm/Lt;
+    for (auto &corr1 : correlator) {
+      corr1.rere /= norm / Lt;
+      corr1.reim /= norm / Lt;
+      corr1.imre /= norm / Lt;
+      corr1.imim /= norm / Lt;
     }
     // write data to file
     filehandle.write(correlator, c_look);
   }
 
   time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
+            << std::endl;
 }
 
 // -----------------------------------------------------------------------------
