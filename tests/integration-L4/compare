@@ -5,8 +5,14 @@ set -e
 set -u
 set -x
 
+tmp="$(mktemp)"
+
 for path in correlators-20171113/*.h5; do
     basename="${path##*/}"
 
-    h5diff -r -d 1e-15 "$path" "correlators/$basename"
+    if ! h5diff -r -d 1e-14 "$path" "correlators/$basename" &> "$tmp"; then
+      cat "$tmp"
+    fi
 done
+
+rm -f "$tmp"
