@@ -2,6 +2,7 @@
 
 #include "QuarkLineBlock.h"
 #include "dilution-iterator.h"
+#include "StopWatch.h"
 
 namespace
 {
@@ -158,8 +159,8 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C1:";
-  clock_t time = clock();
+  StopWatch swatch("C1", 1);
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -181,9 +182,8 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
     }
 
   }
-  time = clock() - time;
-  std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -200,8 +200,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
                                     const OperatorLookup& operator_lookup) {
   if (corr_lookup.size() == 0) return;
 
-  std::cout << "\tcomputing corr0:";
-  clock_t time = clock();
+  StopWatch swatch("corr0");
 
   corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 
@@ -209,6 +208,8 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
 #pragma omp parallel
   {
+    swatch.start();
+
     QuarkLineBlock<QuarkLineType::Q1> quarklines_local(
         dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 
@@ -276,10 +277,10 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
         }
       }
     }
-    time = clock() - time;
-    std::cout << "\t\tSUCCESS - " << static_cast<double>(time) / CLOCKS_PER_SEC
-              << " seconds" << std::endl;
+    swatch.stop();
   }
+
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
@@ -329,8 +330,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
                                    const std::string output_filename) {
   if (corr_lookup.C40D.empty()) return;
 
-  std::cout << "\tcomputing C40D:";
-  clock_t time = clock();
+  StopWatch swatch("C40D", 1);
 
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
@@ -388,9 +388,8 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
     filehandle.write(correlator, c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
-            << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
@@ -404,12 +403,13 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
   if(corr_lookup.C40V.empty())
     return;
 
-  std::cout << "\tcomputing C40V:";
-  clock_t time = clock();
+  StopWatch swatch("C40V");
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
   WriteHDF5Correlator filehandle(output_path, "C40V", output_filename, comp_type_factory_trtr() );
+
+  swatch.start();
 
   for(const auto& c_look : corr_lookup.C40V){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
@@ -458,9 +458,8 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     filehandle.write(correlator, c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float)time) / CLOCKS_PER_SEC << " seconds"
-            << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
