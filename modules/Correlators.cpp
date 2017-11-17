@@ -1,5 +1,7 @@
 #include "Correlators.h"
 
+//#define DILUTION_ITERATOR_PRINT
+
 #include "QuarkLineBlock.h"
 #include "dilution-iterator.h"
 #include "StopWatch.h"
@@ -219,13 +221,8 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
       // done eventually, so this is symmetric.
 
       auto const block_pair = dilution_scheme[b];
-#pragma omp critical(cout)
-      std::cout << block_pair << std::endl;
 
       for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
-#pragma omp critical(cout)
-        std::cout << "\t" << slice_pair_one_sink << std::endl;
-
         quarklines_local.build_Q1_one_t(perambulators,
                                         meson_operator,
                                         slice_pair_one_sink.source(),
@@ -235,7 +232,6 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
       }
 
       for (auto const slice_pair : block_pair) {
-
         for (const auto& c_look : corr_lookup) {
           const auto& ric0 =
               operator_lookup
@@ -331,6 +327,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
   if (corr_lookup.C40D.empty()) return;
 
   StopWatch swatch("C40D", 1);
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element

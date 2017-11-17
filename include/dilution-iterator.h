@@ -14,6 +14,12 @@ enum class DilutionType { block, interlace };
 std::map<DilutionType const, std::string const> dilution_names = {
     {DilutionType::block, "B"}, {DilutionType::interlace, "I"}};
 
+class DilutionIterator;
+class BlockIterator;
+
+std::ostream &operator<<(std::ostream &os, DilutionIterator const &di);
+std::ostream &operator<<(std::ostream &os, BlockIterator const &bi);
+
 class BlockIterator {
 public:
  BlockIterator(int const slice_source,
@@ -35,7 +41,13 @@ public:
        type_(type),
        one_sink_slice_(one_sink_slice) {}
 
- BlockIterator operator*() const { return *this; }
+ BlockIterator operator*() const {
+#ifdef DILUTION_ITERATOR_PRINT
+#pragma omp critical(cout)
+   std::cout << *this << std::endl;
+#endif
+   return *this;
+ }
 
  BlockIterator operator++() {
    if (type_ == DilutionType::block) {
@@ -159,7 +171,13 @@ public:
         num_block_(num_block),
         type_(type) {}
 
-  DilutionIterator operator*() const { return *this; }
+  DilutionIterator operator*() const {
+#ifdef DILUTION_ITERATOR_PRINT
+#pragma omp critical(cout)
+    std::cout << "\t" << *this << std::endl;
+#endif
+    return *this;
+  }
 
   DilutionIterator operator++() {
     ++block_sink_;
