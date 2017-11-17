@@ -217,24 +217,24 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
       // Notation is that `t1` is the source and `t2` the sink. Both will be
       // done eventually, so this is symmetric.
 
-      auto const blocks = dilution_scheme[b];
+      auto const block_pair = dilution_scheme[b];
 #pragma omp critical(cout)
-      std::cout << blocks << std::endl;
+      std::cout << block_pair << std::endl;
 
-      for (auto const slices : blocks.one_sink_slice()) {
+      for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
 #pragma omp critical(cout)
-        std::cout << "\t" << slices << std::endl;
+        std::cout << "\t" << slice_pair_one_sink << std::endl;
 
         quarklines_local.build_Q1_one_t(perambulators,
                                         meson_operator,
                                         size_t{0},
-                                        slices.source(),
-                                        blocks.sink(),
+                                        slice_pair_one_sink.source(),
+                                        block_pair.sink(),
                                         quark_lookup.Q1,
                                         operator_lookup.ricQ2_lookup);
       }
 
-      for (auto const slices : blocks) {
+      for (auto const slice_pair : block_pair) {
 
         for (const auto& c_look : corr_lookup) {
           const auto& ric0 =
@@ -249,8 +249,8 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
             std::cout << "rnd combinations are not the same in build_corr0" << std::endl;
             exit(1);
           }
-          corr0[c_look.id][slices.source()][slices.sink()].resize(ric0.size());
-          for (auto& corr : corr0[c_look.id][slices.source()][slices.sink()])
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()].resize(ric0.size());
+          for (auto& corr : corr0[c_look.id][slice_pair.source()][slice_pair.sink()])
             corr = cmplx(0.0, 0.0);
           for (const auto& rnd : ric0) {
             const auto id = &rnd - &ric0[0];
@@ -265,9 +265,13 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
             }
 
             /*! @todo How do I properly get the block indices for sink? */
-            corr0[c_look.id][slices.source()][slices.sink()][id] +=
-                (quarklines_local.return_Ql(slices.source(), slices.sink()/2, c_look.lookup[0], id) *
-                 quarklines_local.return_Ql(slices.sink(), slices.source()/2, c_look.lookup[1], it1 - ric1.begin()))
+            corr0[c_look.id][slice_pair.source()][slice_pair.sink()][id] +=
+                (quarklines_local.return_Ql(
+                     slice_pair.source(), slice_pair.sink_block(), c_look.lookup[0], id) *
+                 quarklines_local.return_Ql(slice_pair.sink(),
+                                            slice_pair.source_block(),
+                                            c_look.lookup[1],
+                                            it1 - ric1.begin()))
                     .trace();
           }
         }

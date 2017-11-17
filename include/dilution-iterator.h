@@ -125,6 +125,10 @@ public:
 
   int sink() const { return slice_sink_; }
 
+  int source_block() const { return block_source_; }
+
+  int sink_block() const { return block_sink_; }
+
 private:
   int slice_source_;
   int slice_sink_;
