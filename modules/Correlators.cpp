@@ -292,8 +292,9 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C20:";
-  clock_t time = clock();
+  StopWatch swatch("C20");
+  swatch.start();
+
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -316,9 +317,8 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup,
     filehandle.write(correlator, c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
@@ -464,106 +464,110 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_corrC(const Perambulator& perambulators,
-                                    const OperatorsForMesons& meson_operator,
-                                    const OperatorLookup& operator_lookup,
-                                    const std::vector<CorrInfo>& corr_lookup,
-                                    const QuarklineLookup& quark_lookup) {
+void LapH::Correlators::build_corrC(const Perambulator &perambulators,
+                                    const OperatorsForMesons &meson_operator,
+                                    const OperatorLookup &operator_lookup,
+                                    const std::vector<CorrInfo> &corr_lookup,
+                                    const QuarklineLookup &quark_lookup) {
+  if (corr_lookup.size() == 0) return;
 
-  if(corr_lookup.size() == 0)
-    return;
-
-  std::cout << "\tcomputing corrC:";
-  clock_t time = clock();
+  StopWatch swatch("corrC");
 
   corrC.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 
 #pragma omp parallel
-{
-  // building the quark line directly frees up a lot of memory
-  QuarkLine_one_t<QuarkLineType::Q2V> quarklines(dilT, dilE, nev, quark_lookup.Q2V, 
-                        operator_lookup.ricQ2_lookup);
-  #pragma omp for schedule(dynamic)
-  for(int t1_i = 0; t1_i < Lt/dilT; t1_i++){
-  for(int t2_i = t1_i; t2_i < Lt/dilT; t2_i++){
-    quarklines.build(perambulators, meson_operator, t1_i, t2_i,
-                              quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
-    for(int dir = 0; dir < 2; dir++){
-  
-      if((t1_i == t2_i) && (dir == 1))
-        continue;
-  
-      int t1_min, t2_min, t1_max, t2_max;
-      if(dir == 0){
-        t1_min = dilT*t1_i;
-        t1_max = dilT*(t1_i+1);
-        t2_min = dilT*t2_i;
-        t2_max = dilT*(t2_i+1);
-      }
-      else{
-        t1_min = dilT*t2_i;
-        t1_max = dilT*(t2_i+1);
-        t2_min = dilT*t1_i;
-        t2_max = dilT*(t1_i+1);
-      }
-  
-      for(int t1 = t1_min; t1 < t1_max; t1++){
-      for(int t2 = t2_min; t2 < t2_max; t2++){
+  {
+    swatch.start();
 
-        // quarkline indices
-        int id_Q2L_1;
-    
-        if(t1_i == t2_i){   
-          if(t1_min != 0)  
-            id_Q2L_1 = t1%t1_min;    
-          else{        
-            id_Q2L_1 = t1;    
-          }    
-        }      
-        else{    
-          if(t1_min != 0) 
-             id_Q2L_1 = (dir)*dilT + t1%t1_min; 
-           else   
-             id_Q2L_1 = ((dir)*dilT + t1);     
-        }                                                  
+    // building the quark line directly frees up a lot of memory
+    QuarkLine_one_t<QuarkLineType::Q2V> quarklines(
+        dilT, dilE, nev, quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
+#pragma omp for schedule(dynamic)
+    for (int t1_i = 0; t1_i < Lt / dilT; t1_i++) {
+      for (int t2_i = t1_i; t2_i < Lt / dilT; t2_i++) {
+        quarklines.build(perambulators,
+                         meson_operator,
+                         t1_i,
+                         t2_i,
+                         quark_lookup.Q2V,
+                         operator_lookup.ricQ2_lookup);
+        for (int dir = 0; dir < 2; dir++) {
+          if ((t1_i == t2_i) && (dir == 1)) continue;
 
-        // building correlator -------------------------------------------------
-        for(const auto& c_look : corr_lookup){
-          const auto& ric0 = operator_lookup.ricQ2_lookup[
-                  quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
-          const auto& ric1 = operator_lookup.ricQ2_lookup[//just for checking
-                       operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].
-                                                    id_ricQ_lookup].rnd_vec_ids;
-          if(ric0.size() != ric1.size()){
-            std::cout << "rnd combinations are not the same in build_corrC" 
-                      << std::endl;
-            exit(0);
+          int t1_min, t2_min, t1_max, t2_max;
+          if (dir == 0) {
+            t1_min = dilT * t1_i;
+            t1_max = dilT * (t1_i + 1);
+            t2_min = dilT * t2_i;
+            t2_max = dilT * (t2_i + 1);
+          } else {
+            t1_min = dilT * t2_i;
+            t1_max = dilT * (t2_i + 1);
+            t2_min = dilT * t1_i;
+            t2_max = dilT * (t1_i + 1);
           }
-          corrC[c_look.id][t1][t2].resize(ric0.size());
-          for(auto& corr : corrC[c_look.id][t1][t2])
-            corr = cmplx(0.0,0.0);
-          for(const auto& rnd : ric0){
-            const auto id = &rnd - &ric0[0];
-            for(size_t block = 0; block < 4; block++){
-              const auto gamma_index = 
-                           quarklines.return_gamma_row(c_look.gamma[0], block);
-              corrC[c_look.id][t1][t2][id] += 
-                   quarklines.return_gamma_val(c_look.gamma[0], block) *
-                   (quarklines.return_Ql(id_Q2L_1, c_look.lookup[0], id).
-                              block(block*dilE, gamma_index*dilE, dilE, dilE) *
-                   meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id).
-                      block(gamma_index*dilE, block*dilE, dilE, dilE)).trace();
+
+          for (int t1 = t1_min; t1 < t1_max; t1++) {
+            for (int t2 = t2_min; t2 < t2_max; t2++) {
+              // quarkline indices
+              int id_Q2L_1;
+
+              if (t1_i == t2_i) {
+                if (t1_min != 0)
+                  id_Q2L_1 = t1 % t1_min;
+                else {
+                  id_Q2L_1 = t1;
+                }
+              } else {
+                if (t1_min != 0)
+                  id_Q2L_1 = (dir)*dilT + t1 % t1_min;
+                else
+                  id_Q2L_1 = ((dir)*dilT + t1);
+              }
+
+              // building correlator -------------------------------------------------
+              for (const auto &c_look : corr_lookup) {
+                const auto &ric0 =
+                    operator_lookup
+                        .ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
+                        .rnd_vec_ids;
+                const auto &ric1 =
+                    operator_lookup
+                        .ricQ2_lookup[  // just for checking
+                            operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]]
+                                .id_ricQ_lookup]
+                        .rnd_vec_ids;
+                if (ric0.size() != ric1.size()) {
+                  std::cout << "rnd combinations are not the same in build_corrC"
+                            << std::endl;
+                  exit(0);
+                }
+                corrC[c_look.id][t1][t2].resize(ric0.size());
+                for (auto &corr : corrC[c_look.id][t1][t2]) corr = cmplx(0.0, 0.0);
+                for (const auto &rnd : ric0) {
+                  const auto id = &rnd - &ric0[0];
+                  for (size_t block = 0; block < 4; block++) {
+                    const auto gamma_index =
+                        quarklines.return_gamma_row(c_look.gamma[0], block);
+                    corrC[c_look.id][t1][t2][id] +=
+                        quarklines.return_gamma_val(c_look.gamma[0], block) *
+                        (quarklines.return_Ql(id_Q2L_1, c_look.lookup[0], id)
+                             .block(block * dilE, gamma_index * dilE, dilE, dilE) *
+                         meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id)
+                             .block(gamma_index * dilE, block * dilE, dilE, dilE))
+                            .trace();
+                  }
+                }
+              }
             }
-          }
-        }
-      }}// t1, t2 end here
-    }// dir (directions) end here
-  }}// block times end here
-}// omp parall ends here
+          }  // t1, t2 end here
+        }    // dir (directions) end here
+      }
+    }  // block times end here
+    swatch.stop();
+  }  // omp parall ends here
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -573,12 +577,13 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C2c:";
-  clock_t time = clock();
+  StopWatch swatch("C2c");
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
   WriteHDF5Correlator filehandle(output_path, "C2+", output_filename, comp_type_factory_tr() );
+
+  swatch.start();
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
@@ -612,9 +617,8 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup,
 //    }
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -627,8 +631,8 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
   if(corr_lookup.C4cD.empty())
     return;
 
-  std::cout << "\tcomputing C4cD:";
-  clock_t time = clock();
+  StopWatch swatch("C4cD");
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -680,9 +684,8 @@ void LapH::Correlators::build_C4cD(const OperatorLookup& operator_lookup,
     filehandle.write(correlator, c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -694,8 +697,8 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
   if(corr_lookup.C4cV.empty())
     return;
 
-  std::cout << "\tcomputing C4cV:";
-  clock_t time = clock();
+  StopWatch swatch("C4cV");
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -747,9 +750,8 @@ void LapH::Correlators::build_C4cV(const OperatorLookup& operator_lookup,
     filehandle.write(correlator, c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
@@ -764,10 +766,9 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C4cC:";
-  clock_t time = clock();
+  StopWatch swatch("C4cC");
 
-  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(output_path, "C4+C", output_filename, comp_type_factory_tr() );
 
@@ -776,6 +777,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
 {
+  swatch.start();
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
   QuarkLine_one_t<QuarkLineType::Q2V> quarklines(dilT, dilE, nev, quark_lookup.Q2V, 
@@ -1010,6 +1012,8 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
       for(size_t t = 0; t < Lt; t++)
         correlator[c_look.id][t] += C[c_look.id][t];
   }
+
+  swatch.stop();
 }// parallel part ends here
 
   // normalisation
@@ -1021,9 +1025,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons& meson_operator,
     filehandle.write(correlator[c_look.id], c_look);
   }
 
-  time = clock() - time;
-  std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.print();
 }
 
 // -----------------------------------------------------------------------------
@@ -1138,14 +1140,15 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
   // first element
   WriteHDF5Correlator filehandle(output_path, "C3+", output_filename, comp_type_factory_tr() );
 
-  std::cout << "\tcomputing C3c:";
-  clock_t time = clock();
+  StopWatch swatch("C3c");
+
 
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
 
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
 {
+  swatch.start();
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
   QuarkLine_one_t<QuarkLineType::Q2L> quarklines_Q2L(dilT, dilE, nev, quark_lookup.Q2L, 
@@ -1319,6 +1322,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
       for(size_t t = 0; t < Lt; t++)
         correlator[c_look.id][t] += C[c_look.id][t];
   }
+  swatch.stop();
 }// parallel part ends here
 
 
@@ -1330,9 +1334,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
     // write data to file
     filehandle.write(correlator[c_look.id], c_look);
   }
-  time = clock() - time;
-  std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1346,8 +1348,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C4cB:";
-  clock_t time = clock();
+  StopWatch swatch("C4cB");
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -1358,6 +1359,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
 {
+  swatch.start();
   std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0,.0)));
   // building the quark line directly frees up a lot of memory
   QuarkLine_one_t<QuarkLineType::Q2L> quarklines(dilT, dilE, nev, quark_lookup.Q2L, 
@@ -1578,6 +1580,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
       for(size_t t = 0; t < Lt; t++)
         correlator[c_look.id][t] += C[c_look.id][t];
   }
+  swatch.stop();
 }// parallel part ends here
 
 
@@ -1589,9 +1592,7 @@ void LapH::Correlators::build_C4cB(const OperatorsForMesons& meson_operator,
     // write data to file
     filehandle.write(correlator[c_look.id], c_look);
   }
-  time = clock() - time;
-  std::cout << "\t\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1604,8 +1605,8 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C30:";
-  clock_t time = clock();
+  StopWatch swatch("C30");
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
@@ -1662,9 +1663,8 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
     // write data to file
     filehandle.write(correlator, c_look);
   }
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1681,10 +1681,10 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C40C:";
-  clock_t time = clock();
+  StopWatch swatch("C40C");
+  swatch.start();
 
-  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(output_path, "C40C", output_filename, comp_type_factory_tr() );
 
@@ -1747,9 +1747,8 @@ void LapH::Correlators::build_C40C(const Quarklines& quarklines,
     // write data to file
     filehandle.write(correlator, c_look);
   }
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+  swatch.stop();
+  swatch.print();
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1766,10 +1765,10 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
   if(corr_lookup.empty())
     return;
 
-  std::cout << "\tcomputing C40B:";
-  clock_t time = clock();
+  StopWatch swatch("C40B");
+  swatch.start();
 
-  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(output_path, "C40B", output_filename, comp_type_factory_tr() );
 
@@ -1832,9 +1831,9 @@ void LapH::Correlators::build_C40B(const Quarklines& quarklines,
     // write data to file
     filehandle.write(correlator, c_look);
   }
-  time = clock() - time;
-  std::cout << "\t\tSUCCESS - " << ((float) time) / CLOCKS_PER_SEC 
-            << " seconds" << std::endl;
+
+  swatch.stop();
+  swatch.print();
 }
 
 /******************************************************************************/ 
