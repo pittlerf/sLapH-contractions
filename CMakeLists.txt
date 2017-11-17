@@ -69,21 +69,23 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 ### contract
 
 add_executable(contract
-    modules/RandomVector.cpp
-    modules/Correlators/Correlators.cpp
-    modules/EigenVector.cpp
-    modules/Quarklines_one_t.cpp
-    modules/QuarkLineBlock.cpp
-    modules/ranlxs.cpp
-    modules/Quarklines.cpp
-    modules/Perambulator.cpp
-    modules/GlobalData/init_lookup_tables.cpp
-    modules/GlobalData/global_data_input_handling_utils.cpp
-    modules/GlobalData/global_data_input_handling.cpp
-    modules/GlobalData/global_data_build_IO_names.cpp
-    modules/GlobalData/global_data.cpp
-    modules/OperatorsForMesons.cpp
+
     main/contract.cpp
+    modules/Correlators.cpp
+    modules/EigenVector.cpp
+    modules/GlobalData/global_data.cpp
+    modules/GlobalData/global_data_build_IO_names.cpp
+    modules/GlobalData/global_data_input_handling.cpp
+    modules/GlobalData/global_data_input_handling_utils.cpp
+    modules/GlobalData/init_lookup_tables.cpp
+    modules/OperatorsForMesons.cpp
+    modules/Perambulator.cpp
+    modules/QuarkLineBlock.cpp
+    modules/Quarklines.cpp
+    modules/Quarklines_one_t.cpp
+    modules/RandomVector.cpp
+    modules/ranlxs.cpp
+
     )
 
 target_link_libraries(contract 
