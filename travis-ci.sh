@@ -39,3 +39,5 @@ CXX=$(which g++-7)
 
 cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
 make -j $(nproc)
+
+ctest --output-on-failure
