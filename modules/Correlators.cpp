@@ -575,12 +575,11 @@ void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup,
     return;
 
   StopWatch swatch("C2c");
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
   WriteHDF5Correlator filehandle(output_path, "C2+", output_filename, comp_type_factory_tr() );
-
-  swatch.start();
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
