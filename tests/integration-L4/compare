@@ -8,5 +8,5 @@ set -x
 for path in correlators-20171113/*.h5; do
     basename="${path##*/}"
 
-    h5diff -r "$path" "correlators/$basename"
+    h5diff -r -d 1e-15 "$path" "correlators/$basename"
 done

@@ -11,6 +11,8 @@
 .gdb_history
 doxygen/html
 doxygen/latex
-tests/integration-L4/
 tests/integration-L4/correlators/
 tests/integration-L4/MovingFrameMomentum/
+Testing/Temporary
+tests/Testing/Temporary
+
