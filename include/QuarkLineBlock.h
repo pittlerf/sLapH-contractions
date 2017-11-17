@@ -50,7 +50,6 @@ class QuarkLineBlock {
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator& peram,
                       const OperatorsForMesons& meson_operator,
-                      size_t pos,
                       const int t_source,
                       const int t_sink,
                       const typename QuarkLineIndices<qlt>::type& ql_lookup,
@@ -77,6 +76,12 @@ class QuarkLineBlock {
     3. Random Vector
     */
   std::vector<std::vector<std::vector<Eigen::MatrixXcd>>> Ql;
+
+  // using MyQuarkLine = Eigen::MatrixXcd;
+  // using MyQuarkLineRandomVec = std::vector<MyQuarkLine>;
+  // using MyQuarkLineRandomVecOperator = std::vector<MyQuarkLineRandomVec>;
+
+  // std::vector<std::pair<std::pair<int, int>, MyQuarkLineRandomVecOperator>> Ql;
 
   boost::circular_buffer<std::pair<int, int>> Ql_id;
 

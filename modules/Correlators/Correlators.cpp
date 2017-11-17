@@ -227,7 +227,6 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
         quarklines_local.build_Q1_one_t(perambulators,
                                         meson_operator,
-                                        size_t{0},
                                         slice_pair_one_sink.source(),
                                         block_pair.sink(),
                                         quark_lookup.Q1,

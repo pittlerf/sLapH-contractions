@@ -216,13 +216,13 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
       from_source_or_sink_block * to_source_or_sink_block * dilT;
 
   Ql.resize(quarklines_per_block_combination);
-  for (int qline = 0; qline < quarklines_per_block_combination; ++qline) {
-    Ql[qline].resize(quarkline_indices.size());
-    for (int op = 0; op < quarkline_indices.size(); ++op) {
-      int nb_rnd = ric_lookup[(quarkline_indices[op]).id_ric_lookup].rnd_vec_ids.size();
-      Ql[qline][op].resize(nb_rnd);
-      for (int rnd = 0; rnd < nb_rnd; ++rnd) {
-        Ql[qline][op][rnd] =
+  for (int qline_id = 0; qline_id < quarklines_per_block_combination; ++qline_id) {
+    Ql[qline_id].resize(quarkline_indices.size());
+    for (int op_id = 0; op_id < quarkline_indices.size(); ++op_id) {
+      int nb_rnd = ric_lookup[quarkline_indices[op_id].id_ric_lookup].rnd_vec_ids.size();
+      Ql[qline_id][op_id].resize(nb_rnd);
+      for (int rnd_id = 0; rnd_id < nb_rnd; ++rnd_id) {
+        Ql[qline_id][op_id][rnd_id] =
             Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       }
     }
@@ -240,33 +240,31 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
-//! @todo Is that thread-safe? Probably not...
 template <>
 void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
     const Perambulator &peram,
     const OperatorsForMesons &meson_operator,
-    size_t pos,
     const int t1,
     const int t2_block,
     const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
+  Ql_id.push_front(std::make_pair(t1, t2_block));
 
-  Ql_id.push_front(std::pair<int,int>(t1,t2_block));
-
+  // Effectively this is a right rotation.
   std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
 
-  for (const auto &qll : quarkline_indices) {
-    const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
+  for (const auto &op : quarkline_indices) {
+    const size_t offset = ric_lookup[op.id_ric_lookup].offset.first;
     size_t rnd_counter = 0;
-    for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+    for (const auto &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
       const size_t rid1 = rnd_id.first - offset;
       //! @todo: hard coded! VERY BAD!!!
-      const size_t gamma_id = qll.gamma[0];
+      const size_t gamma_id = op.gamma[0];
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
+          Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
               gamma[gamma_id].value[row] *
-              meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t1, rid1)
+              meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
                   .block(row * dilE, 0, dilE, nev) *
               peram[rnd_id.second].block((t1 * 4 + gamma[gamma_id].row[row]) * nev,
                                          (t2_block * 4 + col) * dilE,
@@ -291,15 +289,12 @@ void QuarkLineBlock<QuarkLineType::Q1>::build(
     const int t2_block,
     const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
-  size_t pos = 0;
   for (const auto pair :
        {std::make_pair(t1_block, t2_block), std::make_pair(t2_block, t1_block)}) {
     const auto block_a = pair.first;
     const auto block_b = pair.second;
     for (int t = dilT * block_a; t < dilT * (block_a + 1); t++) {
-      build_Q1_one_t(
-          peram, meson_operator, pos, t, block_b, quarkline_indices, ric_lookup);
-      pos++;
+      build_Q1_one_t(peram, meson_operator, t, block_b, quarkline_indices, ric_lookup);
     }
   }
 }
