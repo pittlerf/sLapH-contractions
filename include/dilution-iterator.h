@@ -246,7 +246,7 @@ private:
   int num_slice_;
   int num_block_;
   DilutionType type_;
-  bool one_sink_slice_;
+  bool one_sink_slice_ = false;
 };
 
 class DilutionScheme {
