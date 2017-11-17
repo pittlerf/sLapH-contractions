@@ -228,6 +228,8 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
     }
   }
 
+  Ql_id.set_capacity(quarklines_per_block_combination);
+
   // creating gamma matrices
   gamma.resize(16);
   for (int i = 0; i < gamma.size(); ++i) create_gamma(gamma, i);

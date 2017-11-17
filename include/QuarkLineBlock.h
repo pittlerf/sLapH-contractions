@@ -6,6 +6,7 @@
 #include "typedefs.h"
 
 #include "Eigen/Dense"
+#include "boost/circular_buffer.hpp"
 #include "boost/multi_array.hpp"
 
 #include <algorithm>
@@ -62,6 +63,7 @@ class QuarkLineBlock {
  private:
   // containers for the three types of quark lines
   boost::multi_array<std::vector<Eigen::MatrixXcd>, 2> Ql;
+  boost::circular_buffer< std::pair<int,int> > Ql_id;
 
   const size_t dilT, dilE, nev;
   std::vector<LapH::gamma_lookup> gamma;

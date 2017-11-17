@@ -41,7 +41,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 # We want warnings, but not all of them.
 add_definitions(-Wall -pedantic --std=c++11)
 add_definitions(-Wno-unused-variable -Wno-unused-local-typedefs)
-add_definitions(-fdiagnostics-color=always)
+#add_definitions(-fdiagnostics-color=always)
 
 # Default to “Release” build type.
 message(STATUS "Build Type: '${CMAKE_BUILD_TYPE}'")
