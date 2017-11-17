@@ -215,9 +215,11 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
   int const quarklines_per_block_combination =
       from_source_or_sink_block * to_source_or_sink_block * dilT;
 
-  Ql.resize(boost::extents[quarklines_per_block_combination][quarkline_indices.size()]);
+  Ql.set_capacity(quarklines_per_block_combination);
+//  Ql.resize(boost::extents[quarklines_per_block_combination][quarkline_indices.size()]);
 
   for (int qline = 0; qline < quarklines_per_block_combination; ++qline) {
+    Ql[qline].resize(quarkline_indices.size());
     for (int op = 0; op < quarkline_indices.size(); ++op) {
       int nb_rnd = ric_lookup[(quarkline_indices[op]).id_ric_lookup].rnd_vec_ids.size();
       Ql[qline][op].resize(nb_rnd);
@@ -239,6 +241,8 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+
+//! @todo Is that thread-safe? Probably not...
 template <>
 void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
     const Perambulator &peram,
@@ -248,6 +252,10 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
     const int t2_block,
     const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
+
+  Ql_id.push_front(std::pair<int,int>(t1,t2_block));
+
+  Ql.rotate(--Ql.end());
   for (const auto &qll : quarkline_indices) {
     const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
     size_t rnd_counter = 0;
@@ -257,7 +265,7 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
       const size_t gamma_id = qll.gamma[0];
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          Ql[pos][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
+          Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
               gamma[gamma_id].value[row] *
               meson_operator.return_rvdaggerv(qll.id_rvdaggerv, t1, rid1)
                   .block(row * dilE, 0, dilE, nev) *
@@ -270,6 +278,7 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
       rnd_counter++;
     }
   }
+
 }
 
 // -----------------------------------------------------------------------------

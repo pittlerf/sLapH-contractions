@@ -62,7 +62,8 @@ class QuarkLineBlock {
 
  private:
   // containers for the three types of quark lines
-  boost::multi_array<std::vector<Eigen::MatrixXcd>, 2> Ql;
+  // vector<vector> rather than multiarray, because nb_rnd depends on the operator
+  boost::circular_buffer< std::vector< std::vector<Eigen::MatrixXcd> > > Ql;
   boost::circular_buffer< std::pair<int,int> > Ql_id;
 
   const size_t dilT, dilE, nev;
