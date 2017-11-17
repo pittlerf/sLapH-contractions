@@ -13,6 +13,7 @@ for path in correlators-20171113/*.h5; do
 
     if ! h5diff -r -d 1e-14 "$path" "correlators/$basename" &> "$tmp"; then
       cat "$tmp"
+      exit 1
     fi
 done
 
