@@ -147,6 +147,10 @@ private:
 
 } // end of anonymous namespace
 
+int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
+  return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
+}
+
 /******************************************************************************/
 /******************************************************************************/
 
@@ -571,49 +575,53 @@ void LapH::Correlators::build_corrC(const Perambulator &perambulators,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C2c(const std::vector<CorrInfo>& corr_lookup, 
+void LapH::Correlators::build_C2c(const std::vector<CorrInfo> &corr_lookup,
                                   const std::string output_path,
                                   const std::string output_filename) {
-  if(corr_lookup.empty())
+  if (corr_lookup.empty())
     return;
 
   StopWatch swatch("C2c");
   swatch.start();
 
-  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
-  WriteHDF5Correlator filehandle(output_path, "C2+", output_filename, comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(
+      output_path, "C2+", output_filename, comp_type_factory_tr());
 
-  for(const auto& c_look : corr_lookup){
-    std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
-//    if(c_look.outfile.find("Check") == 0){
-//      for(int t1 = 0; t1 < Lt; t1++){
-//        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
-//          correlator[t1] += corr;
-//        }
-//      }
-//      // normalisation
-//      for(auto& corr : correlator){
-//        corr /= corrC[c_look.lookup[0]][0][0].size();
-//      }
-//      // write data to file
-//      filehandle.write(correlator, c_look);
-//    }
-//    else{
-      for(int t1 = 0; t1 < Lt; t1++){
-      for(int t2 = 0; t2 < Lt; t2++){
-        int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
-        for(const auto& corr : corrC[c_look.lookup[0]][t1][t2]){
+  for (auto const &c_look : corr_lookup) {
+    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
+    //    if(c_look.outfile.find("Check") == 0){
+    //      for(int t1 = 0; t1 < Lt; t1++){
+    //        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
+    //          correlator[t1] += corr;
+    //        }
+    //      }
+    //      // normalisation
+    //      for(auto& corr : correlator){
+    //        corr /= corrC[c_look.lookup[0]][0][0].size();
+    //      }
+    //      // write data to file
+    //      filehandle.write(correlator, c_look);
+    //    }
+    //    else{
+    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+    for (auto const block_pair : dilution_scheme) {
+      for (auto const slice_pair : block_pair) {
+        int const t = get_time_delta(slice_pair, Lt);
+        for (const auto &corr :
+             corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()]) {
           correlator[t] += corr;
         }
-      }}
-      // normalisation
-      for(auto& corr : correlator){
-        corr /= Lt*corrC[c_look.lookup[0]][0][0].size();
       }
-      // write data to file
-      filehandle.write(correlator, c_look);
-//    }
+    }
+    // normalisation
+    for (auto &corr : correlator) {
+      corr /= Lt * corrC[c_look.lookup[0]][0][0].size();
+    }
+    // write data to file
+    filehandle.write(correlator, c_look);
+    //    }
   }
 
   swatch.stop();
