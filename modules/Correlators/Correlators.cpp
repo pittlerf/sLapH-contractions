@@ -266,12 +266,12 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
             /*! @todo How do I properly get the block indices for sink? */
             corr0[c_look.id][slice_pair.source()][slice_pair.sink()][id] +=
-                (quarklines_local.return_Ql(
+                (quarklines_local(
                      slice_pair.source(), slice_pair.sink_block(), c_look.lookup[0], id) *
-                 quarklines_local.return_Ql(slice_pair.sink(),
-                                            slice_pair.source_block(),
-                                            c_look.lookup[1],
-                                            it1 - ric1.begin()))
+                 quarklines_local(slice_pair.sink(),
+                                  slice_pair.source_block(),
+                                  c_look.lookup[1],
+                                  it1 - ric1.begin()))
                     .trace();
           }
         }

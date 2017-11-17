@@ -36,12 +36,12 @@ class QuarkLineBlock {
     return gamma[gamma_id].row[row];
   }
 
-  /*! @todo Rewrite that with bracket overload */
-  Eigen::MatrixXcd const& return_Ql(const int t,
-                                    const int b,
-                                    const int op_id,
-                                    const int rnd) const {
-    auto const id = std::find(Ql_id.begin(), Ql_id.end(), std::pair<int,int>(t,b)) - Ql_id.begin();
+  Eigen::MatrixXcd const &operator()(const int t,
+                                     const int b,
+                                     const int op_id,
+                                     const int rnd) const {
+    auto const id =
+        std::find(Ql_id.begin(), Ql_id.end(), std::pair<int, int>(t, b)) - Ql_id.begin();
     /*! @todo catch when t,b is an invalid index */
     return Ql[id][op_id].at(rnd);
   }
@@ -64,10 +64,21 @@ class QuarkLineBlock {
              const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 
  private:
-  // containers for the three types of quark lines
-  // vector<vector> rather than multiarray, because nb_rnd depends on the operator
-  std::vector< std::vector< std::vector<Eigen::MatrixXcd> > > Ql;
-  boost::circular_buffer< std::pair<int,int> > Ql_id;
+
+  /*!
+    Containers for the three types of quark lines.
+
+    `vector<vector>` rather than `multiarray`, because `nb_rnd` depends on the operator.
+
+    Indices:
+
+    1. Time slice
+    2. Operator
+    3. Random Vector
+    */
+  std::vector<std::vector<std::vector<Eigen::MatrixXcd>>> Ql;
+
+  boost::circular_buffer<std::pair<int, int>> Ql_id;
 
   const size_t dilT, dilE, nev;
   std::vector<LapH::gamma_lookup> gamma;
