@@ -281,28 +281,31 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C20(const std::vector<CorrInfo>& corr_lookup, 
+void LapH::Correlators::build_C20(const std::vector<CorrInfo> &corr_lookup,
                                   const std::string output_path,
                                   const std::string output_filename) {
-
-  if(corr_lookup.empty())
+  if (corr_lookup.empty())
     return;
 
   StopWatch swatch("C20");
   swatch.start();
 
-
-  // every element of corr_lookup contains the same filename. Wlog choose the 
+  // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
-  WriteHDF5Correlator filehandle(output_path, "C20", output_filename, comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(
+      output_path, "C20", output_filename, comp_type_factory_tr());
 
-  for(const auto& c_look : corr_lookup){
-    std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
-    for(int t1 = 0; t1 < Lt; t1++){
-    for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
-      for(const auto& corr : corr0[c_look.lookup[0]][t1][t2])
-        correlator[t] += corr;
+  for (const auto &c_look : corr_lookup) {
+    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
+
+    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+    for (auto const block_pair : dilution_scheme) {
+      for (auto const slice_pair : block_pair) {
+        int t = abs((slice_pair.sink() - slice_pair.source() - static_cast<int>(Lt)) %
+                    static_cast<int>(Lt));
+        for (const auto &corr :
+             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()])
+          correlator[t] += corr;
     }}
     // normalisation
     for(auto& corr : correlator){
