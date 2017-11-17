@@ -305,8 +305,7 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo> &corr_lookup,
     DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
-        int t = abs((slice_pair.sink() - slice_pair.source() - static_cast<int>(Lt)) %
-                    static_cast<int>(Lt));
+        int const t = get_time_delta(slice_pair, Lt);
         for (const auto &corr :
              corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()])
           correlator[t] += corr;
@@ -354,10 +353,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
     DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
-        int const t =
-            abs((slice_pair.sink() - slice_pair.source() - static_cast<int>(Lt)) %
-                static_cast<int>(Lt));
-
+        int const t = get_time_delta(slice_pair, Lt);
         for (const auto &rnd0 : ric0) {
           for (const auto &rnd1 : ric1) {
             if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
@@ -427,9 +423,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
-        int const t =
-            abs((slice_pair.sink() - slice_pair.source() - static_cast<int>(Lt)) %
-                static_cast<int>(Lt));
+        int const t = get_time_delta(slice_pair, Lt);
         for (const auto &rnd0 : ric0) {
           for (const auto &rnd1 : ric1) {
             if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
