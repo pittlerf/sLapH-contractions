@@ -85,6 +85,7 @@ add_executable(contract
     modules/Quarklines_one_t.cpp
     modules/RandomVector.cpp
     modules/ranlxs.cpp
+    modules/StopWatch.cpp
 
     )
 
