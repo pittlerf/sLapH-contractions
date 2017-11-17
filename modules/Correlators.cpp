@@ -347,7 +347,7 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
         operator_lookup.ricQ2_lookup[quark_lookup.Q1[id1].id_ric_lookup].rnd_vec_ids;
     size_t norm = 0;
 
-    DilutionScheme dilution_scheme(Lt, dilT, DilutionType::block);
+    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t =
@@ -420,7 +420,7 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id1].
                                                      id_ric_lookup].rnd_vec_ids;
     size_t norm = 0;
-    DilutionScheme dilution_scheme(Lt, dilT, DilutionType::block);
+    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t =
