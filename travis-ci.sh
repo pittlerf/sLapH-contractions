@@ -11,6 +11,7 @@ ubuntu_packages=(
     ccache
     cmake
     libhdf5-dev 
+    hdf5-tools
     libeigen3-dev
     libboost-filesystem-dev libboost-system-dev libboost-program-options-dev
 )
