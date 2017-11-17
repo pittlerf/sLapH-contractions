@@ -210,7 +210,7 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
   corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 
-  DilutionScheme dilution_scheme(Lt, dilT, DilutionType::block);
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
 #pragma omp parallel
   {
@@ -1631,34 +1631,50 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
     }
 
     size_t norm = 0;
-// This is necessary to ensure the correct summation of the correlation function
-#pragma omp parallel reduction(+:norm)
-{
-    std::vector<cmplx> C(Lt, cmplx(.0,.0));
-    #pragma omp for schedule(dynamic) 
-    for(int t1 = 0; t1 < Lt; t1++){
-    for(int t2 = 0; t2 < Lt; t2++){
-      int t = abs((t2 - t1 - (int)Lt) % (int)Lt);
-      for(const auto& rnd0 : ric0){
-      for(const auto& rnd1 : ric1){
-      if(rnd0.second == rnd1.first && rnd0.first != rnd1.second){
-        const auto L1 =
-          quarklines.return_Q1(t1, t2/dilT, c_look.lookup[0], &rnd0-&ric0[0]) *
-          quarklines.return_Q1(t2, t1/dilT, c_look.lookup[1], &rnd1-&ric1[0]);
-        for(const auto& rnd2 : ric2){
-        if(rnd1.second == rnd2.first && rnd2.second == rnd0.first){
-          C[t] += (L1*quarklines.return_Q1(t1, t1/dilT, c_look.lookup[2], 
-                                                       &rnd2-&ric2[0])).trace();
-          norm++;
-        }}
-      }}}
-    }}
-    #pragma omp critical
+
+    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
+#pragma omp parallel reduction(+ : norm)
     {
-      for(size_t t = 0; t < Lt; t++)
-        correlator[t] += C[t];
-    }
-}// parallel part ends here
+      std::vector<cmplx> C(Lt, cmplx(.0, .0));
+#pragma omp for schedule(dynamic)
+    for (int b = 0; b < dilution_scheme.size(); ++b) {
+      auto const block_pair = dilution_scheme[b];
+      for (auto const slice_pair : block_pair) {
+        int const t = get_time_delta(slice_pair, Lt);
+        for (const auto &rnd0 : ric0) {
+          for (const auto &rnd1 : ric1) {
+            if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
+              const auto L1 = quarklines.return_Q1(slice_pair.source(),
+                                                   slice_pair.sink_block(),
+                                                   c_look.lookup[0],
+                                                   &rnd0 - &ric0[0]) *
+                              quarklines.return_Q1(slice_pair.sink(),
+                                                   slice_pair.source_block(),
+                                                   c_look.lookup[1],
+                                                   &rnd1 - &ric1[0]);
+              for (const auto &rnd2 : ric2) {
+                if (rnd1.second == rnd2.first && rnd2.second == rnd0.first) {
+                  C[t] += (L1 *
+                           quarklines.return_Q1(slice_pair.source(),
+                                                slice_pair.source_block(),
+                                                c_look.lookup[2],
+                                                &rnd2 - &ric2[0]))
+                              .trace();
+                  norm++;
+                }
+              }
+            }
+          }
+          }
+        }
+      }
+#pragma omp critical
+      {
+        for (size_t t = 0; t < Lt; t++)
+          correlator[t] += C[t];
+      }
+    }  // parallel part ends here
 
     // normalisation
     for(auto& corr : correlator){
