@@ -37,10 +37,13 @@ class QuarkLineBlock {
   }
 
   /*! @todo Rewrite that with bracket overload */
-  Eigen::MatrixXcd const& return_Ql(const size_t t,
-                                    const size_t op_id,
-                                    const size_t rnd) const {
-    return Ql[t][op_id].at(rnd);
+  Eigen::MatrixXcd const& return_Ql(const int t,
+                                    const int b,
+                                    const int op_id,
+                                    const int rnd) const {
+    auto const id = std::find(Ql_id.begin(), Ql_id.end(), std::pair<int,int>(t,b)) - Ql_id.begin();
+    /*! @todo catch when t,b is an invalid index */
+    return Ql[id][op_id].at(rnd);
   }
 
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
@@ -63,7 +66,7 @@ class QuarkLineBlock {
  private:
   // containers for the three types of quark lines
   // vector<vector> rather than multiarray, because nb_rnd depends on the operator
-  boost::circular_buffer< std::vector< std::vector<Eigen::MatrixXcd> > > Ql;
+  std::vector< std::vector< std::vector<Eigen::MatrixXcd> > > Ql;
   boost::circular_buffer< std::pair<int,int> > Ql_id;
 
   const size_t dilT, dilE, nev;

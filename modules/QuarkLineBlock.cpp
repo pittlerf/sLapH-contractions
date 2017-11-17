@@ -215,9 +215,7 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
   int const quarklines_per_block_combination =
       from_source_or_sink_block * to_source_or_sink_block * dilT;
 
-  Ql.set_capacity(quarklines_per_block_combination);
-//  Ql.resize(boost::extents[quarklines_per_block_combination][quarkline_indices.size()]);
-
+  Ql.resize(quarklines_per_block_combination);
   for (int qline = 0; qline < quarklines_per_block_combination; ++qline) {
     Ql[qline].resize(quarkline_indices.size());
     for (int op = 0; op < quarkline_indices.size(); ++op) {
@@ -255,7 +253,8 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
 
   Ql_id.push_front(std::pair<int,int>(t1,t2_block));
 
-  Ql.rotate(--Ql.end());
+  std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+
   for (const auto &qll : quarkline_indices) {
     const size_t offset = ric_lookup[qll.id_ric_lookup].offset.first;
     size_t rnd_counter = 0;

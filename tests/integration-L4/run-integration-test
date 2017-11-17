@@ -10,6 +10,6 @@ set -x
 
 "$1/contract" -i test_all.ini
 
-tree
+# tree
 
 ./compare
