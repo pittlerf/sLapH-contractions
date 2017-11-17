@@ -404,12 +404,11 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
     return;
 
   StopWatch swatch("C40V");
+  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
   WriteHDF5Correlator filehandle(output_path, "C40V", output_filename, comp_type_factory_trtr() );
-
-  swatch.start();
 
   for(const auto& c_look : corr_lookup.C40V){
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
