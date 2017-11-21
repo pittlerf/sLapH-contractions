@@ -6,12 +6,12 @@
 
 import argparse
 import errno
-import numpy as np
 import os
 import shutil
 import sys
 
 import jinja2
+import numpy as np
 
 
 # replaces os.makedirs(..., exist_ok=True) because python2
