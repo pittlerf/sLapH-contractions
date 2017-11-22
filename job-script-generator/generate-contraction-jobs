@@ -49,9 +49,9 @@ def main():
 
     template_contract = env.get_template('contract.in.j2')
     if options.machine == 'qbig':
-      jobscriptfile = 'job_script.pbs'
+      jobscriptfile = 'job_script_qbig_slurm.sh'
     elif options.machine == 'jureca':
-      jobscriptfile = 'job_script.submit'
+      jobscriptfile = 'job_script_jureca.sh'
     template_jobscript = env.get_template(jobscriptfile + '.j2')
     template_start = env.get_template('start_runs.sh.j2')
 
