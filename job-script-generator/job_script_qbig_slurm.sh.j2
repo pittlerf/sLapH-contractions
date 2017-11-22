@@ -2,6 +2,7 @@
 #SBATCH -J {{ jobname }}
 #SBATCH --time=02:00:00
 #SBATCH --nodes=1
+#SBATCH --mem=100GB
 #SBATCH --cpus-per-task={{ cpus_per_task }}
 {% if email_address != '' %}
 #SBATCH --mail-user={{ email_address }}
