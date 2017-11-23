@@ -1,0 +1,26 @@
+#!/bin/bash
+#SBATCH -J {{ jobname }}
+#SBATCH --time=02:00:00
+#SBATCH --nodes=1
+#SBATCH --mem=100GB
+#SBATCH --cpus-per-task={{ cpus_per_task }}
+{% if email_address != '' %}
+#SBATCH --mail-user={{ email_address }}
+#SBATCH --mail-type=FAIL
+{% endif %}
+#SBATCH --output={{ config_path }}/{{ jobname }}.out
+#SBATCH --error={{ config_path }}/{{ jobname }}.err
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+
+cd {{ rundir }}
+
+date
+
+{% for config_id in config_ids_for_one_job %}
+./contract -i {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.in &
+{% endfor %}
+
+wait
+
+date

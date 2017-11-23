@@ -19,14 +19,14 @@ for cfg in {% for config in config_ids %}{{ config }} {% endfor %}; do
       sleep 30
     done
   
-    j=`printf %04d ${cfg}`
+    j=$(printf %04d ${cfg})
   
-    cd cnfg${j}
+    pushd cnfg${j}
     {% if machine == 'qbig' %}
-    qsub job_script.pbs
+    qsub job_script_qbig_slurm.js
     {% elif machine == 'jureca' %}
-    sbatch job_script.submit
+    sbatch job_script_jureca.js
     {% endif %}
-    cd ../
+    popd
   
 done
