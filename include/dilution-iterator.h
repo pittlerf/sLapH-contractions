@@ -139,7 +139,49 @@ public:
 
   int source_block() const { return block_source_; }
 
+
   int sink_block() const { return block_sink_; }
+
+  /*!
+    The following quark line index is a contraption that assigns each time
+    slice within the current block a number in the interval `[0, 2 * dilT)`.
+    The entries `[0, dilT)` correspond to the “block → sink“ step and the
+    entries `[dilT, 2 * dilT)` corrspond to the other direction, say “sink ←
+    block”.
+
+    The following is the code that had been used previously to compute this
+    index, only for the block-dilution scheme:
+
+    ```{.cpp}
+    if (t1_i == t2_i) {
+      if (t1_min != 0)
+        id_Q2L_1 = t1 % t1_min;
+      else {
+        id_Q2L_1 = t1;
+      }
+    } else {
+      if (t1_min != 0)
+        id_Q2L_1 = (dir)*dilT + t1 % t1_min;
+      else
+        id_Q2L_1 = ((dir)*dilT + t1);
+    }
+    ```
+
+    Now we can use the container/iterator structure for the blocks and
+    slices. In case we are in the first part, the source block has not been
+    switched with the sink block.
+    */
+  int qline_id() const {
+    auto const block_size = num_slice_ / num_block_;
+
+    if (type_ == DilutionType::block) {
+      return slice_source_ % block_size + pass_ * block_size;
+    } else if (type_ == DilutionType::interlace) {
+      return slice_source_ / block_size + pass_ * block_size;
+    } else {
+      throw std::domain_error("This dilution scheme is not implemented.");
+    }
+  }
 
 private:
   int slice_source_;
