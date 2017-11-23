@@ -473,97 +473,68 @@ void LapH::Correlators::build_corrC(const Perambulator &perambulators,
 
   corrC.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
 
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
 #pragma omp parallel
   {
     swatch.start();
 
-    // building the quark line directly frees up a lot of memory
-    QuarkLine_one_t<QuarkLineType::Q2V> quarklines(
+    QuarkLineBlock<QuarkLineType::Q2V> quarklines(
         dilT, dilE, nev, quark_lookup.Q2V, operator_lookup.ricQ2_lookup);
+
 #pragma omp for schedule(dynamic)
-    for (int t1_i = 0; t1_i < Lt / dilT; t1_i++) {
-      for (int t2_i = t1_i; t2_i < Lt / dilT; t2_i++) {
-        quarklines.build(perambulators,
-                         meson_operator,
-                         t1_i,
-                         t2_i,
-                         quark_lookup.Q2V,
-                         operator_lookup.ricQ2_lookup);
-        for (int dir = 0; dir < 2; dir++) {
-          if ((t1_i == t2_i) && (dir == 1)) continue;
+    for (int b = 0; b < dilution_scheme.size(); ++b) {
+      auto const block_pair = dilution_scheme[b];
 
-          int t1_min, t2_min, t1_max, t2_max;
-          if (dir == 0) {
-            t1_min = dilT * t1_i;
-            t1_max = dilT * (t1_i + 1);
-            t2_min = dilT * t2_i;
-            t2_max = dilT * (t2_i + 1);
-          } else {
-            t1_min = dilT * t2_i;
-            t1_max = dilT * (t2_i + 1);
-            t2_min = dilT * t1_i;
-            t2_max = dilT * (t1_i + 1);
+      quarklines.build(perambulators,
+                       meson_operator,
+                       block_pair.source(),
+                       block_pair.sink(),
+                       quark_lookup.Q2V,
+                       operator_lookup.ricQ2_lookup);
+
+      for (auto const slice_pair : block_pair) {
+        auto const t1 = slice_pair.source();
+        auto const t2 = slice_pair.sink();
+
+        // building correlator
+        for (const auto &c_look : corr_lookup) {
+          const auto &ric0 =
+              operator_lookup
+                  .ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
+                  .rnd_vec_ids;
+          const auto &ric1 =
+              operator_lookup
+                  .ricQ2_lookup[  // just for checking
+                      operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]]
+                          .id_ricQ_lookup]
+                  .rnd_vec_ids;
+          if (ric0.size() != ric1.size()) {
+            std::cout << "rnd combinations are not the same in build_corrC" << std::endl;
+            exit(0);
           }
-
-          for (int t1 = t1_min; t1 < t1_max; t1++) {
-            for (int t2 = t2_min; t2 < t2_max; t2++) {
-              // quarkline indices
-              int id_Q2L_1;
-
-              if (t1_i == t2_i) {
-                if (t1_min != 0)
-                  id_Q2L_1 = t1 % t1_min;
-                else {
-                  id_Q2L_1 = t1;
-                }
-              } else {
-                if (t1_min != 0)
-                  id_Q2L_1 = (dir)*dilT + t1 % t1_min;
-                else
-                  id_Q2L_1 = ((dir)*dilT + t1);
-              }
-
-              // building correlator -------------------------------------------------
-              for (const auto &c_look : corr_lookup) {
-                const auto &ric0 =
-                    operator_lookup
-                        .ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
-                        .rnd_vec_ids;
-                const auto &ric1 =
-                    operator_lookup
-                        .ricQ2_lookup[  // just for checking
-                            operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]]
-                                .id_ricQ_lookup]
-                        .rnd_vec_ids;
-                if (ric0.size() != ric1.size()) {
-                  std::cout << "rnd combinations are not the same in build_corrC"
-                            << std::endl;
-                  exit(0);
-                }
-                corrC[c_look.id][t1][t2].resize(ric0.size());
-                for (auto &corr : corrC[c_look.id][t1][t2]) corr = cmplx(0.0, 0.0);
-                for (const auto &rnd : ric0) {
-                  const auto id = &rnd - &ric0[0];
-                  for (size_t block = 0; block < 4; block++) {
-                    const auto gamma_index =
-                        quarklines.return_gamma_row(c_look.gamma[0], block);
-                    corrC[c_look.id][t1][t2][id] +=
-                        quarklines.return_gamma_val(c_look.gamma[0], block) *
-                        (quarklines.return_Ql(id_Q2L_1, c_look.lookup[0], id)
-                             .block(block * dilE, gamma_index * dilE, dilE, dilE) *
-                         meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id)
-                             .block(gamma_index * dilE, block * dilE, dilE, dilE))
-                            .trace();
-                  }
-                }
-              }
+          corrC[c_look.id][t1][t2].resize(ric0.size());
+          for (auto &corr : corrC[c_look.id][t1][t2])
+            corr = cmplx(0.0, 0.0);
+          for (const auto &rnd : ric0) {
+            const auto id = &rnd - &ric0[0];
+            for (size_t block = 0; block < 4; block++) {
+              const auto gamma_index =
+                  quarklines.return_gamma_row(c_look.gamma[0], block);
+              corrC[c_look.id][t1][t2][id] +=
+                  quarklines.return_gamma_val(c_look.gamma[0], block) *
+                  (quarklines(slice_pair.source(), slice_pair.sink_block(), c_look.lookup[0], id)
+                       .block(block * dilE, gamma_index * dilE, dilE, dilE) *
+                   meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id)
+                       .block(gamma_index * dilE, block * dilE, dilE, dilE))
+                      .trace();
             }
-          }  // t1, t2 end here
-        }    // dir (directions) end here
+          }
+        }
       }
-    }  // block times end here
+    }
     swatch.stop();
-  }  // omp parall ends here
+  }
 
   swatch.print();
 }
