@@ -486,12 +486,11 @@ void LapH::Correlators::build_corrC(const Perambulator &perambulators,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
 
-      quarklines.build(perambulators,
-                       meson_operator,
-                       block_pair.source(),
-                       block_pair.sink(),
-                       quark_lookup.Q2V,
-                       operator_lookup.ricQ2_lookup);
+      quarklines.build_block_pair(perambulators,
+                                  meson_operator,
+                                  block_pair,
+                                  quark_lookup.Q2V,
+                                  operator_lookup.ricQ2_lookup);
 
       for (auto const slice_pair : block_pair) {
         auto const t1 = slice_pair.source();

@@ -3,6 +3,7 @@
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "Quarklines.h"
+#include "dilution-iterator.h"
 #include "typedefs.h"
 
 #include "Eigen/Dense"
@@ -62,6 +63,12 @@ class QuarkLineBlock {
              const typename QuarkLineIndices<qlt>::type& ql_lookup,
              const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
 
+  void build_block_pair(const Perambulator &peram,
+                        const OperatorsForMesons &meson_operator,
+                        DilutionIterator const &block_pair,
+                        const typename QuarkLineIndices<qlt>::type &ql_lookup,
+                        const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
+
  private:
 
   /*!
@@ -87,6 +94,8 @@ class QuarkLineBlock {
 
   const size_t dilT, dilE, nev;
   std::vector<LapH::gamma_lookup> gamma;
+
+  static int constexpr dilD = 4;
 };
 
 }  // end of namespace

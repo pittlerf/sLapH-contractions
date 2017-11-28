@@ -72,6 +72,7 @@ add_executable(contract
 
     main/contract.cpp
     modules/Correlators.cpp
+    modules/dilution-iterator.cpp
     modules/EigenVector.cpp
     modules/GlobalData/global_data.cpp
     modules/GlobalData/global_data_build_IO_names.cpp
@@ -104,6 +105,7 @@ install(TARGETS contract DESTINATION bin)
 
 add_executable(test-dilution-iterator
     main/test-iterator.cpp
+    modules/dilution-iterator.cpp
     )
 
 ###############################################################################
