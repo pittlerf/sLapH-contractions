@@ -5,6 +5,8 @@ namespace {  // some internal namespace
 static const std::complex<double> I(0.0, 1.0);
 // Look-up table for gamma matrices. For every Gamma structure (currently 0-15)
 // the four non-zero values are specified.
+
+/*! @todo Refactor that into physical quantum number class along with momentum */
 static void create_gamma(std::vector<LapH::gamma_lookup> &gamma, const int i) {
   try {
     switch (i) {

@@ -2,6 +2,7 @@
  *  Class declaration of LapH::Correlators
  *
  *  @author Bastian Knippschild
+ *  @author Martin Ueding
  *  @author Markus Werner
  *
  */

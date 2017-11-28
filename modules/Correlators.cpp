@@ -5,6 +5,7 @@
 #include "QuarkLineBlock.h"
 #include "dilution-iterator.h"
 #include "StopWatch.h"
+#include "Operator.h"
 
 namespace
 {
@@ -764,25 +765,13 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
     size_t M1_counter = 0;
     size_t M2_counter = 0;
     for (const auto &c_look : corr_lookup) {
-      const auto &ric0 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          operator_lookup
-              .ricQ2_lookup[  // needed only for checking
-                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].id_ricQ_lookup]
-              .rnd_vec_ids;
-      const auto &ric2 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric3 =
-          operator_lookup
-              .ricQ2_lookup[  // needed only for checking
-                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].id_ricQ_lookup]
-              .rnd_vec_ids;
-      if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-          ric0.size() != ric3.size()) {
-        std::cout << "rnd combinations are not the same in C4+C" << std::endl;
+
+      try {
+        check_random_combinations(
+            std::string("C4cC"), c_look.lookup, operator_lookup);
+      }
+      catch (const std::length_error& le) {
+        std::cerr << "Length error: " << le.what() << '\n';
       }
 
       size_t norm = 0;
@@ -837,83 +826,21 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
 
         // build M1 ----------------------------------------------------------------
         for (const auto &look : M1_look) {
-          const auto &ric0 =
-              operator_lookup.ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric1 =
-              operator_lookup
-                  .ricQ2_lookup[  // needed only for checking
-                      operator_lookup.rvdaggervr_lookuptable[look[2]].id_ricQ_lookup]
-                  .rnd_vec_ids;
-          size_t M1_rnd_counter = 0;
-          for (const auto &rnd0 : ric0) {
-            for (const auto &rnd1 : ric1) {
-              if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
-                const size_t idr0 = &rnd0 - &ric0[0];
-                const size_t idr1 = &rnd1 - &ric1[0];
-                for (size_t col = 0; col < 4; col++) {
-                  const cmplx value =
-                      quarklines.return_gamma_val(5, col);  // TODO: gamma hardcoded
-                  const size_t gamma_index =
-                      quarklines.return_gamma_row(5, col);  // TODO: gamma hardcoded
-                  //          const cmplx value =
-                  //          quarklines.return_gamma_val(c_look.gamma[0], col);
-                  //          const size_t gamma_index = quarklines.return_gamma_row(
-                  //                                                          c_look.gamma[0],
-                  //                                                          col);
-                  M1[look[0]][M1_rnd_counter].block(0, col * dilE, 4 * dilE, dilE) =
-                      value *
-                      quarklines(
-                          slice_pair.source(), slice_pair.sink_block(), look[1], idr0)
-                          .block(0, gamma_index * dilE, 4 * dilE, dilE) *
-                      meson_operator.return_rvdaggervr(look[2], slice_pair.sink(), idr1)
-                          .block(gamma_index * dilE, col * dilE, dilE, dilE);
-                }
-                M1_rnd_counter++;
-              }
-            }
+          Q2VxrVdaggerVr(M1[look[0]], quarklines, meson_operator, 
+                         slice_pair.sink_block(), slice_pair.source() 
+                         slice_pair.sink(), look, operator_lookup, quark_lookup,
+                         dilE, 4);
           }
         }
         // build M2 ----------------------------------------------------------------
         for (const auto &look : M2_look) {
-          const auto &ric2 =
-              operator_lookup.ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric3 =
-              operator_lookup
-                  .ricQ2_lookup[  // needed only for checking
-                      operator_lookup.rvdaggervr_lookuptable[look[2]].id_ricQ_lookup]
-                  .rnd_vec_ids;
-          size_t M2_rnd_counter = 0;
-          for (const auto &rnd2 : ric2) {
-            for (const auto &rnd3 : ric3) {
-              if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
-                const size_t idr2 = &rnd2 - &ric2[0];
-                const size_t idr3 = &rnd3 - &ric3[0];
-                for (size_t col = 0; col < 4; col++) {
-                  const cmplx value =
-                      quarklines.return_gamma_val(5, col);  // TODO: gamma hardcoded
-                  const size_t gamma_index =
-                      quarklines.return_gamma_row(5, col);  // TODO: gamma hardcoded
-                  //          const cmplx value =
-                  //          quarklines.return_gamma_val(c_look.gamma[1], col);
-                  //          const size_t gamma_index = quarklines.return_gamma_row(
-                  //                                                            c_look.gamma[1],
-                  //                                                            col);
-
-                  M2[look[0]][M2_rnd_counter].block(0, col * dilE, 4 * dilE, dilE) =
-                      value *
-                      quarklines(
-                          slice_pair.source(), slice_pair.sink_block(), look[1], idr2)
-                          .block(0, gamma_index * dilE, 4 * dilE, dilE) *
-                      meson_operator.return_rvdaggervr(look[2], slice_pair.sink(), idr3)
-                          .block(gamma_index * dilE, col * dilE, dilE, dilE);
-                }
-                M2_rnd_counter++;
-              }
-            }
+          Q2VxrVdaggerVr(M2[look[0]], quarklines, meson_operator, 
+                         slice_pair.sink_block(), slice_pair.source() 
+                         slice_pair.sink(), look, operator_lookup, quark_lookup,
+                         dilE, 4);
           }
         }
+
         // Final summation for correlator ------------------------------------------
         Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
         for (const auto &c_look : corr_lookup) {
