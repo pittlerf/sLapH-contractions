@@ -281,20 +281,19 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
 // -----------------------------------------------------------------------------
 /*! @todo Think about better names for time indices */
 template <>
-void QuarkLineBlock<QuarkLineType::Q1>::build(
-    const Perambulator &peram,
-    const OperatorsForMesons &meson_operator,
-    const int t1_block,
-    const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
-  for (const auto pair :
-       {std::make_pair(t1_block, t2_block), std::make_pair(t2_block, t1_block)}) {
-    const auto block_a = pair.first;
-    const auto block_b = pair.second;
-    for (int t = dilT * block_a; t < dilT * (block_a + 1); t++) {
-      build_Q1_one_t(peram, meson_operator, t, block_b, quarkline_indices, ric_lookup);
-    }
+void QuarkLineBlock<QuarkLineType::Q1>::build_block_pair(
+    Perambulator const &peram,
+    OperatorsForMesons const &meson_operator,
+    DilutionIterator const &block_pair,
+    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+  for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
+    build_Q1_one_t(peram,
+                   meson_operator,
+                   slice_pair_one_sink.source(),
+                   block_pair.sink(),
+                   quarkline_indices,
+                   ric_lookup);
   }
 }
 

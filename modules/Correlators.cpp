@@ -226,14 +226,11 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
       auto const block_pair = dilution_scheme[b];
 
-      for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
-        quarklines_local.build_Q1_one_t(perambulators,
+      quarklines_local.build_block_pair(perambulators,
                                         meson_operator,
-                                        slice_pair_one_sink.source(),
-                                        block_pair.sink(),
+                                        block_pair,
                                         quark_lookup.Q1,
                                         operator_lookup.ricQ2_lookup);
-      }
 
       for (auto const slice_pair : block_pair) {
         for (const auto& c_look : corr_lookup) {
