@@ -4,11 +4,12 @@
 
 #include "Operator.h"
 
+namespace LapH {
 
 void check_random_combinations(std::string const &diagram,
-                               std::vector<size_t> const &lookup;
+                               std::vector<size_t> const &lookup,
                                OperatorLookup const &operator_lookup,
-    ){
+                               QuarklineLookup const &quark_lookup){
    const auto &ric0 =
        operator_lookup.ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
            .rnd_vec_ids;
@@ -39,8 +40,9 @@ void check_random_combinations(std::string const &diagram,
  *
  *  @todo Layer of abstraction for Eigen in call parameter result
  */
-void Q2VxrVdaggerVr(std::vector<Eigen::MatrixXcd> &result, 
-                    QuarkLineBlock<Q2V> const &quarklines,
+template <>
+void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result, 
+                    QuarkLineBlock<QuarkLineType::Q2V> const &quarklines,
                     OperatorsForMesons const &meson_operator,
                     int const b2,
                     int const t1,
@@ -89,3 +91,5 @@ void Q2VxrVdaggerVr(std::vector<Eigen::MatrixXcd> &result,
     }
   }
 }
+
+}  // end of LapH namespace

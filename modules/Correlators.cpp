@@ -768,11 +768,25 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
 
       try {
         check_random_combinations(
-            std::string("C4cC"), c_look.lookup, operator_lookup);
+            std::string("C4cC"), c_look.lookup, operator_lookup, quark_lookup);
       }
       catch (const std::length_error& le) {
         std::cerr << "Length error: " << le.what() << '\n';
       }
+
+      const auto &ric0 =
+          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
+              .rnd_vec_ids;
+      const auto &ric1 =
+          operator_lookup
+              .ricQ2_lookup[  
+                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+      const auto &ric2 =
+          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[2]].id_ric_lookup]
+              .rnd_vec_ids;
+      const auto &ric3 =
+          operator_lookup.ricQ2_lookup[ 
+                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
       size_t norm = 0;
 
@@ -826,19 +840,17 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
 
         // build M1 ----------------------------------------------------------------
         for (const auto &look : M1_look) {
-          Q2VxrVdaggerVr(M1[look[0]], quarklines, meson_operator, 
-                         slice_pair.sink_block(), slice_pair.source() 
+          Q2xrVdaggerVr<QuarkLineType::Q2V>(M1[look[0]], quarklines, meson_operator, 
+                         slice_pair.sink_block(), slice_pair.source(),
                          slice_pair.sink(), look, operator_lookup, quark_lookup,
                          dilE, 4);
-          }
         }
         // build M2 ----------------------------------------------------------------
         for (const auto &look : M2_look) {
-          Q2VxrVdaggerVr(M2[look[0]], quarklines, meson_operator, 
-                         slice_pair.sink_block(), slice_pair.source() 
+          Q2xrVdaggerVr<QuarkLineType::Q2V>(M2[look[0]], quarklines, meson_operator, 
+                         slice_pair.sink_block(), slice_pair.source(), 
                          slice_pair.sink(), look, operator_lookup, quark_lookup,
                          dilE, 4);
-          }
         }
 
         // Final summation for correlator ------------------------------------------
@@ -905,7 +917,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
           }
         }  // loop over operators ends here
       }
-    }  // loops over time end here
+  } // loops over time end here
 #pragma omp critical
     {
       for (const auto &c_look : corr_lookup)
