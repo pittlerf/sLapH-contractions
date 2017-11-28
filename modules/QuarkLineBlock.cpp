@@ -368,29 +368,35 @@ void QuarkLineBlock<QuarkLineType::Q2V>::build_block_pair(
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <>
-void QuarkLineBlock<QuarkLineType::Q2L>::build(
-    const Perambulator &peram,
-    const OperatorsForMesons &meson_operator,
-    const int t1_block,
-    const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q2L>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
-  // t1 -> t2 -----------------------------------------------------------------
-  size_t pos = 0;
-  for (int t1 = dilT * t1_block; t1 < dilT * (t1_block + 1); t1++) {
-    Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
+void QuarkLineBlock<QuarkLineType::Q2L>::build_block_pair(
+    Perambulator const &peram,
+    OperatorsForMesons const &meson_operator,
+    DilutionIterator const &block_pair,
+    typename QuarkLineIndices<QuarkLineType::Q2L>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+  for (auto const slice_pair : block_pair.one_sink_slice()) {
+    auto const t1 = slice_pair.source();
+    auto const b1 = slice_pair.source_block();
+    auto const b2 = slice_pair.sink_block();
+
+    Ql_id.push_front(std::make_pair(t1, b2));
+
+    // Effectively this is a right rotation.
+    std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+
     for (const auto &qll : quarkline_indices) {
       size_t rnd_counter = 0;
       int check = -1;
+      Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(dilD * dilE, 4 * nev);
       for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
         if (check != rnd_id.first) {  // this avoids recomputation
-          for (int row = 0; row < 4; row++) {
+          for (int row = 0; row < dilD; row++) {
             for (int col = 0; col < 4; col++) {
               if (!qll.need_vdaggerv_dag)
                 M.block(col * dilE, row * nev, dilE, nev) =
                     peram[rnd_id.first]
                         .block((t1 * 4 + row) * nev,
-                               ((t1 / dilT) * 4 + col) * dilE,
+                               (b1 * dilD + col) * dilE,
                                nev,
                                dilE)
                         .adjoint() *
@@ -399,7 +405,7 @@ void QuarkLineBlock<QuarkLineType::Q2L>::build(
                 M.block(col * dilE, row * nev, dilE, nev) =
                     peram[rnd_id.first]
                         .block((t1 * 4 + row) * nev,
-                               ((t1 / dilT) * 4 + col) * dilE,
+                               (b1 * dilD + col) * dilE,
                                nev,
                                dilE)
                         .adjoint() *
@@ -410,18 +416,17 @@ void QuarkLineBlock<QuarkLineType::Q2L>::build(
             }
           }
         }
-        int t2 = dilT * t2_block;
-        (Ql[pos][qll.id][rnd_counter]).setZero(4 * dilE, 4 * dilE);
+        Ql[0][qll.id][rnd_counter].setZero(dilD * dilE, dilD * dilE);
         const size_t gamma_id = qll.gamma[0];
-        for (size_t block_dil = 0; block_dil < 4; block_dil++) {
+        for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
           const cmplx value = gamma[gamma_id].value[block_dil];
           const size_t gamma_index = gamma[gamma_id].row[block_dil];
-          for (int row = 0; row < 4; row++) {
-            for (int col = 0; col < 4; col++) {
-              Ql[pos][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
+          for (int row = 0; row < dilD; row++) {
+            for (int col = 0; col < dilD; col++) {
+              Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
                   value * M.block(row * dilE, block_dil * nev, dilE, nev) *
                   peram[rnd_id.second].block((t1 * 4 + gamma_index) * nev,
-                                             ((t2 / dilT) * 4 + col) * dilE,
+                                             (b2 * dilD + col) * dilE,
                                              nev,
                                              dilE);
             }
@@ -430,66 +435,6 @@ void QuarkLineBlock<QuarkLineType::Q2L>::build(
         check = rnd_id.first;
         rnd_counter++;
       }
-    }
-    pos++;
-  }
-  if (t1_block != t2_block) {
-    // t2 -> t1 -----------------------------------------------------------------
-    for (int t1 = dilT * t2_block; t1 < dilT * (t2_block + 1); t1++) {
-      Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(4 * dilE, 4 * nev);
-      for (const auto &qll : quarkline_indices) {
-        size_t rnd_counter = 0;
-        int check = -1;
-        for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
-          if (check != rnd_id.first) {  // this avoids recomputation
-            for (int row = 0; row < 4; row++) {
-              for (int col = 0; col < 4; col++) {
-                if (!qll.need_vdaggerv_dag)
-                  M.block(col * dilE, row * nev, dilE, nev) =
-                      peram[rnd_id.first]
-                          .block((t1 * 4 + row) * nev,
-                                 ((t1 / dilT) * 4 + col) * dilE,
-                                 nev,
-                                 dilE)
-                          .adjoint() *
-                      meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
-                else
-                  M.block(col * dilE, row * nev, dilE, nev) =
-                      peram[rnd_id.first]
-                          .block((t1 * 4 + row) * nev,
-                                 ((t1 / dilT) * 4 + col) * dilE,
-                                 nev,
-                                 dilE)
-                          .adjoint() *
-                      meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
-                // gamma_5 trick
-                if (((row + col) == 3) || (abs(row - col) > 1))
-                  M.block(col * dilE, row * nev, dilE, nev) *= -1.;
-              }
-            }
-          }
-          int t2 = dilT * t1_block;
-          (Ql[pos][qll.id][rnd_counter]).setZero(4 * dilE, 4 * dilE);
-          const size_t gamma_id = qll.gamma[0];
-          for (size_t block_dil = 0; block_dil < 4; block_dil++) {
-            const cmplx value = gamma[gamma_id].value[block_dil];
-            const size_t gamma_index = gamma[gamma_id].row[block_dil];
-            for (int row = 0; row < 4; row++) {
-              for (int col = 0; col < 4; col++) {
-                Ql[pos][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
-                    value * M.block(row * dilE, block_dil * nev, dilE, nev) *
-                    peram[rnd_id.second].block((t1 * 4 + gamma_index) * nev,
-                                               ((t2 / dilT) * 4 + col) * dilE,
-                                               nev,
-                                               dilE);
-              }
-            }
-          }
-          check = rnd_id.first;
-          rnd_counter++;
-        }
-      }
-      pos++;
     }
   }
 }
