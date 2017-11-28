@@ -175,9 +175,9 @@ void LapH::Correlators::build_C1(const Quarklines& quarklines,
   for(const auto& c_look : corr_lookup){
     const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
                                                      id_ric_lookup].rnd_vec_ids;
-    for(const auto& id : ric){
 
-      std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
+    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
+    for (const auto &id : ric) {
       for(size_t t = 0; t < Lt; t++){
         correlator[t] +=
          quarklines.return_Q1(t, t/dilT, c_look.lookup[0], &id-&ric[0]).trace();
