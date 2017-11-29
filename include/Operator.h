@@ -26,6 +26,18 @@ void check_random_combinations(std::string const &diagram,
                                std::vector<QuarklineQ2Indices> const &Q2_lookup);
 
 template <QuarkLineType qlt>
+void Q1(std::vector<Eigen::MatrixXcd> &result, 
+                    QuarkLineBlock<qlt> const &quarklines,
+                    int const t1,
+                    int const b2,
+                    std::array<size_t, 2> const look,
+                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+                    size_t const dilE,
+                    size_t const dilD);
+
+
+template <QuarkLineType qlt>
 void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result, 
                     QuarkLineBlock<qlt> const &quarklines,
                     OperatorsForMesons const &meson_operator,
@@ -58,6 +70,19 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           size_t const dilE,
+           size_t const dilD);
+
+/*! @todo only thing different here is the additional ricQ1_lookup */
+template <QuarkLineType qlt1, QuarkLineType qlt2>
+cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<RandomIndexCombinationsQ1> const &ricQ1_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ1Indices> const &Q1_lookup,
            std::vector<QuarklineQ2Indices> const &Q2_lookup,
            size_t const dilE,
            size_t const dilD);

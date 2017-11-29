@@ -932,8 +932,13 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 
     // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
     std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
+
     std::vector<std::array<size_t, 3>> M1_look;
+    std::vector<std::array<size_t, 2>> M2_look;
+
     size_t M1_counter = 0;
+    size_t M2_counter = 0;
+
     for (const auto &c_look : corr_lookup) {
       const auto &ric0 =
           operator_lookup.ricQ2_lookup[quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
@@ -967,8 +972,25 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 //            if (rnd0.first == rnd2.first && rnd0.second != rnd2.second)
 //              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id2}}));
-        M1_counter++;
+        ++M1_counter;
       }
+
+      // creating memeory for M2 -------------------------------------------------
+      const size_t id1 = c_look.lookup[1];
+      auto it2 = std::find_if(
+          M2_look.begin(), M2_look.end(), [&id1](std::array<size_t, 2> check) {
+            return (id1 == check[1]);
+          });
+
+      /*! No reuse between different gamma structures as for every entry of 
+       * corr_lookup the whole thing is rebuilt
+       */
+      if (!(it2 != M2_look.end())) {
+        M2.emplace_back(std::vector<Eigen::MatrixXcd>());
+        M2_look.emplace_back(std::array<size_t, 2>({{M2_counter, id1}}));
+        ++M2_counter;
+      }
+
     }  // first run over lookuptable ends here - memory and new lookuptable
        // are generated ------------------------------------------------------------
 
@@ -999,22 +1021,15 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                          dilE, 4);
         }
 
+        for (const auto &look : M2_look) {
+
+          Q1<QuarkLineType::Q1>(M2[look[0]], quarklines_Q1,  
+                         slice_pair.sink(), slice_pair.source_block(),
+                         look, operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
+        }
+
         // Final summation for correlator ------------------------------------------
         for (const auto &c_look : corr_lookup) {
-          const auto &ric0 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric1 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric2 =
-              operator_lookup
-                  .ricQ2_lookup[operator_lookup.rvdaggervr_lookuptable[c_look.lookup[2]]
-                                    .id_ricQ_lookup]
-                  .rnd_vec_ids;
-
           const size_t id0 = c_look.lookup[2];
           const size_t id1 = c_look.lookup[1];
           const size_t id2 = c_look.lookup[0];
@@ -1022,26 +1037,17 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
               M1_look.begin(), M1_look.end(), [&id0, &id2](std::array<size_t, 3> check) {
                 return (id0 == check[1] && id2 == check[2]);
               });
-          size_t M1_rnd_counter = 0;
-          for (const auto &rnd0 : ric0) {
-            for (const auto &rnd2 : ric2) {
-              if (rnd0.first == rnd2.first && rnd0.second != rnd2.second) {
-                for (const auto &rnd1 : ric1) {
-                  const auto idr1 = &rnd1 - &ric1[0];
-                  if (rnd1.first != rnd2.first && rnd1.second == rnd2.second &&
-                      rnd1.first == rnd0.second && rnd1.second != rnd0.first) {
-                    C[c_look.id][t] += (M1[(*it1)[0]][M1_rnd_counter] *
-                                        quarklines_Q1(slice_pair.sink(),
-                                                      slice_pair.source_block(),
-                                                      c_look.lookup[1],
-                                                      idr1))
-                                           .trace();
-                  }
-                }
-                M1_rnd_counter++;
-              }
-            }
-          }
+          auto it2 = std::find_if(
+              M2_look.begin(), M2_look.end(), [&id1](std::array<size_t, 2> check) {
+                return (id1 == check[1]);
+              });
+
+          C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
+                                   M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
+                                   operator_lookup.ricQ2_lookup,
+                                   operator_lookup.ricQ1_lookup,
+                                   operator_lookup.rvdaggervr_lookuptable, 
+                                   quark_lookup.Q1, quark_lookup.Q2L, dilE, 4);
         }
       }
     }  // loops over time end here

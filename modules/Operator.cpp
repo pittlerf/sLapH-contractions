@@ -139,6 +139,33 @@ void check_random_combinations<QuarkLineType::Q2L>(std::string const &diagram,
      throw std::length_error(error_message);
    }
 }
+
+template <>
+void Q1<QuarkLineType::Q1>(std::vector<Eigen::MatrixXcd> &result, 
+                    QuarkLineBlock<QuarkLineType::Q1> const &quarklines,
+                    int const t1,
+                    int const b2,
+                    std::array<size_t, 2> const look,
+                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+                    size_t const dilE,
+                    size_t const dilD){
+
+  /*! @todo Why ricQ2 and not ricQ1? */ 
+  const auto &ric1 = ricQ2_lookup[Q1_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
+
+  size_t M2_rnd_counter = 0;
+  for (const auto &rnd1 : ric1){
+    const auto idr1 = &rnd1 - &ric1[0];
+    /*! @Note Allocation should be refactored */
+    result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+
+    result[M2_rnd_counter] = quarklines(t1, b2, look[1], idr1);
+    ++M2_rnd_counter;
+  }
+}
+
+
 /*! 
  *  Multiply Operator with 2 Quarks and Operator with zero quarks
  *
@@ -244,7 +271,7 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
               quarklines(t1, b2, look[2], idr0)
                   .block(gamma_index * dilE, 0, dilE, dilD * dilE);
         }
-        result_rnd_counter++;
+        ++result_rnd_counter;
       }
     }
   }
@@ -328,5 +355,48 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
   return result;
 }
 
+template<>
+cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
+           std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<RandomIndexCombinationsQ1> const &ricQ1_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ1Indices> const &Q1_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           size_t const dilE,
+           size_t const dilD){
+
+  cmplx result = cmplx(.0,.0);
+
+  const auto &ric0 = 
+    ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = 
+    ricQ2_lookup[Q1_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric2 = 
+    ricQ2_lookup[rvdaggervr_lookup[lookup[2]].id_ricQ_lookup].rnd_vec_ids;
+
+  size_t M1_rnd_counter = 0;
+  for (const auto &rnd0 : ric0) {
+    for (const auto &rnd2 : ric2) {
+      if (rnd0.first == rnd2.first && rnd0.second != rnd2.second) {
+        size_t M2_rnd_counter = 0;
+        for (const auto &rnd1 : ric1) {
+          const auto idr1 = &rnd1 - &ric1[0];
+          if (rnd1.first != rnd2.first && rnd1.second == rnd2.second &&
+              rnd1.first == rnd0.second && rnd1.second != rnd0.first) {
+            result += (M1[M1_rnd_counter] *
+                                M2[M2_rnd_counter]).trace();
+          }
+          ++M2_rnd_counter;
+        }
+      ++M1_rnd_counter;
+      }
+    }
+  }
+
+  return result;
+}
 
 }  // end of LapH namespace
