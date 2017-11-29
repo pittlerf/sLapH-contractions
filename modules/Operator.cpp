@@ -177,6 +177,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
        }
      }
    }
+
+  return result;
 }
 
 }  // end of LapH namespace

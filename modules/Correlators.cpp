@@ -860,7 +860,7 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
                 return (id2 == check[1] && id3 == check[2]);
               });
 
-          C[c_look.id][t] = trace(M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
+          C[c_look.id][t] += trace(M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
               operator_lookup, quark_lookup, dilE, 4);
         }  // loop over operators ends here
     }
