@@ -774,23 +774,9 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
         std::cerr << "Length error: " << le.what() << '\n';
       }
 
-      const auto &ric0 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          operator_lookup
-              .ricQ2_lookup[  
-                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].id_ricQ_lookup].rnd_vec_ids;
-      const auto &ric2 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric3 =
-          operator_lookup.ricQ2_lookup[ 
-                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].id_ricQ_lookup].rnd_vec_ids;
-
       size_t norm = 0;
 
-      // creating memory for M1 -------------------------------------------------
+      // creating lookup_table for M1 -----------------------------------------
       const size_t id0 = c_look.lookup[0];
       const size_t id1 = c_look.lookup[1];
       auto it1 = std::find_if(
@@ -799,14 +785,13 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
           });
       if (!(it1 != M1_look.end())) {
         M1.emplace_back(std::vector<Eigen::MatrixXcd>());
-        for (const auto &rnd0 : ric0)
-          for (const auto &rnd1 : ric1)
-            if (rnd0.first != rnd1.first && rnd0.second == rnd1.second)
-              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
+
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id1}}));
+
         M1_counter++;
       }
-      // creating memeory for M2 -------------------------------------------------
+
+      // creating lookup_table for M2 -----------------------------------------
       const size_t id2 = c_look.lookup[2];
       const size_t id3 = c_look.lookup[3];
       auto it2 = std::find_if(
@@ -815,11 +800,8 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
           });
       if (!(it2 != M2_look.end())) {
         M2.emplace_back(std::vector<Eigen::MatrixXcd>());
-        for (const auto &rnd2 : ric2)
-          for (const auto &rnd3 : ric3)
-            if (rnd2.first != rnd3.first && rnd2.second == rnd3.second)
-              M2[M2_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id2, id3}}));
+
         M2_counter++;
       }
     }  // first run over lookuptable ends here - memory and new lookuptable
@@ -838,6 +820,11 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
+        /*! Optimization by saving all products Q2V \cdot rVdaggerVr. Reuse not
+         *  optimal as M1 and M2 don't share objects but time indices are 
+         *  identical in cross diagram
+         */
+
         // build M1 ----------------------------------------------------------------
         for (const auto &look : M1_look) {
           Q2xrVdaggerVr<QuarkLineType::Q2V>(M1[look[0]], quarklines, meson_operator, 
@@ -853,31 +840,16 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
                          dilE, 4);
         }
 
+        /*! Optimization by summing M2 over all random vectors before 
+         *  multiplying with M1
+         */
         // Final summation for correlator ------------------------------------------
         Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
+
         for (const auto &c_look : corr_lookup) {
-          const auto &ric0 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[0]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric1 =
-              operator_lookup
-                  .ricQ2_lookup[  // needed only for checking
-                      operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]]
-                          .id_ricQ_lookup]
-                  .rnd_vec_ids;
-          const auto &ric2 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q2V[c_look.lookup[2]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric3 =
-              operator_lookup
-                  .ricQ2_lookup[  // needed only for checking
-                      operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]]
-                          .id_ricQ_lookup]
-                  .rnd_vec_ids;
           const size_t id0 = c_look.lookup[0];
           const size_t id1 = c_look.lookup[1];
+          // TODO: This should be an access operator
           auto it1 = std::find_if(
               M1_look.begin(), M1_look.end(), [&id0, &id1](std::array<size_t, 3> check) {
                 return (id0 == check[1] && id1 == check[2]);
@@ -888,33 +860,9 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
               M2_look.begin(), M2_look.end(), [&id2, &id3](std::array<size_t, 3> check) {
                 return (id2 == check[1] && id3 == check[2]);
               });
-          size_t M1_rnd_counter = 0;
-          for (const auto &rnd0 : ric0) {
-            for (const auto &rnd1 : ric1) {
-              //      if(rnd0.first == rnd1.first && rnd0.second != rnd1.second){
-              if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
-                M3.setZero(4 * dilE, 4 * dilE);  // setting matrix values to zero
-                size_t M2_rnd_counter = 0;
-                for (const auto &rnd2 : ric2) {
-                  for (const auto &rnd3 : ric3) {
-                    if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
-                      if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
-                          rnd0.second != rnd3.second) {
-                        //        if(rnd2.first == rnd3.first && rnd2.second !=
-                        //        rnd3.second){
-                        //          if(rnd0.second == rnd3.second && rnd1.second ==
-                        //          rnd2.second &&
-                        //             rnd0.first != rnd2.first){
-                        M3 += M2[(*it2)[0]][M2_rnd_counter];
-                      }
-                      M2_rnd_counter++;
-                    }
-                  }
-                }
-                C[c_look.id][t] += (M1[(*it1)[0]][M1_rnd_counter++] * M3).trace();
-              }
-            }
-          }
+
+          M1xM2(M3, M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, operator_lookup, quark_lookup, dilE, 4);
+          C[c_look.id][t] += M3.trace();
         }  // loop over operators ends here
       }
   } // loops over time end here

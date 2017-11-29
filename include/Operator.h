@@ -36,4 +36,13 @@ void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilE,
                     size_t const dilD);
 
+void M1xM2(Eigen::MatrixXcd &result, 
+           std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           OperatorLookup const &operator_lookup,
+           QuarklineLookup const &quark_lookup,
+           size_t const dilE,
+           size_t const dilD);
+
 }  // end of namespace

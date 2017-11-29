@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -53,6 +54,8 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilE,
                     size_t const dilD){
 
+  /*! Assume full dilution in Dirac space in the Loop over d */
+  assert(dilD = 4);
 
   const auto &ric0 =
       operator_lookup.ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup]
@@ -66,6 +69,10 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
       if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
+
+        /*! @Note Allocation should be refactored */
+        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+
         const size_t idr0 = &rnd0 - &ric0[0];
         const size_t idr1 = &rnd1 - &ric1[0];
         for (size_t d = 0; d < 4; d++) {
@@ -90,6 +97,63 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
       }
     }
   }
+}
+
+void M1xM2(Eigen::MatrixXcd &result, 
+           std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           OperatorLookup const &operator_lookup,
+           QuarklineLookup const &quark_lookup,
+           size_t const dilE,
+           size_t const dilD){
+
+   const auto &ric0 =
+       operator_lookup
+           .ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
+           .rnd_vec_ids;
+   const auto &ric1 =
+       operator_lookup
+           .ricQ2_lookup[  // needed only for checking
+               operator_lookup.rvdaggervr_lookuptable[lookup[1]]
+                   .id_ricQ_lookup]
+           .rnd_vec_ids;
+   const auto &ric2 =
+       operator_lookup
+           .ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup]
+           .rnd_vec_ids;
+   const auto &ric3 =
+       operator_lookup
+           .ricQ2_lookup[  // needed only for checking
+               operator_lookup.rvdaggervr_lookuptable[lookup[3]]
+                   .id_ricQ_lookup]
+           .rnd_vec_ids;
+
+   size_t M1_rnd_counter = 0;
+   for (const auto &rnd0 : ric0) {
+     for (const auto &rnd1 : ric1) {
+       if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
+         // setting matrix values to zero
+         result.setZero(dilE * dilD, dilE * dilD);
+         size_t M2_rnd_counter = 0;
+         for (const auto &rnd2 : ric2) {
+           for (const auto &rnd3 : ric3) {
+             if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
+
+               // Check that no random vector is used in M1 and M2 at the same 
+               // time
+               if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
+                   rnd0.second != rnd3.second) {
+                 result+= M2[M2_rnd_counter];
+               }
+               M2_rnd_counter++;
+             }
+           }
+         }
+         result = (M1[M1_rnd_counter++] * result);
+       }
+     }
+   }
 }
 
 }  // end of LapH namespace
