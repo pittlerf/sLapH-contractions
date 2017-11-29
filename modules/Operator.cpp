@@ -5,6 +5,91 @@
 
 #include "Operator.h"
 
+namespace {
+
+template <QuarkLineType qlt>
+void M1xM2(Eigen::MatrixXcd &result, 
+           Eigen::MatrixXcd const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           std::pair<size_t, size_t> const & rnd0,
+           std::pair<size_t, size_t> const & rnd1,
+           size_t const dilE,
+           size_t const dilD);
+
+template <>
+void M1xM2<QuarkLineType::Q2V>(Eigen::MatrixXcd &result, 
+           Eigen::MatrixXcd const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           std::pair<size_t, size_t> const & rnd0,
+           std::pair<size_t, size_t> const & rnd1,
+           size_t const dilE,
+           size_t const dilD){
+
+   const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+
+   size_t M2_rnd_counter = 0;
+   for (const auto &rnd2 : ric2) {
+     for (const auto &rnd3 : ric3) {
+       if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
+
+         // Check that no random vector is used in M1 and M2 at the same 
+         // time
+         if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
+             rnd0.second != rnd3.second) {
+           result += M2[M2_rnd_counter];
+         }
+         M2_rnd_counter++;
+       }
+     }
+   }
+
+   result = (M1 * result);
+}
+
+template <>
+void M1xM2<QuarkLineType::Q2L>(Eigen::MatrixXcd &result, 
+           Eigen::MatrixXcd const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           std::pair<size_t, size_t> const & rnd0,
+           std::pair<size_t, size_t> const & rnd1,
+           size_t const dilE,
+           size_t const dilD){
+
+  const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+
+  size_t M2_rnd_counter = 0;
+  for (const auto &rnd2 : ric2) {
+    for (const auto &rnd3 : ric3) {
+      if (rnd2.first == rnd3.first && rnd2.second != rnd3.second) {
+
+        if (rnd0.second == rnd3.second && rnd1.second == rnd2.second &&
+            rnd0.first != rnd2.first) {
+          result += M2[M2_rnd_counter];
+        }
+        M2_rnd_counter++;
+      }
+    }
+  }
+
+  result = (M1 * result);
+}
+
+} // end of anonymous namespace 
+
 namespace LapH {
 
 template<>
@@ -140,6 +225,10 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
       if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
+
+        /*! @Note Allocation should be refactored */
+        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+
         const size_t idr0 = &rnd0 - &ric0[0];
         const size_t idr1 = &rnd1 - &ric1[0];
 
@@ -161,39 +250,7 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
-void M1xM2(Eigen::MatrixXcd &result, 
-           Eigen::MatrixXcd const &M1, 
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<size_t> const &lookup,
-           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
-           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2_lookup,
-           std::pair<size_t, size_t> const & rnd0,
-           std::pair<size_t, size_t> const & rnd1,
-           size_t const dilE,
-           size_t const dilD){
 
-   const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
-
-   size_t M2_rnd_counter = 0;
-   for (const auto &rnd2 : ric2) {
-     for (const auto &rnd3 : ric3) {
-       if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
-
-         // Check that no random vector is used in M1 and M2 at the same 
-         // time
-         if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
-             rnd0.second != rnd3.second) {
-           result += M2[M2_rnd_counter];
-         }
-         M2_rnd_counter++;
-       }
-     }
-   }
-
-   result = (M1 * result);
-}
 
 template<>
 cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> const &M1, 
@@ -201,7 +258,7 @@ cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2L_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
            size_t const dilE,
            size_t const dilD){
 
@@ -209,7 +266,7 @@ cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
    cmplx result = cmplx(.0,.0);
 
-   const auto &ric0 = ricQ2_lookup[Q2L_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric0 = ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
    const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
@@ -218,8 +275,9 @@ cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd
          // setting matrix values to zero
           M3.setZero(dilE * 4, dilE * 4);
 
-          M1xM2(M3, M1[M1_rnd_counter], M2, lookup, ricQ2_lookup, rvdaggervr_lookup, 
-                Q2L_lookup, rnd0, rnd1, dilE, 4);
+          M1xM2<QuarkLineType::Q2V>(M3, M1[M1_rnd_counter], M2, lookup, 
+                                   ricQ2_lookup, rvdaggervr_lookup, 
+                                   Q2_lookup, rnd0, rnd1, dilE, 4);
 
           result += M3.trace();
           ++M1_rnd_counter;
@@ -245,35 +303,25 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
   Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
   cmplx result = cmplx(.0,.0);
 
-  const auto &ric0 = ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup]
-          .rnd_vec_ids;
-  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]]
-                  .id_ricQ_lookup]
-          .rnd_vec_ids;
-  const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup]
-          .rnd_vec_ids;
-  const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]]
-                  .id_ricQ_lookup].rnd_vec_ids;
+  const auto &ric0 = ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
   size_t M1_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
       if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
-        M3.setZero(4 * dilE, 4 * dilE);  // setting matrix values to zero
-        size_t M2_rnd_counter = 0;
-        for (const auto &rnd2 : ric2) {
-          for (const auto &rnd3 : ric3) {
-            if (rnd2.first == rnd3.first && rnd2.second != rnd3.second) {
-              if (rnd0.second == rnd3.second && rnd1.second == rnd2.second &&
-                  rnd0.first != rnd2.first) {
-                M3 += M2[M2_rnd_counter];
-              }
-              M2_rnd_counter++;
-            }
-          }
+
+        // setting matrix values to zero
+        M3.setZero(4 * dilE, 4 * dilE);  
+
+        M1xM2<QuarkLineType::Q2L>(M3, M1[M1_rnd_counter], M2, lookup, 
+                                 ricQ2_lookup, rvdaggervr_lookup, 
+                                 Q2_lookup, rnd0, rnd1, dilE, 4);
+
+        result += M3.trace();
+        ++M1_rnd_counter;
+
         }
-        result += (M1[M1_rnd_counter++] * M3).trace();
-      }
     }
   }
 

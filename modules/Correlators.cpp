@@ -952,8 +952,9 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
       }
 
       // creating memeory for M1 -------------------------------------------------
-      const size_t id0 = c_look.lookup[0];
-      const size_t id2 = c_look.lookup[2];
+      /*! @warning For some reason indices 2 and 0 are interchanged here */
+      const size_t id0 = c_look.lookup[2];
+      const size_t id2 = c_look.lookup[0];
       auto it1 = std::find_if(
           M1_look.begin(), M1_look.end(), [&id0, &id2](std::array<size_t, 3> check) {
             return (id0 == check[1] && id2 == check[2]);
@@ -961,10 +962,10 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 
       if (!(it1 != M1_look.end())) {
         M1.emplace_back(std::vector<Eigen::MatrixXcd>());
-        for (const auto &rnd0 : ric0)
-          for (const auto &rnd2 : ric2)
-            if (rnd0.first == rnd2.first && rnd0.second != rnd2.second)
-              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
+//        for (const auto &rnd0 : ric0)
+//          for (const auto &rnd2 : ric2)
+//            if (rnd0.first == rnd2.first && rnd0.second != rnd2.second)
+//              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id2}}));
         M1_counter++;
       }
@@ -990,38 +991,12 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
         int const t = get_time_delta(slice_pair, Lt);
         // build M1 ----------------------------------------------------------------
         for (const auto &look : M1_look) {
-          const auto &ric0 =
-              operator_lookup.ricQ2_lookup[quark_lookup.Q2L[look[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric2 =
-              operator_lookup
-                  .ricQ2_lookup[operator_lookup.rvdaggervr_lookuptable[look[2]]
-                                    .id_ricQ_lookup]
-                  .rnd_vec_ids;
-          size_t M1_rnd_counter = 0;
-          for (const auto &rnd0 : ric0) {
-            for (const auto &rnd2 : ric2) {
-              if (rnd0.first == rnd2.first && rnd0.second != rnd2.second) {
-                const size_t idr0 = &rnd0 - &ric0[0];
-                const size_t idr2 = &rnd2 - &ric2[0];
-                for (size_t col = 0; col < 4; col++) {
-                  // TODO: gamma hardcoded
-                  const cmplx value = quarklines_Q2L.return_gamma_val(5, col);
-                  // TODO: gamma hardcoded
-                  const size_t gamma_index = quarklines_Q2L.return_gamma_row(5, col);
 
-                  M1[look[0]][M1_rnd_counter].block(col * dilE, 0, dilE, 4 * dilE) =
-                      value *
-                      meson_operator.return_rvdaggervr(look[2], slice_pair.source(), idr2)
-                          .block(col * dilE, gamma_index * dilE, dilE, dilE) *
-                      quarklines_Q2L(
-                          slice_pair.source(), slice_pair.sink_block(), look[1], idr0)
-                          .block(gamma_index * dilE, 0, dilE, 4 * dilE);
-                }
-                M1_rnd_counter++;
-              }
-            }
-          }
+          rVdaggerVrxQ2<QuarkLineType::Q2L>(M1[look[0]], quarklines_Q2L, meson_operator, 
+                         slice_pair.source(), slice_pair.sink_block(),
+                         look, operator_lookup.ricQ2_lookup,
+                         operator_lookup.rvdaggervr_lookuptable, quark_lookup.Q2L,
+                         dilE, 4);
         }
 
         // Final summation for correlator ------------------------------------------
@@ -1040,9 +1015,9 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                                     .id_ricQ_lookup]
                   .rnd_vec_ids;
 
-          const size_t id0 = c_look.lookup[0];
+          const size_t id0 = c_look.lookup[2];
           const size_t id1 = c_look.lookup[1];
-          const size_t id2 = c_look.lookup[2];
+          const size_t id2 = c_look.lookup[0];
           auto it1 = std::find_if(
               M1_look.begin(), M1_look.end(), [&id0, &id2](std::array<size_t, 3> check) {
                 return (id0 == check[1] && id2 == check[2]);
@@ -1161,10 +1136,6 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
       if (!(it1 != M1_look.end())) {
         M1.emplace_back(std::vector<Eigen::MatrixXcd>());
 
-        for (const auto &rnd0 : ric0)
-          for (const auto &rnd1 : ric1)
-            if (rnd0.first == rnd1.first && rnd0.second != rnd1.second)
-              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id3, id0}}));
         M1_counter++;
       }
@@ -1177,10 +1148,6 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
           });
       if (!(it2 != M2_look.end())) {
         M2.emplace_back(std::vector<Eigen::MatrixXcd>());
-        for (const auto &rnd2 : ric2)
-          for (const auto &rnd3 : ric3)
-            if (rnd2.first == rnd3.first && rnd2.second != rnd3.second)
-              M2[M2_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id1, id2}}));
         M2_counter++;
       }
