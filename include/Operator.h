@@ -18,11 +18,12 @@
 namespace LapH{
 
 /*! @todo Be more restrictive with lookup tables. .Q2V etc. is enough */
+template <QuarkLineType qlt>
 void check_random_combinations(std::string const &diagram,
                                std::vector<size_t> const &lookup,
                                std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               std::vector<QuarklineQ2Indices> const &Q2V_lookup);
+                               std::vector<QuarklineQ2Indices> const &Q2_lookup);
 
 template <QuarkLineType qlt>
 void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result, 
@@ -38,12 +39,26 @@ void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilE,
                     size_t const dilD);
 
+template <QuarkLineType qlt>
+void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result, 
+                    QuarkLineBlock<qlt> const &quarklines,
+                    OperatorsForMesons const &meson_operator,
+                    int const t1,
+                    int const b2,
+                    std::array<size_t, 3> const look,
+                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+                    std::vector<QuarklineQ2Indices> const &Q2V_lookup,
+                    size_t const dilE,
+                    size_t const dilD);
+
+template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2V_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2_lookup,
            size_t const dilE,
            size_t const dilD);
 
