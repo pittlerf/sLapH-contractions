@@ -769,7 +769,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
       try {
         check_random_combinations(
             std::string("C4cC"), c_look.lookup, operator_lookup.ricQ2_lookup, 
-            operator_lookup.rvdaggervr_lookuptable, quark_lookup);
+            operator_lookup.rvdaggervr_lookuptable, quark_lookup.Q2V);
       }
       catch (const std::length_error& le) {
         std::cerr << "Length error: " << le.what() << '\n';
@@ -831,7 +831,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
           Q2xrVdaggerVr<QuarkLineType::Q2V>(M1[look[0]], quarklines, meson_operator, 
                          slice_pair.sink_block(), slice_pair.source(),
                          slice_pair.sink(), look, operator_lookup.ricQ2_lookup,
-                         operator_lookup.rvdaggervr_lookuptable, quark_lookup,
+                         operator_lookup.rvdaggervr_lookuptable, quark_lookup.Q2V,
                          dilE, 4);
         }
         // build M2 ----------------------------------------------------------------
@@ -839,7 +839,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
           Q2xrVdaggerVr<QuarkLineType::Q2V>(M2[look[0]], quarklines, meson_operator, 
                          slice_pair.sink_block(), slice_pair.source(), 
                          slice_pair.sink(), look, operator_lookup.ricQ2_lookup,
-                         operator_lookup.rvdaggervr_lookuptable, quark_lookup,
+                         operator_lookup.rvdaggervr_lookuptable, quark_lookup.Q2V,
                          dilE, 4);
         }
 
@@ -867,7 +867,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
           C[c_look.id][t] += trace(M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
                                    operator_lookup.ricQ2_lookup,
                                    operator_lookup.rvdaggervr_lookuptable, 
-                                   quark_lookup, dilE, 4);
+                                   quark_lookup.Q2V, dilE, 4);
         }  // loop over operators ends here
     }
   } // loops over time end here

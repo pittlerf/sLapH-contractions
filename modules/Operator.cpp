@@ -11,14 +11,14 @@ void check_random_combinations(std::string const &diagram,
                                std::vector<size_t> const &lookup,
                                std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               QuarklineLookup const &quark_lookup){
+                               std::vector<QuarklineQ2Indices> const &Q2V_lookup){
    const auto &ric0 =
-       ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
+       ricQ2_lookup[Q2V_lookup[lookup[0]].id_ric_lookup]
            .rnd_vec_ids;
    const auto &ric1 =
       ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
    const auto &ric2 =
-       ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup].rnd_vec_ids;
+       ricQ2_lookup[Q2V_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
    const auto &ric3 =
        ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
@@ -48,7 +48,7 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
                     std::array<size_t, 3> const look,
                     std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
                     std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                    QuarklineLookup const &quark_lookup,
+                    std::vector<QuarklineQ2Indices> const &Q2V_lookup,
                     size_t const dilE,
                     size_t const dilD){
 
@@ -56,9 +56,10 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
   assert(dilD = 4);
 
   const auto &ric0 =
-      ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup].rnd_vec_ids;
+      ricQ2_lookup[Q2V_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
   const auto &ric1 =
       ricQ2_lookup[rvdaggervr_lookup[look[2]].id_ricQ_lookup].rnd_vec_ids;
+
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
@@ -98,13 +99,13 @@ void M1xM2(Eigen::MatrixXcd &result,
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           QuarklineLookup const &quark_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2V_lookup,
            std::pair<size_t, size_t> const & rnd0,
            std::pair<size_t, size_t> const & rnd1,
            size_t const dilE,
            size_t const dilD){
 
-   const auto &ric2 = ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric2 = ricQ2_lookup[Q2V_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
    const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
    size_t M2_rnd_counter = 0;
@@ -131,7 +132,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           QuarklineLookup const &quark_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2V_lookup,
            size_t const dilE,
            size_t const dilD){
 
@@ -139,7 +140,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
    cmplx result = cmplx(.0,.0);
 
-   const auto &ric0 = ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric0 = ricQ2_lookup[Q2V_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
    const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
@@ -149,7 +150,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
           M3.setZero(dilE * 4, dilE * 4);
 
           M1xM2(M3, M1[M1_rnd_counter], M2, lookup, ricQ2_lookup, rvdaggervr_lookup, 
-                quark_lookup, rnd0, rnd1, dilE, 4);
+                Q2V_lookup, rnd0, rnd1, dilE, 4);
 
           result += M3.trace();
           ++M1_rnd_counter;

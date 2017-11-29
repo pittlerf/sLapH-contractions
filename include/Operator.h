@@ -22,7 +22,7 @@ void check_random_combinations(std::string const &diagram,
                                std::vector<size_t> const &lookup,
                                std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               QuarklineLookup const &quark_lookup);
+                               std::vector<QuarklineQ2Indices> const &Q2V_lookup);
 
 template <QuarkLineType qlt>
 void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result, 
@@ -34,7 +34,7 @@ void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result,
                     std::array<size_t, 3> const look,
                     std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
                     std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                    QuarklineLookup const &quark_lookup,
+                    std::vector<QuarklineQ2Indices> const &Q2V_lookup,
                     size_t const dilE,
                     size_t const dilD);
 
@@ -43,7 +43,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           QuarklineLookup const &quark_lookup,
+           std::vector<QuarklineQ2Indices> const &Q2V_lookup,
            size_t const dilE,
            size_t const dilD);
 
