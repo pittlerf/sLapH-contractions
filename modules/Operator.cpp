@@ -9,21 +9,18 @@ namespace LapH {
 
 void check_random_combinations(std::string const &diagram,
                                std::vector<size_t> const &lookup,
-                               OperatorLookup const &operator_lookup,
+                               std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                               std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                                QuarklineLookup const &quark_lookup){
    const auto &ric0 =
-       operator_lookup.ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
+       ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
            .rnd_vec_ids;
    const auto &ric1 =
-       operator_lookup
-           .ricQ2_lookup[  
-               operator_lookup.rvdaggervr_lookuptable[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+      ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
    const auto &ric2 =
-       operator_lookup.ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup]
-           .rnd_vec_ids;
+       ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup].rnd_vec_ids;
    const auto &ric3 =
-       operator_lookup.ricQ2_lookup[ 
-               operator_lookup.rvdaggervr_lookuptable[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+       ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
    if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
        ric0.size() != ric3.size()) {
@@ -49,7 +46,8 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
                     int const t1,
                     int const t2,
                     std::array<size_t, 3> const look,
-                    OperatorLookup const &operator_lookup,
+                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                     QuarklineLookup const &quark_lookup,
                     size_t const dilE,
                     size_t const dilD){
@@ -58,13 +56,9 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
   assert(dilD = 4);
 
   const auto &ric0 =
-      operator_lookup.ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup]
-          .rnd_vec_ids;
+      ricQ2_lookup[quark_lookup.Q2V[look[1]].id_ric_lookup].rnd_vec_ids;
   const auto &ric1 =
-      operator_lookup
-          .ricQ2_lookup[  // needed only for checking
-              operator_lookup.rvdaggervr_lookuptable[look[2]].id_ricQ_lookup]
-          .rnd_vec_ids;
+      ricQ2_lookup[rvdaggervr_lookup[look[2]].id_ricQ_lookup].rnd_vec_ids;
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
@@ -76,10 +70,9 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
         const size_t idr0 = &rnd0 - &ric0[0];
         const size_t idr1 = &rnd1 - &ric1[0];
         for (size_t d = 0; d < 4; d++) {
-          const cmplx value =
-              quarklines.return_gamma_val(5, d);  // TODO: gamma hardcoded
-          const size_t gamma_index =
-              quarklines.return_gamma_row(5, d);  // TODO: gamma hardcoded
+          // TODO: gamma hardcoded
+          const cmplx value = quarklines.return_gamma_val(5, d);  
+          const size_t gamma_index = quarklines.return_gamma_row(5, d);  
           //          const cmplx value =
           //          quarklines.return_gamma_val(c_look.gamma[0], d);
           //          const size_t gamma_index = quarklines.return_gamma_row(
@@ -103,23 +96,16 @@ void M1xM2(Eigen::MatrixXcd &result,
            Eigen::MatrixXcd const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
-           OperatorLookup const &operator_lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
            QuarklineLookup const &quark_lookup,
            std::pair<size_t, size_t> const & rnd0,
            std::pair<size_t, size_t> const & rnd1,
            size_t const dilE,
            size_t const dilD){
 
-   const auto &ric2 =
-       operator_lookup
-           .ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup]
-           .rnd_vec_ids;
-   const auto &ric3 =
-       operator_lookup
-           .ricQ2_lookup[  // needed only for checking
-               operator_lookup.rvdaggervr_lookuptable[lookup[3]]
-                   .id_ricQ_lookup]
-           .rnd_vec_ids;
+   const auto &ric2 = ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
 
    size_t M2_rnd_counter = 0;
    for (const auto &rnd2 : ric2) {
@@ -143,7 +129,8 @@ void M1xM2(Eigen::MatrixXcd &result,
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
-           OperatorLookup const &operator_lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
            QuarklineLookup const &quark_lookup,
            size_t const dilE,
            size_t const dilD){
@@ -152,16 +139,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
    cmplx result = cmplx(.0,.0);
 
-   const auto &ric0 =
-       operator_lookup
-           .ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
-           .rnd_vec_ids;
-   const auto &ric1 =
-       operator_lookup
-           .ricQ2_lookup[  // needed only for checking
-               operator_lookup.rvdaggervr_lookuptable[lookup[1]]
-                   .id_ricQ_lookup]
-           .rnd_vec_ids;
+   const auto &ric0 = ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
      for (const auto &rnd1 : ric1) {
@@ -169,8 +148,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
          // setting matrix values to zero
           M3.setZero(dilE * 4, dilE * 4);
 
-          M1xM2(M3, M1[M1_rnd_counter], M2, lookup, 
-                operator_lookup, quark_lookup, rnd0, rnd1, dilE, 4);
+          M1xM2(M3, M1[M1_rnd_counter], M2, lookup, ricQ2_lookup, rvdaggervr_lookup, 
+                quark_lookup, rnd0, rnd1, dilE, 4);
 
           result += M3.trace();
           ++M1_rnd_counter;
