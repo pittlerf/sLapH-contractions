@@ -844,7 +844,6 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
          *  multiplying with M1
          */
         // Final summation for correlator ------------------------------------------
-        Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE);
 
         for (const auto &c_look : corr_lookup) {
           const size_t id0 = c_look.lookup[0];
@@ -861,10 +860,10 @@ void LapH::Correlators::build_C4cC(const OperatorsForMesons &meson_operator,
                 return (id2 == check[1] && id3 == check[2]);
               });
 
-          M1xM2(M3, M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, operator_lookup, quark_lookup, dilE, 4);
-          C[c_look.id][t] += M3.trace();
+          C[c_look.id][t] = trace(M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
+              operator_lookup, quark_lookup, dilE, 4);
         }  // loop over operators ends here
-      }
+    }
   } // loops over time end here
 #pragma omp critical
     {

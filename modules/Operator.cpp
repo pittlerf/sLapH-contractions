@@ -100,24 +100,16 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
 }
 
 void M1xM2(Eigen::MatrixXcd &result, 
-           std::vector<Eigen::MatrixXcd> const &M1, 
+           Eigen::MatrixXcd const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
            OperatorLookup const &operator_lookup,
            QuarklineLookup const &quark_lookup,
+           std::pair<size_t, size_t> const & rnd0,
+           std::pair<size_t, size_t> const & rnd1,
            size_t const dilE,
            size_t const dilD){
 
-   const auto &ric0 =
-       operator_lookup
-           .ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
-           .rnd_vec_ids;
-   const auto &ric1 =
-       operator_lookup
-           .ricQ2_lookup[  // needed only for checking
-               operator_lookup.rvdaggervr_lookuptable[lookup[1]]
-                   .id_ricQ_lookup]
-           .rnd_vec_ids;
    const auto &ric2 =
        operator_lookup
            .ricQ2_lookup[quark_lookup.Q2V[lookup[2]].id_ric_lookup]
@@ -129,28 +121,59 @@ void M1xM2(Eigen::MatrixXcd &result,
                    .id_ricQ_lookup]
            .rnd_vec_ids;
 
+   size_t M2_rnd_counter = 0;
+   for (const auto &rnd2 : ric2) {
+     for (const auto &rnd3 : ric3) {
+       if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
+
+         // Check that no random vector is used in M1 and M2 at the same 
+         // time
+         if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
+             rnd0.second != rnd3.second) {
+           result += M2[M2_rnd_counter];
+         }
+         M2_rnd_counter++;
+       }
+     }
+   }
+
+   result = (M1 * result);
+}
+
+cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<size_t> const &lookup,
+           OperatorLookup const &operator_lookup,
+           QuarklineLookup const &quark_lookup,
+           size_t const dilE,
+           size_t const dilD){
+
+  /*! @todo unnessary allocation */
+   Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
+   cmplx result = cmplx(.0,.0);
+
+   const auto &ric0 =
+       operator_lookup
+           .ricQ2_lookup[quark_lookup.Q2V[lookup[0]].id_ric_lookup]
+           .rnd_vec_ids;
+   const auto &ric1 =
+       operator_lookup
+           .ricQ2_lookup[  // needed only for checking
+               operator_lookup.rvdaggervr_lookuptable[lookup[1]]
+                   .id_ricQ_lookup]
+           .rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
      for (const auto &rnd1 : ric1) {
        if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
          // setting matrix values to zero
-         result.setZero(dilE * dilD, dilE * dilD);
-         size_t M2_rnd_counter = 0;
-         for (const auto &rnd2 : ric2) {
-           for (const auto &rnd3 : ric3) {
-             if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
+          M3.setZero(dilE * 4, dilE * 4);
 
-               // Check that no random vector is used in M1 and M2 at the same 
-               // time
-               if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
-                   rnd0.second != rnd3.second) {
-                 result+= M2[M2_rnd_counter];
-               }
-               M2_rnd_counter++;
-             }
-           }
-         }
-         result = (M1[M1_rnd_counter++] * result);
+          M1xM2(M3, M1[M1_rnd_counter], M2, lookup, 
+                operator_lookup, quark_lookup, rnd0, rnd1, dilE, 4);
+
+          result += M3.trace();
+          ++M1_rnd_counter;
        }
      }
    }
