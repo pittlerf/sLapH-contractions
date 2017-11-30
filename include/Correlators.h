@@ -23,7 +23,7 @@
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
-#include "Quarklines.h"
+#include "Perambulator.h"
 #include "typedefs.h"
 
 #include "H5Cpp.h"
@@ -107,10 +107,14 @@ private:
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t') \Gamma_\mathtt{Op0} \rangle
    *  @f}
    */
-  void build_C1(const Quarklines& quarklines, 
-                const std::vector<CorrInfo>& corr_lookup,
-                const QuarklineLookup& quark_lookup,
-                const std::vector<RandomIndexCombinationsQ2>& ric_lookup);
+  void build_C1(OperatorsForMesons const &meson_operator,
+                Perambulator const &perambulators,
+                std::vector<CorrInfo> const &corr_lookup,
+                QuarklineLookup const &quark_lookup,
+                OperatorLookup const &operator_lookup,
+                std::string const output_path,
+                std::string const output_filename);
+
   /*! Build neutral 2pt correlation function 
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
@@ -280,14 +284,13 @@ public:
   ~Correlators () {};
 
   /*! Call all functions building a correlator */
-  void contract(Quarklines& quarklines, 
-                const OperatorsForMesons& meson_operator,
-                const Perambulator& perambulators,
-                const OperatorLookup& operator_lookup,
-                const CorrelatorLookup& corr_lookup, 
-                const QuarklineLookup& quark_lookup,
-                const std::string output_path,
-                const std::string output_filename);
+  void contract(OperatorsForMesons const &meson_operator,
+                Perambulator const &perambulators,
+                OperatorLookup const &operator_lookup,
+                CorrelatorLookup const &corr_lookup, 
+                QuarklineLookup const &quark_lookup,
+                std::string const output_path,
+                std::string const output_filename);
 };
 
 } // end of namespace

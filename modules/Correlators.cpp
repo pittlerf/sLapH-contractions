@@ -158,40 +158,83 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 /*!
  *  @deprecated
  */
-void LapH::Correlators::build_C1(const Quarklines& quarklines,
-                    const std::vector<CorrInfo>& corr_lookup,
-                    const QuarklineLookup& quark_lookup,
-                    const std::vector<RandomIndexCombinationsQ2>& ric_lookup) {
+void LapH::Correlators::build_C1(
+    OperatorsForMesons const &meson_operator,
+    Perambulator const &perambulators,
+    std::vector<CorrInfo> const &corr_lookup,
+    QuarklineLookup const &quark_lookup,
+    OperatorLookup const &operator_lookup,
+    std::string const output_path,
+    std::string const output_filename) {
 
-  if(corr_lookup.empty())
-    return;
-
-  StopWatch swatch("C1", 1);
-  swatch.start();
+  if (corr_lookup.size() == 0) return;
 
   // every element of corr_lookup contains the same filename. Wlog choose the 
   // first element
-//  WriteHDF5Correlator filehandle(corr_lookup[0], comp_type_factory_tr() );
+  WriteHDF5Correlator filehandle(
+      output_path, "C1", output_filename, comp_type_factory_tr());
 
-  for(const auto& c_look : corr_lookup){
-    const auto& ric = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
+  StopWatch swatch("C1", 1);
+
+  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
+
+//#pragma omp parallel
+  {
+    swatch.start();
+
+    QuarkLineBlock<QuarkLineType::Q1> quarklines(
+        dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
+
+    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+
+    /*! @todo can DilutionIterator also give just a single block? */
+//#pragma omp for schedule(dynamic)
+    for(int t = 0; t < Lt; t++){
+      int const b = t/dilT;
+      quarklines.build_Q1_one_t(perambulators,
+                                meson_operator,
+                                t, b,
+                                quark_lookup.Q1,
+                                operator_lookup.ricQ2_lookup);
+
+      for(const auto& c_look : corr_lookup){
+        const auto& ric = 
+          operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].
                                                      id_ric_lookup].rnd_vec_ids;
 
-    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
-    for (const auto &id : ric) {
-      for(size_t t = 0; t < Lt; t++){
-        correlator[t] +=
-         quarklines.return_Q1(t, t/dilT, c_look.lookup[0], &id-&ric[0]).trace();
-      }
+        std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
+        for (const auto &id : ric) {
+          auto const idr0 = &id-&ric[0];
+          C[c_look.id][t] += quarklines(t, b, c_look.lookup[0], idr0).trace();
+        }
+      } // loop over operators ends here
+    } // loop over time ends here
 
-      // write data to file
-//      filehandle.write(correlator, c_look);
+//#pragma omp critical
+    {
+      for (const auto &c_look : corr_lookup)
+        for (size_t t = 0; t < Lt; t++)
+          correlator[c_look.id][t] += C[c_look.id][t];
     }
+    swatch.stop();
+  }  // parallel part ends here
 
+  // normalisation
+  for (const auto &c_look : corr_lookup) {
+    for (auto &corr : correlator[c_look.id]) {
+      // TODO: Hard Coded atm - Be carefull
+      corr /= 5 * Lt;  
+    }
+    // write data to file
+    filehandle.write(correlator[c_look.id], c_look);
   }
-  swatch.stop();
+
   swatch.print();
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
@@ -1720,14 +1763,14 @@ void LapH::Correlators::build_C40B(
  *  vector for this diagram and the build function immediately returns
  */
 //void LapH::Correlators::contract (Quarklines& quarklines, 
-void LapH::Correlators::contract (Quarklines& quarklines, 
-                     const OperatorsForMesons& meson_operator,
-                     const Perambulator& perambulators,
-                     const OperatorLookup& operator_lookup,
-                     const CorrelatorLookup& corr_lookup, 
-                     const QuarklineLookup& quark_lookup,
-                     const std::string output_path,
-                     const std::string output_filename) {
+void LapH::Correlators::contract (
+    OperatorsForMesons const &meson_operator,
+    Perambulator const &perambulators,
+    OperatorLookup const &operator_lookup,
+    CorrelatorLookup const &corr_lookup, 
+    QuarklineLookup const &quark_lookup,
+    std::string const output_path,
+    std::string const output_filename) {
 
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(perambulators, meson_operator, operator_lookup, 
@@ -1735,6 +1778,7 @@ void LapH::Correlators::contract (Quarklines& quarklines,
   build_C2c(corr_lookup.C2c, output_path, output_filename);
   build_C4cD(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
   build_C4cV(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
+
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(meson_operator, perambulators, corr_lookup.corr0, 
               quark_lookup, operator_lookup);
@@ -1744,9 +1788,8 @@ void LapH::Correlators::contract (Quarklines& quarklines,
   build_C20(corr_lookup.C20, output_path, output_filename);
   build_C40D(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
   build_C40V(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
+
   // 3. Build all other correlation functions.
-//  build_C1(quarklines, corr_lookup.C1, quark_lookup, 
-//                                                 operator_lookup.ricQ2_lookup);
   build_C4cC(meson_operator, perambulators, operator_lookup, corr_lookup.C4cC, 
                                            quark_lookup, output_path, output_filename);
   build_C4cB(meson_operator, perambulators, operator_lookup, corr_lookup.C4cB, 
