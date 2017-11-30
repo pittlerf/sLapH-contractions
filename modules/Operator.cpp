@@ -165,6 +165,45 @@ void Q1<QuarkLineType::Q1>(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
+template <>
+void Q1xQ1<QuarkLineType::Q1>(
+    std::vector<Eigen::MatrixXcd> &result, 
+    QuarkLineBlock<QuarkLineType::Q1> const &quarklines,
+    int const t1,
+    int const b2,
+    int const t2,
+    int const b1,
+    std::array<size_t, 3> const look,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+    size_t const dilE,
+    size_t const dilD){
+
+  const auto &ric0 =
+      ricQ2_lookup[Q1_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 =
+      ricQ2_lookup[Q1_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
+
+  size_t result_rnd_counter = 0;
+  for (const auto &rnd0 : ric0) {
+    for (const auto &rnd1 : ric1) {
+
+      auto const idr0 = &rnd0 - &ric0[0];
+      auto const idr1 = &rnd1 - &ric1[0];
+
+      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
+
+        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+
+        result[result_rnd_counter] = quarklines(t1, b2, look[1], idr0) *
+                        quarklines(t2, b1, look[2], idr1);
+        ++result_rnd_counter;
+      }
+    }
+  }
+
+}
+
 /*! 
  *  Multiply Operator with 2 Quarks and Operator with zero quarks
  *
