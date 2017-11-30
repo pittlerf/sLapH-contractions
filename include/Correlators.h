@@ -166,12 +166,13 @@ private:
    *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40C(const Quarklines& quarklines, 
-                  const std::vector<CorrInfo>& corr_lookup,
-                  const QuarklineLookup& quark_lookup,
-                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup,
-                  const std::string output_path,
-                  const std::string output_filename);
+  void build_C40C(OperatorsForMesons const &meson_operator,
+                  Perambulator const &perambulators,
+                  std::vector<CorrInfo> const &corr_lookup,
+                  QuarklineLookup const &quark_lookup,
+                  OperatorLookup const &operator_lookup,
+                  std::string const output_path,
+                  std::string const output_filename);
   /*! Build neutral 4pt correlation function: Box diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
@@ -180,14 +181,13 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-void build_C40B(
-    OperatorsForMesons const &meson_operator,
-    Perambulator const &perambulators,
-    std::vector<CorrInfo> const &corr_lookup,
-    QuarklineLookup const &quark_lookup,
-    OperatorLookup const &operator_lookup,
-    std::string const output_path,
-    std::string const output_filename);
+  void build_C40B(OperatorsForMesons const &meson_operator,
+                  Perambulator const &perambulators,
+                  std::vector<CorrInfo> const &corr_lookup,
+                  QuarklineLookup const &quark_lookup,
+                  OperatorLookup const &operator_lookup,
+                  std::string const output_path,
+                  std::string const output_filename);
   /*! Build charged 2pt correlation function 
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5  \Gamma_\mathtt{Op0} 
