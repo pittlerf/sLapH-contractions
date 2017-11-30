@@ -1512,6 +1512,38 @@ void LapH::Correlators::build_C40B(
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
+
+        // build M1 ----------------------------------------------------------------
+        for (const auto &look : L1_look) {
+
+          const auto &ric0 =
+              operator_lookup.ricQ2_lookup[quark_lookup.Q1[look[1]].id_ric_lookup].rnd_vec_ids;
+          const auto &ric1 =
+              operator_lookup.ricQ2_lookup[quark_lookup.Q1[look[2]].id_ric_lookup].rnd_vec_ids;
+          size_t L1_rnd_counter = 0;
+
+          for (const auto &rnd0 : ric0) {
+            for (const auto &rnd1 : ric1) {
+              if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
+
+                size_t const dilD = 4;
+                L1[look[0]].emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+                L1[look[0]][L1_rnd_counter] = quarklines(slice_pair.source(),
+                                           slice_pair.sink_block(),
+                                           look[1],
+                                           &rnd0 - &ric0[0]) *
+                                quarklines(slice_pair.sink(),
+                                           slice_pair.sink_block(),
+                                           look[2],
+                                           &rnd1 - &ric1[0]);
+                ++L1_rnd_counter;
+              }
+            }
+          }
+
+        }
+
+
         for (const auto &c_look : corr_lookup) {
           
           const auto &ric0 =
@@ -1522,18 +1554,20 @@ void LapH::Correlators::build_C40B(
               operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[2]].id_ric_lookup].rnd_vec_ids;
           const auto &ric3 =
               operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[3]].id_ric_lookup].rnd_vec_ids;
+          const size_t id0 = c_look.lookup[0];
+          const size_t id1 = c_look.lookup[1];
+          const size_t id2 = c_look.lookup[2];
+          const size_t id3 = c_look.lookup[3];
 
+          auto it1 = std::find_if(
+              L1_look.begin(), L1_look.end(), [&id0, &id1](std::array<size_t, 3> check) {
+                return (id0 == check[1] && id1 == check[2]);
+              });
+
+          size_t L1_rnd_counter = 0;
           for (const auto &rnd0 : ric0) {
             for (const auto &rnd1 : ric1) {
               if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-                const auto L1 = quarklines(slice_pair.source(),
-                                           slice_pair.sink_block(),
-                                           c_look.lookup[0],
-                                           &rnd0 - &ric0[0]) *
-                                quarklines(slice_pair.sink(),
-                                           slice_pair.sink_block(),
-                                           c_look.lookup[1],
-                                           &rnd1 - &ric1[0]);
                 for (const auto &rnd2 : ric2) {
                   for (const auto &rnd3 : ric3) {
                     if (rnd1.second == rnd2.first && rnd2.second == rnd3.first &&
@@ -1547,10 +1581,11 @@ void LapH::Correlators::build_C40B(
                                                  slice_pair.source_block(),
                                                  c_look.lookup[3],
                                                  &rnd3 - &ric3[0]);
-                      C[c_look.id][t] += (L1 * L2).trace();
+                      C[c_look.id][t] += (L1[(*it1)[0]][L1_rnd_counter] * L2).trace();
                     }
                   }
                 }
+                ++L1_rnd_counter;
               }
             }
           }
