@@ -1346,12 +1346,18 @@ void LapH::Correlators::build_C40C(
 #pragma omp parallel reduction(+ : norm)
     {
       std::vector<cmplx> C(Lt, cmplx(.0, .0));
+
+      QuarkLineBlock<QuarkLineType::Q1> quarklines(
+            dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
 #pragma omp for schedule(dynamic)
       for (int b = 0; b < dilution_scheme.size(); ++b) {
         auto const block_pair = dilution_scheme[b];
 
-        QuarkLineBlock<QuarkLineType::Q1> quarklines(
-            dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
+        quarklines.build_block_pair(perambulators,
+                                    meson_operator,
+                                    block_pair,
+                                    quark_lookup.Q1,
+                                    operator_lookup.ricQ2_lookup);
 
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
