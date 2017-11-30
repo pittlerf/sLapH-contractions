@@ -1213,12 +1213,13 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C30(const Quarklines& quarklines,
-                                  const std::vector<CorrInfo>& corr_lookup,
-                                  const QuarklineLookup& quark_lookup,
-                                  const std::vector<RandomIndexCombinationsQ2>& ric_lookup, 
-                                  const std::string output_path,
-                                  const std::string output_filename) {
+void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
+                                  Perambulator const &perambulators,
+                                  std::vector<CorrInfo> const &corr_lookup,
+                                  QuarklineLookup const &quark_lookup,
+                                  OperatorLookup const &operator_lookup,
+                                  std::string const output_path,
+                                  std::string const output_filename) {
   if(corr_lookup.empty())
     return;
 
@@ -1231,11 +1232,11 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 
   for(const auto& c_look : corr_lookup){
     std::vector<cmplx> correlator(Lt, cmplx(.0,.0));
-    const auto& ric0 = ric_lookup[quark_lookup.Q1[c_look.lookup[0]].
+    const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].
                                                      id_ric_lookup].rnd_vec_ids;
-    const auto& ric1 = ric_lookup[quark_lookup.Q1[c_look.lookup[1]].
+    const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].
                                                      id_ric_lookup].rnd_vec_ids;
-    const auto& ric2 = ric_lookup[quark_lookup.Q1[c_look.lookup[2]].
+    const auto& ric2 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[2]].
                                                      id_ric_lookup].rnd_vec_ids;
     if(ric0.size() != ric1.size() || ric0.size() != ric2.size()){
       std::cout << "rnd combinations are not the same in build_C30" 
@@ -1250,26 +1251,37 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
 #pragma omp parallel reduction(+ : norm)
     {
       std::vector<cmplx> C(Lt, cmplx(.0, .0));
+
+      QuarkLineBlock<QuarkLineType::Q1> quarklines(
+        dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
+
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
+
+      quarklines.build_block_pair(perambulators,
+                                    meson_operator,
+                                    block_pair,
+                                    quark_lookup.Q1,
+                                    operator_lookup.ricQ2_lookup);
+
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
         for (const auto &rnd0 : ric0) {
           for (const auto &rnd1 : ric1) {
             if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-              const auto L1 = quarklines.return_Q1(slice_pair.source(),
+              const auto L1 = quarklines(slice_pair.source(),
                                                    slice_pair.sink_block(),
                                                    c_look.lookup[0],
                                                    &rnd0 - &ric0[0]) *
-                              quarklines.return_Q1(slice_pair.sink(),
+                              quarklines(slice_pair.sink(),
                                                    slice_pair.source_block(),
                                                    c_look.lookup[1],
                                                    &rnd1 - &ric1[0]);
               for (const auto &rnd2 : ric2) {
                 if (rnd1.second == rnd2.first && rnd2.second == rnd0.first) {
                   C[t] += (L1 *
-                           quarklines.return_Q1(slice_pair.source(),
+                           quarklines(slice_pair.source(),
                                                 slice_pair.source_block(),
                                                 c_look.lookup[2],
                                                 &rnd2 - &ric2[0]))
@@ -1299,6 +1311,7 @@ void LapH::Correlators::build_C30(const Quarklines& quarklines,
   swatch.stop();
   swatch.print();
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /*! 
@@ -1690,8 +1703,8 @@ void LapH::Correlators::contract (Quarklines& quarklines,
 //                                                                 quark_lookup);
   build_C4cB(meson_operator, perambulators, operator_lookup, corr_lookup.C4cB, 
                                            quark_lookup, output_path, output_filename);
-  build_C30(quarklines, corr_lookup.C30, quark_lookup, 
-                           operator_lookup.ricQ2_lookup, output_path, output_filename);
+  build_C30(meson_operator, perambulators, corr_lookup.C30, quark_lookup, 
+             operator_lookup, output_path, output_filename);
   build_C40C(meson_operator, perambulators, corr_lookup.C40C, quark_lookup, 
              operator_lookup, output_path, output_filename);
   build_C40B(meson_operator, perambulators, corr_lookup.C40B, quark_lookup, 

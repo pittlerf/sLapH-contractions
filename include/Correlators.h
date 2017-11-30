@@ -119,6 +119,7 @@ private:
    */
   void build_C20(const std::vector<CorrInfo>& corr_lookup, 
                      const std::string output_path, const std::string filename);
+
   /*! Build neutral 3pt correlation function 
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
@@ -126,12 +127,14 @@ private:
    *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
    *  @f}
    */
-  void build_C30(const Quarklines& quarklines, 
-                 const std::vector<CorrInfo>& corr_lookup,
-                 const QuarklineLookup& quark_lookup,
-                 const std::vector<RandomIndexCombinationsQ2>& ric_lookup,
-                 const std::string output_path,
-                 const std::string output_filename);
+  void build_C30(OperatorsForMesons const &meson_operator,
+                  Perambulator const &perambulators,
+                  std::vector<CorrInfo> const &corr_lookup,
+                  QuarklineLookup const &quark_lookup,
+                  OperatorLookup const &operator_lookup,
+                  std::string const output_path,
+                  std::string const output_filename);
+
   /*! Build neutral 4pt correlation function: Direct diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
@@ -153,11 +156,11 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40V(const OperatorLookup& operator_lookup, 
-                  const CorrelatorLookup& corr_lookup,
-                  const QuarklineLookup& quark_lookup,
-                  const std::string output_path,
-                  const std::string output_filename);
+  void build_C40V(OperatorLookup const &operator_lookup, 
+                  CorrelatorLookup const &corr_lookup,
+                  QuarklineLookup const &quark_lookup,
+                  std::string const output_path,
+                  std::string const output_filename);
   /*! Build neutral 4pt correlation function: Cross diagram
    *  @f{align}{
    *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
