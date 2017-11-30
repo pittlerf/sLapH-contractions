@@ -1521,14 +1521,14 @@ void LapH::Correlators::build_C40B(
         // build L1 ----------------------------------------------------------------
         for (const auto &look : L1_look) {
           Q1xQ1(L1[look[0]], quarklines, slice_pair.source(), slice_pair.sink_block(),
-                slice_pair.sink(), look, 
+                slice_pair.sink(), slice_pair.sink_block(), look, 
                 operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
         }
 
         // build L2 ----------------------------------------------------------------
         for (const auto &look : L2_look) {
           Q1xQ1(L2[look[0]], quarklines, slice_pair.sink(), slice_pair.source_block(),
-                slice_pair.source(), look, 
+                slice_pair.source(), slice_pair.sink_block(), look, 
                 operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
         }
 

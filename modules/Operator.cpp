@@ -170,8 +170,9 @@ void Q1xQ1<QuarkLineType::Q1>(
     std::vector<Eigen::MatrixXcd> &result, 
     QuarkLineBlock<QuarkLineType::Q1> const &quarklines,
     int const t1,
-    int const b2,
+    int const b1,
     int const t2,
+    int const b2,
     std::array<size_t, 3> const look,
     std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
     std::vector<QuarklineQ1Indices> const &Q1_lookup,
@@ -194,7 +195,7 @@ void Q1xQ1<QuarkLineType::Q1>(
 
         result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
 
-        result[result_rnd_counter] = quarklines(t1, b2, look[1], idr0) *
+        result[result_rnd_counter] = quarklines(t1, b1, look[1], idr0) *
                         quarklines(t2, b2, look[2], idr1);
         ++result_rnd_counter;
       }
