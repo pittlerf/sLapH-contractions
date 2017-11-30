@@ -294,7 +294,8 @@ struct QuarklineLookup{
 };
 
 
-enum class QuarkLineType {Q1, Q2L, Q2V};
+// Q0 formerly called rVdaggerVr
+enum class QuarkLineType {Q0, Q1, Q2L, Q2V};
 
 /******************************************************************************/
 /*! All information needed to build and write the correlator given the 
