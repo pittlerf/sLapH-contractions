@@ -134,4 +134,11 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &L1,
             size_t const dilE,
             size_t const dilD);
 
+template <QuarkLineType qlt1, QuarkLineType qlt2>
+cmplx trace(std::vector<Eigen::MatrixXcd> const &L1, 
+            std::vector<Eigen::MatrixXcd> const &L2, 
+            std::vector<size_t> const &lookup,
+            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+            std::vector<QuarklineQ1Indices> const &Q1_lookup);
+
 }  // end of namespace

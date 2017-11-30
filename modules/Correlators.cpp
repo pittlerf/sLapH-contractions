@@ -1319,12 +1319,6 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
         }
 
       for (const auto &c_look : corr_lookup) {
-        const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].
-                                                         id_ric_lookup].rnd_vec_ids;
-        const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].
-                                                         id_ric_lookup].rnd_vec_ids;
-        const auto& ric2 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[2]].
-                                                     id_ric_lookup].rnd_vec_ids;
 
         const size_t id0 = c_look.lookup[0];
         const size_t id1 = c_look.lookup[1];
@@ -1339,27 +1333,13 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
               return (id2 == check[1]);
             });
 
-        size_t L1_rnd_counter = 0;
-        for (const auto &rnd0 : ric0) {
-          for (const auto &rnd1 : ric1) {
-            if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-
-              size_t L2_rnd_counter = 0;
-              for (const auto &rnd2 : ric2) {
-                if (rnd1.second == rnd2.first && rnd2.second == rnd0.first) {
-                  C[c_look.id][t] += (L1[(*it1)[0]][L1_rnd_counter] *
-                                      L2[(*it2)[0]][L2_rnd_counter]).trace();
-                }
-                ++L2_rnd_counter;
-              }
-
-              ++L1_rnd_counter;
-            }
-          }
-          }
-        }
+         C[c_look.id][t] += trace<QuarkLineType::Q1, QuarkLineType::Q1>(
+                                L1[(*it1)[0]], L2[(*it2)[0]], c_look.lookup, 
+                                operator_lookup.ricQ2_lookup, quark_lookup.Q1);
       }
-    } // loop over time ends here
+
+    }
+  } // loop over time ends here
   
 #pragma omp critical
     {
