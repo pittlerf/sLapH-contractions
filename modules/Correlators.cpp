@@ -1513,10 +1513,17 @@ void LapH::Correlators::build_C40B(
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        // build M1 ----------------------------------------------------------------
+        // build L1 ----------------------------------------------------------------
         for (const auto &look : L1_look) {
           Q1xQ1(L1[look[0]], quarklines, slice_pair.source(), slice_pair.sink_block(),
-                slice_pair.sink(), slice_pair.source_block(), look, 
+                slice_pair.sink(), look, 
+                operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
+        }
+
+        // build L2 ----------------------------------------------------------------
+        for (const auto &look : L2_look) {
+          Q1xQ1(L2[look[0]], quarklines, slice_pair.sink(), slice_pair.source_block(),
+                slice_pair.source(), look, 
                 operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
         }
 
@@ -1540,28 +1547,30 @@ void LapH::Correlators::build_C40B(
               L1_look.begin(), L1_look.end(), [&id0, &id1](std::array<size_t, 3> check) {
                 return (id0 == check[1] && id1 == check[2]);
               });
+          auto it2 = std::find_if(
+              L2_look.begin(), L2_look.end(), [&id2, &id3](std::array<size_t, 3> check) {
+                return (id2 == check[1] && id3 == check[2]);
+              });
 
           size_t L1_rnd_counter = 0;
           for (const auto &rnd0 : ric0) {
             for (const auto &rnd1 : ric1) {
               if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
+
+                size_t L2_rnd_counter = 0;
                 for (const auto &rnd2 : ric2) {
                   for (const auto &rnd3 : ric3) {
-                    if (rnd1.second == rnd2.first && rnd2.second == rnd3.first &&
-                        rnd3.second == rnd0.first && rnd2.first != rnd3.second &&
-                        rnd0.second != rnd3.first) {
-                      const auto L2 = quarklines(slice_pair.sink(),
-                                                 slice_pair.source_block(),
-                                                 c_look.lookup[2],
-                                                 &rnd2 - &ric2[0]) *
-                                      quarklines(slice_pair.source(),
-                                                 slice_pair.source_block(),
-                                                 c_look.lookup[3],
-                                                 &rnd3 - &ric3[0]);
-                      C[c_look.id][t] += (L1[(*it1)[0]][L1_rnd_counter] * L2).trace();
+                    if ( rnd2.first != rnd3.second && rnd2.second == rnd3.first){
+                      if (rnd1.second == rnd2.first && rnd3.second == rnd0.first 
+                           && rnd0.second != rnd3.first) {
+                        C[c_look.id][t] += (L1[(*it1)[0]][L1_rnd_counter] * 
+                                            L2[(*it2)[0]][L2_rnd_counter]).trace();
+                      }
+                    ++L2_rnd_counter;
                     }
                   }
                 }
+
                 ++L1_rnd_counter;
               }
             }
