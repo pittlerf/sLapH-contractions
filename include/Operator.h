@@ -65,6 +65,32 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilD);
 
 template <QuarkLineType qlt1, QuarkLineType qlt2>
+std::vector<cmplx> trace(
+    QuarkLineBlock<qlt1> const &quarklines,
+    OperatorsForMesons const &meson_operator,
+    int const t1,
+    int const b2,
+    int const t2,
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+    std::vector<QuarklineQ2Indices> const &Q2_lookup,
+    int const gamma,
+    size_t const dilE,
+    size_t const dilD);
+
+template <QuarkLineType qlt1, QuarkLineType qlt2>
+std::vector<cmplx> trace(
+    QuarkLineBlock<qlt1> const &quarklines,
+    int const t1,
+    int const b2,
+    int const t2,
+    int const b1,
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<QuarklineQ1Indices> const &Q1_lookup);
+
+template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,

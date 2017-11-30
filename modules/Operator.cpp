@@ -165,7 +165,6 @@ void Q1<QuarkLineType::Q1>(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
-
 /*! 
  *  Multiply Operator with 2 Quarks and Operator with zero quarks
  *
@@ -354,6 +353,96 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
 
   return result;
 }
+
+template<>
+std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
+    QuarkLineBlock<QuarkLineType::Q2V> const &quarklines,
+    OperatorsForMesons const &meson_operator,
+    int const t1,
+    int const b2,
+    int const t2,
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+    std::vector<QuarklineQ2Indices> const &Q2_lookup,
+    int const gamma,
+    size_t const dilE,
+    size_t const dilD){
+
+  assert(dilD == 4);
+
+  std::vector<cmplx> result;
+
+  const auto &ric0 = 
+    ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 =
+    ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+
+  for (const auto &rnd : ric0) {
+    const auto idr0 = &rnd - &ric0[0];
+    result.emplace_back(cmplx(0.0, 0.0));
+
+    for (size_t d = 0; d < 4; d++) {
+      const auto gamma_index = quarklines.return_gamma_row(gamma, d);
+      result[idr0] +=
+          quarklines.return_gamma_val(gamma, d) *
+          ( quarklines(t1, b2, lookup[0], idr0)
+               .block(d * dilE, gamma_index * dilE, dilE, dilE) *
+            meson_operator.return_rvdaggervr(lookup[1], t2, idr0)
+               .block(gamma_index * dilE, d * dilE, dilE, dilE))
+          .trace();
+    }
+  }
+
+  return result;
+}
+
+template<>
+std::vector<cmplx> trace<QuarkLineType::Q1, QuarkLineType::Q1>(
+    QuarkLineBlock<QuarkLineType::Q1> const &quarklines,
+    int const t1,
+    int const b2,
+    int const t2,
+    int const b1,
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<QuarklineQ1Indices> const &Q1_lookup){
+
+  assert(dilD == 4);
+
+  std::vector<cmplx> result;
+
+  const auto& ric0 =
+    ricQ2_lookup[Q1_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto& ric1 = 
+    ricQ2_lookup[Q1_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+
+  for (const auto& rnd : ric0) {
+    const auto idr0 = &rnd - &ric0[0];
+    result.emplace_back(cmplx(0.0, 0.0));
+
+    // check that ric1 and ric0 are indeed a full trace 
+    // i.e. ric1.first == ric2.second and ric1.second == ric2.first
+    const auto it1 = std::find_if(
+        ric1.begin(), ric1.end(), [&](std::pair<size_t, size_t> pair) {
+          return (pair == std::make_pair(rnd.second, rnd.first));
+        });
+    if (it1 == ric1.end()) {
+      std::cout << "something wrong with random vectors in build_corr0"
+                << std::endl;
+      exit(1);
+    }
+    const auto idr1 = it1 - ric1.begin();
+
+    /*! @todo How do I properly get the block indices for sink? */
+    result[idr0] += (quarklines(t1, b2, lookup[0], idr0) * 
+                     quarklines(t2, b1, lookup[1], idr1))
+                    .trace();
+  }
+
+  return result;
+}
+
 
 template<>
 cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(

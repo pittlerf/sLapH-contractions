@@ -235,43 +235,28 @@ void LapH::Correlators::build_corr0(const OperatorsForMesons& meson_operator,
 
       for (auto const slice_pair : block_pair) {
         for (const auto& c_look : corr_lookup) {
-          const auto& ric0 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto& ric1 =
-              operator_lookup
-                  .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          if (ric0.size() != ric1.size()) {
-            std::cout << "rnd combinations are not the same in build_corr0" << std::endl;
-            exit(1);
-          }
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()].resize(ric0.size());
-          for (auto& corr : corr0[c_look.id][slice_pair.source()][slice_pair.sink()])
-            corr = cmplx(0.0, 0.0);
-          for (const auto& rnd : ric0) {
-            const auto id = &rnd - &ric0[0];
-            const auto it1 = std::find_if(
-                ric1.begin(), ric1.end(), [&](std::pair<size_t, size_t> pair) {
-                  return (pair == std::make_pair(rnd.second, rnd.first));
-                });
-            if (it1 == ric1.end()) {
-              std::cout << "something wrong with random vectors in build_corr0"
-                        << std::endl;
-              exit(1);
-            }
 
-            /*! @todo How do I properly get the block indices for sink? */
-            corr0[c_look.id][slice_pair.source()][slice_pair.sink()][id] +=
-                (quarklines_local(
-                     slice_pair.source(), slice_pair.sink_block(), c_look.lookup[0], id) *
-                 quarklines_local(slice_pair.sink(),
-                                  slice_pair.source_block(),
-                                  c_look.lookup[1],
-                                  it1 - ric1.begin()))
-                    .trace();
+          const auto& ric0 =
+                operator_lookup
+                    .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
+                    .rnd_vec_ids;
+          const auto& ric1 =
+                operator_lookup
+                    .ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+                    .rnd_vec_ids;
+          if (ric0.size() != ric1.size()) {
+              std::cout << "rnd combinations are not the same in build_corr0" << std::endl;
+              exit(1);
           }
+
+          /*! @todo pass slice_pair as parameter */
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = 
+              trace<QuarkLineType::Q1, QuarkLineType::Q1>(
+                  quarklines_local, slice_pair.source(), 
+                  slice_pair.sink_block(), slice_pair.sink(), 
+                  slice_pair.source_block(), c_look.lookup, 
+                  operator_lookup.ricQ2_lookup, quark_lookup.Q1);
+
         }
       }
     }
@@ -510,23 +495,15 @@ void LapH::Correlators::build_corrC(const Perambulator &perambulators,
             std::cout << "rnd combinations are not the same in build_corrC" << std::endl;
             exit(0);
           }
-          corrC[c_look.id][t1][t2].resize(ric0.size());
-          for (auto &corr : corrC[c_look.id][t1][t2])
-            corr = cmplx(0.0, 0.0);
-          for (const auto &rnd : ric0) {
-            const auto id = &rnd - &ric0[0];
-            for (size_t block = 0; block < 4; block++) {
-              const auto gamma_index =
-                  quarklines.return_gamma_row(c_look.gamma[0], block);
-              corrC[c_look.id][t1][t2][id] +=
-                  quarklines.return_gamma_val(c_look.gamma[0], block) *
-                  (quarklines(slice_pair.source(), slice_pair.sink_block(), c_look.lookup[0], id)
-                       .block(block * dilE, gamma_index * dilE, dilE, dilE) *
-                   meson_operator.return_rvdaggervr(c_look.lookup[1], t2, id)
-                       .block(gamma_index * dilE, block * dilE, dilE, dilE))
-                      .trace();
-            }
-          }
+
+
+          corrC[c_look.id][t1][t2] = trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
+                                        quarklines, meson_operator, 
+                                        slice_pair.source(), slice_pair.sink_block(), 
+                                        slice_pair.sink(), c_look.lookup, 
+                                        operator_lookup.ricQ2_lookup, 
+                                        operator_lookup.rvdaggervr_lookuptable, 
+                                        quark_lookup.Q2V, c_look.gamma[0], dilE, 4);
         }
       }
     }
@@ -898,13 +875,13 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
 /*                                 build_C3c                                 */
 /*****************************************************************************/
 
-void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
-                                  const Perambulator& perambulators,
-                                  const OperatorLookup& operator_lookup,
-                                  const std::vector<CorrInfo>& corr_lookup,
-                                  const QuarklineLookup& quark_lookup, 
-                                  const std::string output_path,
-                                  const std::string output_filename) {
+void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
+                                  Perambulator const &perambulators,
+                                  OperatorLookup const &operator_lookup,
+                                  std::vector<CorrInfo> const &corr_lookup,
+                                  QuarklineLookup const &quark_lookup, 
+                                  std::string const output_path,
+                                  std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -967,10 +944,6 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
 
       if (!(it1 != M1_look.end())) {
         M1.emplace_back(std::vector<Eigen::MatrixXcd>());
-//        for (const auto &rnd0 : ric0)
-//          for (const auto &rnd2 : ric2)
-//            if (rnd0.first == rnd2.first && rnd0.second != rnd2.second)
-//              M1[M1_counter].emplace_back(Eigen::MatrixXcd::Zero(4 * dilE, 4 * dilE));
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id2}}));
         ++M1_counter;
       }
@@ -1021,6 +994,7 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
                          dilE, 4);
         }
 
+        // build M2 ----------------------------------------------------------------
         for (const auto &look : M2_look) {
 
           Q1<QuarkLineType::Q1>(M2[look[0]], quarklines_Q1,  
@@ -1063,7 +1037,8 @@ void LapH::Correlators::build_C3c(const OperatorsForMesons& meson_operator,
   // normalisation
   for (const auto &c_look : corr_lookup) {
     for (auto &corr : correlator[c_look.id]) {
-      corr /= (6 * 5 * 4) * Lt;  // TODO: Hard Coded atm - Be carefull
+      /*! @todo Hard Coded atm - Be careful */
+      corr /= (6 * 5 * 4) * Lt;  
     }
     // write data to file
     filehandle.write(correlator[c_look.id], c_look);
