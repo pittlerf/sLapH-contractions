@@ -45,7 +45,11 @@ add_definitions(-Wno-unused-variable -Wno-unused-local-typedefs)
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fdiagnostics-color has_diagnostics_color)
 if(has_diagnostics_color)
+  if (CMAKE_GENERATOR STREQUAL "Ninja")
     add_definitions("-fdiagnostics-color=always")
+  else()
+    add_definitions("-fdiagnostics-color=auto")
+  endif()
 endif()
 
 
