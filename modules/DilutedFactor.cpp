@@ -318,14 +318,15 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
 
 
 template<>
-cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> const &M1, 
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<size_t> const &lookup,
-           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
-           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2_lookup,
-           size_t const dilE,
-           size_t const dilD){
+cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(
+    std::vector<Eigen::MatrixXcd> const &M1, 
+    std::vector<Eigen::MatrixXcd> const &M2, 
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
+    std::vector<QuarklineQ2Indices> const &Q2_lookup,
+    size_t const dilE,
+    size_t const dilD){
 
   /*! @todo unnessary allocation */
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
