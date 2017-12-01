@@ -30,26 +30,6 @@
 
 namespace LapH {
 
-/******************************************************************************/ 
-// This is just a workaround for complex numbers to get it running for hdf5
-/*! @TODO: Why is this in a named namespace in the include file and not in an
- *         unnamed namespace in the source file?
- */
-typedef struct { 
-  double re; 
-  double im; 
-} complex_t; 
-
-// This is the datatype to write 4pt functions and that alike directly
-struct compcomp_t { 
-  double rere;   
-  double reim;
-  double imre;
-  double imim;   
-  compcomp_t(const double rere, const double reim, 
-             const double imre, const double imim) : 
-                              rere(rere), reim(reim), imre(imre), imim(imim) {};
-}; 
 /******************************************************************************/
 
 /*! Calculates correlation functions according to the stochastic Laplacian 

@@ -613,4 +613,35 @@ cmplx trace<QuarkLineType::Q1, QuarkLineType::Q1>(
   return result;
 }
 
+template<>
+void trtr<QuarkLineType::Q1, QuarkLineType::Q1>(
+    compcomp_t &result,
+    std::vector<cmplx> const &factor1,
+    std::vector<cmplx> const &factor2,
+    std::vector<size_t> const &lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<QuarklineQ1Indices> const &Q1_lookup){
+
+  const auto &ric0 =
+      ricQ2_lookup[Q1_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 =
+      ricQ2_lookup[Q1_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+
+  for (const auto &rnd0 : ric0) {
+    for (const auto &rnd1 : ric1) {
+      if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
+          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
+
+      auto const idr0 = &rnd0 - &ric0[0];
+      auto const idr1 = &rnd1 - &ric1[0];
+
+      result.rere += factor1[idr0].real() * factor2[idr1].real();
+      result.reim += factor1[idr0].real() * factor2[idr1].imag();
+      result.imre += factor1[idr0].imag() * factor2[idr1].real();
+      result.imim += factor1[idr0].imag() * factor2[idr1].imag();
+      }
+    }
+  }
+}
+
 }  // end of LapH namespace

@@ -61,6 +61,31 @@ typedef boost::multi_array<Eigen::MatrixXcd, 8> array_Xcd_d8_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
+namespace LapH {
+
+/******************************************************************************/ 
+/*! This is just a workaround for complex numbers to get it running for hdf5
+ *
+ *  @todo Change namespace into something more specific
+ */
+typedef struct { 
+  double re; 
+  double im; 
+} complex_t; 
+
+// This is the datatype to write 4pt functions and that alike directly
+struct compcomp_t { 
+  double rere;   
+  double reim;
+  double imre;
+  double imim;   
+  compcomp_t(const double rere, const double reim, 
+             const double imre, const double imim) : 
+                              rere(rere), reim(reim), imre(imre), imim(imim) {};
+}; 
+
+} // end of namespace
+
 /******************************************************************************/
 /*! Struct to uniquely identify a sLapH operator 
  *  @f$ V^\dagger exp(i(p + d/2) x) V @f$
