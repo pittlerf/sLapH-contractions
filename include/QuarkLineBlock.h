@@ -89,6 +89,7 @@ class QuarkLineBlock {
     return Ql[id][op_id];
   }
 
+
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator& peram,

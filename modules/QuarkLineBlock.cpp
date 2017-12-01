@@ -311,9 +311,8 @@ void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
   for (auto const slice_pair : block_pair.one_sink_slice()) {
     auto const t1 = slice_pair.source();
-    auto const b2 = slice_pair.source_block();
 
-    Ql_id.push_front(std::make_pair(t1, b2));
+    Ql_id.push_front(std::make_pair(t1, -1));
 
     // Effectively this is a right rotation.
     std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());

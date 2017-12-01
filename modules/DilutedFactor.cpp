@@ -394,6 +394,7 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
   return result;
 }
 
+/*! corrC */
 template<>
 std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
     QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
@@ -425,8 +426,8 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
           quarkline1.return_gamma_val(gamma, d) *
           ( quarkline1(t1, b2, lookup[0], idr0)
                .block(d * dilE, gamma_index * dilE, dilE, dilE) *
-            quarkline2(t2, b2, lookup[1], idr0)
-//            meson_operator.return_rvdaggervr(lookup[1], t2, idr0)
+            /*! @warning idr0 instead of idr1 because rvdaggervr are interchanged */
+            quarkline2(t2, -1, lookup[1], idr0)
                .block(gamma_index * dilE, d * dilE, dilE, dilE))
           .trace();
     }
@@ -435,6 +436,7 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
   return result;
 }
 
+/*! corr0 */
 std::vector<cmplx> trace(
     std::vector<Eigen::MatrixXcd> const &quarkline1,
     std::vector<Eigen::MatrixXcd> const &quarkline2,
