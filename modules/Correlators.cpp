@@ -299,14 +299,19 @@ void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
               exit(1);
           }
 
-          /*! @todo pass slice_pair as parameter */
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = 
-              trace<QuarkLineType::Q1, QuarkLineType::Q1>(
-                  quarklines_local, slice_pair.source(), 
-                  slice_pair.sink_block(), slice_pair.sink(), 
-                  slice_pair.source_block(), c_look.lookup, 
-                  ric_lookup, dil_fac_lookup.Q1);
+          std::vector<size_t> random_index_combination_ids = 
+            std::vector<size_t>( {dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
+                                  dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup} );
 
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = 
+              trace(quarklines_local(slice_pair.source(), 
+                                     slice_pair.sink_block(),
+                                     c_look.lookup[0]), 
+                    quarklines_local(slice_pair.sink(), 
+                                     slice_pair.source_block(), 
+                                     c_look.lookup[1]),
+                    ric_lookup,
+                    random_index_combination_ids);
         }
       }
     }

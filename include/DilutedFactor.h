@@ -20,7 +20,7 @@ namespace LapH{
 template <QuarkLineType qlt>
 void check_random_combinations(std::string const &diagram,
                                std::vector<size_t> const &lookup,
-                               std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                                std::vector<QuarklineQ2Indices> const &Q2_lookup);
 
@@ -35,7 +35,7 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
                     int const t1,
                     int const b2,
                     std::array<size_t, 2> const look,
-                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                     std::vector<QuarklineQ1Indices> const &Q1_lookup,
                     size_t const dilE,
                     size_t const dilD);
@@ -53,7 +53,7 @@ void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
            int const t2,
            int const b2,
            std::array<size_t, 3> const look,
-           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<QuarklineQ1Indices> const &Q1_lookup,
            size_t const dilE,
            size_t const dilD);
@@ -72,7 +72,7 @@ void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result,
                     int const t1,
                     int const t2,
                     std::array<size_t, 3> const look,
-                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                     std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                     std::vector<QuarklineQ2Indices> const &Q2V_lookup,
                     size_t const dilE,
@@ -90,7 +90,7 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
                     int const t1,
                     int const b2,
                     std::array<size_t, 3> const look,
-                    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                     std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                     std::vector<QuarklineQ2Indices> const &Q2V_lookup,
                     size_t const dilE,
@@ -107,7 +107,7 @@ std::vector<cmplx> trace(
     int const b2,
     int const t2,
     std::vector<size_t> const &lookup,
-    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
     std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
     std::vector<QuarklineQ2Indices> const &Q2_lookup,
     int const gamma,
@@ -117,16 +117,11 @@ std::vector<cmplx> trace(
 /*! Multiply (Q1*Q1) and take trace
  *  - corr0
  */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
 std::vector<cmplx> trace(
-    QuarkLineBlock<qlt1> const &quarklines,
-    int const t1,
-    int const b2,
-    int const t2,
-    int const b1,
-    std::vector<size_t> const &lookup,
-    std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
-    std::vector<QuarklineQ1Indices> const &Q1_lookup);
+    std::vector<Eigen::MatrixXcd> const &quarkline1,
+    std::vector<Eigen::MatrixXcd> const &quarkline2,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+    std::vector<size_t> const &ric_ids);
 
 /*! Multiply (Q2V*rVdaggerV)*(Q2V*rVdaggerVr). or 
  *           (rVdaggerVr*Q2L)*(rVdaggerVr*Q2L) (two implementations) 
@@ -139,7 +134,7 @@ template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
-           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
            std::vector<QuarklineQ2Indices> const &Q2_lookup,
            size_t const dilE,
@@ -152,7 +147,7 @@ template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
-           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
            std::vector<QuarklineQ1Indices> const &Q1_lookup,
            std::vector<QuarklineQ2Indices> const &Q2_lookup,
@@ -166,7 +161,7 @@ template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &L1, 
             std::vector<Eigen::MatrixXcd> const &L2, 
             std::vector<size_t> const &lookup,
-            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<QuarklineQ1Indices> const &Q1_lookup,
             size_t const dilE,
             size_t const dilD);
@@ -178,7 +173,7 @@ template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &L1, 
             std::vector<Eigen::MatrixXcd> const &L2, 
             std::vector<size_t> const &lookup,
-            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
 /*! Multiply tr(Q1*Q1) * tr(Q1*Q1) 
@@ -190,7 +185,7 @@ void trtr(compcomp_t &result,
           std::vector<cmplx> const &factor1,
           std::vector<cmplx> const &factor2,
           std::vector<size_t> const &lookup,
-          std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
           std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
 /*! Multiply tr(Q2V*rVdaggerVr) * tr(Q2V*rVdaggerVr) 
@@ -204,7 +199,7 @@ void trtr(compcomp_t &result,
           std::vector<cmplx> const &factor1,
           std::vector<cmplx> const &factor2,
           std::vector<size_t> const &lookup,
-          std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
           std::vector<QuarklineQ2Indices> const &Q2_lookup);
 
 }  // end of namespace

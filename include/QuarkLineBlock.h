@@ -80,6 +80,15 @@ class QuarkLineBlock {
     return Ql[id][op_id].at(rnd);
   }
 
+  std::vector<Eigen::MatrixXcd> const &operator()(const int t,
+                                     const int b,
+                                     const int op_id) const {
+    auto const id =
+        std::find(Ql_id.begin(), Ql_id.end(), std::pair<int, int>(t, b)) - Ql_id.begin();
+    /*! @todo catch when t,b is an invalid index */
+    return Ql[id][op_id];
+  }
+
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator& peram,
