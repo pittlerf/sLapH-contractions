@@ -183,7 +183,7 @@ struct VdaggerVRandomLookup{
   /*! id of ricQ1_lookup for rvdaggerv or ricQ2_lookup for rvdaggervr in 
    *  OperatorLookup 
    */
-  size_t id_ricQ_lookup;
+  size_t id_ric_lookup;
   /*! Flag that indicates whether VdaggerV must be daggered (prior to 
    *  multiplication with random vectors) to get the correct quantum numbers
    */
@@ -191,8 +191,8 @@ struct VdaggerVRandomLookup{
 
   /*! Just a small constructor to ensure easy filling of its vector form */
   VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
-            const size_t id_ricQ_lookup, const bool need_vdaggerv_daggering) :
-             id(id), id_vdaggerv(id_vdaggerv), id_ricQ_lookup(id_ricQ_lookup),
+            const size_t id_ric_lookup, const bool need_vdaggerv_daggering) :
+             id(id), id_vdaggerv(id_vdaggerv), id_ric_lookup(id_ric_lookup),
              need_vdaggerv_daggering(need_vdaggerv_daggering) {};
 };
 
@@ -200,7 +200,7 @@ struct VdaggerVRandomLookup{
 /*! Struct that contains all information for a sLapH operator 
  *
  *  @todo confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable
- *        contain indices of vdaggerv_lookup and ricQ_lookup. Multiple 
+ *        contain indices of vdaggerv_lookup and ric_lookup. Multiple 
  *        hierarchy levels in a single struct
  *  @todo confusing because either Q1 and rvdaggerv OR Q2 and rvdaggervr are
  *        used, but in both cases half the members are spurious
@@ -218,7 +218,7 @@ struct OperatorLookup{
   std::vector<RandomIndexCombinationsQ2> ricQ2_lookup;
 
   /*! @{ 
-   *  Specifies which entries of @em vdaggerv_lookup and @em ricQ_lookup shall
+   *  Specifies which entries of @em vdaggerv_lookup and @em ric_lookup shall
    *  be combined
    */
   std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  

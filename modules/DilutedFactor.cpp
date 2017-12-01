@@ -34,7 +34,7 @@ void M1xM2<QuarkLineType::Q2V>(Eigen::MatrixXcd &result,
            size_t const dilD){
 
    const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+   const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
 
    size_t M2_rnd_counter = 0;
    for (const auto &rnd2 : ric2) {
@@ -69,7 +69,7 @@ void M1xM2<QuarkLineType::Q2L>(Eigen::MatrixXcd &result,
            size_t const dilD){
 
   const auto &ric2 = ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+  const auto &ric3 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
 
   size_t M2_rnd_counter = 0;
   for (const auto &rnd2 : ric2) {
@@ -102,11 +102,11 @@ void check_random_combinations<QuarkLineType::Q2V>(std::string const &diagram,
        ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup]
            .rnd_vec_ids;
    const auto &ric1 =
-      ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+      ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
    const auto &ric2 =
        ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
    const auto &ric3 =
-       ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+       ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
 
    if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
        ric0.size() != ric3.size()) {
@@ -126,11 +126,11 @@ void check_random_combinations<QuarkLineType::Q2L>(std::string const &diagram,
        ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup]
            .rnd_vec_ids;
    const auto &ric1 =
-      ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+      ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
    const auto &ric2 =
        ricQ2_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
    const auto &ric3 =
-       ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+       ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
 
    if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
        ric0.size() != ric3.size()) {
@@ -232,7 +232,7 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
   const auto &ric0 =
       ricQ2_lookup[Q2V_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
   const auto &ric1 =
-      ricQ2_lookup[rvdaggervr_lookup[look[2]].id_ricQ_lookup].rnd_vec_ids;
+      ricQ2_lookup[rvdaggervr_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
 
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
@@ -284,7 +284,7 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
   assert(dilD = 4);
 
   const auto &ric0 = ricQ2_lookup[Q2_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[look[1]].id_ricQ_lookup].rnd_vec_ids;
+  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
 
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
@@ -333,7 +333,7 @@ cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(
    cmplx result = cmplx(.0,.0);
 
    const auto &ric0 = ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+   const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
      for (const auto &rnd1 : ric1) {
@@ -370,7 +370,7 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
   cmplx result = cmplx(.0,.0);
 
   const auto &ric0 = ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ricQ_lookup].rnd_vec_ids;
+  const auto &ric1 = ricQ2_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
 
   size_t M1_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
@@ -416,7 +416,7 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
   const auto &ric0 = 
     ricQ2_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
   const auto &ric1 =
-    ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+    ricQ2_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
 
   for (const auto &rnd : ric0) {
     const auto idr0 = &rnd - &ric0[0];
@@ -504,7 +504,7 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
   const auto &ric1 = 
     ricQ2_lookup[Q1_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
   const auto &ric2 = 
-    ricQ2_lookup[rvdaggervr_lookup[lookup[2]].id_ricQ_lookup].rnd_vec_ids;
+    ricQ2_lookup[rvdaggervr_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
 
   size_t M1_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {

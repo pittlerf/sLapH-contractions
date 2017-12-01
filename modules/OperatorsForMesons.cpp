@@ -117,7 +117,7 @@ LapH::OperatorsForMesons::OperatorsForMesons
     size_t nb_rnd_combinations = 
         operator_lookuptable.ricQ1_lookup[
                            operator_lookuptable.rvdaggerv_lookuptable[counter].
-                    id_ricQ_lookup].rnd_vec_ids.size();
+                    id_ric_lookup].rnd_vec_ids.size();
     counter++;
     for(auto& rvdv_level2 : rvdv_level1)
       rvdv_level2.resize(nb_rnd_combinations);
@@ -130,7 +130,7 @@ LapH::OperatorsForMesons::OperatorsForMesons
     size_t nb_rnd_combinations = 
         operator_lookuptable.ricQ2_lookup[
                            operator_lookuptable.rvdaggervr_lookuptable[counter].
-                    id_ricQ_lookup].rnd_vec_ids.size();
+                    id_ric_lookup].rnd_vec_ids.size();
     counter++;
     for(auto& rvdvr_level2 : rvdvr_level1)
       rvdvr_level2.resize(nb_rnd_combinations);
@@ -447,7 +447,7 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
 
     size_t rid = 0;
     for(const auto& rnd_id : 
-              operator_lookuptable.ricQ1_lookup[op.id_ricQ_lookup].rnd_vec_ids){
+              operator_lookuptable.ricQ1_lookup[op.id_ric_lookup].rnd_vec_ids){
 
       for(size_t block = 0; block < 4; block++){
       for(size_t vec_i = 0; vec_i < nb_ev; ++vec_i) {
@@ -501,7 +501,7 @@ void LapH::OperatorsForMesons::build_rvdaggervr(
     int check = -1;
     Eigen::MatrixXcd M; // Intermediate memory
     for(const auto& rnd_id : 
-              operator_lookuptable.ricQ2_lookup[op.id_ricQ_lookup].rnd_vec_ids){
+              operator_lookuptable.ricQ2_lookup[op.id_ric_lookup].rnd_vec_ids){
 
       if(check != rnd_id.first){ // this avoids recomputation
         M = Eigen::MatrixXcd::Zero(nb_ev, 4*dilE);

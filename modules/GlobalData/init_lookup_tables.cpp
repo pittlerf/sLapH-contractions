@@ -727,7 +727,7 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
       auto it = std::find_if(rvdaggervr_lookup.begin(), rvdaggervr_lookup.end(),
                              [&](VdaggerVRandomLookup vdv_qn)
                              {
-                               auto c1 = (vdv_qn.id_ricQ_lookup == 
+                               auto c1 = (vdv_qn.id_ric_lookup == 
                                           rnd_vec_id[rnd_index]);
                                auto c2 = (vdv_qn.id_vdaggerv == vdv.first);
                                auto c3 = (vdv_qn.need_vdaggerv_daggering == 
@@ -790,7 +790,7 @@ static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id,
       auto it = std::find_if(rvdaggerv_lookup.begin(), rvdaggerv_lookup.end(),
                            [&](VdaggerVRandomLookup vdv_qn)
                            {
-                             auto c1 = (vdv_qn.id_ricQ_lookup == rnd);
+                             auto c1 = (vdv_qn.id_ric_lookup == rnd);
                              auto c2 = (vdv_qn.id_vdaggerv == vdv.first);
                              auto c3 = (vdv_qn.need_vdaggerv_daggering == 
                                         vdv.second); 

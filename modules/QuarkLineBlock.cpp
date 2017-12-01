@@ -238,42 +238,6 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
   std::cout << "\tQuarklines initialised" << std::endl;
 }
 
-/*! @todo rename ricQ_lookup -> ric_lookup */
-template <>
-QuarkLineBlock<QuarkLineType::Q0>::QuarkLineBlock(
-    const size_t dilT,
-    const size_t dilE,
-    const size_t nev,
-    const typename QuarkLineIndices<QuarkLineType::Q0>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
-    : dilT(dilT), dilE(dilE), nev(nev) {
-  int const eigenspace_dirac_size = dilD * dilE;
-  int const from_source_or_sink_block = 2;
-  int const to_source_or_sink_block = 2;
-  int const quarklines_per_block_combination =
-      from_source_or_sink_block * to_source_or_sink_block * dilT;
-
-  Ql.resize(quarklines_per_block_combination);
-  for (int qline_id = 0; qline_id < quarklines_per_block_combination; ++qline_id) {
-    Ql[qline_id].resize(quarkline_indices.size());
-    for (int op_id = 0; op_id < quarkline_indices.size(); ++op_id) {
-      int nb_rnd = ric_lookup[quarkline_indices[op_id].id_ricQ_lookup].rnd_vec_ids.size();
-      Ql[qline_id][op_id].resize(nb_rnd);
-      for (int rnd_id = 0; rnd_id < nb_rnd; ++rnd_id) {
-        Ql[qline_id][op_id][rnd_id] =
-            Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
-      }
-    }
-  }
-
-  Ql_id.set_capacity(quarklines_per_block_combination);
-
-  // creating gamma matrices
-  gamma.resize(16);
-  for (int i = 0; i < gamma.size(); ++i) create_gamma(gamma, i);
-
-  std::cout << "\tQuarklines initialised" << std::endl;
-}
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
@@ -357,7 +321,7 @@ void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
 
     for (const auto &qll : quarkline_indices) {
       size_t rnd_counter = 0;
-      for (const auto &rnd_id : ric_lookup[qll.id_ricQ_lookup].rnd_vec_ids) {
+      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
         Ql[0][qll.id][rnd_counter] = 
           meson_operator.return_rvdaggervr(qll.id, t1, rnd_counter);
         ++rnd_counter;

@@ -529,7 +529,7 @@ void LapH::Correlators::build_corrC(const Perambulator &perambulators,
               operator_lookup
                   .ricQ2_lookup[  // just for checking
                       operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]]
-                          .id_ricQ_lookup]
+                          .id_ric_lookup]
                   .rnd_vec_ids;
           if (ric0.size() != ric1.size()) {
             std::cout << "rnd combinations are not the same in build_corrC" << std::endl;
@@ -945,7 +945,7 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
       const auto &ric2 =
           operator_lookup
               .ricQ2_lookup[operator_lookup.rvdaggervr_lookuptable[c_look.lookup[2]]
-                                .id_ricQ_lookup]
+                                .id_ric_lookup]
               .rnd_vec_ids;
       if (ric0.size() != ric1.size() || ric0.size() != ric2.size()) {
         std::cout << "rnd combinations are not the same in build_C3+" << std::endl;
@@ -1118,13 +1118,13 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
               .rnd_vec_ids;
       const auto &ric1 =
           operator_lookup.ricQ2_lookup[ 
-                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].id_ricQ_lookup]
+                  operator_lookup.rvdaggervr_lookuptable[c_look.lookup[3]].id_ric_lookup]
               .rnd_vec_ids;
       const auto &ric2 =
           operator_lookup.ricQ2_lookup[quark_lookup.Q2L[c_look.lookup[2]].id_ric_lookup]
               .rnd_vec_ids;
       const auto &ric3 = operator_lookup.ricQ2_lookup[  
-           operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].id_ricQ_lookup].rnd_vec_ids;
+           operator_lookup.rvdaggervr_lookuptable[c_look.lookup[1]].id_ric_lookup].rnd_vec_ids;
 
       // creating memeory for M1 -------------------------------------------------
       const size_t id3 = c_look.lookup[3];
