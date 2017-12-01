@@ -396,15 +396,14 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
 
 template<>
 std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
-    QuarkLineBlock<QuarkLineType::Q2V> const &quarklines,
-    OperatorsForMesons const &meson_operator,
+    QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
+    QuarkLineBlock<QuarkLineType::Q0> const &quarkline2,
     int const t1,
     int const b2,
     int const t2,
     std::vector<size_t> const &lookup,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-    std::vector<QuarklineQ2Indices> const &Q2_lookup,
+    std::vector<size_t> const &ric_ids,
     int const gamma,
     size_t const dilE,
     size_t const dilD){
@@ -413,22 +412,21 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
 
   std::vector<cmplx> result;
 
-  const auto &ric0 = 
-    ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 =
-    ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
 
   for (const auto &rnd : ric0) {
     const auto idr0 = &rnd - &ric0[0];
     result.emplace_back(cmplx(0.0, 0.0));
 
     for (size_t d = 0; d < 4; d++) {
-      const auto gamma_index = quarklines.return_gamma_row(gamma, d);
+      const auto gamma_index = quarkline1.return_gamma_row(gamma, d);
       result[idr0] +=
-          quarklines.return_gamma_val(gamma, d) *
-          ( quarklines(t1, b2, lookup[0], idr0)
+          quarkline1.return_gamma_val(gamma, d) *
+          ( quarkline1(t1, b2, lookup[0], idr0)
                .block(d * dilE, gamma_index * dilE, dilE, dilE) *
-            meson_operator.return_rvdaggervr(lookup[1], t2, idr0)
+            quarkline2(t2, b2, lookup[1], idr0)
+//            meson_operator.return_rvdaggervr(lookup[1], t2, idr0)
                .block(gamma_index * dilE, d * dilE, dilE, dilE))
           .trace();
     }

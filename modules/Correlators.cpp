@@ -492,18 +492,26 @@ void LapH::Correlators::build_corrC(Perambulator const &perambulators,
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q2V> quarklines(
+    QuarkLineBlock<QuarkLineType::Q2V> quarklines_Q2V(
         dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
+    QuarkLineBlock<QuarkLineType::Q0> quarklines_Q0(
+        dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
+
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
 
-      quarklines.build_block_pair(perambulators,
-                                  meson_operator,
-                                  block_pair,
-                                  dil_fac_lookup.Q2V,
-                                  ric_lookup);
+      quarklines_Q2V.build_block_pair(perambulators,
+                                      meson_operator,
+                                      block_pair,
+                                      dil_fac_lookup.Q2V,
+                                      ric_lookup);
+      quarklines_Q0.build_block_pair(perambulators,
+                                      meson_operator,
+                                      block_pair,
+                                      dil_fac_lookup.Q0,
+                                      ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         auto const t1 = slice_pair.source();
@@ -525,14 +533,17 @@ void LapH::Correlators::build_corrC(Perambulator const &perambulators,
             exit(0);
           }
 
+          std::vector<size_t> random_index_combination_ids = 
+            std::vector<size_t>( {dil_fac_lookup.Q2V[c_look.lookup[0]].id_ric_lookup,
+                                  dil_fac_lookup.Q0 [c_look.lookup[1]].id_ric_lookup} );
 
           corrC[c_look.id][t1][t2] = trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
-                                        quarklines, meson_operator, 
+                                        quarklines_Q2V, quarklines_Q0,  
                                         slice_pair.source(), slice_pair.sink_block(), 
                                         slice_pair.sink(), c_look.lookup, 
                                         ric_lookup, 
-                                        dil_fac_lookup.Q0, 
-                                        dil_fac_lookup.Q2V, c_look.gamma[0], dilE, 4);
+                                        random_index_combination_ids,
+                                        c_look.gamma[0], dilE, 4);
         }
       }
     }
