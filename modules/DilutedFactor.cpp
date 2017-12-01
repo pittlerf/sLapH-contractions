@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "Operator.h"
+#include "DilutedFactor.h"
 
 namespace {
 

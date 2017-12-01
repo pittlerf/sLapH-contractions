@@ -194,13 +194,13 @@ void trtr(compcomp_t &result,
           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
           std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
-t/*! Multiply tr(Q2V*rVdaggerVr) * tr(Q2V*rVdaggerVr) 
+/*! Multiply tr(Q2V*rVdaggerVr) * tr(Q2V*rVdaggerVr) 
  *  - C40D
  *  - C40V
  *  rVdaggerVr_lookup is not necessary as it contains information redundant
  *  to Q2V_lookup
  */
-emplate<QuarkLineType qlt1, QuarkLineType qlt2>
+template<QuarkLineType qlt1, QuarkLineType qlt2>
 void trtr(compcomp_t &result,
           std::vector<cmplx> const &factor1,
           std::vector<cmplx> const &factor2,

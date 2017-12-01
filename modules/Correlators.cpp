@@ -5,7 +5,7 @@
 #include "QuarkLineBlock.h"
 #include "dilution-iterator.h"
 #include "StopWatch.h"
-#include "Operator.h"
+#include "DilutedFactor.h"
 #include "typedefs.h"
 
 namespace

@@ -84,7 +84,7 @@ add_executable(contract
     modules/GlobalData/global_data_input_handling_utils.cpp
     modules/GlobalData/init_lookup_tables.cpp
     modules/OperatorsForMesons.cpp
-    modules/Operator.cpp
+    modules/DilutedFactor.cpp
     modules/Perambulator.cpp
     modules/QuarkLineBlock.cpp
     modules/RandomVector.cpp

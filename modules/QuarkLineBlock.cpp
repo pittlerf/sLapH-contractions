@@ -301,6 +301,37 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_block_pair(
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*! Admittedly ugly wrapper around rVdaggerVr */
+template <>
+void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
+    Perambulator const &peram,
+    OperatorsForMesons const &meson_operator,
+    DilutionIterator const &block_pair,
+    typename QuarkLineIndices<QuarkLineType::Q0>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+  for (auto const slice_pair : block_pair.one_sink_slice()) {
+    auto const t1 = slice_pair.source();
+    auto const b2 = slice_pair.source_block();
+
+    Ql_id.push_front(std::make_pair(t1, b2));
+
+    // Effectively this is a right rotation.
+    std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+
+
+    for (const auto &qll : quarkline_indices) {
+      size_t rnd_counter = 0;
+      for (const auto &rnd_id : ric_lookup[qll.id_ricQ_lookup].rnd_vec_ids) {
+        Ql[0][qll.id][rnd_counter] = 
+          meson_operator.return_rvdaggervr(qll.id, t1, rnd_counter);
+        ++rnd_counter;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 template <>
 void QuarkLineBlock<QuarkLineType::Q2V>::build_block_pair(
     Perambulator const &peram,

@@ -28,6 +28,14 @@ struct gamma_lookup {
 template <QuarkLineType qlt>
 struct QuarkLineIndices {};
 
+/*! @todo QuarkLineType is a bad name in this case. That's a proxy for 
+ *        CorrInfo.lookup 
+ */
+template <>
+struct QuarkLineIndices<QuarkLineType::Q0> {
+  typedef std::vector<VdaggerVRandomLookup> type;  
+};
+
 template <>
 struct QuarkLineIndices<QuarkLineType::Q1> {
   typedef std::vector<QuarklineQ1Indices> type;
