@@ -83,17 +83,17 @@ private:
   /*! @todo that should not be here but taken from Globaldata */
   const size_t Lt, dilT, dilE, nev;
 
-  /*! Temporal memory for Q2V*rVdaggerVr (without trace!) */
-  array_corr corrC;
-  /*! Calculate Q2V*rVdaggerVr (without trace!) */
+  /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
+  array_corr corr0; 
+  /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   void build_corr0(const OperatorsForMesons& meson_operator, 
                    const Perambulator& perambulators,
                    const std::vector<CorrInfo>& corr_lookup,
                    const QuarklineLookup& quark_lookup,
                    const OperatorLookup& operator_lookup);
-  /*! Temporal memory for Q1*VdaggerVr*Q1*VdaggerVr (without trace!) */
-  array_corr corr0; 
-  /*! Calculate Q2V*rVdaggerVr (without trace!) */
+  /*! Temporal memory for tr(Q2V*rVdaggerVr) */
+  array_corr corrC;
+  /*! Calculate tr(Q2V*rVdaggerVr) */
   void build_corrC(const Perambulator& perambulators,
                    const OperatorsForMesons& meson_operator,
                    const OperatorLookup& OperatorLookup,

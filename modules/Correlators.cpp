@@ -333,9 +333,10 @@ void LapH::Correlators::build_C20(const std::vector<CorrInfo> &corr_lookup,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
         /*! @todo hidden because range based but this is a loop over random */
-        for (const auto &corr :
-             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()])
-          correlator[t] += corr;
+        correlator[t] += std::accumulate(
+             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()].begin(),
+             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()].end(),
+             cmplx(0.0,0.0));
     }}
     // normalisation
     for(auto& corr : correlator){
@@ -1790,6 +1791,8 @@ void LapH::Correlators::contract (
   build_C40V(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
 
   // 3. Build all other correlation functions.
+//  build_C1(meson_operator, perambulators, operator_lookup, corr_lookup.C1, 
+//                                           quark_lookup, output_path, output_filename);
   build_C4cC(meson_operator, perambulators, operator_lookup, corr_lookup.C4cC, 
                                            quark_lookup, output_path, output_filename);
   build_C4cB(meson_operator, perambulators, operator_lookup, corr_lookup.C4cB, 
