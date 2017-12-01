@@ -8,6 +8,9 @@ set -e
 set -u
 set -x
 
+# delete old local data. Ignore errors if none are there
+rm correlators/*.h5 || true
+
 "$1/contract" -i test_all.ini
 
 ./compare
