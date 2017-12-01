@@ -395,10 +395,10 @@ void LapH::Correlators::build_C40D(const OperatorLookup &operator_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5*4*3*2) * Lt;
-      corr.reim /= (5*4*3*2) * Lt;
-      corr.imre /= (5*4*3*2) * Lt;
-      corr.imim /= (5*4*3*2) * Lt;
+      corr.rere /= (5U*4U*3U*2U) * Lt;
+      corr.reim /= (5U*4U*3U*2U) * Lt;
+      corr.imre /= (5U*4U*3U*2U) * Lt;
+      corr.imim /= (5U*4U*3U*2U) * Lt;
     }
 
     // write data to file
