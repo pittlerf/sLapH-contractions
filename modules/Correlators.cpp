@@ -427,48 +427,38 @@ void LapH::Correlators::build_C40V(const OperatorLookup& operator_lookup,
   // first element
   WriteHDF5Correlator filehandle(output_path, "C40V", output_filename, comp_type_factory_trtr() );
 
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
   for(const auto& c_look : corr_lookup.C40V){
-    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0,.0,.0,.0));
+
+    std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0, .0, .0, .0));
+
     const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
-    const auto& ric0 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id0].
-                                                     id_ric_lookup].rnd_vec_ids;
-    const auto& ric1 = operator_lookup.ricQ2_lookup[quark_lookup.Q1[id1].
-                                                     id_ric_lookup].rnd_vec_ids;
-    size_t norm = 0;
-    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
-        for (const auto &rnd0 : ric0) {
-          for (const auto &rnd1 : ric1) {
-            if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
-                (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
-              auto const &factor1 =
-                  corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()].at(
-                      &rnd0 - &ric0[0]);
-              auto const &factor2 =
-                  corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()].at(
-                      &rnd1 - &ric1[0]);
 
-              correlator[t].rere += factor1.real() * factor2.real();
-              correlator[t].reim += factor1.real() * factor2.imag();
-              correlator[t].imre += factor1.imag() * factor2.real();
-              correlator[t].imim += factor1.imag() * factor2.imag();
-              norm++;
-            }
-          }
-        }
+        /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
+        trtr<QuarkLineType::Q1, QuarkLineType::Q1>(
+            correlator[t], 
+            corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+            corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
+            std::vector<size_t>( {id0,id1} ),
+            operator_lookup.ricQ2_lookup,
+            quark_lookup.Q1);
       }
     }
 
     // normalisation
-    for (auto &corr1 : correlator) {
-      corr1.rere /= norm / Lt;
-      corr1.reim /= norm / Lt;
-      corr1.imre /= norm / Lt;
-      corr1.imim /= norm / Lt;
+    for (auto &corr : correlator) {
+      corr.rere /= (5U*4U*3U*2U) * Lt;
+      corr.reim /= (5U*4U*3U*2U) * Lt;
+      corr.imre /= (5U*4U*3U*2U) * Lt;
+      corr.imim /= (5U*4U*3U*2U) * Lt;
     }
+
     // write data to file
     filehandle.write(correlator, c_look);
   }
@@ -619,48 +609,38 @@ void LapH::Correlators::build_C4cD(const OperatorLookup &operator_lookup,
   WriteHDF5Correlator filehandle(
       output_path, "C4+D", output_filename, comp_type_factory_trtr());
 
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
   for (const auto &c_look : corr_lookup.C4cD) {
+
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0, .0, .0, .0));
+
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
-    const auto &ric0 =
-        operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id0].id_ric_lookup].rnd_vec_ids;
-    const auto &ric1 =
-        operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id1].id_ric_lookup].rnd_vec_ids;
 
-    size_t norm = 0;
-    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        for (const auto &rnd0 : ric0)
-          for (const auto &rnd1 : ric1)
-
-            if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
-                (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
-              auto const &factor1 =
-                  corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()].at(
-                      &rnd0 - &ric0[0]);
-              auto const &factor2 =
-                  corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()].at(
-                      &rnd1 - &ric1[0]);
-
-              correlator[t].rere += factor1.real() * factor2.real();
-              correlator[t].reim += factor1.real() * factor2.imag();
-              correlator[t].imre += factor1.imag() * factor2.real();
-              correlator[t].imim += factor1.imag() * factor2.imag();
-              norm++;
-            }
+        /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
+        trtr<QuarkLineType::Q2V, QuarkLineType::Q2V>(
+            correlator[t], 
+            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+            corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
+            std::vector<size_t>( {id0,id1} ),
+            operator_lookup.ricQ2_lookup,
+            quark_lookup.Q2V);
       }
     }
+
     // normalisation
-    for (auto &corr1 : correlator) {
-      corr1.rere /= norm / Lt;
-      corr1.reim /= norm / Lt;
-      corr1.imre /= norm / Lt;
-      corr1.imim /= norm / Lt;
+    for (auto &corr : correlator) {
+      corr.rere /= (5U*4U*3U*2U) * Lt;
+      corr.reim /= (5U*4U*3U*2U) * Lt;
+      corr.imre /= (5U*4U*3U*2U) * Lt;
+      corr.imim /= (5U*4U*3U*2U) * Lt;
     }
+
     // write data to file
     filehandle.write(correlator, c_look);
   }
@@ -668,6 +648,7 @@ void LapH::Correlators::build_C4cD(const OperatorLookup &operator_lookup,
   swatch.stop();
   swatch.print();
 }
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LapH::Correlators::build_C4cV(const OperatorLookup &operator_lookup,
@@ -686,50 +667,38 @@ void LapH::Correlators::build_C4cV(const OperatorLookup &operator_lookup,
   WriteHDF5Correlator filehandle(
       output_path, "C4+V", output_filename, comp_type_factory_trtr());
 
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
   for (const auto &c_look : corr_lookup.C4cV) {
+
     std::vector<LapH::compcomp_t> correlator(Lt, LapH::compcomp_t(.0, .0, .0, .0));
+
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
-    const auto &ric0 =
-        operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id0].id_ric_lookup].rnd_vec_ids;
-    const auto &ric1 =
-        operator_lookup.ricQ2_lookup[quark_lookup.Q2V[id1].id_ric_lookup].rnd_vec_ids;
 
-    size_t norm = 0;
-    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        for (const auto &rnd0 : ric0) {
-          for (const auto &rnd1 : ric1) {
-
-            if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
-                (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
-              auto const &factor1 =
-                  corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()].at(
-                      &rnd0 - &ric0[0]);
-              auto const &factor2 =
-                  corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()].at(
-                      &rnd1 - &ric1[0]);
-
-              correlator[t].rere += factor1.real() * factor2.real();
-              correlator[t].reim += factor1.real() * factor2.imag();
-              correlator[t].imre += factor1.imag() * factor2.real();
-              correlator[t].imim += factor1.imag() * factor2.imag();
-              norm++;
-            }
-          }
-        }
+        /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
+        trtr<QuarkLineType::Q2V, QuarkLineType::Q2V>(
+            correlator[t], 
+            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+            corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
+            std::vector<size_t>( {id0,id1} ),
+            operator_lookup.ricQ2_lookup,
+            quark_lookup.Q2V);
       }
     }
+
     // normalisation
-    for (auto &corr1 : correlator) {
-      corr1.rere /= norm / Lt;
-      corr1.reim /= norm / Lt;
-      corr1.imre /= norm / Lt;
-      corr1.imim /= norm / Lt;
+    for (auto &corr : correlator) {
+      corr.rere /= (5U*4U*3U*2U) * Lt;
+      corr.reim /= (5U*4U*3U*2U) * Lt;
+      corr.imre /= (5U*4U*3U*2U) * Lt;
+      corr.imim /= (5U*4U*3U*2U) * Lt;
     }
+
     // write data to file
     filehandle.write(correlator, c_look);
   }

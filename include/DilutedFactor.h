@@ -149,4 +149,12 @@ void trtr(compcomp_t &result,
           std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
           std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
+template<QuarkLineType qlt1, QuarkLineType qlt2>
+void trtr(compcomp_t &result,
+          std::vector<cmplx> const &factor1,
+          std::vector<cmplx> const &factor2,
+          std::vector<size_t> const &lookup,
+          std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
+          std::vector<QuarklineQ2Indices> const &Q2_lookup);
+
 }  // end of namespace
