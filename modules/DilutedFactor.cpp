@@ -490,7 +490,6 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
            std::vector<Eigen::MatrixXcd> const &M2, 
            std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ricQ2_lookup,
-           std::vector<RandomIndexCombinationsQ1> const &ricQ1_lookup,
            std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
            std::vector<QuarklineQ1Indices> const &Q1_lookup,
            std::vector<QuarklineQ2Indices> const &Q2_lookup,

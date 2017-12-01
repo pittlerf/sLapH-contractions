@@ -30,6 +30,21 @@
 
 namespace LapH {
 
+/*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
+struct DilutedFactorLookup{
+  DilutedFactorLookup(std::vector<VdaggerVRandomLookup> const &_rvdaggervr_lookup,
+                      std::vector<QuarklineQ1Indices> const &_Q1,
+                      std::vector<QuarklineQ2Indices> const &_Q2V,
+                      std::vector<QuarklineQ2Indices> const &_Q2L)
+    : Q0(_rvdaggervr_lookup), Q1(_Q1), Q2V(_Q2V), Q2L(_Q2L) {}
+
+  std::vector<VdaggerVRandomLookup> const Q0;  
+  std::vector<QuarklineQ1Indices> const Q1;
+  std::vector<QuarklineQ2Indices> const Q2V;
+  std::vector<QuarklineQ2Indices> const Q2L;
+
+};
+
 /******************************************************************************/
 
 /*! Calculates correlation functions according to the stochastic Laplacian 
@@ -62,6 +77,10 @@ class Correlators {
 private:
   /*! @todo that should not be here but taken from Globaldata */
   const size_t Lt, dilT, dilE, nev;
+
+  DilutedFactorLookup const dil_fac_lookup;
+
+  std::vector<RandomIndexCombinationsQ2> const ric_lookup;
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   array_corr corr0; 
@@ -193,9 +212,7 @@ private:
    */
   void build_C3c(const OperatorsForMesons& meson_operator,
                  const Perambulator& perambulators,
-                 const OperatorLookup& operator_lookup,
                  const std::vector<CorrInfo>& corr_lookup,
-                 const QuarklineLookup& quark_lookup,
                  const std::string output_path,
                  const std::string output_filename);
   /*! Build charged 4pt correlation function: Direct diagram
@@ -258,8 +275,9 @@ private:
 public:
   // Constructor
   Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
-               const size_t nev, const CorrelatorLookup& corr_lookup) :
-               Lt(Lt), dilT(dilT), dilE(dilE), nev(nev) {};
+               const size_t nev, const CorrelatorLookup& corr_lookup,
+               OperatorLookup const &operator_lookup,
+               QuarklineLookup const &quark_lookup);
   // Standard Destructor
   ~Correlators () {};
 

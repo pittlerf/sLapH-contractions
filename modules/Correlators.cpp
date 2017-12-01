@@ -11,21 +11,6 @@
 namespace
 {
 
-/*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
-struct DilutedFactorLookup{
-  DilutedFactorLookup(std::vector<VdaggerVRandomLookup> const &_Q0,
-                      std::vector<QuarklineQ1Indices> const &_Q1,
-                      std::vector<QuarklineQ2Indices> const &_Q2V,
-                      std::vector<QuarklineQ2Indices> const &_Q2L)
-    : Q0(_Q0), Q1(_Q1), Q2V(_Q2V), Q2L(_Q2L) {}
-
-  std::vector<VdaggerVRandomLookup> const Q0;  
-  std::vector<QuarklineQ1Indices> const Q1;
-  std::vector<QuarklineQ2Indices> const Q2V;
-  std::vector<QuarklineQ2Indices> const Q2L;
-
-};
-
 /*! Creates compound datatype to write complex numbers from LapH::complex_t 
  *  vectors to HDF5 file
  *
@@ -170,6 +155,20 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 
 /******************************************************************************/
 /******************************************************************************/
+
+LapH::Correlators::Correlators(const size_t Lt, const size_t dilT, 
+    const size_t dilE, const size_t nev, const CorrelatorLookup& corr_lookup,
+    OperatorLookup const &operator_lookup, QuarklineLookup const &quark_lookup) 
+  : Lt(Lt), 
+    dilT(dilT), 
+    dilE(dilE), 
+    nev(nev),
+    dil_fac_lookup (DilutedFactorLookup(operator_lookup.rvdaggervr_lookuptable, 
+                                        quark_lookup.Q1, 
+                                        quark_lookup.Q2V, 
+                                        quark_lookup.Q2L)),
+    ric_lookup(operator_lookup.ricQ2_lookup){
+  }
 
 /*!
  *  @deprecated
@@ -896,9 +895,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
 
 void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
                                   Perambulator const &perambulators,
-                                  OperatorLookup const &operator_lookup,
                                   std::vector<CorrInfo> const &corr_lookup,
-                                  QuarklineLookup const &quark_lookup, 
                                   std::string const output_path,
                                   std::string const output_filename) {
   if (corr_lookup.empty())
@@ -922,9 +919,9 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
     std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q2L> quarklines_Q2L(
-        dilT, dilE, nev, quark_lookup.Q2L, operator_lookup.ricQ2_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q2L, ric_lookup);
     QuarkLineBlock<QuarkLineType::Q1> quarklines_Q1(
-        dilT, dilE, nev, quark_lookup.Q1, operator_lookup.ricQ2_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
     // creating memory arrays M1, M2 for intermediate storage of Quarklines ------
     std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
@@ -937,15 +934,13 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
 
     for (const auto &c_look : corr_lookup) {
       const auto &ric0 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
+          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
               .rnd_vec_ids;
       const auto &ric1 =
-          operator_lookup.ricQ2_lookup[quark_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
               .rnd_vec_ids;
       const auto &ric2 =
-          operator_lookup
-              .ricQ2_lookup[operator_lookup.rvdaggervr_lookuptable[c_look.lookup[2]]
-                                .id_ric_lookup]
+          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[2]].id_ric_lookup]
               .rnd_vec_ids;
       if (ric0.size() != ric1.size() || ric0.size() != ric2.size()) {
         std::cout << "rnd combinations are not the same in build_C3+" << std::endl;
@@ -993,13 +988,13 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
       quarklines_Q2L.build_block_pair(perambulators,
                                       meson_operator,
                                       block_pair,
-                                      quark_lookup.Q2L,
-                                      operator_lookup.ricQ2_lookup);
+                                      dil_fac_lookup.Q2L,
+                                      ric_lookup);
       quarklines_Q1.build_block_pair(perambulators,
                                      meson_operator,
                                      block_pair,
-                                     quark_lookup.Q1,
-                                     operator_lookup.ricQ2_lookup);
+                                     dil_fac_lookup.Q1,
+                                     ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1008,8 +1003,8 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
 
           rVdaggerVrxQ2<QuarkLineType::Q2L>(M1[look[0]], quarklines_Q2L, meson_operator, 
                          slice_pair.source(), slice_pair.sink_block(),
-                         look, operator_lookup.ricQ2_lookup,
-                         operator_lookup.rvdaggervr_lookuptable, quark_lookup.Q2L,
+                         look, ric_lookup,
+                         dil_fac_lookup.Q0, dil_fac_lookup.Q2L,
                          dilE, 4);
         }
 
@@ -1018,7 +1013,7 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
 
           Q1<QuarkLineType::Q1>(M2[look[0]], quarklines_Q1,  
                          slice_pair.sink(), slice_pair.source_block(),
-                         look, operator_lookup.ricQ2_lookup, quark_lookup.Q1, dilE, 4);
+                         look, ric_lookup, dil_fac_lookup.Q1, dilE, 4);
         }
 
         // Final summation for correlator ------------------------------------------
@@ -1037,10 +1032,10 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
 
           C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
                                    M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, 
-                                   operator_lookup.ricQ2_lookup,
-                                   operator_lookup.ricQ1_lookup,
-                                   operator_lookup.rvdaggervr_lookuptable, 
-                                   quark_lookup.Q1, quark_lookup.Q2L, dilE, 4);
+                                   ric_lookup,
+                                   dil_fac_lookup.Q0, 
+                                   dil_fac_lookup.Q1, 
+                                   dil_fac_lookup.Q2L, dilE, 4);
         }
       }
     }  // loops over time end here
@@ -1747,12 +1742,6 @@ void LapH::Correlators::contract (
     std::string const output_path,
     std::string const output_filename) {
 
-DilutedFactorLookup dil_fac_lookup = 
-    DilutedFactorLookup(operator_lookup.rvdaggervr_lookuptable, 
-                        quark_lookup.Q1, 
-                        quark_lookup.Q2V, 
-                        quark_lookup.Q2L);
-
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(perambulators, meson_operator, operator_lookup, 
               corr_lookup.corrC, quark_lookup);
@@ -1764,8 +1753,8 @@ DilutedFactorLookup dil_fac_lookup =
   build_corr0(meson_operator, perambulators, corr_lookup.corr0, 
               quark_lookup, operator_lookup);
   // in C3c, also corr0 is build, since this is much faster
-  build_C3c(meson_operator, perambulators, operator_lookup, corr_lookup.C3c, 
-                                           quark_lookup, output_path, output_filename);
+  build_C3c(meson_operator, perambulators, corr_lookup.C3c, output_path, 
+            output_filename);
   build_C20(corr_lookup.C20, output_path, output_filename);
   build_C40D(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
   build_C40V(operator_lookup, corr_lookup, quark_lookup, output_path, output_filename);
