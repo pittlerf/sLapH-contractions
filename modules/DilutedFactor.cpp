@@ -33,18 +33,18 @@ void M1xM2<QuarkLineType::Q2V>(Eigen::MatrixXcd &result,
            size_t const dilE,
            size_t const dilD){
 
-   const auto &ric2 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric3 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric2 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric3 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
 
    size_t M2_rnd_counter = 0;
    for (const auto &rnd2 : ric2) {
      for (const auto &rnd3 : ric3) {
-       if (rnd2.first != rnd3.first && rnd2.second == rnd3.second) {
+       if (rnd2.first == rnd3.first && rnd2.second != rnd3.second) {
 
          // Check that no random vector is used in M1 and M2 at the same 
          // time
-         if (rnd1.first == rnd2.first && rnd0.first == rnd3.first &&
-             rnd0.second != rnd3.second) {
+         if (rnd1.second == rnd2.second && rnd0.first != rnd3.first &&
+             rnd0.second == rnd3.second) {
            result += M2[M2_rnd_counter];
          }
          M2_rnd_counter++;
@@ -335,12 +335,12 @@ cmplx trace<QuarkLineType::Q2V, QuarkLineType::Q2V>(
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
    cmplx result = cmplx(.0,.0);
 
-   const auto &ric0 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric1 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric0 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
+   const auto &ric1 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
      for (const auto &rnd1 : ric1) {
-       if (rnd0.first != rnd1.first && rnd0.second == rnd1.second) {
+       if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
          // setting matrix values to zero
           M3.setZero(dilE * 4, dilE * 4);
 
