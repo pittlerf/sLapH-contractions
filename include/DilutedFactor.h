@@ -175,23 +175,11 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &L1,
             std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
-/*! Multiply tr(Q1*Q1) * tr(Q1*Q1) 
+/*! Multiply tr(QQ) * tr(QQ) 
  *  - C40D
  *  - C40V
- */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
-void trtr(compcomp_t &result,
-          std::vector<cmplx> const &factor1,
-          std::vector<cmplx> const &factor2,
-          std::vector<size_t> const &lookup,
-          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-          std::vector<QuarklineQ1Indices> const &Q1_lookup);
-
-/*! Multiply tr(Q2V*rVdaggerVr) * tr(Q2V*rVdaggerVr) 
  *  - C40D
  *  - C40V
- *  rVdaggerVr_lookup is not necessary as it contains information redundant
- *  to Q2V_lookup
  */
 void trtr(compcomp_t &result,
           std::vector<cmplx> const &factor1,
