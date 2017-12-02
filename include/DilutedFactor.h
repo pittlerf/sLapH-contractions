@@ -58,30 +58,11 @@ void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
            size_t const dilE,
            size_t const dilD);
 
-/*! Create vector<MatrixXcd> with Q1*Q1 for all rnd vecs not equal
- *  - (corr0)
- *  - C3c
- *  - C40B
- *  - C40C
- */
-template <QuarkLineType qlt>
-void Q2xrVdaggerVr(std::vector<Eigen::MatrixXcd> &result, 
-                    QuarkLineBlock<qlt> const &quarklines,
-                    OperatorsForMesons const &meson_operator,
-                    int const b2,
-                    int const t1,
-                    int const t2,
-                    std::array<size_t, 3> const look,
-                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                    std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                    std::vector<QuarklineQ2Indices> const &Q2V_lookup,
-                    size_t const dilE,
-                    size_t const dilD);
-
-/*! Create vector<MatrixXcd> with Q1*Q1 for all rnd vecs not equal
+/*! Create vector<MatrixXcd> with Q0*Q2 for all rnd vecs not equal
  *  - (corrC)
  *  - C4cB
  *  - C4cC
+ *  - C3c
  */
 void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result, 
                    std::vector<Eigen::MatrixXcd> const &quarkline1,

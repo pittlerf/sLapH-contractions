@@ -826,11 +826,6 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
               quarkline_Q0(slice_pair.sink(), -1, look[1]),
               quarkline_Q2V(slice_pair.source(), slice_pair.sink_block(), look[2]),
               ric_lookup, random_index_combination_ids, dilE, 4);
-
-//          Q2xrVdaggerVr<QuarkLineType::Q2V>(
-//              M1[look[0]], quarklines, meson_operator, slice_pair.sink_block(),
-//              slice_pair.source(), slice_pair.sink(), look, ric_lookup,
-//              dil_fac_lookup.Q0, dil_fac_lookup.Q2V, dilE, 4);
         }
         // build M2
         // ----------------------------------------------------------------
@@ -845,11 +840,6 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
               quarkline_Q0(slice_pair.sink(), -1, look[1]),
               quarkline_Q2V(slice_pair.source(), slice_pair.sink_block(), look[2]),
               ric_lookup, random_index_combination_ids, dilE, 4);
-
-//          Q2xrVdaggerVr<QuarkLineType::Q2V>(
-//              M2[look[0]], quarklines, meson_operator, slice_pair.sink_block(),
-//              slice_pair.source(), slice_pair.sink(), look, ric_lookup,
-//              dil_fac_lookup.Q0, dil_fac_lookup.Q2V, dilE, 4);
         }
 
         /*! Optimization by summing M2 over all random vectors before
