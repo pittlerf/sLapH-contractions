@@ -396,12 +396,10 @@ void LapH::Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
                                 dil_fac_lookup.Q1[id1].id_ric_lookup} );
 
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr(
-            correlator[t], 
-            corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-            corr0[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
-            ric_lookup,
-            random_index_combination_ids);
+        correlator[t] += trtr(corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+                              corr0[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
+                              ric_lookup,
+                              random_index_combination_ids);
       }
     }
 
@@ -455,11 +453,10 @@ void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
                                 dil_fac_lookup.Q1[id1].id_ric_lookup} );
 
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr(correlator[t], 
-             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-             corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
-             ric_lookup,
-             random_index_combination_ids);
+        correlator[t] += trtr(corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+                              corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
+                              ric_lookup,
+                              random_index_combination_ids);
       }
     }
 
@@ -645,12 +642,10 @@ void LapH::Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
                                 dil_fac_lookup.Q2V[id1].id_ric_lookup} );
 
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr(
-            correlator[t], 
-            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-            corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
-            ric_lookup,
-            random_index_combination_ids);
+        correlator[t] += trtr(corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+                              corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
+                              ric_lookup,
+                              random_index_combination_ids);
       }
     }
 
@@ -704,12 +699,10 @@ void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
                                 dil_fac_lookup.Q2V[id1].id_ric_lookup} );
 
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr(
-            correlator[t], 
-            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-            corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
-            ric_lookup,
-            random_index_combination_ids);
+        correlator[t] += trtr(corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+                              corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
+                              ric_lookup,
+                              random_index_combination_ids);
       }
     }
 

@@ -606,6 +606,12 @@ cmplx trace<QuarkLineType::Q1, QuarkLineType::Q1>(
   return result;
 }
 
+/*!
+ *  - C40D
+ *  - C40V
+ *  - C40D
+ *  - C40V
+ */
 void trtr(compcomp_t &result,
           std::vector<cmplx> const &factor1,
           std::vector<cmplx> const &factor2,
@@ -617,19 +623,51 @@ void trtr(compcomp_t &result,
 
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
+      /*! No index in the first trace may appear in the second trace */
       if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
           (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
 
-      auto const idr0 = &rnd0 - &ric0[0];
-      auto const idr1 = &rnd1 - &ric1[0];
-
-      result.rere += factor1[idr0].real() * factor2[idr1].real();
-      result.reim += factor1[idr0].real() * factor2[idr1].imag();
-      result.imre += factor1[idr0].imag() * factor2[idr1].real();
-      result.imim += factor1[idr0].imag() * factor2[idr1].imag();
+        auto const idr0 = &rnd0 - &ric0[0];
+        auto const idr1 = &rnd1 - &ric1[0];
+  
+        result.rere += factor1[idr0].real() * factor2[idr1].real();
+        result.reim += factor1[idr0].real() * factor2[idr1].imag();
+        result.imre += factor1[idr0].imag() * factor2[idr1].real();
+        result.imim += factor1[idr0].imag() * factor2[idr1].imag();
       }
     }
   }
 }
+
+compcomp_t trtr(std::vector<cmplx> const &factor1,
+          std::vector<cmplx> const &factor2,
+          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+          std::vector<size_t> const &ric_ids){
+
+  compcomp_t result {compcomp_t(.0, .0, .0, .0)};
+
+  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
+
+  for (const auto &rnd0 : ric0) {
+    for (const auto &rnd1 : ric1) {
+      /*! No index in the first trace may appear in the second trace */
+      if ((rnd0.first != rnd1.first) && (rnd0.first != rnd1.second) &&
+          (rnd0.second != rnd1.first) && (rnd0.second != rnd1.second)) {
+
+        auto const idr0 = &rnd0 - &ric0[0];
+        auto const idr1 = &rnd1 - &ric1[0];
+  
+        result.rere += factor1[idr0].real() * factor2[idr1].real();
+        result.reim += factor1[idr0].real() * factor2[idr1].imag();
+        result.imre += factor1[idr0].imag() * factor2[idr1].real();
+        result.imim += factor1[idr0].imag() * factor2[idr1].imag();
+      }
+    }
+  }
+
+  return result;
+}
+
 
 }  // end of LapH namespace

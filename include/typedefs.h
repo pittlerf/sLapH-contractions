@@ -82,6 +82,16 @@ struct compcomp_t {
   compcomp_t(const double rere, const double reim, 
              const double imre, const double imim) : 
                               rere(rere), reim(reim), imre(imre), imim(imim) {};
+  compcomp_t& operator+=(compcomp_t const &other){
+    rere += other.rere;   
+    reim += other.reim;
+    imre += other.imre;
+    imim += other.imim;   
+
+    return *this;
+  }
+
+
 }; 
 
 } // end of namespace

@@ -175,14 +175,9 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &L1,
             std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<QuarklineQ1Indices> const &Q1_lookup);
 
-/*! Multiply tr(QQ) * tr(QQ) 
- *  - C40D
- *  - C40V
- *  - C40D
- *  - C40V
+/*! Multiply two traces of two Quarklines each: tr(QQ) * tr(QQ) 
  */
-void trtr(compcomp_t &result,
-          std::vector<cmplx> const &factor1,
+compcomp_t trtr(std::vector<cmplx> const &factor1,
           std::vector<cmplx> const &factor2,
           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
           std::vector<size_t> const &ric_ids);
