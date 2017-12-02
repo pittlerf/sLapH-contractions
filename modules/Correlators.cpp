@@ -1389,9 +1389,15 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
                                     return (id2 == check[1]);
                                   });
 
-          C[c_look.id][t] += trace<QuarkLineType::Q1, QuarkLineType::Q1>(
-              L1[(*it1)[0]], L2[(*it2)[0]], c_look.lookup, ric_lookup,
-              dil_fac_lookup.Q1);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
+                   dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
+                   dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
+
+          C[c_look.id][t] += trace_3n(
+              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
+              random_index_combination_ids);
         }
       }
     } // loop over time ends here

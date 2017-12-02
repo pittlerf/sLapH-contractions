@@ -126,7 +126,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
            size_t const dilE,
            size_t const dilD);
 
-/*! Multiply (Q1*Q1)*(Q1) and take trace
+/*! Multiply (Q1*Q1)*(Q1*Q1) and take trace
  *  - C40B
  */
 template <QuarkLineType qlt1, QuarkLineType qlt2>
@@ -138,15 +138,13 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &L1,
             size_t const dilE,
             size_t const dilD);
 
-/*! Multiply (Q1*Q1)*(Q1*Q1) and take trace
+/*! Multiply (Q1*Q1)*(Q1) and take trace
  *  - C30
  */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
-cmplx trace(std::vector<Eigen::MatrixXcd> const &L1, 
-            std::vector<Eigen::MatrixXcd> const &L2, 
-            std::vector<size_t> const &lookup,
-            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-            std::vector<QuarklineQ1Indices> const &Q1_lookup);
+cmplx trace_3n(std::vector<Eigen::MatrixXcd> const &L1, 
+               std::vector<Eigen::MatrixXcd> const &L2, 
+               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+               std::vector<size_t> const &ric_ids);
 
 /*! Multiply two traces of two Quarklines each: tr(QQ) * tr(QQ) 
  */
