@@ -227,7 +227,7 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilD){
 
   /*! Assume full dilution in Dirac space in the Loop over d */
-  assert(dilD = 4);
+  assert(dilD == 4);
 
   const auto &ric0 =
       ric_lookup[Q2V_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
@@ -281,7 +281,7 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilD){
 
   /*! Assume full dilution in Dirac space in the Loop over d */
-  assert(dilD = 4);
+  assert(dilD == 4);
 
   const auto &ric0 = ric_lookup[Q2_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
   const auto &ric1 = ric_lookup[rvdaggervr_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
@@ -442,8 +442,6 @@ std::vector<cmplx> trace(
     std::vector<Eigen::MatrixXcd> const &quarkline2,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
     std::vector<size_t> const &ric_ids){
-
-  assert(dilD == 4);
 
   std::vector<cmplx> result;
 
