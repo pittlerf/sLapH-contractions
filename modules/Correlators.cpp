@@ -906,9 +906,11 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
     swatch.start();
     std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock<QuarkLineType::Q2L> quarklines_Q2L(
+    QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
+        dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
+    QuarkLineBlock<QuarkLineType::Q2L> quarkline_Q2L(
         dilT, dilE, nev, dil_fac_lookup.Q2L, ric_lookup);
-    QuarkLineBlock<QuarkLineType::Q1> quarklines_Q1(
+    QuarkLineBlock<QuarkLineType::Q1> quarkline_Q1(
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
     // creating memory arrays M1, M2 for intermediate storage of Quarklines
@@ -976,9 +978,11 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // creating quarklines
-      quarklines_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
+      quarkline_Q0.build_block_pair(perambulators, meson_operator, block_pair,
+                                      dil_fac_lookup.Q0, ric_lookup);
+      quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
                                       dil_fac_lookup.Q2L, ric_lookup);
-      quarklines_Q1.build_block_pair(perambulators, meson_operator, block_pair,
+      quarkline_Q1.build_block_pair(perambulators, meson_operator, block_pair,
                                      dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
@@ -986,18 +990,23 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
         // build M1
         // ----------------------------------------------------------------
         for (const auto &look : M1_look) {
+          
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
+                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
 
-          rVdaggerVrxQ2<QuarkLineType::Q2L>(
-              M1[look[0]], quarklines_Q2L, meson_operator, slice_pair.source(),
-              slice_pair.sink_block(), look, ric_lookup, dil_fac_lookup.Q0,
-              dil_fac_lookup.Q2L, dilE, 4);
+          rVdaggerVrxQ2(M1[look[0]], 
+              quarkline_Q0(slice_pair.source(), -1, look[1]),
+              quarkline_Q2L(slice_pair.source(), slice_pair.sink_block(), look[2]),
+              ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
         // build M2
         // ----------------------------------------------------------------
         for (const auto &look : M2_look) {
 
-          Q1<QuarkLineType::Q1>(M2[look[0]], quarklines_Q1, slice_pair.sink(),
+          Q1<QuarkLineType::Q1>(M2[look[0]], quarkline_Q1, slice_pair.sink(),
                                 slice_pair.source_block(), look, ric_lookup,
                                 dil_fac_lookup.Q1, dilE, 4);
         }
@@ -1161,17 +1170,23 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
 
           rVdaggerVrxQ2(M1[look[0]], 
               quarkline_Q0(slice_pair.source(), -1, look[1]),
-              quarkline_Q2L(slice_pair.source(), slice_pair.sink_block() ,look[2]),
+              quarkline_Q2L(slice_pair.source(), slice_pair.sink_block(), look[2]),
               ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
         // build M2
         // ----------------------------------------------------------------
         for (const auto &look : M2_look) {
-          rVdaggerVrxQ2<QuarkLineType::Q2L>(
-              M2[look[0]], quarkline_Q2L, meson_operator, slice_pair.sink(),
-              slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q0,
-              dil_fac_lookup.Q2L, dilE, 4);
+
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
+                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
+
+          rVdaggerVrxQ2(M2[look[0]], 
+              quarkline_Q0(slice_pair.sink(), -1, look[1]),
+              quarkline_Q2L(slice_pair.sink(), slice_pair.source_block(), look[2]),
+              ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
         // Final summation for correlator
