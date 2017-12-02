@@ -1221,9 +1221,16 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
                                     return (id1 == check[1] && id2 == check[2]);
                                   });
 
-          C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q2L>(
-              M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, ric_lookup,
-              dil_fac_lookup.Q0, dil_fac_lookup.Q2L, dilE, 4);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                {dil_fac_lookup.Q0 [c_look.lookup[3]].id_ric_lookup,
+                 dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup,
+                 dil_fac_lookup.Q0 [c_look.lookup[1]].id_ric_lookup,
+                 dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup});
+
+          C[c_look.id][t] += trace(
+              M1[(*it1)[0]], M2[(*it2)[0]], ric_lookup,
+              random_index_combination_ids, dilE, 4);
 
         } // loop over operators ends here
       }

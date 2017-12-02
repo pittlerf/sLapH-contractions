@@ -98,6 +98,14 @@ std::vector<cmplx> trace(
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
     std::vector<size_t> const &ric_ids);
 
+cmplx trace(
+    std::vector<Eigen::MatrixXcd> const &M1, 
+    std::vector<Eigen::MatrixXcd> const &M2, 
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+    std::vector<size_t> const &ric_ids,
+    size_t const dilE,
+    size_t const dilD);
+
 /*! Multiply (Q2V*rVdaggerV)*(Q2V*rVdaggerVr). or 
  *           (rVdaggerVr*Q2L)*(rVdaggerVr*Q2L) (two implementations) 
  *  and take trace
