@@ -635,14 +635,17 @@ void LapH::Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
+        std::vector<size_t> random_index_combination_ids = 
+          std::vector<size_t>( {dil_fac_lookup.Q2V[id0].id_ric_lookup,
+                                dil_fac_lookup.Q2V[id1].id_ric_lookup} );
+
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr<QuarkLineType::Q2V, QuarkLineType::Q2V>(
+        trtr(
             correlator[t], 
             corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
             corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
-            std::vector<size_t>( {id0,id1} ),
             ric_lookup,
-            dil_fac_lookup.Q2V);
+            random_index_combination_ids);
       }
     }
 
@@ -691,14 +694,17 @@ void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
+        std::vector<size_t> random_index_combination_ids = 
+          std::vector<size_t>( {dil_fac_lookup.Q2V[id0].id_ric_lookup,
+                                dil_fac_lookup.Q2V[id1].id_ric_lookup} );
+
         /*! @todo Write move assignment for compcomp_t and give trtr return parameter */
-        trtr<QuarkLineType::Q2V, QuarkLineType::Q2V>(
+        trtr(
             correlator[t], 
             corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
             corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
-            std::vector<size_t>( {id0,id1} ),
             ric_lookup,
-            dil_fac_lookup.Q2V);
+            random_index_combination_ids);
       }
     }
 

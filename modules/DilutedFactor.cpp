@@ -637,19 +637,14 @@ void trtr<QuarkLineType::Q1, QuarkLineType::Q1>(
   }
 }
 
-template<>
-void trtr<QuarkLineType::Q2V, QuarkLineType::Q2V>(
-    compcomp_t &result,
-    std::vector<cmplx> const &factor1,
-    std::vector<cmplx> const &factor2,
-    std::vector<size_t> const &lookup,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<QuarklineQ2Indices> const &Q2_lookup){
+void trtr(compcomp_t &result,
+          std::vector<cmplx> const &factor1,
+          std::vector<cmplx> const &factor2,
+          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+          std::vector<size_t> const &ric_ids){
 
-    const auto &ric0 =
-        ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-    const auto &ric1 =
-        ric_lookup[Q2_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+    const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
+    const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
 
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
