@@ -98,14 +98,6 @@ std::vector<cmplx> trace(
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
     std::vector<size_t> const &ric_ids);
 
-cmplx trace(
-    std::vector<Eigen::MatrixXcd> const &M1, 
-    std::vector<Eigen::MatrixXcd> const &M2, 
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<size_t> const &ric_ids,
-    size_t const dilE,
-    size_t const dilD);
-
 /*! Multiply (Q2V*rVdaggerV)*(Q2V*rVdaggerVr). or 
  *           (rVdaggerVr*Q2L)*(rVdaggerVr*Q2L) (two implementations) 
  *  and take trace
@@ -113,15 +105,12 @@ cmplx trace(
  *  - C4cB
  *  @calls M1xM2 for Optimization
  */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<size_t> const &lookup,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2_lookup,
-           size_t const dilE,
-           size_t const dilD);
+            std::vector<Eigen::MatrixXcd> const &M2, 
+            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+            std::vector<size_t> const &ric_ids,
+            size_t const dilE,
+            size_t const dilD);
 
 /*! Multiply (Q2V*rVdaggerV)*(Q1) and take trace
  *  - C3c
