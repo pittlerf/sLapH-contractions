@@ -267,6 +267,58 @@ void Q2xrVdaggerVr<QuarkLineType::Q2V>(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
+void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result, 
+                   std::vector<Eigen::MatrixXcd> const &quarkline1,
+                   std::vector<Eigen::MatrixXcd> const &quarkline2,
+                   std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                   std::vector<size_t> const &ric_ids,
+                   size_t const dilE,
+                   size_t const dilD){
+
+  /*! Assume full dilution in Dirac space in the Loop over d */
+  assert(dilD == 4);
+
+  gamma_lookup gamma_5{};
+  gamma_5.row[0] = 0;
+  gamma_5.value[0] = 1;
+  gamma_5.row[1] = 1;
+  gamma_5.value[1] = 1;
+  gamma_5.row[2] = 2;
+  gamma_5.value[2] = -1;
+  gamma_5.row[3] = 3;
+  gamma_5.value[3] = -1;
+
+
+  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
+
+  size_t result_rnd_counter = 0;
+  for (const auto &rnd0 : ric0) {
+    for (const auto &rnd1 : ric1) {
+      if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
+
+        /*! @Note Allocation should be refactored */
+        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
+
+        const size_t idr0 = &rnd0 - &ric0[0];
+        const size_t idr1 = &rnd1 - &ric1[0];
+
+        for (size_t d = 0; d < 4; d++) {
+          // TODO: gamma hardcoded
+          const cmplx value = gamma_5.value[d];
+          const size_t gamma_index = gamma_5.row[d];
+
+          result[result_rnd_counter].block(d * dilE, 0, dilE, dilD * dilE) =
+              value *
+              quarkline1[idr0].block(d * dilE, gamma_index * dilE, dilE, dilE) *
+              quarkline2[idr1].block(gamma_index * dilE, 0, dilE, dilD * dilE);
+        }
+        ++result_rnd_counter;
+      }
+    }
+  }
+
+}
 template <>
 void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result, 
                     QuarkLineBlock<QuarkLineType::Q2L> const &quarklines,
@@ -283,8 +335,8 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
   /*! Assume full dilution in Dirac space in the Loop over d */
   assert(dilD == 4);
 
-  const auto &ric0 = ric_lookup[Q2_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[rvdaggervr_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric0 = ric_lookup[rvdaggervr_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[Q2_lookup[look[2]].id_ric_lookup].rnd_vec_ids;
 
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
@@ -304,15 +356,16 @@ void rVdaggerVrxQ2<QuarkLineType::Q2L>(std::vector<Eigen::MatrixXcd> &result,
 
           result[result_rnd_counter].block(d * dilE, 0, dilE, dilD * dilE) =
               value *
-              meson_operator.return_rvdaggervr(look[1], t1, idr1)
+              meson_operator.return_rvdaggervr(look[1], t1, idr0)
                   .block(d * dilE, gamma_index * dilE, dilE, dilE) *
-              quarklines(t1, b2, look[2], idr0)
+              quarklines(t1, b2, look[2], idr1)
                   .block(gamma_index * dilE, 0, dilE, dilD * dilE);
         }
         ++result_rnd_counter;
       }
     }
   }
+
 }
 
 
@@ -499,8 +552,8 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
     ric_lookup[rvdaggervr_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
 
   size_t M1_rnd_counter = 0;
-  for (const auto &rnd0 : ric0) {
-    for (const auto &rnd2 : ric2) {
+  for (const auto &rnd2 : ric2) {
+    for (const auto &rnd0 : ric0) {
       if (rnd0.first == rnd2.first && rnd0.second != rnd2.second) {
         size_t M2_rnd_counter = 0;
         for (const auto &rnd1 : ric1) {
