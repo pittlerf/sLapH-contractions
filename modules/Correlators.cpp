@@ -1470,18 +1470,18 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 
     for (const auto &c_look : corr_lookup) {
 
-      const auto &ric0 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric2 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric3 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
-              .rnd_vec_ids;
+      //const auto &ric0 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric1 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric2 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric3 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
+      //        .rnd_vec_ids;
       //    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
       //       ric0.size() != ric3.size()){
       //      std::cout << "rnd combinations are not the same in build_corr0"
@@ -1500,8 +1500,8 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 
       // creating memeory for L1
       // -------------------------------------------------
-      const size_t id0 = c_look.lookup[0];
-      const size_t id1 = c_look.lookup[1];
+      const size_t id0 = c_look.lookup[3];
+      const size_t id1 = c_look.lookup[0];
       auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
                               [&id0, &id1](std::array<size_t, 3> check) {
                                 return (id0 == check[1] && id1 == check[2]);
@@ -1514,8 +1514,8 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
       }
       // creating memeory for L2
       // -------------------------------------------------
-      const size_t id2 = c_look.lookup[2];
-      const size_t id3 = c_look.lookup[3];
+      const size_t id2 = c_look.lookup[1];
+      const size_t id3 = c_look.lookup[2];
       auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
                               [&id2, &id3](std::array<size_t, 3> check) {
                                 return (id2 == check[1] && id3 == check[2]);
@@ -1541,27 +1541,27 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
         // build L1
         // ----------------------------------------------------------------
         for (const auto &look : L1_look) {
-          Q1xQ1(L1[look[0]], quarklines, slice_pair.source(),
-                slice_pair.sink_block(), slice_pair.sink(),
-                slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q1,
+          Q1xQ1(L1[look[0]], quarklines, slice_pair.sink(),
+                slice_pair.source_block(), slice_pair.source(),
+                slice_pair.sink_block(), look, ric_lookup, dil_fac_lookup.Q1,
                 dilE, 4);
         }
 
         // build L2
         // ----------------------------------------------------------------
         for (const auto &look : L2_look) {
-          Q1xQ1(L2[look[0]], quarklines, slice_pair.source(),
-                slice_pair.sink_block(), slice_pair.sink(),
-                slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q1,
+          Q1xQ1(L2[look[0]], quarklines, slice_pair.sink(),
+                slice_pair.source_block(), slice_pair.source(),
+                slice_pair.sink_block(), look, ric_lookup, dil_fac_lookup.Q1,
                 dilE, 4);
         }
 
         for (const auto &c_look : corr_lookup) {
 
-          const size_t id0 = c_look.lookup[0];
-          const size_t id1 = c_look.lookup[1];
-          const size_t id2 = c_look.lookup[2];
-          const size_t id3 = c_look.lookup[3];
+          const size_t id0 = c_look.lookup[3];
+          const size_t id1 = c_look.lookup[0];
+          const size_t id2 = c_look.lookup[1];
+          const size_t id3 = c_look.lookup[2];
 
           auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
                                   [&id0, &id1](std::array<size_t, 3> check) {
@@ -1572,9 +1572,17 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
                                     return (id2 == check[1] && id3 == check[2]);
                                   });
 
-          C[c_look.id][t] += trace<QuarkLineType::Q1, QuarkLineType::Q1>(
-              L1[(*it1)[0]], L2[(*it2)[0]], c_look.lookup, ric_lookup,
-              dil_fac_lookup.Q1, dilE, 4);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                {dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
+
+          C[c_look.id][t] += trace(
+              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
+              random_index_combination_ids, dilE, 4);
+
         }
       }
     }
@@ -1643,18 +1651,18 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
     for (const auto &c_look : corr_lookup) {
 
-      const auto &ric0 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric2 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric3 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
-              .rnd_vec_ids;
+      //const auto &ric0 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric1 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric2 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
+      //        .rnd_vec_ids;
+      //const auto &ric3 =
+      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
+      //        .rnd_vec_ids;
       //    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
       //       ric0.size() != ric3.size()){
       //      std::cout << "rnd combinations are not the same in build_corr0"
@@ -1673,8 +1681,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
       // creating memeory for L1
       // -------------------------------------------------
-      const size_t id0 = c_look.lookup[0];
-      const size_t id1 = c_look.lookup[1];
+      const size_t id0 = c_look.lookup[3];
+      const size_t id1 = c_look.lookup[0];
       auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
                               [&id0, &id1](std::array<size_t, 3> check) {
                                 return (id0 == check[1] && id1 == check[2]);
@@ -1687,8 +1695,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
       }
       // creating memeory for L2
       // -------------------------------------------------
-      const size_t id2 = c_look.lookup[2];
-      const size_t id3 = c_look.lookup[3];
+      const size_t id2 = c_look.lookup[1];
+      const size_t id3 = c_look.lookup[2];
       auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
                               [&id2, &id3](std::array<size_t, 3> check) {
                                 return (id2 == check[1] && id3 == check[2]);
@@ -1715,7 +1723,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
         // ----------------------------------------------------------------
         for (const auto &look : L1_look) {
           Q1xQ1(L1[look[0]], quarklines, slice_pair.source(),
-                slice_pair.sink_block(), slice_pair.sink(),
+                slice_pair.source_block(), slice_pair.source(),
                 slice_pair.sink_block(), look, ric_lookup, dil_fac_lookup.Q1,
                 dilE, 4);
         }
@@ -1724,17 +1732,17 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
         // ----------------------------------------------------------------
         for (const auto &look : L2_look) {
           Q1xQ1(L2[look[0]], quarklines, slice_pair.sink(),
-                slice_pair.source_block(), slice_pair.source(),
-                slice_pair.sink_block(), look, ric_lookup, dil_fac_lookup.Q1,
+                slice_pair.sink_block(), slice_pair.sink(),
+                slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q1,
                 dilE, 4);
         }
 
         for (const auto &c_look : corr_lookup) {
 
-          const size_t id0 = c_look.lookup[0];
-          const size_t id1 = c_look.lookup[1];
-          const size_t id2 = c_look.lookup[2];
-          const size_t id3 = c_look.lookup[3];
+          const size_t id0 = c_look.lookup[3];
+          const size_t id1 = c_look.lookup[0];
+          const size_t id2 = c_look.lookup[1];
+          const size_t id3 = c_look.lookup[2];
 
           auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
                                   [&id0, &id1](std::array<size_t, 3> check) {
@@ -1745,9 +1753,17 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                                     return (id2 == check[1] && id3 == check[2]);
                                   });
 
-          C[c_look.id][t] += trace<QuarkLineType::Q1, QuarkLineType::Q1>(
-              L1[(*it1)[0]], L2[(*it2)[0]], c_look.lookup, ric_lookup,
-              dil_fac_lookup.Q1, dilE, 4);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                {dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
+                 dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
+
+          C[c_look.id][t] += trace(
+              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
+              random_index_combination_ids, dilE, 4);
+
         }
       }
     }
