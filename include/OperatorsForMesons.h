@@ -93,6 +93,7 @@ public:
   void free_memory_vdaggerv();
   void free_memory_rvdaggerv();
 
+  /*! @todo check of vdaggerv is already build */
   inline const Eigen::MatrixXcd& return_vdaggerv(const size_t index,
                                                  const size_t t) const {
     return vdaggerv[index][t];

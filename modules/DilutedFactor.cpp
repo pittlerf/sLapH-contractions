@@ -23,10 +23,10 @@ void M1xM2(Eigen::MatrixXcd &result,
   size_t M2_rnd_counter = 0;
   for (const auto &rnd2 : ric2) {
     for (const auto &rnd3 : ric3) {
-      if (rnd2.first == rnd3.first && rnd2.second != rnd3.second) {
+      if (rnd2.second == rnd3.first && rnd2.first != rnd3.second) {
 
-        if (rnd0.second == rnd3.second && rnd1.second == rnd2.second &&
-            rnd0.first != rnd3.first) {
+        if (rnd0.first == rnd3.second && rnd1.second == rnd2.first &&
+            rnd0.second != rnd3.first) {
           result += M2[M2_rnd_counter];
         }
         M2_rnd_counter++;
@@ -188,7 +188,7 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
   size_t result_rnd_counter = 0;
   for (const auto &rnd0 : ric0) {
     for (const auto &rnd1 : ric1) {
-      if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
+      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
 
         /*! @Note Allocation should be refactored */
         result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
@@ -230,7 +230,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
    size_t M1_rnd_counter = 0;
    for (const auto &rnd0 : ric0) {
      for (const auto &rnd1 : ric1) {
-       if (rnd0.first == rnd1.first && rnd0.second != rnd1.second) {
+       if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
          // setting matrix values to zero
           M3.setZero(dilE * 4, dilE * 4);
 
@@ -267,9 +267,22 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
   const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
   const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
 
-  for (const auto &rnd : ric0) {
+  for (const auto& rnd : ric0) {
     const auto idr0 = &rnd - &ric0[0];
     result.emplace_back(cmplx(0.0, 0.0));
+
+    // check that ric1 and ric0 are indeed a full trace 
+    // i.e. ric1.first == ric2.second and ric1.second == ric2.first
+    const auto it1 = std::find_if(
+        ric1.begin(), ric1.end(), [&](std::pair<size_t, size_t> pair) {
+          return (pair == std::make_pair(rnd.second, rnd.first));
+        });
+    if (it1 == ric1.end()) {
+      std::cout << "something wrong with random vectors in build_corrC"
+                << std::endl;
+      exit(1);
+    }
+    const auto idr1 = it1 - ric1.begin();
 
     for (size_t d = 0; d < 4; d++) {
       const auto gamma_index = quarkline1.return_gamma_row(gamma, d);
@@ -278,7 +291,7 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
           ( quarkline1(t1, b2, lookup[0], idr0)
                .block(d * dilE, gamma_index * dilE, dilE, dilE) *
             /*! @warning idr0 instead of idr1 because rvdaggervr are interchanged */
-            quarkline2(t2, -1, lookup[1], idr0)
+            quarkline2(t2, -1, lookup[1], idr1)
                .block(gamma_index * dilE, d * dilE, dilE, dilE))
           .trace();
     }
@@ -356,9 +369,9 @@ cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
     size_t M1_rnd_counter = 0;
     for (const auto &rnd2 : ric2) {
       for (const auto &rnd0 : ric0) {
-        if (rnd0.first == rnd2.first && rnd0.second != rnd2.second) {
+        if (rnd0.first == rnd2.second && rnd0.second != rnd2.first) {
 
-          if (rnd1.first != rnd2.first && rnd1.second == rnd2.second &&
+          if (rnd1.first != rnd2.second && rnd1.second == rnd2.first &&
               rnd1.first == rnd0.second && rnd1.second != rnd0.first) {
 
           result += (M1[M1_rnd_counter] *

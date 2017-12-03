@@ -301,7 +301,8 @@ void QuarkLineBlock<QuarkLineType::Q1>::build_block_pair(
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-/*! Admittedly ugly wrapper around rVdaggerVr */
+// rvdaggervr is calculated by multiplying vdaggerv with the same quantum
+// numbers with random vectors from right and left.
 template <>
 void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
     RandomVector const &rnd_vec,
@@ -309,24 +310,6 @@ void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
     DilutionIterator const &block_pair,
     typename QuarkLineIndices<QuarkLineType::Q0>::type const &quarkline_indices,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
-
-//  for (auto const slice_pair : block_pair.one_sink_slice()) {
-//    auto const t1 = slice_pair.source();
-//
-//    Ql_id.push_front(std::make_pair(t1, -1));
-//
-//    // Effectively this is a right rotation.
-//    std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
-//
-//
-//    for (const auto &qll : quarkline_indices) {
-//      size_t rnd_counter = 0;
-//      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
-//        Ql[0][qll.id][rnd_counter] = 
-//          meson_operator.return_rvdaggervr(qll.id, t1, rnd_counter);
-//        ++rnd_counter;
-//      }
-//    }
 
   for (auto const slice_pair : block_pair.one_sink_slice()) {
     auto const t1 = slice_pair.source();
@@ -336,31 +319,7 @@ void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
     // Effectively this is a right rotation.
     std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
 
-
     for (const auto &op : quarkline_indices) {
-
-  /*! @todo Will move into the getter for VdaggerV */
-  // check of vdaggerv is already build
-//  if(not is_vdaggerv_set){
-//    std::cout << "\n\n\tCaution: vdaggerv is not set and rvdaggervr cannot be" 
-//              << " computed\n\n" << std::endl;
-//    exit(0);
-//  }
-
-//  clock_t t2 = clock();
-//  std::cout << "\tbuild rvdaggervr:";
-
-//  for(auto& rvdvr_level1 : rvdaggervr)
-//    for(auto& rvdvr_level2 : rvdvr_level1)
-//      for(auto& rvdvr_level3 : rvdvr_level2)
-//        rvdvr_level3 = Eigen::MatrixXcd::Zero(4*dilE, 4*dilE);
-
-//#pragma omp parallel for schedule(dynamic)
-//  for(size_t t = 0; t < Lt; t++)
-
-  // rvdaggervr is calculated by multiplying vdaggerv with the same quantum
-  // numbers with random vectors from right and left.
-//  for(const auto& op : operator_lookuptable.rvdaggervr_lookuptable)
 
       Eigen::MatrixXcd vdv;
       if (op.need_vdaggerv_daggering == false)
@@ -368,33 +327,32 @@ void QuarkLineBlock<QuarkLineType::Q0>::build_block_pair(
       else
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
 
-      //size_t rnd_counter = 0;
-      size_t rid = 0;
+      size_t rnd_counter = 0;
       int check = -1;
       Eigen::MatrixXcd M; // Intermediate memory
 
       for (const auto &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
 
-        if(check != rnd_id.first){ // this avoids recomputation
+        if(check != rnd_id.second){ // this avoids recomputation
           M = Eigen::MatrixXcd::Zero(nev, 4*dilE);
           for(size_t block = 0; block < 4; block++){
           for(size_t vec_i = 0; vec_i < nev; vec_i++) {
             size_t blk =  block + (vec_i + nev * t1) * 4;
             M.block(0, vec_i%dilE + dilE*block, nev, 1) += 
-                 vdv.col(vec_i) * rnd_vec(rnd_id.first, blk);
+                 vdv.col(vec_i) * rnd_vec(rnd_id.second, blk);
           }}
         }
         for(size_t block_x = 0; block_x < 4; block_x++){
         for(size_t block_y = 0; block_y < 4; block_y++){
         for(size_t vec_y = 0; vec_y < nev; ++vec_y) {
           size_t blk =  block_y + (vec_y + nev * t1) * 4;
-          Ql[0][op.id][rid].block(
+          Ql[0][op.id][rnd_counter].block(
                               dilE*block_y + vec_y%dilE, dilE*block_x, 1, dilE) +=
                   M.block(vec_y, dilE*block_x, 1, dilE) * 
-                  std::conj(rnd_vec(rnd_id.second, blk));
+                  std::conj(rnd_vec(rnd_id.first, blk));
         }}} 
-      check = rnd_id.first;
-      rid++;
+      check = rnd_id.second;
+      rnd_counter++;
       }
     }
   }
