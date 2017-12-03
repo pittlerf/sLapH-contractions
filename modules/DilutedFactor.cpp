@@ -373,9 +373,9 @@ std::vector<cmplx> trace(
 
 
 /*! C3c */
-cmplx trace_3c(
-           std::vector<Eigen::MatrixXcd> const &M1, 
+cmplx trace_3pt(
            std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<size_t> const &ric_ids,
            size_t const dilE,
@@ -399,38 +399,6 @@ cmplx trace_3c(
     ++M2_rnd_counter;
   }
 
-
-  return result;
-}
-
-cmplx trace_3n(std::vector<Eigen::MatrixXcd> const &L1, 
-               std::vector<Eigen::MatrixXcd> const &L2, 
-               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-               std::vector<size_t> const &ric_ids){
-
-   cmplx result = cmplx(0.,0.);
-
-   const auto& ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-   const auto& ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-   const auto& ric2 = ric_lookup[ric_ids[2]].rnd_vec_ids;
-
-   size_t L1_rnd_counter = 0;
-   for (const auto &rnd0 : ric0) {
-     for (const auto &rnd1 : ric1) {
-       if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-
-        size_t L2_rnd_counter = 0;
-        for (const auto &rnd2 : ric2) {
-          if (rnd1.second == rnd2.first && rnd2.second == rnd0.first) {
-            result += (L1[L1_rnd_counter] *L2[L2_rnd_counter]).trace();
-          }
-          ++L2_rnd_counter;
-        }
-
-        ++L1_rnd_counter;
-      }
-    }
-  }
 
   return result;
 }

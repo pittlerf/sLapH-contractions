@@ -1059,14 +1059,10 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
                  dil_fac_lookup.Q1 [id1].id_ric_lookup,
                  dil_fac_lookup.Q0 [id2].id_ric_lookup});
 
-          C[c_look.id][t] += trace_3c(
-              M1[(*it1)[0]], M2[(*it2)[0]], ric_lookup,
+          C[c_look.id][t] += trace_3pt(
+              M2[(*it2)[0]], M1[(*it1)[0]], ric_lookup,
               random_index_combination_ids, dilE, 4);
 
-//          C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
-//              M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, ric_lookup,
-//              dil_fac_lookup.Q0, dil_fac_lookup.Q1, dil_fac_lookup.Q2L, dilE,
-//              4);
         }
       }
     } // loops over time end here
@@ -1409,9 +1405,10 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
                    dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
                    dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
 
-          C[c_look.id][t] += trace_3n(
-              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
-              random_index_combination_ids);
+          C[c_look.id][t] += trace_3pt(
+              L2[(*it2)[0]], L1[(*it1)[0]], ric_lookup,
+              random_index_combination_ids, dilE, 4);
+
         }
       }
     } // loop over time ends here
