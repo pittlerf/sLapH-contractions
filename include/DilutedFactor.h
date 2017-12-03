@@ -64,14 +64,10 @@ compcomp_t trtr(std::vector<cmplx> const &factor1,
  *  - C3c
  *  - C30
  */
-template <QuarkLineType qlt>
 void Q1(std::vector<Eigen::MatrixXcd> &result, 
-                    QuarkLineBlock<qlt> const &quarklines,
-                    int const t1,
-                    int const b2,
-                    std::array<size_t, 2> const look,
+                    std::vector<Eigen::MatrixXcd> const &quarklines,
                     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+                    std::vector<size_t> const &ric_ids,
                     size_t const dilE,
                     size_t const dilD);
 

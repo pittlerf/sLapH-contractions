@@ -1033,9 +1033,15 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
         // ----------------------------------------------------------------
         for (const auto &look : M2_look) {
 
-          Q1<QuarkLineType::Q1>(M2[look[0]], quarkline_Q1, slice_pair.sink(),
-                                slice_pair.source_block(), look, ric_lookup,
-                                dil_fac_lookup.Q1, dilE, 4);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup});
+
+          Q1(M2[look[0]], 
+             quarkline_Q1(slice_pair.sink(), slice_pair.source_block(), look[1]),
+             ric_lookup, 
+             random_index_combination_ids,
+             dilE, 4);
         }
 
         // Final summation for correlator
@@ -1385,8 +1391,14 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
         // build L2
         // ----------------------------------------------------------------
         for (const auto &look : L2_look) {
-          Q1(L2[look[0]], quarklines, slice_pair.source(),
-             slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q1,
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup});
+
+          Q1(L2[look[0]], 
+             quarklines(slice_pair.source(), slice_pair.source_block(), look[1]),
+             ric_lookup, 
+             random_index_combination_ids,
              dilE, 4);
         }
 

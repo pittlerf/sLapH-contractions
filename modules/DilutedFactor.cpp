@@ -121,27 +121,22 @@ void check_random_combinations<QuarkLineType::Q2L>(std::string const &diagram,
    }
 }
 
-template <>
-void Q1<QuarkLineType::Q1>(std::vector<Eigen::MatrixXcd> &result, 
-                    QuarkLineBlock<QuarkLineType::Q1> const &quarklines,
-                    int const t1,
-                    int const b2,
-                    std::array<size_t, 2> const look,
+void Q1(std::vector<Eigen::MatrixXcd> &result, 
+                    std::vector<Eigen::MatrixXcd> const &quarklines,
                     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+                    std::vector<size_t> const &ric_ids,
                     size_t const dilE,
                     size_t const dilD){
 
-  /*! @todo Why ricQ2 and not ricQ1? */ 
-  const auto &ric1 = ric_lookup[Q1_lookup[look[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
 
   size_t M2_rnd_counter = 0;
-  for (const auto &rnd1 : ric1){
-    const auto idr1 = &rnd1 - &ric1[0];
+  for (const auto &rnd0 : ric0){
+    const auto idr0 = &rnd0 - &ric0[0];
     /*! @Note Allocation should be refactored */
     result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
 
-    result[M2_rnd_counter] = quarklines(t1, b2, look[1], idr1);
+    result[M2_rnd_counter] = quarklines[idr0];
     ++M2_rnd_counter;
   }
 }
