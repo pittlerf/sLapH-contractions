@@ -7,6 +7,7 @@
 
 namespace {
 
+/*! M1xM2 for 4pt functions */
 void M1xM2(Eigen::MatrixXcd &result, 
            Eigen::MatrixXcd const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
@@ -36,6 +37,38 @@ void M1xM2(Eigen::MatrixXcd &result,
 
   result = (M1 * result);
 }
+
+/*! M1xM2 for 3pt functions */
+void M1xM2(Eigen::MatrixXcd &result, 
+           Eigen::MatrixXcd const &M1, 
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+           std::vector<size_t> const &ric_ids,
+           std::pair<size_t, size_t> const & rnd1,
+           size_t const dilE,
+           size_t const dilD){
+
+  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
+  const auto &ric2 = ric_lookup[ric_ids[2]].rnd_vec_ids;
+
+  size_t M2_rnd_counter = 0;
+  for (const auto &rnd2 : ric2) {
+    for (const auto &rnd0 : ric0) {
+      if (rnd0.first == rnd2.second && rnd0.second != rnd2.first) {
+
+        if (rnd1.first != rnd2.second && rnd1.second == rnd2.first &&
+            rnd1.first == rnd0.second && rnd1.second != rnd0.first) {
+
+        result += M2[M2_rnd_counter];
+        }
+      ++M2_rnd_counter;
+      }
+    }
+  }
+
+  result = (M1 * result);
+}
+
 } // end of anonymous namespace 
 
 namespace LapH {
@@ -332,9 +365,7 @@ std::vector<cmplx> trace(
     const auto idr1 = it1 - ric1.begin();
 
     /*! @todo How do I properly get the block indices for sink? */
-    result[idr0] += (quarkline1[idr0] * 
-                     quarkline2[idr1])
-                    .trace();
+    result[idr0] += (quarkline1[idr0] * quarkline2[idr1]).trace();
   }
 
   return result;
@@ -342,45 +373,29 @@ std::vector<cmplx> trace(
 
 
 /*! C3c */
-template<>
-cmplx trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
+cmplx trace_3c(
            std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ1Indices> const &Q1_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           std::vector<size_t> const &ric_ids,
            size_t const dilE,
            size_t const dilD){
 
+  Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
   cmplx result = cmplx(.0,.0);
 
-  const auto &ric0 = 
-    ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = 
-    ric_lookup[Q1_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric2 = 
-    ric_lookup[rvdaggervr_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
 
   size_t M2_rnd_counter = 0;
   for (const auto &rnd1 : ric1) {
 
-    size_t M1_rnd_counter = 0;
-    for (const auto &rnd2 : ric2) {
-      for (const auto &rnd0 : ric0) {
-        if (rnd0.first == rnd2.second && rnd0.second != rnd2.first) {
+    // setting matrix values to zero
+    M3.setZero(dilE * 4, dilE * 4);
 
-          if (rnd1.first != rnd2.second && rnd1.second == rnd2.first &&
-              rnd1.first == rnd0.second && rnd1.second != rnd0.first) {
+    M1xM2(M3, M2[M2_rnd_counter], M1, ric_lookup, ric_ids, rnd1, dilE, dilD);
 
-          result += (M1[M1_rnd_counter] *
-                                M2[M2_rnd_counter]).trace();
-          }
-          ++M1_rnd_counter;
-        }
-      }
-    }
+    result += M3.trace();
+
     ++M2_rnd_counter;
   }
 

@@ -115,14 +115,10 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 /*! Multiply (Q2V*rVdaggerV)*(Q1) and take trace
  *  - C3c
  */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
-cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
+cmplx trace_3c(std::vector<Eigen::MatrixXcd> const &M1, 
            std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<size_t> const &lookup,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-           std::vector<QuarklineQ1Indices> const &Q1_lookup,
-           std::vector<QuarklineQ2Indices> const &Q2_lookup,
+           std::vector<size_t> const &ric_ids,
            size_t const dilE,
            size_t const dilD);
 

@@ -1053,10 +1053,20 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
                                     return (id1 == check[1]);
                                   });
 
-          C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
-              M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, ric_lookup,
-              dil_fac_lookup.Q0, dil_fac_lookup.Q1, dil_fac_lookup.Q2L, dilE,
-              4);
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                {dil_fac_lookup.Q2L[id0].id_ric_lookup,
+                 dil_fac_lookup.Q1 [id1].id_ric_lookup,
+                 dil_fac_lookup.Q0 [id2].id_ric_lookup});
+
+          C[c_look.id][t] += trace_3c(
+              M1[(*it1)[0]], M2[(*it2)[0]], ric_lookup,
+              random_index_combination_ids, dilE, 4);
+
+//          C[c_look.id][t] += trace<QuarkLineType::Q2L, QuarkLineType::Q1>(
+//              M1[(*it1)[0]], M2[(*it2)[0]], c_look.lookup, ric_lookup,
+//              dil_fac_lookup.Q0, dil_fac_lookup.Q1, dil_fac_lookup.Q2L, dilE,
+//              4);
         }
       }
     } // loops over time end here
