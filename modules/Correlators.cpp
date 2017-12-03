@@ -1370,10 +1370,16 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
         // build L1
         // ----------------------------------------------------------------
         for (const auto &look : L1_look) {
-          Q1xQ1(L1[look[0]], quarklines, slice_pair.source(),
-                slice_pair.sink_block(), slice_pair.sink(),
-                slice_pair.source_block(), look, ric_lookup, dil_fac_lookup.Q1,
-                dilE, 4);
+
+          std::vector<size_t> random_index_combination_ids =
+              std::vector<size_t>(
+                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup,
+                   dil_fac_lookup.Q1[look[2]].id_ric_lookup});
+
+          Q1xQ1(L1[look[0]], 
+                quarklines(slice_pair.source(), slice_pair.sink_block(), look[1]),
+                quarklines(slice_pair.sink(), slice_pair.source_block(), look[2]),
+                ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
         // build L2
