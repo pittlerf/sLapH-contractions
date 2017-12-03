@@ -111,6 +111,12 @@ class QuarkLineBlock {
                         DilutionIterator const &block_pair,
                         const typename QuarkLineIndices<qlt>::type &ql_lookup,
                         const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
+  // Overload for Q0
+  void build_block_pair(RandomVector const &rnd_vec,
+      OperatorsForMesons const &meson_operator,
+      DilutionIterator const &block_pair,
+      typename QuarkLineIndices<qlt>::type const &ql_lookup,
+      std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
 
  private:
 

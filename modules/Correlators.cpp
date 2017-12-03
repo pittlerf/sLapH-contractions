@@ -474,7 +474,8 @@ void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_corrC(Perambulator const &perambulators,
+void LapH::Correlators::build_corrC(RandomVector const &randomvectors,
+                                    Perambulator const &perambulators,
                                     OperatorsForMesons const &meson_operator,
                                     std::vector<CorrInfo> const &corr_lookup) {
   if (corr_lookup.size() == 0)
@@ -501,7 +502,7 @@ void LapH::Correlators::build_corrC(Perambulator const &perambulators,
 
       quarklines_Q2V.build_block_pair(perambulators, meson_operator, block_pair,
                                       dil_fac_lookup.Q2V, ric_lookup);
-      quarklines_Q0.build_block_pair(perambulators, meson_operator, block_pair,
+      quarklines_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
                                      dil_fac_lookup.Q0, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
@@ -716,7 +717,8 @@ void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
+void LapH::Correlators::build_C4cC(RandomVector const &randomvectors,
+                                   OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
@@ -800,7 +802,7 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // creating quarklines
-      quarkline_Q0.build_block_pair(perambulators, meson_operator, block_pair,
+      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
                                   dil_fac_lookup.Q0, ric_lookup);
       quarkline_Q2V.build_block_pair(perambulators, meson_operator, block_pair,
                                   dil_fac_lookup.Q2V, ric_lookup);
@@ -905,7 +907,8 @@ void LapH::Correlators::build_C4cC(OperatorsForMesons const &meson_operator,
 /*                                 build_C3c                                 */
 /*****************************************************************************/
 
-void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
+void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
+                                  OperatorsForMesons const &meson_operator,
                                   Perambulator const &perambulators,
                                   std::vector<CorrInfo> const &corr_lookup,
                                   std::string const output_path,
@@ -1002,7 +1005,7 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // creating quarklines
-      quarkline_Q0.build_block_pair(perambulators, meson_operator, block_pair,
+      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
                                       dil_fac_lookup.Q0, ric_lookup);
       quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
                                       dil_fac_lookup.Q2L, ric_lookup);
@@ -1079,7 +1082,8 @@ void LapH::Correlators::build_C3c(OperatorsForMesons const &meson_operator,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
+void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
+                                   OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
@@ -1175,7 +1179,7 @@ void LapH::Correlators::build_C4cB(OperatorsForMesons const &meson_operator,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // creating quarklines
-      quarkline_Q0.build_block_pair(perambulators, meson_operator, block_pair,
+      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
                                   dil_fac_lookup.Q0, ric_lookup);
       quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
                                   dil_fac_lookup.Q2L, ric_lookup);
@@ -1785,6 +1789,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
  */
 // void LapH::Correlators::contract (Quarklines& quarklines,
 void LapH::Correlators::contract(OperatorsForMesons const &meson_operator,
+                                 RandomVector const &randomvectors,
                                  Perambulator const &perambulators,
                                  OperatorLookup const &operator_lookup,
                                  CorrelatorLookup const &corr_lookup,
@@ -1793,7 +1798,7 @@ void LapH::Correlators::contract(OperatorsForMesons const &meson_operator,
                                  std::string const output_filename) {
 
   // 1. Build all functions which need corrC and free it afterwards.
-  build_corrC(perambulators, meson_operator, corr_lookup.corrC);
+  build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
   build_C2c(corr_lookup.C2c, output_path, output_filename);
   build_C4cD(corr_lookup, output_path, output_filename);
   build_C4cV(corr_lookup, output_path, output_filename);
@@ -1801,7 +1806,7 @@ void LapH::Correlators::contract(OperatorsForMesons const &meson_operator,
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(meson_operator, perambulators, corr_lookup.corr0);
   // in C3c, also corr0 is build, since this is much faster
-  build_C3c(meson_operator, perambulators, corr_lookup.C3c, output_path,
+  build_C3c(randomvectors, meson_operator, perambulators, corr_lookup.C3c, output_path,
             output_filename);
   build_C20(corr_lookup.C20, output_path, output_filename);
   build_C40D(corr_lookup, output_path, output_filename);
@@ -1811,9 +1816,9 @@ void LapH::Correlators::contract(OperatorsForMesons const &meson_operator,
   //  build_C1(meson_operator, perambulators, operator_lookup, corr_lookup.C1,
   //                                           quark_lookup, output_path,
   //                                           output_filename);
-  build_C4cC(meson_operator, perambulators, corr_lookup.C4cC, output_path,
+  build_C4cC(randomvectors, meson_operator, perambulators, corr_lookup.C4cC, output_path,
              output_filename);
-  build_C4cB(meson_operator, perambulators, corr_lookup.C4cB, output_path,
+  build_C4cB(randomvectors, meson_operator, perambulators, corr_lookup.C4cB, output_path,
              output_filename);
   build_C30(meson_operator, perambulators, corr_lookup.C30, output_path,
             output_filename);

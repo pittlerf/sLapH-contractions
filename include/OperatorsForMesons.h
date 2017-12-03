@@ -36,6 +36,7 @@ namespace LapH {
  *  not implemented
  *
  *  @TODO Implement derivate operators
+ *  @note (MW 3.12.2017) rVdaggerVr moved to QuarkLineBlock
  */
 class OperatorsForMesons {
 
@@ -44,7 +45,6 @@ private:
   // Containers for operators which are accessible from outside
   array_Xcd_d2_eigen vdaggerv;
   Xcd_d3_eigen rvdaggerv;
-  Xcd_d3_eigen rvdaggervr;
   /*! @cond
    *  internal indices etc.
    */
@@ -67,7 +67,6 @@ private:
   void read_vdaggerv(const int config);
   void read_vdaggerv_liuming(const int config);
   void build_rvdaggerv(const LapH::RandomVector& rnd_vec);
-  void build_rvdaggervr(const LapH::RandomVector& rnd_vec);
 
 public:
   /*! Constructor which allocates memory for all operators */
@@ -86,13 +85,12 @@ public:
   /**************** INTERFACE FOR BUILDING ALL OPERATORS **********************/
 
   /*! Builds or reads @f$ V^\dagger exp(ipx) V @f$ and performs dilution i.e. 
-   *  calculates rvdaggerv and rvdaggervr
+   *  calculates rvdaggerv and
    */
   void create_operators(const std::string& filename,
                         const LapH::RandomVector& rnd_vec, const int config);
   /*! Free memory of vdaggerv */
   void free_memory_vdaggerv();
-  /*! Free memory of rvdaggerv */
   void free_memory_rvdaggerv();
 
   inline const Eigen::MatrixXcd& return_vdaggerv(const size_t index,
@@ -104,12 +102,6 @@ public:
                                                   const size_t t, 
                                                   const size_t rnd_id) const {
     return rvdaggerv.at(index).at(t).at(rnd_id);
-  }
-
-  inline const Eigen::MatrixXcd& return_rvdaggervr(const size_t index, 
-                                                   const size_t t, 
-                                                   const size_t rnd_id) const {
-    return rvdaggervr.at(index).at(t).at(rnd_id);
   }
 
 };

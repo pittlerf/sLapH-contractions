@@ -85,15 +85,16 @@ private:
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   array_corr corr0; 
   /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  void build_corr0(const OperatorsForMesons& meson_operator, 
-                   const Perambulator& perambulators,
-                   const std::vector<CorrInfo>& corr_lookup);
+  void build_corr0(OperatorsForMesons const &meson_operator, 
+                   Perambulator const &perambulators,
+                   std::vector<CorrInfo> const &corr_lookup);
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
   array_corr corrC;
   /*! Calculate tr(Q2V*rVdaggerVr) */
-  void build_corrC(const Perambulator& perambulators,
-                   const OperatorsForMesons& meson_operator,
-                   const std::vector<CorrInfo>& corr_lookup);
+  void build_corrC(RandomVector const &randomvectors,
+                   Perambulator const &perambulators,
+                   OperatorsForMesons const &meson_operator,
+                   std::vector<CorrInfo> const &corr_lookup);
 
   // Functions to build correlation functions
   
@@ -195,11 +196,12 @@ private:
    *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
    *  @f}
    */
-  void build_C3c(const OperatorsForMesons& meson_operator,
-                 const Perambulator& perambulators,
-                 const std::vector<CorrInfo>& corr_lookup,
-                 const std::string output_path,
-                 const std::string output_filename);
+  void build_C3c(RandomVector const &randomvectors,
+                 OperatorsForMesons const &meson_operator,
+                 Perambulator const &perambulators,
+                 std::vector<CorrInfo> const &corr_lookup,
+                 std::string const output_path,
+                 std::string const output_filename);
   /*! Build charged 4pt correlation function: Direct diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -230,7 +232,8 @@ private:
    *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C4cC(OperatorsForMesons const &meson_operator,
+  void build_C4cC(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator,
                   Perambulator const &perambulators,
                   std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
@@ -243,7 +246,8 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C4cB(OperatorsForMesons const &meson_operator,
+  void build_C4cB(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator,
                   Perambulator const &perambulators,
                   std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
@@ -260,6 +264,7 @@ public:
 
   /*! Call all functions building a correlator */
   void contract(OperatorsForMesons const &meson_operator,
+                RandomVector const &randomvectors,
                 Perambulator const &perambulators,
                 OperatorLookup const &operator_lookup,
                 CorrelatorLookup const &corr_lookup, 

@@ -96,7 +96,7 @@ int main (int ac, char* av[]) {
                                                        randomvectors, config_i);
 
     // doing all the contractions
-    correlators.contract(meson_operators, perambulators,
+    correlators.contract(meson_operators, randomvectors, perambulators,
                          global_data->get_operator_lookuptable(),
                          global_data->get_correlator_lookuptable(),
                          global_data->get_quarkline_lookuptable(),
