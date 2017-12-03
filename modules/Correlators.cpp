@@ -1126,8 +1126,8 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
     QuarkLineBlock<QuarkLineType::Q2L> quarkline_Q2L(
         dilT, dilE, nev, dil_fac_lookup.Q2L, ric_lookup);
 
-    // creating memory arrays M1, M2 for intermediate storage of Quarklines
-    // ------
+    // Create lookuptables for M1, M2 to save intermdiate results that can be 
+    // reused (rVdaggerVr \cdot Q2V)
     std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
     std::vector<std::array<size_t, 3>> M1_look;
     std::vector<std::array<size_t, 3>> M2_look;
@@ -1144,21 +1144,7 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
         std::cerr << "Length error: " << le.what() << '\n';
       }
 
-      const auto &ric0 =
-          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[3]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric2 =
-          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric3 =
-          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup]
-              .rnd_vec_ids;
-
-      // creating memeory for M1
-      // -------------------------------------------------
+      // create lookuptable for M1
       const size_t id3 = c_look.lookup[3];
       const size_t id0 = c_look.lookup[0];
       auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
@@ -1171,8 +1157,8 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
         M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id3, id0}}));
         M1_counter++;
       }
-      // creating memeory for M2
-      // -------------------------------------------------
+
+      // create lookuptable for M2
       const size_t id1 = c_look.lookup[1];
       const size_t id2 = c_look.lookup[2];
       auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
@@ -1184,13 +1170,13 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
         M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id1, id2}}));
         M2_counter++;
       }
-    } // first run over lookuptable ends here - memory and new lookuptable
-// are generated ------------------------------------------------------------
+    } 
 
 #pragma omp for schedule(dynamic)
+    // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
-      // creating quarklines
+      // Create quarklines for all time combinations in block_pair
       quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
                                   dil_fac_lookup.Q0, ric_lookup);
       quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
@@ -1199,8 +1185,7 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        // build M1
-        // ----------------------------------------------------------------
+        // Calculate M1
         for (const auto &look : M1_look) {
 
           std::vector<size_t> random_index_combination_ids =
@@ -1214,8 +1199,7 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
               ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
-        // build M2
-        // ----------------------------------------------------------------
+        // Calculate M2
         for (const auto &look : M2_look) {
 
           std::vector<size_t> random_index_combination_ids =
@@ -1229,9 +1213,11 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
               ric_lookup, random_index_combination_ids, dilE, 4);
         }
 
-        // Final summation for correlator
-        // ------------------------------------------
+        // Calculate final sum now only depending on M1 and M2
         for (const auto &c_look : corr_lookup) {
+          /*! @todo These are essentially getters for M1_look and M2_look. 
+           *        Simplify that!
+           */
           const size_t id3 = c_look.lookup[3];
           const size_t id0 = c_look.lookup[0];
           auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
@@ -1252,9 +1238,15 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
                  dil_fac_lookup.Q0 [c_look.lookup[1]].id_ric_lookup,
                  dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup});
 
-          C[c_look.id][t] += trace(
-              M1[(*it1)[0]], M2[(*it2)[0]], ric_lookup,
-              random_index_combination_ids, dilE, 4);
+          // Perform trace in random index-, eigen- and dirac space
+          // += because multiple block pairs contribute to the same t
+          // Magic number 4 is number_of_blocks in Dilution of Dirac space
+          C[c_look.id][t] += trace(M1[(*it1)[0]], 
+                                   M2[(*it2)[0]], 
+                                   ric_lookup,
+                                   random_index_combination_ids, 
+                                   dilE, 
+                                   4);
 
         } // loop over operators ends here
       }
@@ -1271,7 +1263,8 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
   // normalisation
   for (const auto &c_look : corr_lookup) {
     for (auto &corr : correlator[c_look.id]) {
-      corr /= (6 * 5 * 4 * 3) * Lt; // TODO: Hard Coded atm - Be carefull
+      // @todo Hard Coded atm - Be careful
+      corr /= (6 * 5 * 4 * 3) * Lt; 
     }
     // write data to file
     filehandle.write(correlator[c_look.id], c_look);

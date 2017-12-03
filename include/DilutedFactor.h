@@ -126,6 +126,4 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
             size_t const dilE,
             size_t const dilD);
 
-
-
 }  // end of namespace

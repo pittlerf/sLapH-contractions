@@ -232,6 +232,36 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
 
 }
 
+cmplx trace_3pt(
+           std::vector<Eigen::MatrixXcd> const &M2, 
+           std::vector<Eigen::MatrixXcd> const &M1, 
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+           std::vector<size_t> const &ric_ids,
+           size_t const dilE,
+           size_t const dilD){
+
+  Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
+  cmplx result = cmplx(.0,.0);
+
+  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
+
+  size_t M2_rnd_counter = 0;
+  for (const auto &rnd1 : ric1) {
+
+    // setting matrix values to zero
+    M3.setZero(dilE * 4, dilE * 4);
+
+    M1xM2(M3, M2[M2_rnd_counter], M1, ric_lookup, ric_ids, rnd1, dilE, dilD);
+
+    result += M3.trace();
+
+    ++M2_rnd_counter;
+  }
+
+
+  return result;
+}
+
 cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
             std::vector<Eigen::MatrixXcd> const &M2, 
             std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
@@ -353,38 +383,6 @@ std::vector<cmplx> trace(
     /*! @todo How do I properly get the block indices for sink? */
     result[idr0] += (quarkline1[idr0] * quarkline2[idr1]).trace();
   }
-
-  return result;
-}
-
-
-/*! C3c */
-cmplx trace_3pt(
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<Eigen::MatrixXcd> const &M1, 
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const &ric_ids,
-           size_t const dilE,
-           size_t const dilD){
-
-  Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
-  cmplx result = cmplx(.0,.0);
-
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  size_t M2_rnd_counter = 0;
-  for (const auto &rnd1 : ric1) {
-
-    // setting matrix values to zero
-    M3.setZero(dilE * 4, dilE * 4);
-
-    M1xM2(M3, M2[M2_rnd_counter], M1, ric_lookup, ric_ids, rnd1, dilE, dilD);
-
-    result += M3.trace();
-
-    ++M2_rnd_counter;
-  }
-
 
   return result;
 }
