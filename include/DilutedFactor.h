@@ -80,19 +80,6 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
  *  - C40B
  *  - C40C
  */
-template <QuarkLineType qlt>
-void Q1xQ1(std::vector<Eigen::MatrixXcd> &result, 
-           QuarkLineBlock<qlt> const &quarklines,
-           int const t1,
-           int const b1,
-           int const t2,
-           int const b2,
-           std::array<size_t, 3> const look,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<QuarklineQ1Indices> const &Q1_lookup,
-           size_t const dilE,
-           size_t const dilD);
-
 void Q1xQ1(std::vector<Eigen::MatrixXcd> &result, 
            std::vector<Eigen::MatrixXcd> const &quarkline1,
            std::vector<Eigen::MatrixXcd> const &quarkline2,
