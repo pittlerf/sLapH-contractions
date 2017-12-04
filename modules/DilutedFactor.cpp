@@ -322,9 +322,7 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
           return (pair == std::make_pair(rnd.second, rnd.first));
         });
     if (it1 == ric1.end()) {
-      std::cout << "something wrong with random vectors in build_corrC"
-                << std::endl;
-      exit(1);
+      throw std::runtime_error("something wrong with random vectors in build_corrC");
     }
     const auto idr1 = it1 - ric1.begin();
 
