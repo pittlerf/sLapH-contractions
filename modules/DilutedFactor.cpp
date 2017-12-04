@@ -216,7 +216,7 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
         const size_t idr1 = &rnd1 - &ric1[0];
 
         for (size_t d = 0; d < 4; d++) {
-          // TODO: gamma hardcoded
+          //! @TODO: gamma hardcoded
           const cmplx value = gamma_5.value[d];
           const size_t gamma_index = gamma_5.row[d];
 
@@ -232,14 +232,12 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
 
 }
 
-cmplx trace_3pt(
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<Eigen::MatrixXcd> const &M1, 
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const &ric_ids,
-           size_t const dilE,
-           size_t const dilD){
-
+cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M2,
+                std::vector<Eigen::MatrixXcd> const &M1,
+                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                std::vector<size_t> const &ric_ids,
+                size_t const dilE,
+                size_t const dilD) {
   Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
   cmplx result = cmplx(.0,.0);
 
@@ -258,17 +256,15 @@ cmplx trace_3pt(
     ++M2_rnd_counter;
   }
 
-
   return result;
 }
 
-cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
-            std::vector<Eigen::MatrixXcd> const &M2, 
+cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
+            std::vector<Eigen::MatrixXcd> const &M2,
             std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<size_t> const &ric_ids,
             size_t const dilE,
-            size_t const dilD){
-
+            size_t const dilD) {
   /*! @todo unnessary allocation */
    Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
    cmplx result = cmplx(.0,.0);
@@ -295,7 +291,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 }
 
 /*! corrC */
-template<>
+template <>
 std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
     QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
     QuarkLineBlock<QuarkLineType::Q0> const &quarkline2,
@@ -307,8 +303,7 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
     std::vector<size_t> const &ric_ids,
     int const gamma,
     size_t const dilE,
-    size_t const dilD){
-
+    size_t const dilD) {
   assert(dilD == 4);
 
   std::vector<cmplx> result;
@@ -350,12 +345,10 @@ std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
 }
 
 /*! corr0 */
-std::vector<cmplx> trace(
-    std::vector<Eigen::MatrixXcd> const &quarkline1,
-    std::vector<Eigen::MatrixXcd> const &quarkline2,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<size_t> const &ric_ids){
-
+std::vector<cmplx> trace(std::vector<Eigen::MatrixXcd> const &quarkline1,
+                         std::vector<Eigen::MatrixXcd> const &quarkline2,
+                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                         std::vector<size_t> const &ric_ids) {
   std::vector<cmplx> result;
 
   const auto& ric0 =

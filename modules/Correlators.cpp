@@ -524,17 +524,22 @@ void LapH::Correlators::build_corrC(RandomVector const &randomvectors,
             exit(0);
           }
 
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q2V[c_look.lookup[0]].id_ric_lookup,
-                   dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup});
+          std::vector<size_t> random_index_combination_ids{
+              dil_fac_lookup.Q2V[c_look.lookup[0]].id_ric_lookup,
+              dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup};
 
           corrC[c_look.id][t1][t2] =
-              trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
-                  quarklines_Q2V, quarklines_Q0, slice_pair.source(),
-                  slice_pair.sink_block(), slice_pair.sink(), c_look.lookup,
-                  ric_lookup, random_index_combination_ids, c_look.gamma[0],
-                  dilE, 4);
+              trace<QuarkLineType::Q2V, QuarkLineType::Q0>(quarklines_Q2V,
+                                                           quarklines_Q0,
+                                                           slice_pair.source(),
+                                                           slice_pair.sink_block(),
+                                                           slice_pair.sink(),
+                                                           c_look.lookup,
+                                                           ric_lookup,
+                                                           random_index_combination_ids,
+                                                           c_look.gamma[0],
+                                                           dilE,
+                                                           4);
         }
       }
     }
@@ -982,7 +987,7 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
         ++M1_counter;
       }
 
-      // creating memeory for M2
+      // creating memory for M2
       // -------------------------------------------------
       const size_t id1 = c_look.lookup[1];
       auto it2 = std::find_if(
@@ -998,7 +1003,7 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
         ++M2_counter;
       }
 
-    } // first run over lookuptable ends here - memory and new lookuptable
+    } // first run over lookup table ends here - memory and new lookup table
 // are generated ------------------------------------------------------------
 
 #pragma omp for schedule(dynamic)
@@ -1105,10 +1110,8 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
 
   StopWatch swatch("C4cB");
 
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(output_path, "C4+B", output_filename,
-                                 comp_type_factory_tr());
+  WriteHDF5Correlator filehandle(
+      output_path, "C4+B", output_filename, comp_type_factory_tr());
 
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
 
@@ -1126,31 +1129,34 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
     QuarkLineBlock<QuarkLineType::Q2L> quarkline_Q2L(
         dilT, dilE, nev, dil_fac_lookup.Q2L, ric_lookup);
 
-    // Create lookuptables for M1, M2 to save intermdiate results that can be 
-    // reused (rVdaggerVr \cdot Q2V)
+    // Create lookup tables for M1, M2 to save intermediate results that can be
+    // reused (rVdaggerVr \cdot Q2V).
     std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
     std::vector<std::array<size_t, 3>> M1_look;
     std::vector<std::array<size_t, 3>> M2_look;
+
+    //! @TODO (Martin Ueding): Remove these and use `M1.size()` instead.
     size_t M1_counter = 0;
     size_t M2_counter = 0;
 
     for (const auto &c_look : corr_lookup) {
-
       try {
-        check_random_combinations<QuarkLineType::Q2L>(
-            std::string("C4cB"), c_look.lookup, ric_lookup, dil_fac_lookup.Q0,
-            dil_fac_lookup.Q2L);
+        check_random_combinations<QuarkLineType::Q2L>(std::string("C4cB"),
+                                                      c_look.lookup,
+                                                      ric_lookup,
+                                                      dil_fac_lookup.Q0,
+                                                      dil_fac_lookup.Q2L);
       } catch (const std::length_error &le) {
         std::cerr << "Length error: " << le.what() << '\n';
       }
 
-      // create lookuptable for M1
-      const size_t id3 = c_look.lookup[3];
-      const size_t id0 = c_look.lookup[0];
-      auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-                              [&id3, &id0](std::array<size_t, 3> check) {
-                                return (id3 == check[1] && id0 == check[2]);
-                              });
+      // Create lookup table for M1.
+      auto const id3 = c_look.lookup[3];
+      auto const id0 = c_look.lookup[0];
+      auto it1 = std::find_if(
+          M1_look.begin(), M1_look.end(), [&id3, &id0](std::array<size_t, 3> check) {
+            return (id3 == check[1] && id0 == check[2]);
+          });
       if (!(it1 != M1_look.end())) {
         M1.emplace_back(std::vector<Eigen::MatrixXcd>());
 
@@ -1158,94 +1164,97 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
         M1_counter++;
       }
 
-      // create lookuptable for M2
-      const size_t id1 = c_look.lookup[1];
-      const size_t id2 = c_look.lookup[2];
-      auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
-                              [&id1, &id2](std::array<size_t, 3> check) {
-                                return (id1 == check[1] && id2 == check[2]);
-                              });
+      // Create lookup table for M2.
+      auto const id1 = c_look.lookup[1];
+      auto const id2 = c_look.lookup[2];
+      auto it2 = std::find_if(
+          M2_look.begin(), M2_look.end(), [&id1, &id2](std::array<size_t, 3> check) {
+            return (id1 == check[1] && id2 == check[2]);
+          });
       if (!(it2 != M2_look.end())) {
         M2.emplace_back(std::vector<Eigen::MatrixXcd>());
         M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id1, id2}}));
         M2_counter++;
       }
-    } 
+    }
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // Create quarklines for all time combinations in block_pair
-      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
-                                  dil_fac_lookup.Q0, ric_lookup);
-      quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
-                                  dil_fac_lookup.Q2L, ric_lookup);
+      quarkline_Q0.build_block_pair(
+          randomvectors, meson_operator, block_pair, dil_fac_lookup.Q0, ric_lookup);
+      quarkline_Q2L.build_block_pair(
+          perambulators, meson_operator, block_pair, dil_fac_lookup.Q2L, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
         // Calculate M1
         for (const auto &look : M1_look) {
+          std::vector<size_t> random_index_combination_ids{
+              dil_fac_lookup.Q0[look[1]].id_ric_lookup,
+              dil_fac_lookup.Q2L[look[2]].id_ric_lookup};
 
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
-
-          rVdaggerVrxQ2(M1[look[0]], 
+          rVdaggerVrxQ2(
+              M1[look[0]],
               quarkline_Q0(slice_pair.source(), -1, look[1]),
               quarkline_Q2L(slice_pair.source(), slice_pair.sink_block(), look[2]),
-              ric_lookup, random_index_combination_ids, dilE, 4);
+              ric_lookup,
+              random_index_combination_ids,
+              dilE,
+              4);
         }
 
         // Calculate M2
         for (const auto &look : M2_look) {
+          std::vector<size_t> random_index_combination_ids{
+              dil_fac_lookup.Q0[look[1]].id_ric_lookup,
+              dil_fac_lookup.Q2L[look[2]].id_ric_lookup};
 
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
-
-          rVdaggerVrxQ2(M2[look[0]], 
+          rVdaggerVrxQ2(
+              M2[look[0]],
               quarkline_Q0(slice_pair.sink(), -1, look[1]),
               quarkline_Q2L(slice_pair.sink(), slice_pair.source_block(), look[2]),
-              ric_lookup, random_index_combination_ids, dilE, 4);
+              ric_lookup,
+              random_index_combination_ids,
+              dilE,
+              4);
         }
 
         // Calculate final sum now only depending on M1 and M2
         for (const auto &c_look : corr_lookup) {
-          /*! @todo These are essentially getters for M1_look and M2_look. 
+          /*! @TODO These are essentially getters for M1_look and M2_look. 
            *        Simplify that!
            */
-          const size_t id3 = c_look.lookup[3];
-          const size_t id0 = c_look.lookup[0];
-          auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-                                  [&id3, &id0](std::array<size_t, 3> check) {
-                                    return (id3 == check[1] && id0 == check[2]);
-                                  });
-          const size_t id1 = c_look.lookup[1];
-          const size_t id2 = c_look.lookup[2];
-          auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
-                                  [&id1, &id2](std::array<size_t, 3> check) {
-                                    return (id1 == check[1] && id2 == check[2]);
-                                  });
+          auto const id3 = c_look.lookup[3];
+          auto const id0 = c_look.lookup[0];
+          auto it1 = std::find_if(
+              M1_look.begin(), M1_look.end(), [&id3, &id0](std::array<size_t, 3> check) {
+                return (id3 == check[1] && id0 == check[2]);
+              });
+          auto const id1 = c_look.lookup[1];
+          auto const id2 = c_look.lookup[2];
+          auto it2 = std::find_if(
+              M2_look.begin(), M2_look.end(), [&id1, &id2](std::array<size_t, 3> check) {
+                return (id1 == check[1] && id2 == check[2]);
+              });
 
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                {dil_fac_lookup.Q0 [c_look.lookup[3]].id_ric_lookup,
-                 dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup,
-                 dil_fac_lookup.Q0 [c_look.lookup[1]].id_ric_lookup,
-                 dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup});
+          std::vector<size_t> random_index_combination_ids{
+              dil_fac_lookup.Q0[c_look.lookup[3]].id_ric_lookup,
+              dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup,
+              dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup,
+              dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup};
 
           // Perform trace in random index-, eigen- and dirac space
           // += because multiple block pairs contribute to the same t
           // Magic number 4 is number_of_blocks in Dilution of Dirac space
-          C[c_look.id][t] += trace(M1[(*it1)[0]], 
-                                   M2[(*it2)[0]], 
+          C[c_look.id][t] += trace(M1[(*it1)[0]],
+                                   M2[(*it2)[0]],
                                    ric_lookup,
-                                   random_index_combination_ids, 
-                                   dilE, 
+                                   random_index_combination_ids,
+                                   dilE,
                                    4);
 
         } // loop over operators ends here
@@ -1346,14 +1355,15 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
       // -------------------------------------------------
       const size_t id2 = c_look.lookup[2];
       auto it2 = std::find_if(
-          L2_look.begin(), L2_look.end(),
-          [&id2](std::array<size_t, 2> check) { return (id2 == check[1]); });
+          L2_look.begin(), L2_look.end(), [&id2](std::array<size_t, 2> check) {
+            return (id2 == check[1]);
+          });
       if (!(it2 != L2_look.end())) {
         L2.emplace_back(std::vector<Eigen::MatrixXcd>());
         L2_look.emplace_back(std::array<size_t, 2>({{L2_counter, id2}}));
         L2_counter++;
       }
-    } // first run over lookuptable ends here - memory and new lookuptable
+    }  // first run over lookuptable ends here - memory and new lookuptable
 // are generated ------------------------------------------------------------
 
 #pragma omp for schedule(dynamic)
