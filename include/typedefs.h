@@ -265,11 +265,16 @@ struct QuarklineQ1Indices {
   size_t id_ric_lookup; 
   std::vector<int> gamma; /*!< List of necessarry gamma combinations */
   /*! Just a small constructor to ensure easy filling of its vector form */
-  QuarklineQ1Indices(const size_t id, const size_t id_rvdaggerv, 
-                     const size_t id_peram, const size_t id_ric_lookup, 
-                     const std::vector<int>& gamma) :
-                   id(id), id_rvdaggerv(id_rvdaggerv), id_peram(id_peram),
-                   id_ric_lookup(id_ric_lookup), gamma(gamma) {};
+  QuarklineQ1Indices(const size_t id,
+                     const size_t id_rvdaggerv,
+                     const size_t id_peram,
+                     const size_t id_ric_lookup,
+                     const std::vector<int> &gamma)
+      : id(id),
+        id_rvdaggerv(id_rvdaggerv),
+        id_peram(id_peram),
+        id_ric_lookup(id_ric_lookup),
+        gamma(gamma){};
 };
 
 /******************************************************************************/
@@ -346,10 +351,11 @@ struct CorrInfo{
   std::vector<size_t> lookup;
   std::vector<int> gamma;
   /*! Just a small constructor to ensure easy filling of its vector form */
-  CorrInfo(const size_t id, const std::string& hdf5_dataset_name,
-           const std::vector<size_t>& lookup, const std::vector<int>& gamma) :
-                 id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), 
-                 gamma(gamma) {};
+  CorrInfo(const size_t id,
+           const std::string &hdf5_dataset_name,
+           const std::vector<size_t> &lookup,
+           const std::vector<int> &gamma)
+      : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
 };
 
 /******************************************************************************/
