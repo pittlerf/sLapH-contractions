@@ -1644,6 +1644,24 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
   swatch.print();
 }
 
+void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
+                    int const op_id0,
+                    int const op_id1,
+                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
+                    std::vector<Eigen::MatrixXcd> const &factor0,
+                    std::vector<Eigen::MatrixXcd> const &factor1,
+                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                    int const dilE,
+                    int const dilD) {
+  typename LapH::OperatorToFactorMap<2>::key_type const key = {op_id0, op_id1};
+  if (L.count(key) == 0) {
+    std::vector<size_t> const random_index_combination_ids{
+        Q1_lookup[op_id0].id_ric_lookup, Q1_lookup[op_id1].id_ric_lookup};
+    LapH::Q1xQ1(
+        L[key], factor0, factor1, ric_lookup, random_index_combination_ids, dilE, dilD);
+  }
+}
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 /*!
@@ -1719,45 +1737,33 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
         int const t = get_time_delta(slice_pair, Lt);
 
         OperatorToFactorMap<2> L1;
-
         for (const auto &c_look : corr_lookup) {
           auto const id0 = c_look.lookup[3];
           auto const id1 = c_look.lookup[0];
-
-          typename OperatorToFactorMap<2>::key_type const key = {id0, id1};
-          if (L1.count(key) == 0) {
-            std::vector<size_t> random_index_combination_ids{
-                dil_fac_lookup.Q1[id0].id_ric_lookup,
-                dil_fac_lookup.Q1[id1].id_ric_lookup};
-            Q1xQ1(L1[key],
-                  quarklines(slice_pair.source(), slice_pair.source_block(), id0),
-                  quarklines(slice_pair.source(), slice_pair.sink_block(), id1),
-                  ric_lookup,
-                  random_index_combination_ids,
-                  dilE,
-                  4);
-          }
+          make_Q1_Q1_map(L1,
+                         id0,
+                         id1,
+                         dil_fac_lookup.Q1,
+                         quarklines(slice_pair.source(), slice_pair.source_block(), id0),
+                         quarklines(slice_pair.source(), slice_pair.sink_block(), id1),
+                         ric_lookup,
+                         dilE,
+                         4);
         }
 
         OperatorToFactorMap<2> L2;
-
         for (const auto &c_look : corr_lookup) {
           auto const id0 = c_look.lookup[1];
           auto const id1 = c_look.lookup[2];
-
-          typename OperatorToFactorMap<2>::key_type const key = {id0, id1};
-          if (L2.count(key) == 0) {
-            std::vector<size_t> random_index_combination_ids{
-                dil_fac_lookup.Q1[id0].id_ric_lookup,
-                dil_fac_lookup.Q1[id1].id_ric_lookup};
-            Q1xQ1(L2[key],
-                  quarklines(slice_pair.sink(), slice_pair.sink_block(), id0),
-                  quarklines(slice_pair.sink(), slice_pair.source_block(), id1),
-                  ric_lookup,
-                  random_index_combination_ids,
-                  dilE,
-                  4);
-          }
+          make_Q1_Q1_map(L2,
+                         id0,
+                         id1,
+                         dil_fac_lookup.Q1,
+                         quarklines(slice_pair.sink(), slice_pair.sink_block(), id0),
+                         quarklines(slice_pair.sink(), slice_pair.source_block(), id1),
+                         ric_lookup,
+                         dilE,
+                         4);
         }
 
         for (const auto &c_look : corr_lookup) {
