@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <iosfwd>
+#include <sstream>
 #include <vector>
 #include "Eigen/Dense"
 
@@ -15,6 +17,35 @@
 #include "typedefs.h"
 
 namespace LapH{
+
+using DilutedFactor = std::vector<Eigen::MatrixXcd>;
+
+template <int n>
+using OperatorToFactorMap = std::map<std::array<size_t, n>, DilutedFactor>;
+
+template <int n>
+std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {
+  std::ostringstream oss;
+  oss << "{";
+  for (int i = 0; i < n; ++i) {
+    if (i != 0) {
+      oss << ", ";
+    }
+    oss << array[i];
+  }
+  oss << "}";
+
+  return oss.str();
+}
+
+template <int n>
+void print(OperatorToFactorMap<n> const &otfm) {
+  std::cout << "OperatorToFactorMap, size = " << otfm.size() << "\n";
+  for (auto const &elem : otfm) {
+    std::cout << "  " << to_string<n>(elem.first) << " -> "
+              << "std::vector(size = " << elem.second.size() << ")\n";
+  }
+}
 
 /*! @todo Be more restrictive with lookup tables. .Q2V etc. is enough */
 template <QuarkLineType qlt>

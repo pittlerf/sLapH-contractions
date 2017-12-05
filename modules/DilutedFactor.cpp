@@ -141,14 +141,13 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
-void Q1xQ1(std::vector<Eigen::MatrixXcd> &result, 
+void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
            std::vector<Eigen::MatrixXcd> const &quarkline1,
            std::vector<Eigen::MatrixXcd> const &quarkline2,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<size_t> const ric_ids,
            size_t const dilE,
-           size_t const dilD){
-
+           size_t const dilD) {
   const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
   const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
 

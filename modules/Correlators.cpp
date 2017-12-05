@@ -1679,16 +1679,6 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     QuarkLineBlock<QuarkLineType::Q1> quarklines(dilT, dilE, nev,
                                                  dil_fac_lookup.Q1, ric_lookup);
 
-    // creating memory arrays M1, M2 for intermediate storage of Quarklines
-    // ------
-    std::vector<std::vector<Eigen::MatrixXcd>> L1, L2;
-    std::vector<std::array<size_t, 3>> L1_look;
-    std::vector<std::array<size_t, 3>> L2_look;
-    size_t L1_counter = 0;
-    size_t L2_counter = 0;
-
-    for (const auto &c_look : corr_lookup) {
-
       //const auto &ric0 =
       //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
       //        .rnd_vec_ids;
@@ -1717,35 +1707,6 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
       //        std::cerr << "Length error: " << le.what() << '\n';
       //      }
 
-      // creating memeory for L1
-      // -------------------------------------------------
-      const size_t id0 = c_look.lookup[3];
-      const size_t id1 = c_look.lookup[0];
-      auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
-                              [&id0, &id1](std::array<size_t, 3> check) {
-                                return (id0 == check[1] && id1 == check[2]);
-                              });
-      if (!(it1 != L1_look.end())) {
-        L1.emplace_back(std::vector<Eigen::MatrixXcd>());
-
-        L1_look.emplace_back(std::array<size_t, 3>({{L1_counter, id0, id1}}));
-        L1_counter++;
-      }
-      // creating memeory for L2
-      // -------------------------------------------------
-      const size_t id2 = c_look.lookup[1];
-      const size_t id3 = c_look.lookup[2];
-      auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
-                              [&id2, &id3](std::array<size_t, 3> check) {
-                                return (id2 == check[1] && id3 == check[2]);
-                              });
-      if (!(it2 != L2_look.end())) {
-        L2.emplace_back(std::vector<Eigen::MatrixXcd>());
-        L2_look.emplace_back(std::array<size_t, 3>({{L2_counter, id2, id3}}));
-        L2_counter++;
-      }
-    } // first run over lookuptable ends here - memory and new lookuptable
-// are generated ------------------------------------------------------------
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1757,61 +1718,69 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        // build L1
-        // ----------------------------------------------------------------
-        for (const auto &look : L1_look) {
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q1[look[2]].id_ric_lookup});
+        OperatorToFactorMap<2> L1;
 
-          Q1xQ1(L1[look[0]], 
-                quarklines(slice_pair.source(), slice_pair.source_block(), look[1]),
-                quarklines(slice_pair.source(), slice_pair.sink_block(), look[2]),
-                ric_lookup, random_index_combination_ids, dilE, 4);
+        for (const auto &c_look : corr_lookup) {
+          auto const id0 = c_look.lookup[3];
+          auto const id1 = c_look.lookup[0];
+
+          typename OperatorToFactorMap<2>::key_type const key = {id0, id1};
+          if (L1.count(key) == 0) {
+            std::vector<size_t> random_index_combination_ids{
+                dil_fac_lookup.Q1[id0].id_ric_lookup,
+                dil_fac_lookup.Q1[id1].id_ric_lookup};
+            Q1xQ1(L1[key],
+                  quarklines(slice_pair.source(), slice_pair.source_block(), id0),
+                  quarklines(slice_pair.source(), slice_pair.sink_block(), id1),
+                  ric_lookup,
+                  random_index_combination_ids,
+                  dilE,
+                  4);
+          }
         }
 
-        // build L2
-        // ----------------------------------------------------------------
-        for (const auto &look : L2_look) {
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q1[look[2]].id_ric_lookup});
+        OperatorToFactorMap<2> L2;
 
-          Q1xQ1(L2[look[0]], 
-                quarklines(slice_pair.sink(), slice_pair.sink_block(), look[1]),
-                quarklines(slice_pair.sink(), slice_pair.source_block(), look[2]),
-                ric_lookup, random_index_combination_ids, dilE, 4);
+        for (const auto &c_look : corr_lookup) {
+          auto const id0 = c_look.lookup[1];
+          auto const id1 = c_look.lookup[2];
+
+          typename OperatorToFactorMap<2>::key_type const key = {id0, id1};
+          if (L2.count(key) == 0) {
+            std::vector<size_t> random_index_combination_ids{
+                dil_fac_lookup.Q1[id0].id_ric_lookup,
+                dil_fac_lookup.Q1[id1].id_ric_lookup};
+            Q1xQ1(L2[key],
+                  quarklines(slice_pair.sink(), slice_pair.sink_block(), id0),
+                  quarklines(slice_pair.sink(), slice_pair.source_block(), id1),
+                  ric_lookup,
+                  random_index_combination_ids,
+                  dilE,
+                  4);
+          }
         }
 
         for (const auto &c_look : corr_lookup) {
-
           const size_t id0 = c_look.lookup[3];
           const size_t id1 = c_look.lookup[0];
           const size_t id2 = c_look.lookup[1];
           const size_t id3 = c_look.lookup[2];
 
-          auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
-                                  [&id0, &id1](std::array<size_t, 3> check) {
-                                    return (id0 == check[1] && id1 == check[2]);
-                                  });
-          auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
-                                  [&id2, &id3](std::array<size_t, 3> check) {
-                                    return (id2 == check[1] && id3 == check[2]);
-                                  });
+          typename OperatorToFactorMap<2>::key_type const key1 = {id0, id1};
+          typename OperatorToFactorMap<2>::key_type const key2 = {id2, id3};
 
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                {dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
+          std::vector<size_t> random_index_combination_ids{
+              dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
+              dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
+              dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
+              dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup};
 
-          C[c_look.id][t] += trace(
-              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
-              random_index_combination_ids, dilE, 4);
-
+          C[c_look.id][t] += trace(L1.at(key1),
+                                   L2.at(key2),
+                                   ric_lookup,
+                                   random_index_combination_ids,
+                                   dilE,
+                                   4);
         }
       }
     }
