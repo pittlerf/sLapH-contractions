@@ -18,10 +18,20 @@
 
 namespace LapH{
 
-using DilutedFactor = std::vector<Eigen::MatrixXcd>;
+struct DilutedFactor {
+  using Data = Eigen::MatrixXcd;
+  using RndId = int8_t;
+
+  Data data;
+  int8_t left_Gamma;
+  std::pair<RndId, RndId> ric;
+  std::vector<RndId> used_rnd_ids;
+};
+
+// DilutedFactor operator*(DilutedFactor const &left, DilutedFactor const &right) {}
 
 template <int n>
-using OperatorToFactorMap = std::map<std::array<size_t, n>, DilutedFactor>;
+using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
 
 template <int n>
 std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {
@@ -101,6 +111,14 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
                     std::vector<size_t> const &ric_ids,
                     size_t const dilE,
                     size_t const dilD);
+
+void Q1xQ1(std::vector<DilutedFactor> &result,
+           std::vector<Eigen::MatrixXcd> const &quarkline1,
+           std::vector<Eigen::MatrixXcd> const &quarkline2,
+           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+           std::vector<size_t> const ric_ids,
+           size_t const dilE,
+           size_t const dilD);
 
 /*! Create vector<MatrixXcd> with Q1*Q1 for all rnd vecs not equal
  *  - C30

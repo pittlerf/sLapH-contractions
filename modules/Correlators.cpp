@@ -1781,12 +1781,24 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
               dil_fac_lookup.Q1[id2].id_ric_lookup,
               dil_fac_lookup.Q1[id3].id_ric_lookup};
 
-          C[c_look.id][t] += trace(L1.at(key1),
-                                   L2.at(key2),
-                                   ric_lookup,
-                                   random_index_combination_ids,
-                                   dilE,
-                                   4);
+          auto const &L1_at = L1.at(key1);
+          std::vector<Eigen::MatrixXcd> L1_key;
+          L1_key.reserve(L1_at.size());
+          std::transform(std::begin(L1_at),
+                         std::end(L1_at),
+                         std::back_inserter(L1_key),
+                         [](DilutedFactor const &df) { return df.data; });
+
+          auto const &L2_at = L2.at(key2);
+          std::vector<Eigen::MatrixXcd> L2_key;
+          L2_key.reserve(L2_at.size());
+          std::transform(std::begin(L2_at),
+                         std::end(L2_at),
+                         std::back_inserter(L2_key),
+                         [](DilutedFactor const &df) { return df.data; });
+
+          C[c_look.id][t] +=
+              trace(L1_key, L2_key, ric_lookup, random_index_combination_ids, dilE, 4);
         }
       }
     }
