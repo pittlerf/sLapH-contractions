@@ -1770,10 +1770,10 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
           typename OperatorToFactorMap<2>::key_type const key2 = {id2, id3};
 
           std::vector<size_t> random_index_combination_ids{
-              dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
-              dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
-              dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
-              dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup};
+              dil_fac_lookup.Q1[id0].id_ric_lookup,
+              dil_fac_lookup.Q1[id1].id_ric_lookup,
+              dil_fac_lookup.Q1[id2].id_ric_lookup,
+              dil_fac_lookup.Q1[id3].id_ric_lookup};
 
           C[c_look.id][t] += trace(L1.at(key1),
                                    L2.at(key2),
