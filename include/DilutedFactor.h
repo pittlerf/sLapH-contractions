@@ -175,4 +175,11 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
             size_t const dilE,
             size_t const dilD);
 
+cmplx trace(std::vector<DilutedFactor> const &M1, 
+            std::vector<DilutedFactor> const &M2, 
+            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+            std::vector<size_t> const &ric_ids,
+            size_t const dilE,
+            size_t const dilD);
+
 }  // end of namespace
