@@ -14,6 +14,7 @@ ubuntu_packages=(
     hdf5-tools
     libeigen3-dev
     libboost-filesystem-dev libboost-system-dev libboost-program-options-dev
+    libgtest-dev
 )
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
