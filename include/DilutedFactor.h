@@ -10,6 +10,8 @@
 #include <iosfwd>
 #include <sstream>
 #include <vector>
+#include <set>
+
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
@@ -25,10 +27,26 @@ struct DilutedFactor {
   Data data;
   int8_t left_Gamma;
   std::pair<RndId, RndId> ric;
-  std::vector<RndId> used_rnd_ids;
+  std::set<RndId> used_rnd_ids;
 };
 
-// DilutedFactor operator*(DilutedFactor const &left, DilutedFactor const &right) {}
+/*! Product yielding the diagonal elements.
+
+  From the sets of DilutedFactor elements, the product set of DilutedFactor is build such
+  that it only contains elements with _equal_ left and right random vector index. This set
+  is intended to take the trace over.
+  */
+std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
+                                     std::vector<DilutedFactor> const &right_vec);
+
+/*! Product yielding the off-diagonal elements.
+
+  From the sets of DilutedFactor elements, the product set of DilutedFactor is build such
+  that it only contains elements with _unequal_ left and right random vector index. This
+  set is intended to be used as an intermediate result.
+  */
+std::vector<DilutedFactor> mult_off_diag(std::vector<DilutedFactor> const &left_vec,
+                                         std::vector<DilutedFactor> const &right_vec);
 
 template <int n>
 using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
