@@ -406,49 +406,12 @@ cmplx trace(std::vector<DilutedFactor> const &M1,
             std::vector<size_t> const &ric_ids,
             size_t const dilE,
             size_t const dilD) {
-  std::vector<Eigen::MatrixXcd> M1_legacy;
-  M1_legacy.reserve(M1.size());
-  std::transform(std::begin(M1),
-                 std::end(M1),
-                 std::back_inserter(M1_legacy),
-                 [](DilutedFactor const &df) { return df.data; });
+  auto const M3 = mult_diag(M1, M2);
 
-  std::vector<Eigen::MatrixXcd> M2_legacy;
-  M2_legacy.reserve(M2.size());
-  std::transform(std::begin(M2),
-                 std::end(M2),
-                 std::back_inserter(M2_legacy),
-                 [](DilutedFactor const &df) { return df.data; });
-
-  /*! @todo unnessary allocation */
-  Eigen::MatrixXcd M3 = Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD);
-  cmplx result = cmplx(.0, .0);
-
-  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  size_t M1_rnd_counter = 0;
-  for (const auto &rnd0 : ric0) {
-    for (const auto &rnd1 : ric1) {
-      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-        // setting matrix values to zero
-        M3.setZero(dilE * 4, dilE * 4);
-
-        M1xM2(M3,
-              M1_legacy[M1_rnd_counter],
-              M2_legacy,
-              ric_lookup,
-              ric_ids,
-              rnd0,
-              rnd1,
-              dilE,
-              4);
-
-        result += M3.trace();
-        ++M1_rnd_counter;
-      }
-    }
-   }
+  cmplx result(0.0, 0.0);
+  for (auto const &elem : M3) {
+    result += elem.data.trace();
+  }
 
   return result;
 }
