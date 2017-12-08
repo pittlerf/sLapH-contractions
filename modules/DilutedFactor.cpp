@@ -82,8 +82,8 @@ std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
   std::vector<DilutedFactor> result_vec;
 
   for (auto const &left : left_vec) {
-    auto const outer_rnd_id = left.ric.second;
-    auto const inner_rnd_id = left.ric.first;
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
 
     // We might want to keep track of the indices that have been contracted away. However,
     // this may be unnecessary work since we are just going to take the trace over it
@@ -123,7 +123,7 @@ std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
         used.insert(elem);
       }
 
-      // The right sides that we encounter that this point have the same left and right
+      // The right sides that we encounter at this point have the same left and right
       // random vector indices. They may differ in the set of used random vector indices.
       // But since we do not plan to contract the result with more DilutedFactor
       // instances, we do not care to preserve the information about the used random
@@ -132,7 +132,7 @@ std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
       right_sum += right.data;
     }
 
-    result_vec.push_back({Eigen::MatrixXcd{left.data * right_sum},
+    result_vec.push_back({DilutedFactor::Data{left.data * right_sum},
                           right_vec[0].left_Gamma,
                           std::make_pair(outer_rnd_id, outer_rnd_id),
                           used});
