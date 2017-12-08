@@ -13,7 +13,7 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
     const size_t nev,
     const typename QuarkLineIndices<qlt>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
-    : dilT(dilT), dilE(dilE), nev(nev) {
+    : dilT(dilT), dilE(dilE), nev(nev), gamma(make_gamma()) {
   int const eigenspace_dirac_size = dilD * dilE;
   int const from_source_or_sink_block = 2;
   int const to_source_or_sink_block = 2;
@@ -34,10 +34,6 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
   }
 
   Ql_id.set_capacity(quarklines_per_block_combination);
-
-  // creating gamma matrices
-  gamma.resize(16);
-  for (int i = 0; i < gamma.size(); ++i) create_gamma(gamma, i);
 
   std::cout << "\tQuarklines initialised" << std::endl;
 }

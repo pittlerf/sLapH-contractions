@@ -11,5 +11,5 @@ struct gamma_lookup {
   std::array<cmplx, 4> value;
 };
 
-void create_gamma(std::vector<gamma_lookup> &gamma, int const ignored);
+std::vector<gamma_lookup> make_gamma();
 }

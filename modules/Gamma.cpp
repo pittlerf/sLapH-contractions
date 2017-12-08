@@ -12,7 +12,9 @@ namespace LapH {
 
   @todo Refactor that into physical quantum number class along with momentum
   */
-void create_gamma(std::vector<gamma_lookup> &gamma, int const ignored = 0) {
+std::vector<gamma_lookup> make_gamma() {
+  std::vector<gamma_lookup> gamma(16);
+
   // gamma_0
   gamma[0].row[0] = 2;
   gamma[0].value[0] = 1;
@@ -172,5 +174,7 @@ void create_gamma(std::vector<gamma_lookup> &gamma, int const ignored = 0) {
   gamma[15].value[2] = I;
   gamma[15].row[3] = 3;
   gamma[15].value[3] = -I;
+
+  return gamma;
 }
 }
