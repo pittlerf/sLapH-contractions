@@ -88,6 +88,7 @@ add_executable(contract
   modules/OperatorsForMesons.cpp
   modules/Perambulator.cpp
   modules/QuarkLineBlock.cpp
+  modules/QuarkLineBlock2.cpp
   modules/RandomVector.cpp
   modules/ranlxs.cpp
   modules/StopWatch.cpp
