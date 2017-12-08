@@ -36,11 +36,21 @@ struct DilutedFactor {
   that it only contains elements with _unequal_ left and right random vector index. This
   set is intended to be used as an intermediate result.
   */
-std::vector<DilutedFactor> mult_off_diag(std::vector<DilutedFactor> const &left_vec,
-                                         std::vector<DilutedFactor> const &right_vec);
+std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
+                                     std::vector<DilutedFactor> const &right_vec);
+
+struct QuantumNumbers {
+  size_t pd_id;
+  int8_t gamma;
+};
 
 template <int n>
 using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
+
+
+// Proposed:
+// template <int n>
+// using OperatorToFactorMap = std::map<std::array<QuantumNumbers, n>, std::vector<DilutedFactor>>;
 
 template <int n>
 std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {

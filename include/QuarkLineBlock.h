@@ -4,6 +4,7 @@
 #include "Perambulator.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
+#include "Gamma.h"
 
 #include "Eigen/Dense"
 #include "boost/circular_buffer.hpp"
@@ -16,11 +17,6 @@
 #include <string>
 
 namespace LapH {
-
-struct gamma_lookup {
-  std::array<int, 4> row;
-  std::array<cmplx, 4> value;
-};
 
 /*! typetrait class which allows to use QuarklineQ1Indices for Q1 and 
  *  QuarklineQ2Indices for Q2L and Q2V

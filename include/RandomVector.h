@@ -5,8 +5,9 @@
  *  @author Markus Werner
  */
 
-#ifndef RANDOMVECTOR_H_
-#define RANDOMVECTOR_H_
+#pragma once
+
+#include "typedefs.h"
 
 #include <complex>
 #include <fstream>
@@ -17,8 +18,6 @@
 #include "ranlxs.h"
 
 namespace LapH {
-
-typedef std::complex<double> cmplx;
 
 /*! Memory allocation and IO routines for random vectors */
 class RandomVector {
@@ -100,5 +99,3 @@ public:
 };
 
 } // end of namespace
-
-#endif // RANDOMVECTOR_H_ 

@@ -76,15 +76,16 @@ add_executable(contract
 
   main/contract.cpp
   modules/Correlators.cpp
+  modules/DilutedFactor.cpp
   modules/dilution-iterator.cpp
   modules/EigenVector.cpp
+  modules/Gamma.cpp
   modules/GlobalData/global_data.cpp
   modules/GlobalData/global_data_build_IO_names.cpp
   modules/GlobalData/global_data_input_handling.cpp
   modules/GlobalData/global_data_input_handling_utils.cpp
   modules/GlobalData/init_lookup_tables.cpp
   modules/OperatorsForMesons.cpp
-  modules/DilutedFactor.cpp
   modules/Perambulator.cpp
   modules/QuarkLineBlock.cpp
   modules/RandomVector.cpp

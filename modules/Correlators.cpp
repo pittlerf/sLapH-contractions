@@ -1677,7 +1677,6 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     return;
 
   StopWatch swatch("C40B");
-  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
