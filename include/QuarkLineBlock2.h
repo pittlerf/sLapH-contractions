@@ -91,11 +91,11 @@ class QuarkLineBlock2 {
              const typename QuarkLineIndices<qlt>::type &ql_lookup,
              const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
-  void build_block_pair(const Perambulator &peram,
-                        const OperatorsForMesons &meson_operator,
+  void build_block_pair(Perambulator const &peram,
+                        OperatorsForMesons const &meson_operator,
                         DilutionIterator const &block_pair,
-                        const typename QuarkLineIndices<qlt>::type &ql_lookup,
-                        const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
+                        typename QuarkLineIndices<qlt>::type const &ql_lookup,
+                        std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
   // Overload for Q0
   void build_block_pair(RandomVector const &rnd_vec,
                         OperatorsForMesons const &meson_operator,

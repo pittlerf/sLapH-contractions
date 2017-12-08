@@ -43,12 +43,12 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
 
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
-    const Perambulator &peram,
-    const OperatorsForMesons &meson_operator,
-    const int t1,
-    const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
+    Perambulator const &peram,
+    OperatorsForMesons const &meson_operator,
+    int const t1,
+    int const t2_block,
+    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
   Ql_id.push_front(std::make_pair(t1, t2_block));
 
   // Effectively this is a right rotation.
