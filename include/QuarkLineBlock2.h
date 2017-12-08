@@ -56,14 +56,6 @@ class QuarkLineBlock2 {
                   const typename QuarkLineIndices<qlt>::type &quarkline_indices,
                   const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
-  cmplx const &return_gamma_val(const size_t gamma_id, const size_t row) const {
-    return gamma_vec[gamma_id].value[row];
-  }
-
-  int const &return_gamma_row(const size_t gamma_id, const size_t row) const {
-    return gamma_vec[gamma_id].row[row];
-  }
-
   Eigen::MatrixXcd const &operator()(const int t,
                                      const int b,
                                      const int op_id,

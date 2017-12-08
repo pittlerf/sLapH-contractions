@@ -1,7 +1,5 @@
 #include "QuarkLineBlock2.h"
 
-#include "Gamma.h"
-
 namespace {
 std::complex<double> const I(0.0, 1.0);
 }
