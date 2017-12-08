@@ -74,73 +74,6 @@ void M1xM2(Eigen::MatrixXcd &result,
 
 namespace LapH {
 
-std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
-                                     std::vector<DilutedFactor> const &right_vec) {
-  //! @TODO Pull out this magic number.
-  auto constexpr rnd_vec_count = 5;
-
-  std::vector<DilutedFactor> result_vec;
-
-  for (auto const &left : left_vec) {
-    auto const outer_rnd_id = left.ric.first;
-    auto const inner_rnd_id = left.ric.second;
-
-    // We might want to keep track of the indices that have been contracted away. However,
-    // this may be unnecessary work since we are just going to take the trace over it
-    // anyway.
-    std::set<DilutedFactor::RndId> used = left.used_rnd_ids;
-    used.insert(inner_rnd_id);
-
-    //! @TODO The size of the neutral element matrix is written here, this should be
-    //! inferred from the DilutedFactor.
-    Eigen::MatrixXcd right_sum(
-        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
-
-    for (auto const &right : right_vec) {
-      // We want to make the inner and outer indices match. The inner indices need to
-      // match because the product would not make sense otherwise. The outer indices must
-      // match since we want to be able to take the trace over the result. The second
-      // condition is where this differs from the other multiplication operator.
-      bool const is_allowed =
-          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
-      if (!is_allowed) {
-          continue;
-      }
-
-      // We also need to be careful to not combine factors which have common used random
-      // vector indices.
-      std::vector<DilutedFactor::RndId> intersection;
-      std::set_intersection(std::begin(left.used_rnd_ids),
-                            std::end(left.used_rnd_ids),
-                            std::begin(right.used_rnd_ids),
-                            std::end(right.used_rnd_ids),
-                            std::back_inserter(intersection));
-      if (intersection.size() > 0) {
-        continue;
-      }
-
-      for (auto const &elem : right.used_rnd_ids) {
-        used.insert(elem);
-      }
-
-      // The right sides that we encounter at this point have the same left and right
-      // random vector indices. They may differ in the set of used random vector indices.
-      // But since we do not plan to contract the result with more DilutedFactor
-      // instances, we do not care to preserve the information about the used random
-      // vector indices. Therefore we can sum all these elements up to have less
-      // multiplications to do.
-      right_sum += right.data;
-    }
-
-    result_vec.push_back({DilutedFactor::Data{left.data * right_sum},
-                          right_vec[0].left_Gamma,
-                          std::make_pair(outer_rnd_id, outer_rnd_id),
-                          used});
-  }
-
-  return result_vec;
-}
-
 std::vector<DilutedFactor> mult_off_diag(std::vector<DilutedFactor> const &left_vec,
                                          std::vector<DilutedFactor> const &right_vec) {
   //! @TODO Pull out this magic number.
@@ -400,17 +333,66 @@ cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M2,
   return result;
 }
 
-cmplx trace(std::vector<DilutedFactor> const &M1,
-            std::vector<DilutedFactor> const &M2,
-            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-            std::vector<size_t> const &ric_ids,
-            size_t const dilE,
-            size_t const dilD) {
-  auto const M3 = mult_diag(M1, M2);
+cmplx trace(std::vector<DilutedFactor> const &left_vec,
+            std::vector<DilutedFactor> const &right_vec) {
+  //! @TODO Pull out this magic number.
+  auto constexpr rnd_vec_count = 5;
 
   cmplx result(0.0, 0.0);
-  for (auto const &elem : M3) {
-    result += elem.data.trace();
+
+  for (auto const &left : left_vec) {
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
+
+    // We might want to keep track of the indices that have been contracted away. However,
+    // this may be unnecessary work since we are just going to take the trace over it
+    // anyway.
+    std::set<DilutedFactor::RndId> used = left.used_rnd_ids;
+    used.insert(inner_rnd_id);
+
+    //! @TODO The size of the neutral element matrix is written here, this should be
+    //! inferred from the DilutedFactor.
+    Eigen::MatrixXcd right_sum(
+        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
+
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices match. The inner indices need to
+      // match because the product would not make sense otherwise. The outer indices must
+      // match since we want to be able to take the trace over the result. The second
+      // condition is where this differs from the other multiplication operator.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      std::vector<DilutedFactor::RndId> intersection;
+      std::set_intersection(std::begin(left.used_rnd_ids),
+                            std::end(left.used_rnd_ids),
+                            std::begin(right.used_rnd_ids),
+                            std::end(right.used_rnd_ids),
+                            std::back_inserter(intersection));
+      if (intersection.size() > 0) {
+        continue;
+      }
+
+      for (auto const &elem : right.used_rnd_ids) {
+        used.insert(elem);
+      }
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      right_sum += right.data;
+    }
+
+    auto const &product = left.data * right_sum;
+    result += product.trace();
   }
 
   return result;

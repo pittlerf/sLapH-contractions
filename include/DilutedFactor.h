@@ -30,15 +30,6 @@ struct DilutedFactor {
   std::set<RndId> used_rnd_ids;
 };
 
-/*! Product yielding the diagonal elements.
-
-  From the sets of DilutedFactor elements, the product set of DilutedFactor is build such
-  that it only contains elements with _equal_ left and right random vector index. This set
-  is intended to take the trace over.
-  */
-std::vector<DilutedFactor> mult_diag(std::vector<DilutedFactor> const &left_vec,
-                                     std::vector<DilutedFactor> const &right_vec);
-
 /*! Product yielding the off-diagonal elements.
 
   From the sets of DilutedFactor elements, the product set of DilutedFactor is build such
@@ -193,11 +184,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
             size_t const dilE,
             size_t const dilD);
 
-cmplx trace(std::vector<DilutedFactor> const &M1, 
-            std::vector<DilutedFactor> const &M2, 
-            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-            std::vector<size_t> const &ric_ids,
-            size_t const dilE,
-            size_t const dilD);
+cmplx trace(std::vector<DilutedFactor> const &left_vec,
+            std::vector<DilutedFactor> const &right_vec);
 
 }  // end of namespace
