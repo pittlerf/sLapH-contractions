@@ -177,4 +177,5 @@ std::vector<gamma_lookup> make_gamma() {
 
   return gamma;
 }
+
 }

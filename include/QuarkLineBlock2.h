@@ -56,14 +56,12 @@ class QuarkLineBlock2 {
                   const typename QuarkLineIndices<qlt>::type &quarkline_indices,
                   const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
-  ~QuarkLineBlock2(){};
-
-  const cmplx &return_gamma_val(const size_t gamma_id, const size_t row) const {
-    return gamma[gamma_id].value[row];
+  cmplx const &return_gamma_val(const size_t gamma_id, const size_t row) const {
+    return gamma_vec[gamma_id].value[row];
   }
 
   int const &return_gamma_row(const size_t gamma_id, const size_t row) const {
-    return gamma[gamma_id].row[row];
+    return gamma_vec[gamma_id].row[row];
   }
 
   Eigen::MatrixXcd const &operator()(const int t,
@@ -136,7 +134,6 @@ class QuarkLineBlock2 {
   boost::circular_buffer<std::pair<int, int>> Ql_id;
 
   const size_t dilT, dilE, nev;
-  std::vector<LapH::gamma_lookup> gamma;
 
   static int constexpr dilD = 4;
 };

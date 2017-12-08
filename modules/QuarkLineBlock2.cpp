@@ -1,5 +1,7 @@
 #include "QuarkLineBlock2.h"
 
+#include "Gamma.h"
+
 namespace {
 std::complex<double> const I(0.0, 1.0);
 }
@@ -13,7 +15,7 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     const size_t nev,
     const typename QuarkLineIndices<qlt>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
-    : dilT(dilT), dilE(dilE), nev(nev), gamma(make_gamma()) {
+    : dilT(dilT), dilE(dilE), nev(nev) {
   int const eigenspace_dirac_size = dilD * dilE;
   int const from_source_or_sink_block = 2;
   int const to_source_or_sink_block = 2;
@@ -64,10 +66,10 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
-              gamma[gamma_id].value[row] *
+              gamma_vec[gamma_id].value[row] *
               meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
                   .block(row * dilE, 0, dilE, nev) *
-              peram[rnd_id.second].block((t1 * 4 + gamma[gamma_id].row[row]) * nev,
+              peram[rnd_id.second].block((t1 * 4 + gamma_vec[gamma_id].row[row]) * nev,
                                          (t2_block * 4 + col) * dilE,
                                          nev,
                                          dilE);
@@ -206,8 +208,8 @@ void QuarkLineBlock2<QuarkLineType::Q2V>::build_block_pair(
         const size_t gamma_id = qll.gamma[0];
 
         for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
-          const cmplx value = gamma[gamma_id].value[block_dil];
-          const size_t gamma_index = gamma[gamma_id].row[block_dil];
+          const cmplx value = gamma_vec[gamma_id].value[block_dil];
+          const size_t gamma_index = gamma_vec[gamma_id].row[block_dil];
           for (int row = 0; row < dilD; row++) {
             for (int col = 0; col < dilD; col++) {
               Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
@@ -272,8 +274,8 @@ void QuarkLineBlock2<QuarkLineType::Q2L>::build_block_pair(
         Ql[0][qll.id][rnd_counter].setZero(dilD * dilE, dilD * dilE);
         const size_t gamma_id = qll.gamma[0];
         for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
-          const cmplx value = gamma[gamma_id].value[block_dil];
-          const size_t gamma_index = gamma[gamma_id].row[block_dil];
+          const cmplx value = gamma_vec[gamma_id].value[block_dil];
+          const size_t gamma_index = gamma_vec[gamma_id].row[block_dil];
           for (int row = 0; row < dilD; row++) {
             for (int col = 0; col < dilD; col++) {
               Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
