@@ -5,6 +5,8 @@
 #include "Perambulator.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
+#include "DilutedFactor.h"
+#include "typedefs.h"
 
 #include "Eigen/Dense"
 #include "boost/circular_buffer.hpp"
@@ -18,34 +20,6 @@
 
 namespace LapH {
 
-/*! typetrait class which allows to use QuarklineQ1Indices for Q1 and
- *  QuarklineQ2Indices for Q2L and Q2V
- */
-template <QuarkLineType qlt>
-struct QuarkLineIndices {};
-
-/*! @todo QuarkLineType is a bad name in this case. That's a proxy for
- *        CorrInfo.lookup
- */
-template <>
-struct QuarkLineIndices<QuarkLineType::Q0> {
-  typedef std::vector<VdaggerVRandomLookup> type;
-};
-
-template <>
-struct QuarkLineIndices<QuarkLineType::Q1> {
-  typedef std::vector<QuarklineQ1Indices> type;
-};
-
-template <>
-struct QuarkLineIndices<QuarkLineType::Q2L> {
-  typedef std::vector<QuarklineQ2Indices> type;
-};
-
-template <>
-struct QuarkLineIndices<QuarkLineType::Q2V> {
-  typedef std::vector<QuarklineQ2Indices> type;
-};
 
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
@@ -56,23 +30,14 @@ class QuarkLineBlock2 {
                   const typename QuarkLineIndices<qlt>::type &quarkline_indices,
                   const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
-  Eigen::MatrixXcd const &operator()(const int t,
-                                     const int b,
-                                     const int op_id,
-                                     const int rnd) const {
-    auto const id =
-        std::find(Ql_id.begin(), Ql_id.end(), std::pair<int, int>(t, b)) - Ql_id.begin();
-    /*! @todo catch when t,b is an invalid index */
-    return Ql[id][op_id].at(rnd);
-  }
-
-  std::vector<Eigen::MatrixXcd> const &operator()(const int t,
+  std::vector<DilutedFactor> const &operator()(const int t,
                                                   const int b,
                                                   const int op_id) const {
     auto const id =
         std::find(Ql_id.begin(), Ql_id.end(), std::pair<int, int>(t, b)) - Ql_id.begin();
     /*! @todo catch when t,b is an invalid index */
-    return Ql[id][op_id];
+    typename OperatorToFactorMap<1>::key_type const key{op_id};
+    return Ql[id].at(key);
   }
 
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
@@ -107,21 +72,11 @@ class QuarkLineBlock2 {
   /*!
     Containers for the three types of quark lines.
 
-    `vector<vector>` rather than `multiarray`, because `nb_rnd` depends on the operator.
-
     Indices:
 
     1. Time slice
-    2. Operator
-    3. Random Vector
     */
-  std::vector<std::vector<std::vector<Eigen::MatrixXcd>>> Ql;
-
-  // using MyQuarkLine = Eigen::MatrixXcd;
-  // using MyQuarkLineRandomVec = std::vector<MyQuarkLine>;
-  // using MyQuarkLineRandomVecOperator = std::vector<MyQuarkLineRandomVec>;
-
-  // std::vector<std::pair<std::pair<int, int>, MyQuarkLineRandomVecOperator>> Ql;
+  std::vector<OperatorToFactorMap<1>> Ql;
 
   boost::circular_buffer<std::pair<int, int>> Ql_id;
 

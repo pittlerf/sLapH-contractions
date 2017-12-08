@@ -8,8 +8,7 @@
  *  @TODO {seems like a lot of data types are deprecated. Comment these out?}
  */
 
-#ifndef _TYPEDEFS_H_
-#define _TYPEDEFS_H_
+#pragma once
 
 #include <algorithm>
 #include <array>
@@ -93,6 +92,7 @@ struct compcomp_t {
 
 
 }; 
+
 
 } // end of namespace
 
@@ -386,4 +386,34 @@ struct CorrelatorLookup{
   std::vector<CorrInfo> C4cB;
 };
 
-#endif // _TYPEDEFS_H_
+namespace LapH {
+
+/*! typetrait class which allows to use QuarklineQ1Indices for Q1 and
+ *  QuarklineQ2Indices for Q2L and Q2V
+ */
+template <QuarkLineType qlt>
+struct QuarkLineIndices {};
+
+/*! @todo QuarkLineType is a bad name in this case. That's a proxy for
+ *        CorrInfo.lookup
+ */
+template <>
+struct QuarkLineIndices<QuarkLineType::Q0> {
+  typedef std::vector<VdaggerVRandomLookup> type;
+};
+
+template <>
+struct QuarkLineIndices<QuarkLineType::Q1> {
+  typedef std::vector<QuarklineQ1Indices> type;
+};
+
+template <>
+struct QuarkLineIndices<QuarkLineType::Q2L> {
+  typedef std::vector<QuarklineQ2Indices> type;
+};
+
+template <>
+struct QuarkLineIndices<QuarkLineType::Q2V> {
+  typedef std::vector<QuarklineQ2Indices> type;
+};
+}

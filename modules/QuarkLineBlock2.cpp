@@ -1,5 +1,7 @@
 #include "QuarkLineBlock2.h"
 
+#include <utility>
+
 namespace {
 std::complex<double> const I(0.0, 1.0);
 }
@@ -14,13 +16,14 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     const typename QuarkLineIndices<qlt>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
     : dilT(dilT), dilE(dilE), nev(nev) {
-  int const eigenspace_dirac_size = dilD * dilE;
   int const from_source_or_sink_block = 2;
   int const to_source_or_sink_block = 2;
   int const quarklines_per_block_combination =
       from_source_or_sink_block * to_source_or_sink_block * dilT;
 
   Ql.resize(quarklines_per_block_combination);
+
+  /*
   for (int qline_id = 0; qline_id < quarklines_per_block_combination; ++qline_id) {
     Ql[qline_id].resize(quarkline_indices.size());
     for (int op_id = 0; op_id < quarkline_indices.size(); ++op_id) {
@@ -32,6 +35,7 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
       }
     }
   }
+  */
 
   Ql_id.set_capacity(quarklines_per_block_combination);
 
@@ -49,21 +53,25 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     int const t2_block,
     typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+  int const eigenspace_dirac_size = dilD * dilE;
   Ql_id.push_front(std::make_pair(t1, t2_block));
 
   // Effectively this is a right rotation.
   std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
 
-  for (const auto &op : quarkline_indices) {
-    const size_t offset = ric_lookup[op.id_ric_lookup].offset.first;
-    size_t rnd_counter = 0;
-    for (const auto &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
-      const size_t rid1 = rnd_id.first - offset;
+  for (auto const &op : quarkline_indices) {
+    auto const offset = ric_lookup[op.id_ric_lookup].offset.first;
+    for (auto const &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
+      auto const rid1 = rnd_id.first - offset;
+      auto const rid2 = rnd_id.second - offset;
+
       //! @todo: hard coded! VERY BAD!!!
-      const size_t gamma_id = op.gamma[0];
+      auto const gamma_id = op.gamma[0];
+      auto matrix = Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
+          //Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
+          matrix.block(row * dilE, col * dilE, dilE, dilE) =
               gamma_vec[gamma_id].value[row] *
               meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
                   .block(row * dilE, 0, dilE, nev) *
@@ -73,7 +81,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-      rnd_counter++;
+
+      Ql[0][{op.id}].push_back({matrix, 0, std::make_pair(rid1, rid2), {}});
     }
   }
 }
@@ -97,6 +106,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
                    ric_lookup);
   }
 }
+
+#if 0
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -289,6 +300,8 @@ void QuarkLineBlock2<QuarkLineType::Q2L>::build_block_pair(
     }
   }
 }
+
+#endif
 
 template class QuarkLineBlock2<QuarkLineType::Q0>;
 template class QuarkLineBlock2<QuarkLineType::Q1>;
