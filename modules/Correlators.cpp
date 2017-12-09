@@ -1645,8 +1645,8 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 }
 
 void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
-                    int const op_id0,
-                    int const op_id1,
+                    size_t const op_id0,
+                    size_t const op_id1,
                     std::vector<QuarklineQ1Indices> const &Q1_lookup,
                     std::vector<Eigen::MatrixXcd> const &factor0,
                     std::vector<Eigen::MatrixXcd> const &factor1,
@@ -1737,8 +1737,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L1;
         for (const auto &c_look : corr_lookup) {
-          auto const id0 = c_look.lookup[3];
-          auto const id1 = c_look.lookup[0];
+          auto const id0 = static_cast<size_t>(c_look.lookup[3]);
+          auto const id1 = static_cast<size_t>(c_look.lookup[0]);
           make_Q1_Q1_map(L1,
                          id0,
                          id1,
@@ -1752,8 +1752,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L2;
         for (const auto &c_look : corr_lookup) {
-          auto const id0 = c_look.lookup[1];
-          auto const id1 = c_look.lookup[2];
+          auto const id0 = static_cast<size_t>(c_look.lookup[1]);
+          auto const id1 = static_cast<size_t>(c_look.lookup[2]);
           make_Q1_Q1_map(L2,
                          id0,
                          id1,

@@ -238,8 +238,11 @@ void Q1xQ1(std::vector<DilutedFactor> &result,
 
       if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
         DilutedFactor::Data const data = quarkline1[idr0] * quarkline2[idr1];
+        /*! @TODO (MW 9.12.17) change rnd_vec_ids to size_t and throw out 
+         *        static_cast 
+         */
         result.push_back(
-            {data, 4, std::make_pair(rnd0.first, rnd1.second), {rnd0.second}});
+            {data, 4, std::make_pair(rnd0.first, rnd1.second), {static_cast<DilutedFactor::RndId>(rnd0.second)}});
       }
     }
   }

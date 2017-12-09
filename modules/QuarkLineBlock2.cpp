@@ -82,7 +82,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
         }
       }
 
-      Ql[0][{op.id}].push_back({matrix, 0, std::make_pair(rid1, rid2), {}});
+      Ql[0][{op.id}].push_back({matrix, 4, std::make_pair(rid1, rid2), {}});
     }
   }
 }
@@ -303,10 +303,10 @@ void QuarkLineBlock2<QuarkLineType::Q2L>::build_block_pair(
 
 #endif
 
-template class QuarkLineBlock2<QuarkLineType::Q0>;
+//template class QuarkLineBlock2<QuarkLineType::Q0>;
 template class QuarkLineBlock2<QuarkLineType::Q1>;
-template class QuarkLineBlock2<QuarkLineType::Q2L>;
-template class QuarkLineBlock2<QuarkLineType::Q2V>;
+//template class QuarkLineBlock2<QuarkLineType::Q2L>;
+//template class QuarkLineBlock2<QuarkLineType::Q2V>;
 
 }  // end of LapH namespace
 
