@@ -74,8 +74,8 @@ void M1xM2(Eigen::MatrixXcd &result,
 
 namespace LapH {
 
-std::vector<DilutedFactor> mult_off_diag(std::vector<DilutedFactor> const &left_vec,
-                                         std::vector<DilutedFactor> const &right_vec) {
+std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
+                                     std::vector<DilutedFactor> const &right_vec) {
   //! @TODO Pull out this magic number.
   auto constexpr rnd_vec_count = 5;
   auto constexpr dilD = 4;
