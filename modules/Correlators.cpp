@@ -4,6 +4,7 @@
 
 #include "DilutedFactor.h"
 #include "QuarkLineBlock.h"
+#include "QuarkLineBlock2.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
@@ -1648,8 +1649,8 @@ void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
                     size_t const op_id0,
                     size_t const op_id1,
                     std::vector<QuarklineQ1Indices> const &Q1_lookup,
-                    std::vector<Eigen::MatrixXcd> const &factor0,
-                    std::vector<Eigen::MatrixXcd> const &factor1,
+                    std::vector<LapH::DilutedFactor> const &factor0,
+                    std::vector<LapH::DilutedFactor> const &factor1,
                     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                     int const dilE,
                     int const dilD) {
@@ -1693,8 +1694,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     // std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock<QuarkLineType::Q1> quarklines(dilT, dilE, nev,
-                                                 dil_fac_lookup.Q1, ric_lookup);
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
       //const auto &ric0 =
       //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
@@ -1728,6 +1729,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
+
+      std::cout << block_pair << std::endl;
 
       quarklines.build_block_pair(perambulators, meson_operator, block_pair,
                                   dil_fac_lookup.Q1, ric_lookup);

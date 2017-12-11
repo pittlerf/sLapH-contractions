@@ -31,13 +31,30 @@ class QuarkLineBlock2 {
                   const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
   std::vector<DilutedFactor> const &operator()(const int t,
-                                                  const int b,
-                                                  const size_t op_id) const {
-    auto const id =
-        std::find(Ql_id.begin(), Ql_id.end(), std::pair<int, int>(t, b)) - Ql_id.begin();
+                                               const int b,
+                                               const size_t op_id) const {
     /*! @todo catch when t,b is an invalid index */
+    auto const time_key = std::make_pair(t, b);
     typename OperatorToFactorMap<1>::key_type const key{op_id};
-    return Ql[id].at(key);
+
+    auto it = Ql.find(time_key);
+    if (it == Ql.end()) {
+      std::cout << "Tried to access " << t << " " << b << std::endl;
+      std::cout << "Size of the map: " << Ql.size() << std::endl;
+      abort();
+    }
+
+    auto const &Ql_elem = Ql.at(time_key);
+
+    auto it2 = Ql_elem.find(key);
+    if (it2 == Ql_elem.end()) {
+      std::cout << "Tried to access " << to_string<1>(key) << std::endl;
+      std::cout << "Size of the map: " << Ql_elem.size() << std::endl;
+      print<1>(Ql_elem);
+      abort();
+    }
+
+    return Ql_elem.at(key);
   }
 
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
@@ -76,9 +93,7 @@ class QuarkLineBlock2 {
 
     1. Time slice
     */
-  std::vector<OperatorToFactorMap<1>> Ql;
-
-  boost::circular_buffer<std::pair<int, int>> Ql_id;
+  std::map<std::pair<int, int>, OperatorToFactorMap<1>> Ql;
 
   const size_t dilT, dilE, nev;
 

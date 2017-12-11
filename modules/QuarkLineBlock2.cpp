@@ -16,12 +16,11 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     const typename QuarkLineIndices<qlt>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
     : dilT(dilT), dilE(dilE), nev(nev) {
+      std::cout << "New QuarkLineBlock2" << std::endl;
   int const from_source_or_sink_block = 2;
   int const to_source_or_sink_block = 2;
   int const quarklines_per_block_combination =
       from_source_or_sink_block * to_source_or_sink_block * dilT;
-
-  Ql.resize(quarklines_per_block_combination);
 
   /*
   for (int qline_id = 0; qline_id < quarklines_per_block_combination; ++qline_id) {
@@ -36,8 +35,6 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     }
   }
   */
-
-  Ql_id.set_capacity(quarklines_per_block_combination);
 
   std::cout << "\tQuarklines initialised" << std::endl;
 }
@@ -54,10 +51,15 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
   int const eigenspace_dirac_size = dilD * dilE;
-  Ql_id.push_front(std::make_pair(t1, t2_block));
+  auto const time_key = std::make_pair(t1, t2_block);
 
-  // Effectively this is a right rotation.
-  std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+  // We have already built this, therefore there is no need to do it again.
+  if (Ql.count(time_key) > 0) {
+    return;
+  }
+
+  std::cout << "QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t() with t=" << t1
+            << " b=" << t2_block << std::endl;
 
   for (auto const &op : quarkline_indices) {
     auto const offset = ric_lookup[op.id_ric_lookup].offset.first;
@@ -82,8 +84,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-
-      Ql[0][{op.id}].push_back({matrix, 4, std::make_pair(rid1, rid2), {}});
+      //std::cout << "Adding element with key " << op.id << std::endl;
+      Ql[time_key][{op.id}].push_back({matrix, 4, std::make_pair(rid1, rid2), {}});
     }
   }
 }
@@ -99,10 +101,23 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
     typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
   for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
+    std::cout << slice_pair_one_sink << std::endl;
     build_Q1_one_t(peram,
                    meson_operator,
                    slice_pair_one_sink.source(),
-                   block_pair.sink(),
+                   slice_pair_one_sink.sink_block(),
+                   quarkline_indices,
+                   ric_lookup);
+
+    // A `DilutionIterator` contains a source and a sink block, possibly different ones.
+    // For the block diagram we need to have the `Q1` objects that start and end in the
+    // same block as well. The above `build_Q1_one_t` call just builds them between
+    // different blocks, therefore we also need this call. The `build_Q1_one_t` will not
+    // build anything that is already there, therefore this does not do any damage.
+    build_Q1_one_t(peram,
+                   meson_operator,
+                   slice_pair_one_sink.source(),
+                   slice_pair_one_sink.source_block(),
                    quarkline_indices,
                    ric_lookup);
   }

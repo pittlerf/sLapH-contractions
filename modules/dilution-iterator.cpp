@@ -1,12 +1,15 @@
 #include "dilution-iterator.h"
 
 std::ostream &operator<<(std::ostream &os, DilutionIterator const &di) {
-  os << "DilutionIterator(source=" << di.source() << ", sink=" << di.sink() << ")";
+  os << "DilutionIterator(source=" << di.source() << ", sink=" << di.sink()
+     <<  ")";
   return os;
 }
 
 std::ostream &operator<<(std::ostream &os, BlockIterator const &bi) {
-  os << "BlockIterator(source=" << bi.source() << ", sink=" << bi.sink() << ")";
+  os << "BlockIterator(source=" << bi.source() << ", sink=" << bi.sink()
+     << ", source_block=" << bi.source_block() << ", sink_block=" << bi.sink_block()
+     << ")";
   return os;
 }
 

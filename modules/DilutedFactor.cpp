@@ -222,8 +222,8 @@ void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
 }
 
 void Q1xQ1(std::vector<DilutedFactor> &result,
-           std::vector<Eigen::MatrixXcd> const &quarkline1,
-           std::vector<Eigen::MatrixXcd> const &quarkline2,
+           std::vector<DilutedFactor> const &quarkline1,
+           std::vector<DilutedFactor> const &quarkline2,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<size_t> const ric_ids,
            size_t const dilE,
@@ -237,12 +237,14 @@ void Q1xQ1(std::vector<DilutedFactor> &result,
       auto const idr1 = &rnd1 - &ric1[0];
 
       if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-        DilutedFactor::Data const data = quarkline1[idr0] * quarkline2[idr1];
+        DilutedFactor::Data const data = quarkline1[idr0].data * quarkline2[idr1].data;
         /*! @TODO (MW 9.12.17) change rnd_vec_ids to size_t and throw out 
          *        static_cast 
          */
-        result.push_back(
-            {data, 4, std::make_pair(rnd0.first, rnd1.second), {static_cast<DilutedFactor::RndId>(rnd0.second)}});
+        result.push_back({data,
+                          4,
+                          std::make_pair(rnd0.first, rnd1.second),
+                          {static_cast<DilutedFactor::RndId>(rnd0.second)}});
       }
     }
   }

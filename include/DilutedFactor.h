@@ -132,8 +132,8 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
                     size_t const dilD);
 
 void Q1xQ1(std::vector<DilutedFactor> &result,
-           std::vector<Eigen::MatrixXcd> const &quarkline1,
-           std::vector<Eigen::MatrixXcd> const &quarkline2,
+           std::vector<DilutedFactor> const &quarkline1,
+           std::vector<DilutedFactor> const &quarkline2,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
            std::vector<size_t> const ric_ids,
            size_t const dilE,
