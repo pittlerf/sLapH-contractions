@@ -15,29 +15,7 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     const size_t nev,
     const typename QuarkLineIndices<qlt>::type &quarkline_indices,
     const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
-    : dilT(dilT), dilE(dilE), nev(nev) {
-      std::cout << "New QuarkLineBlock2" << std::endl;
-  int const from_source_or_sink_block = 2;
-  int const to_source_or_sink_block = 2;
-  int const quarklines_per_block_combination =
-      from_source_or_sink_block * to_source_or_sink_block * dilT;
-
-  /*
-  for (int qline_id = 0; qline_id < quarklines_per_block_combination; ++qline_id) {
-    Ql[qline_id].resize(quarkline_indices.size());
-    for (int op_id = 0; op_id < quarkline_indices.size(); ++op_id) {
-      int nb_rnd = ric_lookup[quarkline_indices[op_id].id_ric_lookup].rnd_vec_ids.size();
-      Ql[qline_id][op_id].resize(nb_rnd);
-      for (int rnd_id = 0; rnd_id < nb_rnd; ++rnd_id) {
-        Ql[qline_id][op_id][rnd_id] =
-            Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
-      }
-    }
-  }
-  */
-
-  std::cout << "\tQuarklines initialised" << std::endl;
-}
+    : dilT(dilT), dilE(dilE), nev(nev) {}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -58,9 +36,6 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     return;
   }
 
-  std::cout << "QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t() with t=" << t1
-            << " b=" << t2_block << std::endl;
-
   for (auto const &op : quarkline_indices) {
     auto const offset = ric_lookup[op.id_ric_lookup].offset.first;
     for (auto const &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
@@ -73,7 +48,6 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
-          //Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
           matrix.block(row * dilE, col * dilE, dilE, dilE) =
               gamma_vec[gamma_id].value[row] *
               meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
@@ -84,7 +58,6 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-      //std::cout << "Adding element with key " << op.id << std::endl;
       Ql[time_key][{op.id}].push_back({matrix, 4, std::make_pair(rid1, rid2), {}});
     }
   }
