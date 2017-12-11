@@ -87,6 +87,10 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
     // same block as well. The above `build_Q1_one_t` call just builds them between
     // different blocks, therefore we also need this call. The `build_Q1_one_t` will not
     // build anything that is already there, therefore this does not do any damage.
+
+    // TODO However, this also means that we are doing more work then needed. We should
+    // think about keeping those elements with the same source and sink block around
+    // longer, because we are going to need them a bunch of times later on.
     build_Q1_one_t(peram,
                    meson_operator,
                    slice_pair_one_sink.source(),
