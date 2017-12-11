@@ -1762,6 +1762,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
           C[c_look.id][t] += trace(L1[key1], L2[key2]);
         }
       }
+
+      quarklines.clear();
     }
 #pragma omp critical
     {
