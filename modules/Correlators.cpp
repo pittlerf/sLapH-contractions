@@ -1648,12 +1648,8 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
                     size_t const op_id0,
                     size_t const op_id1,
-                    std::vector<QuarklineQ1Indices> const &Q1_lookup,
                     LapH::OperatorToFactorMap<1> const &factor0,
-                    LapH::OperatorToFactorMap<1> const &factor1,
-                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                    int const dilE,
-                    int const dilD) {
+                    LapH::OperatorToFactorMap<1> const &factor1) {
   typename LapH::OperatorToFactorMap<2>::key_type const key = {op_id0, op_id1};
 
   if (L.count(key) == 0) {
@@ -1743,12 +1739,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
           make_Q1_Q1_map(L1,
                          id0,
                          id1,
-                         dil_fac_lookup.Q1,
                          quarklines(slice_pair.source(), slice_pair.source_block()),
-                         quarklines(slice_pair.source(), slice_pair.sink_block()),
-                         ric_lookup,
-                         dilE,
-                         4);
+                         quarklines(slice_pair.source(), slice_pair.sink_block()));
         }
 
         OperatorToFactorMap<2> L2;
@@ -1758,12 +1750,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
           make_Q1_Q1_map(L2,
                          id0,
                          id1,
-                         dil_fac_lookup.Q1,
                          quarklines(slice_pair.sink(), slice_pair.sink_block()),
-                         quarklines(slice_pair.sink(), slice_pair.source_block()),
-                         ric_lookup,
-                         dilE,
-                         4);
+                         quarklines(slice_pair.sink(), slice_pair.source_block()));
         }
 
         for (const auto &c_look : corr_lookup) {
