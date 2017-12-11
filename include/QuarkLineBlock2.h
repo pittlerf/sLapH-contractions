@@ -71,6 +71,8 @@ class QuarkLineBlock2 {
     return Ql.at(time_key);
   }
 
+  void clear() { Ql.clear(); }
+
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator &peram,
