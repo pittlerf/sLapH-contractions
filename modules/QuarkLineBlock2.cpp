@@ -67,7 +67,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
 
       //! @todo: hard coded! VERY BAD!!!
       auto const gamma_id = op.gamma[0];
-      Eigen::MatrixXcd matrix = Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
+      Eigen::MatrixXcd matrix =
+          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           //Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
