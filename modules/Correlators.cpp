@@ -1734,22 +1734,18 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L1;
         for (const auto &c_look : corr_lookup) {
-          auto const id0 = static_cast<size_t>(c_look.lookup[3]);
-          auto const id1 = static_cast<size_t>(c_look.lookup[0]);
           make_Q1_Q1_map(L1,
-                         id0,
-                         id1,
+                         c_look.lookup[3],
+                         c_look.lookup[0],
                          quarklines(slice_pair.source(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
         }
 
         OperatorToFactorMap<2> L2;
         for (const auto &c_look : corr_lookup) {
-          auto const id0 = static_cast<size_t>(c_look.lookup[1]);
-          auto const id1 = static_cast<size_t>(c_look.lookup[2]);
           make_Q1_Q1_map(L2,
-                         id0,
-                         id1,
+                         c_look.lookup[1],
+                         c_look.lookup[2],
                          quarklines(slice_pair.sink(), slice_pair.sink_block()),
                          quarklines(slice_pair.sink(), slice_pair.source_block()));
         }
