@@ -57,6 +57,20 @@ class QuarkLineBlock2 {
     return Ql_elem.at(key);
   }
 
+  OperatorToFactorMap<1> const &operator()(const int t, const int b) const {
+    /*! @todo catch when t,b is an invalid index */
+    auto const time_key = std::make_pair(t, b);
+
+    auto it = Ql.find(time_key);
+    if (it == Ql.end()) {
+      std::cout << "Tried to access " << t << " " << b << std::endl;
+      std::cout << "Size of the map: " << Ql.size() << std::endl;
+      abort();
+    }
+
+    return Ql.at(time_key);
+  }
+
   // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
   // ---------------------------------------------------------------------------
   void build_Q1_one_t(const Perambulator &peram,
