@@ -1649,17 +1649,15 @@ void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
                     size_t const op_id0,
                     size_t const op_id1,
                     std::vector<QuarklineQ1Indices> const &Q1_lookup,
-                    std::vector<LapH::DilutedFactor> const &factor0,
-                    std::vector<LapH::DilutedFactor> const &factor1,
+                    LapH::OperatorToFactorMap<1> const &factor0,
+                    LapH::OperatorToFactorMap<1> const &factor1,
                     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                     int const dilE,
                     int const dilD) {
   typename LapH::OperatorToFactorMap<2>::key_type const key = {op_id0, op_id1};
+
   if (L.count(key) == 0) {
-    std::vector<size_t> const random_index_combination_ids{
-        Q1_lookup[op_id0].id_ric_lookup, Q1_lookup[op_id1].id_ric_lookup};
-    LapH::Q1xQ1(
-        L[key], factor0, factor1, ric_lookup, random_index_combination_ids, dilE, dilD);
+    L[key] = factor0.at({op_id0}) * factor1.at({op_id1});
   }
 }
 
@@ -1746,8 +1744,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                          id0,
                          id1,
                          dil_fac_lookup.Q1,
-                         quarklines(slice_pair.source(), slice_pair.source_block(), id0),
-                         quarklines(slice_pair.source(), slice_pair.sink_block(), id1),
+                         quarklines(slice_pair.source(), slice_pair.source_block()),
+                         quarklines(slice_pair.source(), slice_pair.sink_block()),
                          ric_lookup,
                          dilE,
                          4);
@@ -1761,8 +1759,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                          id0,
                          id1,
                          dil_fac_lookup.Q1,
-                         quarklines(slice_pair.sink(), slice_pair.sink_block(), id0),
-                         quarklines(slice_pair.sink(), slice_pair.source_block(), id1),
+                         quarklines(slice_pair.sink(), slice_pair.sink_block()),
+                         quarklines(slice_pair.sink(), slice_pair.source_block()),
                          ric_lookup,
                          dilE,
                          4);

@@ -83,7 +83,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
   std::vector<DilutedFactor> result_vec;
 
   for (auto const &left : left_vec) {
-    auto const inner_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
 
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices differ. The inner indices need to
@@ -216,35 +216,6 @@ void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
 
         result[result_rnd_counter] = quarkline1[idr0] * quarkline2[idr1];
         ++result_rnd_counter;
-      }
-    }
-  }
-}
-
-void Q1xQ1(std::vector<DilutedFactor> &result,
-           std::vector<DilutedFactor> const &quarkline1,
-           std::vector<DilutedFactor> const &quarkline2,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const ric_ids,
-           size_t const dilE,
-           size_t const dilD) {
-  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  for (const auto &rnd0 : ric0) {
-    for (const auto &rnd1 : ric1) {
-      auto const idr0 = &rnd0 - &ric0[0];
-      auto const idr1 = &rnd1 - &ric1[0];
-
-      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-        DilutedFactor::Data const data = quarkline1[idr0].data * quarkline2[idr1].data;
-        /*! @TODO (MW 9.12.17) change rnd_vec_ids to size_t and throw out 
-         *        static_cast 
-         */
-        result.push_back({data,
-                          4,
-                          std::make_pair(rnd0.first, rnd1.second),
-                          {static_cast<DilutedFactor::RndId>(rnd0.second)}});
       }
     }
   }
