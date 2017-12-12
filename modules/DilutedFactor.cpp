@@ -82,6 +82,9 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
   std::vector<DilutedFactor> result_vec;
 
+  std::vector<DilutedFactor::RndId> intersection;
+  intersection.reserve(8);
+
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
 
@@ -96,7 +99,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      std::vector<DilutedFactor::RndId> intersection;
+      intersection.clear();
       std::set_intersection(std::begin(left.used_rnd_ids),
                             std::end(left.used_rnd_ids),
                             std::begin(right.used_rnd_ids),
@@ -109,11 +112,19 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      std::set<DilutedFactor::RndId> used = left.used_rnd_ids;
-      for (auto const &elem : right.used_rnd_ids) {
-        used.insert(elem);
-      }
-      used.insert(inner_rnd_id);
+      std::vector<DilutedFactor::RndId> used;
+      used.reserve(8);
+      used.push_back(inner_rnd_id);
+
+      std::copy(std::begin(left.used_rnd_ids),
+                std::end(left.used_rnd_ids),
+                std::back_inserter(used));
+      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
+
+      std::copy(std::begin(right.used_rnd_ids),
+                std::end(right.used_rnd_ids),
+                std::back_inserter(used));
+      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
 
       result_vec.push_back({Eigen::MatrixXcd{left.data * right.data},
                             std::make_pair(left.ric.first, right.ric.second),
@@ -319,16 +330,11 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
 
-    // We might want to keep track of the indices that have been contracted away. However,
-    // this may be unnecessary work since we are just going to take the trace over it
-    // anyway.
-    std::set<DilutedFactor::RndId> used = left.used_rnd_ids;
-    used.insert(inner_rnd_id);
-
-    //! @TODO The size of the neutral element matrix is written here, this should be
-    //! inferred from the DilutedFactor.
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
+
+    std::vector<DilutedFactor::RndId> intersection;
+    intersection.reserve(8);
 
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
@@ -343,7 +349,7 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      std::vector<DilutedFactor::RndId> intersection;
+      intersection.clear();
       std::set_intersection(std::begin(left.used_rnd_ids),
                             std::end(left.used_rnd_ids),
                             std::begin(right.used_rnd_ids),
@@ -351,10 +357,6 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
                             std::back_inserter(intersection));
       if (intersection.size() > 0) {
         continue;
-      }
-
-      for (auto const &elem : right.used_rnd_ids) {
-        used.insert(elem);
       }
 
       // The right sides that we encounter at this point have the same left and right

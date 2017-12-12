@@ -26,7 +26,7 @@ struct DilutedFactor {
 
   Data data;
   std::pair<RndId, RndId> ric;
-  std::set<RndId> used_rnd_ids;
+  std::vector<RndId> used_rnd_ids;
 };
 
 /*! Product yielding the off-diagonal elements.
