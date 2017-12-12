@@ -334,7 +334,7 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
     std::vector<DilutedFactor::RndId> intersection;
-    intersection.reserve(8);
+    intersection.reserve(rnd_vec_count);
 
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
@@ -370,6 +370,63 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
 
     auto const &product = left.data * right_sum;
     result += product.trace();
+  }
+
+  return result;
+}
+
+compcomp_t trace(std::vector<DilutedScalar> const &left_vec,
+                 std::vector<DilutedScalar> const &right_vec) {
+  //! @TODO Pull out this magic number.
+  auto constexpr rnd_vec_count = 5;
+
+  compcomp_t result(0.0, 0.0, 0.0, 0.0);
+
+  for (auto const &left : left_vec) {
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
+
+    cmplx right_sum(0.0, 0.0);
+
+    std::vector<DilutedFactor::RndId> intersection;
+    intersection.reserve(rnd_vec_count);
+
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices match. The inner indices need to
+      // match because the product would not make sense otherwise. The outer indices must
+      // match since we want to be able to take the trace over the result. The second
+      // condition is where this differs from the other multiplication operator.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      intersection.clear();
+      std::set_intersection(std::begin(left.used_rnd_ids),
+                            std::end(left.used_rnd_ids),
+                            std::begin(right.used_rnd_ids),
+                            std::end(right.used_rnd_ids),
+                            std::back_inserter(intersection));
+      if (intersection.size() > 0) {
+        continue;
+      }
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      right_sum += right.data;
+    }
+
+    result.rere += left.data.real() * right_sum.real();
+    result.reim += left.data.real() * right_sum.imag();
+    result.imre += left.data.imag() * right_sum.real();
+    result.imim += left.data.imag() * right_sum.imag();
   }
 
   return result;

@@ -213,4 +213,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 cmplx trace(std::vector<DilutedFactor> const &left_vec,
             std::vector<DilutedFactor> const &right_vec);
 
+compcomp_t trace(std::vector<DilutedScalar> const &left_vec,
+                 std::vector<DilutedScalar> const &right_vec);
+
 }  // end of namespace
