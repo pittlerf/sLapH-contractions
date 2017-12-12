@@ -9,6 +9,22 @@
 #include "dilution-iterator.h"
 #include "typedefs.h"
 
+template <int n1, int n2>
+void multiply(LapH::OperatorToFactorMap<n1 + n2> &L,
+                    std::array<size_t, n1 + n2> const &key,
+                    LapH::OperatorToFactorMap<n1> const &factor0,
+                    LapH::OperatorToFactorMap<n2> const &factor1) {
+  if (L.count(key) == 0) {
+    std::array<size_t, n1> key1;
+    std::array<size_t, n2> key2;
+
+    std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
+    std::copy_n(std::begin(key) + n1, n2, std::begin(key2));
+
+    L[key] = factor0.at(key1) * factor1.at(key2);
+  }
+}
+
 namespace {
 
 /*! Creates compound datatype to write complex numbers from LapH::complex_t
@@ -1480,24 +1496,22 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
+  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids;
+  quantum_num_ids.reserve(corr_lookup.size());
+  for (const auto &c_look : corr_lookup) {
+    quantum_num_ids.push_back(
+        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+  }
+
 #pragma omp parallel
   {
     swatch.start();
     // std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock<QuarkLineType::Q1> quarklines(dilT, dilE, nev,
-                                                 dil_fac_lookup.Q1, ric_lookup);
-
-    // creating memory arrays M1, M2 for intermediate storage of Quarklines
-    // ------
-    std::vector<std::vector<Eigen::MatrixXcd>> L1, L2;
-    std::vector<std::array<size_t, 3>> L1_look;
-    std::vector<std::array<size_t, 3>> L2_look;
-    size_t L1_counter = 0;
-    size_t L2_counter = 0;
-
-    for (const auto &c_look : corr_lookup) {
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
       //const auto &ric0 =
       //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
@@ -1527,39 +1541,12 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
       //        std::cerr << "Length error: " << le.what() << '\n';
       //      }
 
-      // creating memeory for L1
-      // -------------------------------------------------
-      const size_t id0 = c_look.lookup[3];
-      const size_t id1 = c_look.lookup[0];
-      auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
-                              [&id0, &id1](std::array<size_t, 3> check) {
-                                return (id0 == check[1] && id1 == check[2]);
-                              });
-      if (!(it1 != L1_look.end())) {
-        L1.emplace_back(std::vector<Eigen::MatrixXcd>());
-
-        L1_look.emplace_back(std::array<size_t, 3>({{L1_counter, id0, id1}}));
-        L1_counter++;
-      }
-      // creating memeory for L2
-      // -------------------------------------------------
-      const size_t id2 = c_look.lookup[1];
-      const size_t id3 = c_look.lookup[2];
-      auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
-                              [&id2, &id3](std::array<size_t, 3> check) {
-                                return (id2 == check[1] && id3 == check[2]);
-                              });
-      if (!(it2 != L2_look.end())) {
-        L2.emplace_back(std::vector<Eigen::MatrixXcd>());
-        L2_look.emplace_back(std::array<size_t, 3>({{L2_counter, id2, id3}}));
-        L2_counter++;
-      }
-    } // first run over lookuptable ends here - memory and new lookuptable
-// are generated ------------------------------------------------------------
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
+
+      std::cout << block_pair << std::endl;
 
       quarklines.build_block_pair(perambulators, meson_operator, block_pair,
                                   dil_fac_lookup.Q1, ric_lookup);
@@ -1567,98 +1554,47 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        // build L1
-        // ----------------------------------------------------------------
-        for (const auto &look : L1_look) {
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q1[look[2]].id_ric_lookup});
+        OperatorToFactorMap<2> L1;
+        OperatorToFactorMap<2> L2;
+        for (const auto &ids : quantum_num_ids) {
+          multiply<1, 1>(L1,
+                         ids[0],
+                         quarklines(slice_pair.sink(), slice_pair.source_block()),
+                         quarklines(slice_pair.source(), slice_pair.sink_block()));
 
-          Q1xQ1(L1[look[0]], 
-                quarklines(slice_pair.sink(), slice_pair.source_block(), look[1]),
-                quarklines(slice_pair.source(), slice_pair.sink_block(), look[2]),
-                ric_lookup, random_index_combination_ids, dilE, 4);
+          multiply<1, 1>(L2,
+                         ids[1],
+                         quarklines(slice_pair.sink(), slice_pair.source_block()),
+                         quarklines(slice_pair.source(), slice_pair.sink_block()));
         }
 
-        // build L2
-        // ----------------------------------------------------------------
-        for (const auto &look : L2_look) {
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q1[look[2]].id_ric_lookup});
-
-          Q1xQ1(L2[look[0]], 
-                quarklines(slice_pair.sink(), slice_pair.source_block(), look[1]),
-                quarklines(slice_pair.source(), slice_pair.sink_block(), look[2]),
-                ric_lookup, random_index_combination_ids, dilE, 4);
-        }
-
-        for (const auto &c_look : corr_lookup) {
-
-          const size_t id0 = c_look.lookup[3];
-          const size_t id1 = c_look.lookup[0];
-          const size_t id2 = c_look.lookup[1];
-          const size_t id3 = c_look.lookup[2];
-
-          auto it1 = std::find_if(L1_look.begin(), L1_look.end(),
-                                  [&id0, &id1](std::array<size_t, 3> check) {
-                                    return (id0 == check[1] && id1 == check[2]);
-                                  });
-          auto it2 = std::find_if(L2_look.begin(), L2_look.end(),
-                                  [&id2, &id3](std::array<size_t, 3> check) {
-                                    return (id2 == check[1] && id3 == check[2]);
-                                  });
-
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                {dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup,
-                 dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup});
-
-          C[c_look.id][t] += trace(
-              L1[(*it1)[0]], L2[(*it2)[0]], ric_lookup,
-              random_index_combination_ids, dilE, 4);
-
+        for (int i = 0; i != quantum_num_ids.size(); ++i) {
+          auto const & ids = quantum_num_ids[i];
+          C[i][t] += trace(L1[ids[0]], L2[ids[1]]);
         }
       }
+
+      quarklines.clear();
     }
 #pragma omp critical
     {
-      for (const auto &c_look : corr_lookup)
+      for (int i = 0; i != quantum_num_ids.size(); ++i) {
         for (size_t t = 0; t < Lt; t++)
-          correlator[c_look.id][t] += C[c_look.id][t];
+          correlator[i][t] += C[i][t];
+      }
     }
     swatch.stop();
   } // parallel part ends here
 
   // normalisation
-  for (const auto &c_look : corr_lookup) {
-    for (auto &corr : correlator[c_look.id]) {
+  for (int i = 0; i != quantum_num_ids.size(); ++i) {
+    for (auto &corr : correlator[i]) {
       corr /= (5 * 4 * 3 * 2) * Lt; // TODO: Hard Coded atm - Be carefull
     }
     // write data to file
-    filehandle.write(correlator[c_look.id], c_look);
+    filehandle.write(correlator[i], corr_lookup[i]);
   }
   swatch.print();
-}
-
-template <int n1, int n2>
-void multiply(LapH::OperatorToFactorMap<n1 + n2> &L,
-                    std::array<size_t, n1 + n2> const &key,
-                    LapH::OperatorToFactorMap<n1> const &factor0,
-                    LapH::OperatorToFactorMap<n2> const &factor1) {
-  if (L.count(key) == 0) {
-    std::array<size_t, n1> key1;
-    std::array<size_t, n2> key2;
-
-    std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
-    std::copy_n(std::begin(key) + n1, n2, std::begin(key2));
-
-    L[key] = factor0.at(key1) * factor1.at(key2);
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -1685,10 +1621,10 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> lookup_C40B;
-  lookup_C40B.reserve(corr_lookup.size());
+  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids;
+  quantum_num_ids.reserve(corr_lookup.size());
   for (const auto &c_look : corr_lookup) {
-    lookup_C40B.push_back({std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+    quantum_num_ids.push_back({std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
                            std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
   }
 
@@ -1744,7 +1680,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L1;
         OperatorToFactorMap<2> L2;
-        for (const auto &ids : lookup_C40B) {
+        for (const auto &ids : quantum_num_ids) {
           multiply<1, 1>(L1,
                          ids[0],
                          quarklines(slice_pair.source(), slice_pair.source_block()),
@@ -1756,8 +1692,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                          quarklines(slice_pair.sink(), slice_pair.source_block()));
         }
 
-        for (int i = 0; i != lookup_C40B.size(); ++i) {
-          auto const & ids = lookup_C40B[i];
+        for (int i = 0; i != quantum_num_ids.size(); ++i) {
+          auto const & ids = quantum_num_ids[i];
           C[i][t] += trace(L1[ids[0]], L2[ids[1]]);
         }
       }
@@ -1766,7 +1702,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     }
 #pragma omp critical
     {
-      for (int i = 0; i != lookup_C40B.size(); ++i) {
+      for (int i = 0; i != quantum_num_ids.size(); ++i) {
         for (size_t t = 0; t < Lt; t++)
           correlator[i][t] += C[i][t];
       }
@@ -1775,7 +1711,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
   } // parallel part ends here
 
   // normalisation
-  for (int i = 0; i != lookup_C40B.size(); ++i) {
+  for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
       corr /= (5 * 4 * 3 * 2) * Lt; // TODO: Hard Coded atm - Be carefull
     }
