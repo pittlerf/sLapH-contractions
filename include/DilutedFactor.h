@@ -8,9 +8,9 @@
 #pragma once
 
 #include <iosfwd>
+#include <set>
 #include <sstream>
 #include <vector>
-#include <set>
 
 #include "Eigen/Dense"
 
@@ -18,7 +18,7 @@
 #include "QuarkLineBlock.h"
 #include "typedefs.h"
 
-namespace LapH{
+namespace LapH {
 
 struct DilutedFactor {
   using Data = Eigen::MatrixXcd;
@@ -64,7 +64,8 @@ OperatorToFactorMap<n1 + n2> operator*(OperatorToFactorMap<n1> const &left_map,
 
 // Proposed:
 // template <int n>
-// using OperatorToFactorMap = std::map<std::array<QuantumNumbers, n>, std::vector<DilutedFactor>>;
+// using OperatorToFactorMap = std::map<std::array<QuantumNumbers, n>,
+// std::vector<DilutedFactor>>;
 
 template <int n>
 std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {
@@ -102,34 +103,32 @@ void check_random_combinations(std::string const &diagram,
  *  - corrC
  */
 template <QuarkLineType qlt1, QuarkLineType qlt2>
-std::vector<cmplx> trace(
-    QuarkLineBlock<qlt1> const &quarkline1,
-    QuarkLineBlock<qlt2> const &quarkline2,
-    int const t1,
-    int const b2,
-    int const t2,
-    std::vector<size_t> const &lookup,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<size_t> const &ric_ids,
-    int const gamma,
-    size_t const dilE,
-    size_t const dilD);
+std::vector<cmplx> trace(QuarkLineBlock<qlt1> const &quarkline1,
+                         QuarkLineBlock<qlt2> const &quarkline2,
+                         int const t1,
+                         int const b2,
+                         int const t2,
+                         std::vector<size_t> const &lookup,
+                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                         std::vector<size_t> const &ric_ids,
+                         int const gamma,
+                         size_t const dilE,
+                         size_t const dilD);
 
 /*! Multiply (Q1*Q1) and take trace
  *  - corr0
  */
-std::vector<cmplx> trace(
-    std::vector<Eigen::MatrixXcd> const &quarkline1,
-    std::vector<Eigen::MatrixXcd> const &quarkline2,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<size_t> const &ric_ids);
+std::vector<cmplx> trace(std::vector<Eigen::MatrixXcd> const &quarkline1,
+                         std::vector<Eigen::MatrixXcd> const &quarkline2,
+                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                         std::vector<size_t> const &ric_ids);
 
-/*! Multiply two traces of two Quarklines each: tr(QQ) * tr(QQ) 
+/*! Multiply two traces of two Quarklines each: tr(QQ) * tr(QQ)
  */
 compcomp_t trtr(std::vector<cmplx> const &factor1,
-          std::vector<cmplx> const &factor2,
-          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-          std::vector<size_t> const &ric_ids);
+                std::vector<cmplx> const &factor2,
+                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                std::vector<size_t> const &ric_ids);
 
 /******************************************************************************/
 
@@ -138,12 +137,12 @@ compcomp_t trtr(std::vector<cmplx> const &factor1,
  *  - C3c
  *  - C30
  */
-void Q1(std::vector<Eigen::MatrixXcd> &result, 
-                    std::vector<Eigen::MatrixXcd> const &quarklines,
-                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                    std::vector<size_t> const &ric_ids,
-                    size_t const dilE,
-                    size_t const dilD);
+void Q1(std::vector<Eigen::MatrixXcd> &result,
+        std::vector<Eigen::MatrixXcd> const &quarklines,
+        std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+        std::vector<size_t> const &ric_ids,
+        size_t const dilE,
+        size_t const dilD);
 
 void Q1xQ1(std::vector<DilutedFactor> &result,
            std::vector<DilutedFactor> const &quarkline1,
@@ -158,7 +157,7 @@ void Q1xQ1(std::vector<DilutedFactor> &result,
  *  - C40B
  *  - C40C
  */
-void Q1xQ1(std::vector<Eigen::MatrixXcd> &result, 
+void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
            std::vector<Eigen::MatrixXcd> const &quarkline1,
            std::vector<Eigen::MatrixXcd> const &quarkline2,
            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
@@ -172,7 +171,7 @@ void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
  *  - C4cC
  *  - C3c
  */
-void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result, 
+void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
                    std::vector<Eigen::MatrixXcd> const &quarkline1,
                    std::vector<Eigen::MatrixXcd> const &quarkline2,
                    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
@@ -180,20 +179,19 @@ void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
                    size_t const dilE,
                    size_t const dilD);
 
-
 /*! Multiply (QQ)*(Q) and take trace
  *  - C3c
  *  - C30
  *  @calls M1xM2 for Optimization
  */
-cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M1, 
-           std::vector<Eigen::MatrixXcd> const &M2, 
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const &ric_ids,
-           size_t const dilE,
-           size_t const dilD);
+cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M1,
+                std::vector<Eigen::MatrixXcd> const &M2,
+                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                std::vector<size_t> const &ric_ids,
+                size_t const dilE,
+                size_t const dilD);
 
-/*! Multiply (QQ)*(QQ). or 
+/*! Multiply (QQ)*(QQ). or
  *  and take trace
  *  - C4cC
  *  - C4cB
@@ -201,8 +199,8 @@ cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M1,
  *  - C40B
  *  @calls M1xM2 for Optimization
  */
-cmplx trace(std::vector<Eigen::MatrixXcd> const &M1, 
-            std::vector<Eigen::MatrixXcd> const &M2, 
+cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
+            std::vector<Eigen::MatrixXcd> const &M2,
             std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
             std::vector<size_t> const &ric_ids,
             size_t const dilE,
