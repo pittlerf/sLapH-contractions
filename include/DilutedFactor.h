@@ -47,15 +47,16 @@ struct QuantumNumbers {
 template <int n>
 using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
 
-template <int n>
-OperatorToFactorMap<n + 1> operator*(OperatorToFactorMap<n> const &left_map,
-                                     OperatorToFactorMap<n> const &right_map) {
-  OperatorToFactorMap<n + 1> result;
+#if 0
+template <int n1, int n2>
+OperatorToFactorMap<n1 + n2> operator*(OperatorToFactorMap<n1> const &left_map,
+                                       OperatorToFactorMap<n2> const &right_map) {
+  OperatorToFactorMap<n1 + n2> result;
 
   for (auto const &left : left_map) {
     for (auto const &right : right_map) {
       // Concatenate the two keys from the left and right element into the new key.
-      typename OperatorToFactorMap<n + 1>::key_type key;
+      typename OperatorToFactorMap<n1 + n2>::key_type key;
       auto out_it =
           std::copy(std::begin(left.first), std::end(left.first), std::begin(key));
       std::copy(std::begin(right.first), std::end(right.first), out_it);
@@ -65,6 +66,7 @@ OperatorToFactorMap<n + 1> operator*(OperatorToFactorMap<n> const &left_map,
     }
   }
 }
+#endif
 
 // Proposed:
 // template <int n>
