@@ -42,10 +42,10 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
       auto const rid1 = rnd_id.first - offset;
       auto const rid2 = rnd_id.second - offset;
 
-      //! @todo: hard coded! VERY BAD!!!
       auto const gamma_id = op.gamma[0];
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
+
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           matrix.block(row * dilE, col * dilE, dilE, dilE) =
@@ -58,7 +58,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-      Ql[time_key][{op.id}].push_back({matrix, 4, std::make_pair(rid1, rid2), {}});
+      Ql[time_key][{op.id}].push_back({matrix, std::make_pair(rid1, rid2), {}});
     }
   }
 }

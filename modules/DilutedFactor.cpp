@@ -116,7 +116,6 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
       used.insert(inner_rnd_id);
 
       result_vec.push_back({Eigen::MatrixXcd{left.data * right.data},
-                            right_vec[0].left_Gamma,
                             std::make_pair(left.ric.first, right.ric.second),
                             used});
     }

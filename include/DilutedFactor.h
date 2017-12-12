@@ -25,7 +25,6 @@ struct DilutedFactor {
   using RndId = int8_t;
 
   Data data;
-  int8_t left_Gamma;
   std::pair<RndId, RndId> ric;
   std::set<RndId> used_rnd_ids;
 };
@@ -38,11 +37,6 @@ struct DilutedFactor {
   */
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec);
-
-struct QuantumNumbers {
-  size_t pd_id;
-  int8_t gamma;
-};
 
 template <int n>
 using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
