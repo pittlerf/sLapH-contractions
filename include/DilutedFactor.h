@@ -20,14 +20,18 @@
 
 namespace LapH {
 
-struct DilutedFactor {
-  using Data = Eigen::MatrixXcd;
+template <typename Data_>
+struct GeneralDilutedFactor {
+  using Data = Data_;
   using RndId = int8_t;
 
   Data data;
   std::pair<RndId, RndId> ric;
   std::vector<RndId> used_rnd_ids;
 };
+
+using DilutedFactor = GeneralDilutedFactor<Eigen::MatrixXcd>;
+using DilutedScalar = GeneralDilutedFactor<cmplx>;
 
 /*! Product yielding the off-diagonal elements.
 
