@@ -1667,7 +1667,6 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
                                    std::string const output_filename) {
-
   if (corr_lookup.empty())
     return;
 
@@ -1681,6 +1680,13 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
   std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
+  std::vector<std::array<std::array<size_t, 2>, 2>> lookup_C40B;
+  lookup_C40B.reserve(corr_lookup.size());
+  for (const auto &c_look : corr_lookup) {
+    lookup_C40B.push_back({std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+                           std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+  }
 
 #pragma omp parallel
   {
@@ -1733,33 +1739,26 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
         int const t = get_time_delta(slice_pair, Lt);
 
         OperatorToFactorMap<2> L1;
-        for (const auto &c_look : corr_lookup) {
+        for (const auto &ids : lookup_C40B) {
           make_Q1_Q1_map(L1,
-                         c_look.lookup[3],
-                         c_look.lookup[0],
+                         ids[0][0],
+                         ids[0][1],
                          quarklines(slice_pair.source(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
         }
 
         OperatorToFactorMap<2> L2;
-        for (const auto &c_look : corr_lookup) {
+        for (const auto &ids : lookup_C40B) {
           make_Q1_Q1_map(L2,
-                         c_look.lookup[1],
-                         c_look.lookup[2],
+                         ids[1][0],
+                         ids[1][1],
                          quarklines(slice_pair.sink(), slice_pair.sink_block()),
                          quarklines(slice_pair.sink(), slice_pair.source_block()));
         }
 
-        for (const auto &c_look : corr_lookup) {
-          const size_t id0 = c_look.lookup[3];
-          const size_t id1 = c_look.lookup[0];
-          const size_t id2 = c_look.lookup[1];
-          const size_t id3 = c_look.lookup[2];
-
-          typename OperatorToFactorMap<2>::key_type const key1 = {id0, id1};
-          typename OperatorToFactorMap<2>::key_type const key2 = {id2, id3};
-
-          C[c_look.id][t] += trace(L1[key1], L2[key2]);
+        for (int i = 0; i != lookup_C40B.size(); ++i) {
+          auto const & ids = lookup_C40B[i];
+          C[i][t] += trace(L1[ids[0]], L2[ids[1]]);
         }
       }
 
@@ -1767,20 +1766,21 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     }
 #pragma omp critical
     {
-      for (const auto &c_look : corr_lookup)
+      for (int i = 0; i != lookup_C40B.size(); ++i) {
         for (size_t t = 0; t < Lt; t++)
-          correlator[c_look.id][t] += C[c_look.id][t];
+          correlator[i][t] += C[i][t];
+      }
     }
     swatch.stop();
   } // parallel part ends here
 
   // normalisation
-  for (const auto &c_look : corr_lookup) {
-    for (auto &corr : correlator[c_look.id]) {
+  for (int i = 0; i != lookup_C40B.size(); ++i) {
+    for (auto &corr : correlator[i]) {
       corr /= (5 * 4 * 3 * 2) * Lt; // TODO: Hard Coded atm - Be carefull
     }
     // write data to file
-    filehandle.write(correlator[c_look.id], c_look);
+    filehandle.write(correlator[i], corr_lookup[i]);
   }
   swatch.print();
 }
