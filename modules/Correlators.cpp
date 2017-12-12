@@ -1645,12 +1645,19 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
   swatch.print();
 }
 
-void make_Q1_Q1_map(LapH::OperatorToFactorMap<2> &L,
-                    std::array<size_t, 2> const &key,
-                    LapH::OperatorToFactorMap<1> const &factor0,
-                    LapH::OperatorToFactorMap<1> const &factor1) {
+template <int n1, int n2>
+void multiply(LapH::OperatorToFactorMap<n1 + n2> &L,
+                    std::array<size_t, n1 + n2> const &key,
+                    LapH::OperatorToFactorMap<n1> const &factor0,
+                    LapH::OperatorToFactorMap<n2> const &factor1) {
   if (L.count(key) == 0) {
-    L[key] = factor0.at({key[0]}) * factor1.at({key[1]});
+    std::array<size_t, n1> key1;
+    std::array<size_t, n2> key2;
+
+    std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
+    std::copy_n(std::begin(key) + n1, n2, std::begin(key2));
+
+    L[key] = factor0.at(key1) * factor1.at(key2);
   }
 }
 
@@ -1737,7 +1744,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L1;
         for (const auto &ids : lookup_C40B) {
-          make_Q1_Q1_map(L1,
+          multiply<1, 1>(L1,
                          ids[0],
                          quarklines(slice_pair.source(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
@@ -1745,7 +1752,7 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
         OperatorToFactorMap<2> L2;
         for (const auto &ids : lookup_C40B) {
-          make_Q1_Q1_map(L2,
+          multiply<1, 1>(L2,
                          ids[1],
                          quarklines(slice_pair.sink(), slice_pair.sink_block()),
                          quarklines(slice_pair.sink(), slice_pair.source_block()));
