@@ -1743,15 +1743,13 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
         int const t = get_time_delta(slice_pair, Lt);
 
         OperatorToFactorMap<2> L1;
+        OperatorToFactorMap<2> L2;
         for (const auto &ids : lookup_C40B) {
           multiply<1, 1>(L1,
                          ids[0],
                          quarklines(slice_pair.source(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
-        }
 
-        OperatorToFactorMap<2> L2;
-        for (const auto &ids : lookup_C40B) {
           multiply<1, 1>(L2,
                          ids[1],
                          quarklines(slice_pair.sink(), slice_pair.sink_block()),
