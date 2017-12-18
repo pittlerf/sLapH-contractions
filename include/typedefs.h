@@ -56,6 +56,7 @@ typedef boost::multi_array<cmplx, 10> array_cd_d10;
 /*! Special type for Correlators */
 typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
 typedef boost::multi_array<std::vector<DilutedTrace>, 3> DilutedTraceCollection;
+typedef boost::multi_array<std::vector<DilutedTrace>, 2> DilutedTraceCollection2;
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 

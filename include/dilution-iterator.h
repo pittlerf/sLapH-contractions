@@ -349,6 +349,19 @@ public:
         num_block_, num_block_, num_slice_, num_block_, type_);
   }
 
+  int time_to_block(int const time) const {
+    auto const block_size = num_slice_ / num_block_;
+
+    if (type_ == DilutionType::block) {
+      return time / block_size;
+    }
+    else if (type_ == DilutionType::interlace) {
+      return time % block_size;
+    } else {
+      throw std::domain_error("This dilution scheme is not implemented.");
+    }
+  }
+
  private:
   int num_slice_;
   int num_block_;

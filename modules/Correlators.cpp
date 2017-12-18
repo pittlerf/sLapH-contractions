@@ -189,69 +189,49 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
                                  std::vector<CorrInfo> const &corr_lookup,
                                  std::string const output_path,
                                  std::string const output_filename) {
-
-  if (corr_lookup.size() == 0)
+  if (corr_lookup.empty())
     return;
 
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(output_path, "C1", output_filename,
-                                 comp_type_factory_tr());
+  StopWatch swatch("C1");
 
-  StopWatch swatch("C1", 1);
-
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  DilutedTraceCollection2 correlator(boost::extents[corr_lookup.size()][Lt]);
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  //#pragma omp parallel
+#pragma omp parallel
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q1> quarklines(dilT, dilE, nev,
-                                                 dil_fac_lookup.Q1, ric_lookup);
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+#pragma omp for schedule(dynamic)
+    for (int t = 0; t < Lt; ++t) {
+      auto const b = dilution_scheme.time_to_block(t);
 
-    /*! @todo can DilutionIterator also give just a single block? */
-    //#pragma omp for schedule(dynamic)
-    for (int t = 0; t < Lt; t++) {
-      int const b = t / dilT;
-      quarklines.build_Q1_one_t(perambulators, meson_operator, t, b,
-                                dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_Q1_one_t(
+          perambulators, meson_operator, t, b, dil_fac_lookup.Q1, ric_lookup);
 
       for (const auto &c_look : corr_lookup) {
-        const auto &ric =
-            ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-                .rnd_vec_ids;
-
-        std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
-        for (const auto &id : ric) {
-          auto const idr0 = &id - &ric[0];
-          C[c_look.id][t] += quarklines(t, b, c_look.lookup[0], idr0).trace();
-        }
-      } // loop over operators ends here
-    }   // loop over time ends here
-
-    //#pragma omp critical
-    {
-      for (const auto &c_look : corr_lookup)
-        for (size_t t = 0; t < Lt; t++)
-          correlator[c_look.id][t] += C[c_look.id][t];
+        correlator[c_look.id][t] =
+            factor_to_trace(quarklines(t, b).at({c_look.lookup[0]}));
+      }
     }
+
     swatch.stop();
-  } // parallel part ends here
+  }  // parallel part ends here
 
   // normalisation
   for (const auto &c_look : corr_lookup) {
-    for (auto &corr : correlator[c_look.id]) {
-      // TODO: Hard Coded atm - Be carefull
-      corr /= 5 * Lt;
+    for (auto &corr_t : correlator[c_look.id]) {
+      for (auto &diluted_trace : corr_t) {
+        // TODO: Hard Coded atm - Be carefull
+        elem.data /= 5 * Lt;
+      }
     }
     // write data to file
-    filehandle.write(correlator[c_look.id], c_look);
+    // FIXME filehandle.write(correlator[c_look.id], c_look);
   }
-
   swatch.print();
 }
 
