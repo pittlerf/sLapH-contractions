@@ -33,6 +33,11 @@
  *  @image html contract.pdf "Flow chart of main()"
  */
 int main (int ac, char* av[]) {
+  std::cout << "This is sLapH-contractions:\n"
+            << "  git branch " << GIT_REFSPEC << "\n"
+            << "  git revision " << GIT_SHA1 << "\n"
+            << "  git state " << GIT_CHANGES << "\n"
+            << "  compiled by " << GIT_USER << " on " << GIT_HOST << "\n";
 
   // reading global parameters from input file
   GlobalData* global_data = GlobalData::Instance();
