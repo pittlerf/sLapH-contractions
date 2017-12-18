@@ -26,8 +26,11 @@ execute_process(COMMAND
   OUTPUT_VARIABLE hostname
   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-message(STATUS "user: $ENV{USER}")
-message(STATUS "host: ${hostname}")
+set(git_user $ENV{USER})
+set(git_host ${hostname})
+
+message(STATUS "user: ${git_user}")
+message(STATUS "host: ${git_host}")
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/git.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/include/git.h"
