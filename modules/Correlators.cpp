@@ -263,7 +263,7 @@ void LapH::Correlators::build_C1(OperatorsForMesons const &meson_operator,
 void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
                                     Perambulator const &perambulators,
                                     std::vector<CorrInfo> const &corr_lookup) {
-  if (corr_lookup.size() == 0)
+  if (corr_lookup.empty())
     return;
 
   StopWatch swatch("corr0");
@@ -276,7 +276,7 @@ void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q1> quarklines_local(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -286,36 +286,23 @@ void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
 
       auto const block_pair = dilution_scheme[b];
 
-      quarklines_local.build_block_pair(perambulators, meson_operator,
-                                        block_pair, dil_fac_lookup.Q1,
-                                        ric_lookup);
+      quarklines.build_block_pair(
+          perambulators, meson_operator, block_pair, dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
-
-          const auto &ric0 =
-              ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-                  .rnd_vec_ids;
-          const auto &ric1 =
-              ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-                  .rnd_vec_ids;
-          if (ric0.size() != ric1.size()) {
-            std::cout << "rnd combinations are not the same in build_corr0"
-                      << std::endl;
-            exit(1);
-          }
-
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup,
-                   dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup});
-
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = trace(
-              quarklines_local(slice_pair.source(), slice_pair.sink_block(),
-                               c_look.lookup[0]),
-              quarklines_local(slice_pair.sink(), slice_pair.source_block(),
-                               c_look.lookup[1]),
-              ric_lookup, random_index_combination_ids);
+          auto const &r =
+              factor_to_trace(quarklines(slice_pair.source(), slice_pair.sink_block())
+                                  .at({c_look.lookup[0]}),
+                              quarklines(slice_pair.sink(), slice_pair.source_block())
+                                  .at({c_look.lookup[1]}));
+          std::vector<cmplx> s;
+          s.reserve(r.size());
+          std::transform(
+              r.begin(), r.end(), std::back_inserter(s), [](DilutedTrace const &dt) {
+                return dt.data;
+              });
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = s;
         }
       }
     }
@@ -1307,7 +1294,6 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
     return;
 
   StopWatch swatch("C30");
-  swatch.start();
 
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
