@@ -15,11 +15,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(GetGitRevisionDescription)
 
 get_git_head_revision(git_refspec git_sha1)
-add_definitions("-DGIT_SHA1=\"${git_sha1}\"")
-add_definitions("-DGIT_REFSPEC=\"${git_refspec}\"")
-
 git_local_changes(git_changes)
-add_definitions("-DGIT_CHANGES=\"${git_changes}\"")
 
 message(STATUS "git sha1: ${git_sha1}")
 message(STATUS "git refspec: ${git_refspec}")
@@ -29,9 +25,6 @@ execute_process(COMMAND
   hostname -f
   OUTPUT_VARIABLE hostname
   ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-add_definitions("-DGIT_USER=\"$ENV{USER}\"")
-add_definitions("-DGIT_HOST=\"${hostname}\"")
 
 message(STATUS "user: $ENV{USER}")
 message(STATUS "host: ${hostname}")
