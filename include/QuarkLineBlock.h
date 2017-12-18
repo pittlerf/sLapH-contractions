@@ -17,8 +17,6 @@
 #include <iostream>
 #include <string>
 
-namespace LapH {
-
 template <QuarkLineType qlt>
 class QuarkLineBlock {
  public:
@@ -110,9 +108,7 @@ class QuarkLineBlock {
   boost::circular_buffer<std::pair<int, int>> Ql_id;
 
   const size_t dilT, dilE, nev;
-  std::vector<LapH::gamma_lookup> gamma;
+  std::vector<gamma_lookup> gamma;
 
   static int constexpr dilD = 4;
 };
-
-}  // end of namespace

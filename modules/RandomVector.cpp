@@ -2,7 +2,7 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::set(const size_t entity, const int seed) {
+void RandomVector::set(const size_t entity, const int seed) {
 
   // initialisation of the rando vector to create Z2 random vector
   rlxs_init(0, seed);
@@ -27,7 +27,7 @@ void LapH::RandomVector::set(const size_t entity, const int seed) {
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::set(const size_t entity, const int seed, 
+void RandomVector::set(const size_t entity, const int seed, 
                              const std::string& filename) {
   set(entity, seed);
   write_random_vector(filename);
@@ -35,7 +35,7 @@ void LapH::RandomVector::set(const size_t entity, const int seed,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::write_random_vector(
+void RandomVector::write_random_vector(
                                        const std::string& filename) const {
   // writing random vector to file
   FILE* fp = NULL;
@@ -53,7 +53,7 @@ void LapH::RandomVector::write_random_vector(
 } 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::write_random_vector(const size_t entity,
+void RandomVector::write_random_vector(const size_t entity,
                                        const std::string& filename) const {
   // writing random vector to file
   FILE* fp = NULL;
@@ -71,7 +71,7 @@ void LapH::RandomVector::write_random_vector(const size_t entity,
 } 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::read_random_vector(const std::string& filename) {
+void RandomVector::read_random_vector(const std::string& filename) {
 
   // open file for reading
   FILE *fp = NULL;
@@ -91,7 +91,7 @@ void LapH::RandomVector::read_random_vector(const std::string& filename) {
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::read_random_vector(const size_t entity, 
+void RandomVector::read_random_vector(const size_t entity, 
                                             const std::string& filename) {
   // open file for reading
   std::cout << "\tReading random vector from file:\n\t\t" << filename 
@@ -111,7 +111,7 @@ void LapH::RandomVector::read_random_vector(const size_t entity,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::RandomVector::read_random_vectors_from_separate_files(
+void RandomVector::read_random_vectors_from_separate_files(
                                 const std::vector<std::string>& filename_list) {
 
   if(filename_list.size() != nb_entities)

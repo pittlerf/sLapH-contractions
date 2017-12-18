@@ -1,12 +1,11 @@
 /*! @file OperatorsForMesons.h
- *  Class declaration of LapH::OperatorsForMesons
+ *  Class declaration of OperatorsForMesons
  *
  *  @author Bastian Knippschild
  *  @author Markus Werner
  */
 
-#ifndef OPERATORSFORMESONS_H_
-#define OPERATORSFORMESONS_H_
+#pragma once
 
 #include <algorithm>
 #include <fstream>
@@ -21,8 +20,6 @@
 #include "EigenVector.h"
 #include "RandomVector.h"
 #include "typedefs.h"
-
-namespace LapH {
 
 /*! Calculates operators as they emerge in correlation functions using the 
  *  stochastic estimates from the stochastic Laplacian Heaviside method
@@ -66,7 +63,7 @@ private:
   void build_vdaggerv(const std::string& filename, const int config);
   void read_vdaggerv(const int config);
   void read_vdaggerv_liuming(const int config);
-  void build_rvdaggerv(const LapH::RandomVector& rnd_vec);
+  void build_rvdaggerv(const RandomVector& rnd_vec);
 
 public:
   /*! Constructor which allocates memory for all operators */
@@ -88,7 +85,7 @@ public:
    *  calculates rvdaggerv and
    */
   void create_operators(const std::string& filename,
-                        const LapH::RandomVector& rnd_vec, const int config);
+                        const RandomVector& rnd_vec, const int config);
   /*! Free memory of vdaggerv */
   void free_memory_vdaggerv();
   void free_memory_rvdaggerv();
@@ -106,9 +103,3 @@ public:
   }
 
 };
-
-} // end of namespace
-
-#endif // OPERATORSFORMESONS_H_ 
-
-

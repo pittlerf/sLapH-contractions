@@ -10,10 +10,10 @@
 #include "typedefs.h"
 
 template <int n1, int n2>
-void multiply(LapH::OperatorToFactorMap<n1 + n2> &L,
+void multiply(OperatorToFactorMap<n1 + n2> &L,
                     std::array<size_t, n1 + n2> const &key,
-                    LapH::OperatorToFactorMap<n1> const &factor0,
-                    LapH::OperatorToFactorMap<n2> const &factor1) {
+                    OperatorToFactorMap<n1> const &factor0,
+                    OperatorToFactorMap<n2> const &factor1) {
   if (L.count(key) == 0) {
     std::array<size_t, n1> key1;
     std::array<size_t, n2> key2;
@@ -27,7 +27,7 @@ void multiply(LapH::OperatorToFactorMap<n1 + n2> &L,
 
 namespace {
 
-/*! Creates compound datatype to write complex numbers from LapH::complex_t
+/*! Creates compound datatype to write complex numbers from complex_t
  *  vectors to HDF5 file
  *
  *  @Returns cmplx_w   HDF5 compound datatype for complex numbers
@@ -35,13 +35,13 @@ namespace {
 H5::CompType comp_type_factory_tr() {
   H5::CompType cmplx_w(2 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplx_w.insertMember("re", HOFFSET(LapH::complex_t, re), type);
-  cmplx_w.insertMember("im", HOFFSET(LapH::complex_t, im), type);
+  cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
+  cmplx_w.insertMember("im", HOFFSET(complex_t, im), type);
 
   return cmplx_w;
 }
 
-/*! Creates compound datatype to write complex numbers from LapH::compcomp_t
+/*! Creates compound datatype to write complex numbers from compcomp_t
  *  vectors to HDF5 file
  *
  *  @Returns cmplx_w   HDF5 compound datatype for structs of four doubles
@@ -49,10 +49,10 @@ H5::CompType comp_type_factory_tr() {
 H5::CompType comp_type_factory_trtr() {
   H5::CompType cmplxcmplx_w(4 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplxcmplx_w.insertMember("rere", HOFFSET(LapH::compcomp_t, rere), type);
-  cmplxcmplx_w.insertMember("reim", HOFFSET(LapH::compcomp_t, reim), type);
-  cmplxcmplx_w.insertMember("imre", HOFFSET(LapH::compcomp_t, imre), type);
-  cmplxcmplx_w.insertMember("imim", HOFFSET(LapH::compcomp_t, imim), type);
+  cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
+  cmplxcmplx_w.insertMember("reim", HOFFSET(compcomp_t, reim), type);
+  cmplxcmplx_w.insertMember("imre", HOFFSET(compcomp_t, imre), type);
+  cmplxcmplx_w.insertMember("imim", HOFFSET(compcomp_t, imim), type);
 
   return cmplxcmplx_w;
 }
@@ -85,8 +85,8 @@ public:
    *  @todo   It is sufficient to pass the hdf5_dataset_name
    *  @todo   corr_datatype would be better as class template typename
    *
-   *  @remark The type corr_datatype is always either LapH::complex_t or
-   *          LapH::compcomp_t. The function body is identical for both types
+   *  @remark The type corr_datatype is always either complex_t or
+   *          compcomp_t. The function body is identical for both types
    *          as everything is specified by corr_info. Thus the template
    *          overload
    */
@@ -170,7 +170,7 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 /******************************************************************************/
 /******************************************************************************/
 
-LapH::Correlators::Correlators(const size_t Lt, const size_t dilT,
+Correlators::Correlators(const size_t Lt, const size_t dilT,
                                const size_t dilE, const size_t nev,
                                const CorrelatorLookup &corr_lookup,
                                OperatorLookup const &operator_lookup,
@@ -184,7 +184,7 @@ LapH::Correlators::Correlators(const size_t Lt, const size_t dilT,
 /*!
  *  @deprecated
  */
-void LapH::Correlators::build_C1(OperatorsForMesons const &meson_operator,
+void Correlators::build_C1(OperatorsForMesons const &meson_operator,
                                  Perambulator const &perambulators,
                                  std::vector<CorrInfo> const &corr_lookup,
                                  std::string const output_path,
@@ -260,7 +260,7 @@ void LapH::Correlators::build_C1(OperatorsForMesons const &meson_operator,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
+void Correlators::build_corr0(OperatorsForMesons const &meson_operator,
                                     Perambulator const &perambulators,
                                     std::vector<CorrInfo> const &corr_lookup) {
   if (corr_lookup.empty())
@@ -291,18 +291,11 @@ void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
-          auto const &r =
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] =
               factor_to_trace(quarklines(slice_pair.source(), slice_pair.sink_block())
                                   .at({c_look.lookup[0]}),
                               quarklines(slice_pair.sink(), slice_pair.source_block())
                                   .at({c_look.lookup[1]}));
-          std::vector<cmplx> s;
-          s.reserve(r.size());
-          std::transform(
-              r.begin(), r.end(), std::back_inserter(s), [](DilutedTrace const &dt) {
-                return dt.data;
-              });
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = s;
         }
       }
     }
@@ -314,7 +307,7 @@ void LapH::Correlators::build_corr0(OperatorsForMesons const &meson_operator,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
+void Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
                                   std::string const output_path,
                                   std::string const output_filename) {
   if (corr_lookup.empty())
@@ -336,12 +329,9 @@ void LapH::Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
         /*! @todo hidden because range based but this is a loop over random */
-        correlator[t] += std::accumulate(
-            corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()]
-                .begin(),
-            corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()]
-                .end(),
-            cmplx(0.0, 0.0));
+
+        auto const &c = corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+        correlator[t] += std::accumulate(std::begin(c), std::end(c), cmplx(0.0, 0.0));
       }
     }
     // normalisation
@@ -359,7 +349,7 @@ void LapH::Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
+void Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
                                    std::string const output_path,
                                    std::string const output_filename) {
   if (corr_lookup.C40D.empty())
@@ -376,27 +366,17 @@ void LapH::Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
   for (const auto &c_look : corr_lookup.C40D) {
-
-    std::vector<LapH::compcomp_t> correlator(Lt,
-                                             LapH::compcomp_t(.0, .0, .0, .0));
-
-    const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
-    const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
+    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
 
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        std::vector<size_t> random_index_combination_ids =
-            std::vector<size_t>({dil_fac_lookup.Q1[id0].id_ric_lookup,
-                                 dil_fac_lookup.Q1[id1].id_ric_lookup});
-
         /*! @todo Write move assignment for compcomp_t and give trtr return
          * parameter */
-        correlator[t] += trtr(
+        correlator[t] += inner_product(
             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-            corr0[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
-            ric_lookup, random_index_combination_ids);
+            corr0[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
       }
     }
 
@@ -418,7 +398,7 @@ void LapH::Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
+void Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
                                    std::string const output_path,
                                    std::string const output_filename) {
 
@@ -437,8 +417,8 @@ void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 
   for (const auto &c_look : corr_lookup.C40V) {
 
-    std::vector<LapH::compcomp_t> correlator(Lt,
-                                             LapH::compcomp_t(.0, .0, .0, .0));
+    std::vector<compcomp_t> correlator(Lt,
+                                             compcomp_t(.0, .0, .0, .0));
 
     const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
@@ -453,10 +433,9 @@ void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 
         /*! @todo Write move assignment for compcomp_t and give trtr return
          * parameter */
-        correlator[t] += trtr(
+        correlator[t] += inner_product(
             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-            corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
-            ric_lookup, random_index_combination_ids);
+            corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
       }
     }
 
@@ -478,7 +457,7 @@ void LapH::Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_corrC(RandomVector const &randomvectors,
+void Correlators::build_corrC(RandomVector const &randomvectors,
                                     Perambulator const &perambulators,
                                     OperatorsForMesons const &meson_operator,
                                     std::vector<CorrInfo> const &corr_lookup) {
@@ -554,7 +533,7 @@ void LapH::Correlators::build_corrC(RandomVector const &randomvectors,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C2c(std::vector<CorrInfo> const &corr_lookup,
+void Correlators::build_C2c(std::vector<CorrInfo> const &corr_lookup,
                                   std::string const output_path,
                                   std::string const output_filename) {
   if (corr_lookup.empty())
@@ -608,7 +587,7 @@ void LapH::Correlators::build_C2c(std::vector<CorrInfo> const &corr_lookup,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
+void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
                                    std::string const output_path,
                                    std::string const output_filename) {
   if (corr_lookup.C4cD.empty())
@@ -626,8 +605,8 @@ void LapH::Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
 
   for (const auto &c_look : corr_lookup.C4cD) {
 
-    std::vector<LapH::compcomp_t> correlator(Lt,
-                                             LapH::compcomp_t(.0, .0, .0, .0));
+    std::vector<compcomp_t> correlator(Lt,
+                                             compcomp_t(.0, .0, .0, .0));
 
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
@@ -667,7 +646,7 @@ void LapH::Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
+void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
                                    std::string const output_path,
                                    std::string const output_filename) {
   if (corr_lookup.C4cV.empty())
@@ -685,8 +664,8 @@ void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
   for (const auto &c_look : corr_lookup.C4cV) {
 
-    std::vector<LapH::compcomp_t> correlator(Lt,
-                                             LapH::compcomp_t(.0, .0, .0, .0));
+    std::vector<compcomp_t> correlator(Lt,
+                                             compcomp_t(.0, .0, .0, .0));
 
     const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
     const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
@@ -726,7 +705,7 @@ void LapH::Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cC(RandomVector const &randomvectors,
+void Correlators::build_C4cC(RandomVector const &randomvectors,
                                    OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
@@ -916,7 +895,7 @@ void LapH::Correlators::build_C4cC(RandomVector const &randomvectors,
 /*                                 build_C3c                                 */
 /*****************************************************************************/
 
-void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
+void Correlators::build_C3c(RandomVector const &randomvectors,
                                   OperatorsForMesons const &meson_operator,
                                   Perambulator const &perambulators,
                                   std::vector<CorrInfo> const &corr_lookup,
@@ -1103,7 +1082,7 @@ void LapH::Correlators::build_C3c(RandomVector const &randomvectors,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
+void Correlators::build_C4cB(RandomVector const &randomvectors,
                                    OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
@@ -1285,7 +1264,7 @@ void LapH::Correlators::build_C4cB(RandomVector const &randomvectors,
   swatch.print();
 }
 
-void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
+void Correlators::build_C30(OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
@@ -1372,7 +1351,7 @@ void LapH::Correlators::build_C30(OperatorsForMesons const &meson_operator,
   swatch.print();
 }
 
-void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
+void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
@@ -1498,7 +1477,7 @@ void LapH::Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 /*!
  *  @note Not optimised.
  */
-void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
+void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
                                    Perambulator const &perambulators,
                                    std::vector<CorrInfo> const &corr_lookup,
                                    std::string const output_path,
@@ -1621,10 +1600,10 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
  *                          combinations of operators and perambulators
- *  @param meson_operator   Instance of LapH::OperatorsForMesons. Contains
+ *  @param meson_operator   Instance of OperatorsForMesons. Contains
  *                          operators (@f$ V^\dagger V $f$) with momenta
  *                          and with/without dilution.
- *  @param perambulators    Instance of LapH::Perambulator class. Contains
+ *  @param perambulators    Instance of Perambulator class. Contains
  *                          Perambulator data
  *  @param operator_lookup
  *  @param corr_lookup
@@ -1633,8 +1612,8 @@ void LapH::Correlators::build_C40B(OperatorsForMesons const &meson_operator,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
-// void LapH::Correlators::contract (Quarklines& quarklines,
-void LapH::Correlators::contract(OperatorsForMesons const &meson_operator,
+// void Correlators::contract (Quarklines& quarklines,
+void Correlators::contract(OperatorsForMesons const &meson_operator,
                                  RandomVector const &randomvectors,
                                  Perambulator const &perambulators,
                                  OperatorLookup const &operator_lookup,

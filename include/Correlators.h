@@ -1,5 +1,5 @@
 /*! @file Correlators.h
- *  Class declaration of LapH::Correlators
+ *  Class declaration of Correlators
  *
  *  @author Bastian Knippschild
  *  @author Martin Ueding
@@ -27,8 +27,6 @@
 #include "typedefs.h"
 
 #include "H5Cpp.h"
-
-namespace LapH {
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup{
@@ -61,8 +59,8 @@ struct DilutedFactorLookup{
  *  are built from the infile in GlobalData::init_lookup_tables().
  *  
  *  Additionally the necessary data is passed in the form of 
- *  instances of LapH::Quarklines, LapH::OperatorsForMesons and 
- *  LapH::Perambulators 
+ *  instances of Quarklines, OperatorsForMesons and 
+ *  Perambulators 
  *
  *  The diagrams corr0, corrC (and thus C20, C2+) as well as C3c and C4cB are 
  *  memory optimized calling quarklines within an outer loop over time and thus
@@ -83,7 +81,7 @@ private:
   std::vector<RandomIndexCombinationsQ2> const ric_lookup;
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  array_corr corr0; 
+  DilutedTraceCollection corr0; 
   /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   void build_corr0(OperatorsForMesons const &meson_operator, 
                    Perambulator const &perambulators,
@@ -272,5 +270,3 @@ public:
                 std::string const output_path,
                 std::string const output_filename);
 };
-
-} // end of namespace

@@ -25,6 +25,23 @@ typedef std::complex<double> cmplx;
 typedef std::vector<cmplx> vec;
 /*! @} */
 
+struct DilutedFactor {
+  using Data = Eigen::MatrixXcd;
+  using RndId = int8_t;
+
+  Data data;
+  std::pair<RndId, RndId> ric;
+  std::vector<RndId> used_rnd_ids;
+};
+
+struct DilutedTrace {
+  using Data = cmplx;
+  using RndId = int8_t;
+
+  Data data;
+  std::vector<RndId> used_rnd_ids;
+};
+
 /*! Data type for momentum */
 typedef boost::multi_array<cmplx, 2> array_cd_d2;
 typedef boost::multi_array<cmplx, 3> array_cd_d3;
@@ -38,6 +55,7 @@ typedef boost::multi_array<cmplx, 10> array_cd_d10;
 
 /*! Special type for Correlators */
 typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
+typedef boost::multi_array<std::vector<DilutedTrace>, 3> DilutedTraceCollection;
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
@@ -59,8 +77,6 @@ typedef boost::multi_array<Eigen::MatrixXcd, 7> array_Xcd_d7_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 8> array_Xcd_d8_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
-
-namespace LapH {
 
 /******************************************************************************/ 
 /*! This is just a workaround for complex numbers to get it running for hdf5
@@ -89,15 +105,10 @@ struct compcomp_t {
 
     return *this;
   }
-
-
-}; 
-
-
-} // end of namespace
+};
 
 /******************************************************************************/
-/*! Struct to uniquely identify a sLapH operator 
+/*! Struct to uniquely identify a sLapH operator
  *  @f$ V^\dagger exp(i(p + d/2) x) V @f$
  *
  *  In contrast to the field operator the Dirac structure is factored out
@@ -386,8 +397,6 @@ struct CorrelatorLookup{
   std::vector<CorrInfo> C4cB;
 };
 
-namespace LapH {
-
 /*! typetrait class which allows to use QuarklineQ1Indices for Q1 and
  *  QuarklineQ2Indices for Q2L and Q2V
  */
@@ -416,4 +425,3 @@ template <>
 struct QuarkLineIndices<QuarkLineType::Q2V> {
   typedef std::vector<QuarklineQ2Indices> type;
 };
-}

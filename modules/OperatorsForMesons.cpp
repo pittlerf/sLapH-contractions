@@ -1,5 +1,5 @@
 /*! @file OperatorsForMesons.cpp
- *  Class definition of LapH::OperatorsForMesons
+ *  Class definition of OperatorsForMesons
  *
  *  @author Bastian Knippschild
  *  @author Markus Werner
@@ -90,11 +90,11 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
  * @param handling_vdaggerv
  * @param path_vdaggerv
  *
- * The initialization of the container attributes of LapH::OperatorsForMesons
+ * The initialization of the container attributes of OperatorsForMesons
  * is done in the member initializer list of the constructor. The allocation
  * of heap memory is delegated to boost::multi_array::resize
  */
-LapH::OperatorsForMesons::OperatorsForMesons
+OperatorsForMesons::OperatorsForMesons
                         (const size_t Lt, const size_t Lx, const size_t Ly, 
                          const size_t Lz, const size_t nb_ev, const size_t dilE,
                          const OperatorLookup& operator_lookuptable,
@@ -133,7 +133,7 @@ LapH::OperatorsForMesons::OperatorsForMesons
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
+void OperatorsForMesons::build_vdaggerv(const std::string& filename,
                                               const int config) {
 
   clock_t t2 = clock();
@@ -164,7 +164,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
 #pragma omp parallel
 {
   Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
-  LapH::EigenVector V_t(1, dim_row, nb_ev);// each thread needs its own copy
+  EigenVector V_t(1, dim_row, nb_ev);// each thread needs its own copy
   #pragma omp for schedule(dynamic)
   for(size_t t = 0; t < Lt; ++t){
 
@@ -217,7 +217,7 @@ void LapH::OperatorsForMesons::build_vdaggerv(const std::string& filename,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::read_vdaggerv(const int config){
+void OperatorsForMesons::read_vdaggerv(const int config){
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
@@ -292,7 +292,7 @@ void LapH::OperatorsForMesons::read_vdaggerv(const int config){
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
+void OperatorsForMesons::read_vdaggerv_liuming(const int config){
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
@@ -401,8 +401,8 @@ void LapH::OperatorsForMesons::read_vdaggerv_liuming(const int config){
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::OperatorsForMesons::build_rvdaggerv(
-                                            const LapH::RandomVector& rnd_vec) {
+void OperatorsForMesons::build_rvdaggerv(
+                                            const RandomVector& rnd_vec) {
 
   // check if vdaggerv is already build
   if(not is_vdaggerv_set){
@@ -467,8 +467,8 @@ void LapH::OperatorsForMesons::build_rvdaggerv(
  *  - "write"            The operators are constructed and additionaly written 
  *                       out.
  */
-void LapH::OperatorsForMesons::create_operators(const std::string& filename, 
-                                            const LapH::RandomVector& rnd_vec,
+void OperatorsForMesons::create_operators(const std::string& filename, 
+                                            const RandomVector& rnd_vec,
                                             const int config) {
   is_vdaggerv_set = false;
   if(handling_vdaggerv == "write" || handling_vdaggerv == "build")
@@ -491,7 +491,7 @@ void LapH::OperatorsForMesons::create_operators(const std::string& filename,
  *  deleted to free up space
  *
  *  Resizes rvdaggerv to 0
- */void LapH::OperatorsForMesons::free_memory_rvdaggerv(){
+ */void OperatorsForMesons::free_memory_rvdaggerv(){
   for(auto& rvdv_level1 : rvdaggerv)
     for(auto& rvdv_level2 : rvdv_level1)
       for(auto& rvdv_level3 : rvdv_level2)
@@ -505,7 +505,7 @@ void LapH::OperatorsForMesons::create_operators(const std::string& filename,
  *
  *  Resizes vdaggerv to 0
  */
-void LapH::OperatorsForMesons::free_memory_vdaggerv(){
+void OperatorsForMesons::free_memory_vdaggerv(){
   std::for_each(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
                 [](Eigen::MatrixXcd m){m.resize(0, 0);});
 }

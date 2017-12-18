@@ -141,7 +141,7 @@ static bool momenta_below_cutoff(const std::array<int, 3>& p1,
  *  In this function momentum conservation is enforced and multiple cutoffs
  *  introduced.
  */
-void build_quantum_numbers_from_correlator_list(const Correlators& correlator, 
+void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator, 
                     const Operator_list& operator_list,
                     std::vector<std::vector<QuantumNumbers> >& quantum_numbers){
 

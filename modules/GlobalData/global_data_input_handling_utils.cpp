@@ -298,7 +298,7 @@ Operators make_operator_list(const std::string& operator_string) {
  *
  *  @todo Write check for correctness of correlator_string
  */
-Correlators make_correlator(const std::string& correlator_string){
+Correlators_2 make_correlator(const std::string& correlator_string){
 
   std::vector<std::string> correlator_tokens;
   boost::split(correlator_tokens, correlator_string, boost::is_any_of(":"));
@@ -346,7 +346,7 @@ Correlators make_correlator(const std::string& correlator_string){
     }
   }
 
-  return Correlators(type, quark_number, operator_number, GEVP, tot_mom);
+  return {type, quark_number, operator_number, GEVP, tot_mom};
 }
 
 } // end of namespace global_data_utils

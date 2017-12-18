@@ -21,8 +21,8 @@
 
 /*! Read parameters from infile and perform the specified contractions
  *
- *  In succession instanciate GlobalData, LapH::Perambulator,
- *  LapH::RandomVector, LapH::OperatorsForMesons and LapH::Correlators. 
+ *  In succession instanciate GlobalData, Perambulator,
+ *  RandomVector, OperatorsForMesons and Correlators. 
  *  - Get paths, physical quantum numbers and desired operators from infile 
  *  - Loop over Configuration
  *  - Read perambulators, randomvectors and contract
@@ -51,15 +51,15 @@ int main (int ac, char* av[]) {
   // ---------------------------------------------------------------------------
   // Creating instances of perambulators, random vectors, operators, and 
   // correlators. The eigenvectors are read from disc in the operator class.
-  LapH::Perambulator perambulators(
+  Perambulator perambulators(
                                  global_data->get_peram_construct().nb_entities,
                                  global_data->get_peram_construct().size_rows,
                                  global_data->get_peram_construct().size_cols);
-  LapH::RandomVector randomvectors(
+  RandomVector randomvectors(
                                global_data->get_rnd_vec_construct().nb_entities,
                                global_data->get_rnd_vec_construct().length);
 
-  LapH::OperatorsForMesons meson_operators(
+  OperatorsForMesons meson_operators(
                             global_data->get_Lt(), global_data->get_Lx(),
                             global_data->get_Ly(), global_data->get_Lz(),
                             global_data->get_number_of_eigen_vec(),
@@ -68,7 +68,7 @@ int main (int ac, char* av[]) {
                             global_data->get_handling_vdaggerv(),
                             global_data->get_path_vdaggerv());  
 
-  LapH::Correlators correlators(global_data->get_Lt(), 
+  Correlators correlators(global_data->get_Lt(), 
                          (global_data->get_quarks())[0].number_of_dilution_T,
                          (global_data->get_quarks())[0].number_of_dilution_E,
                           global_data->get_number_of_eigen_vec(),

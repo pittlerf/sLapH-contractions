@@ -5,8 +5,7 @@
  *  @author Markus Werner
  */
 
-#ifndef _PERAMBULATOR_H_
-#define _PERAMBULATOR_H_
+#pragma once
 
 #include <ctime>
 #include <fstream>
@@ -18,8 +17,6 @@
 
 #include "typedefs.h"
 #include "global_data_typedefs.h"
-
-namespace LapH {
 
 /*! Memory allocation and reading routines for perambulators */
 class Perambulator {
@@ -71,7 +68,3 @@ public:
                                  const std::vector<std::string>& filename_list);
 
 };
-
-} // end of namespace
-
-#endif // _PERAMBULATOR_H__

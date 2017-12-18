@@ -18,25 +18,6 @@
 #include "QuarkLineBlock.h"
 #include "typedefs.h"
 
-namespace LapH {
-
-struct DilutedFactor {
-  using Data = Eigen::MatrixXcd;
-  using RndId = int8_t;
-
-  Data data;
-  std::pair<RndId, RndId> ric;
-  std::vector<RndId> used_rnd_ids;
-};
-
-struct DilutedTrace {
-  using Data = cmplx;
-  using RndId = int8_t;
-
-  Data data;
-  std::vector<RndId> used_rnd_ids;
-};
-
 /*! Product yielding the off-diagonal elements.
 
   From the sets of DilutedFactor elements, the product set of DilutedFactor is build such
@@ -45,6 +26,14 @@ struct DilutedTrace {
   */
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec);
+
+inline cmplx operator+(DilutedTrace const &df, cmplx const &c) {
+  return c + df.data;
+}
+
+inline cmplx operator+(cmplx const &c, DilutedTrace const &df) {
+  return df + c;
+}
 
 template <int n>
 using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
@@ -222,5 +211,3 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
 
 compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
                          std::vector<DilutedTrace> const &right_vec);
-
-}  // end of namespace

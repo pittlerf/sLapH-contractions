@@ -5,9 +5,7 @@
  *  @author Markus Werner
  */
 
-
-#ifndef GLOBALDATA_UTILS_H_
-#define GLOBALDATA_UTILS_H_
+#pragma once
 
 #include <array>
 #include <iostream>
@@ -29,8 +27,6 @@ namespace global_data_utils {
   Operators make_operator_list(const std::string& operator_string);
 
   /*! Makes an Correlators object from a string */
-  Correlators make_correlator(const std::string& correlator_string);
+  Correlators_2 make_correlator(const std::string& correlator_string);
 
 } // end of namespace global_data_utils
-
-#endif // GLOBALDATA_UTILS_H_

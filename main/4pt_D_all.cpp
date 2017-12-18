@@ -52,10 +52,10 @@ int main (int ac, char* av[]) {
   // ---------------------------------------------------------------------------
   // Creating instances of perambulators, random vectors, operators, and 
   // correlators. The eigenvectors are read from disc in the operator class.
-  LapH::Perambulator perambulators(nb_peram, 
+  Perambulator perambulators(nb_peram, 
                      std::vector<size_t>(nb_rnd_vec, Lt*4*nb_ev), 
                      std::vector<size_t>(nb_rnd_vec, (Lt/nb_dil_T)*nb_dil_E*4));
-  LapH::RandomVector randomvectors(nb_peram, Lt*4*nb_ev);
+  RandomVector randomvectors(nb_peram, Lt*4*nb_ev);
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------

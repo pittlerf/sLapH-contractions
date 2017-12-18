@@ -2,7 +2,7 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::EigenVector::read_eigen_vector(const std::string& filename, 
+void EigenVector::read_eigen_vector(const std::string& filename, 
                                           const size_t t, const size_t verbose){
 
   // buffer for read in
@@ -42,7 +42,7 @@ void LapH::EigenVector::read_eigen_vector(const std::string& filename,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LapH::EigenVector::read_eigen_vector(const std::string& filename,
+void EigenVector::read_eigen_vector(const std::string& filename,
                                           const size_t verbose){
 
   for(int t = 0; t < V.size(); t++){

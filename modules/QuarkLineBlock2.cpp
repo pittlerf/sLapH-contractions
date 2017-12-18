@@ -6,8 +6,6 @@ namespace {
 std::complex<double> const I(0.0, 1.0);
 }
 
-namespace LapH {
-
 template <QuarkLineType qlt>
 QuarkLineBlock2<qlt>::QuarkLineBlock2(
     const size_t dilT,
@@ -300,6 +298,3 @@ void QuarkLineBlock2<QuarkLineType::Q2L>::build_block_pair(
 template class QuarkLineBlock2<QuarkLineType::Q1>;
 //template class QuarkLineBlock2<QuarkLineType::Q2L>;
 //template class QuarkLineBlock2<QuarkLineType::Q2V>;
-
-}  // end of LapH namespace
-

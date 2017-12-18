@@ -5,8 +5,7 @@
  *  @author Markus Werner
  */
 
-#ifndef OPERATORS_H_
-#define OPERATORS_H_
+#pragma once
 
 #include <typedefs.h>
 
@@ -113,7 +112,7 @@ public:
  *        building off-diagonal elements as well or resticting to a certain 
  *        CMS momentum 
  */
-struct Correlators {
+struct Correlators_2 {
 
 /*! @{ */
 /*! @todo Change to private at a later point
@@ -128,7 +127,7 @@ public:
 
 public:
 /*! Constructor */
-  Correlators(std::string type, std::vector<int> quark_numbers, 
+  Correlators_2(std::string type, std::vector<int> quark_numbers, 
               std::vector<int> operator_numbers, std::string GEVP, 
               std::vector< std::array<int, 3> > tot_mom) :
       type(type), quark_numbers(quark_numbers), 
@@ -138,6 +137,4 @@ public:
 
 typedef std::vector<QuantumNumbers> Operators;
 typedef std::vector<Operators> Operator_list;
-typedef std::vector<Correlators> Correlator_list;
-
-#endif /* OPERATORS_H_ */
+typedef std::vector<Correlators_2> Correlator_list;

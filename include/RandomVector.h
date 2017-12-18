@@ -17,8 +17,6 @@
 
 #include "ranlxs.h"
 
-namespace LapH {
-
 /*! Memory allocation and IO routines for random vectors */
 class RandomVector {
 
@@ -97,5 +95,3 @@ public:
                                  const std::vector<std::string>& filename_list);
 
 };
-
-} // end of namespace

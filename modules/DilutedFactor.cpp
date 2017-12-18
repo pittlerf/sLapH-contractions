@@ -1,10 +1,10 @@
+#include "DilutedFactor.h"
+
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <utility>
-
-#include "DilutedFactor.h"
 
 namespace {
 
@@ -71,8 +71,6 @@ void M1xM2(Eigen::MatrixXcd &result,
 }
 
 } // end of anonymous namespace 
-
-namespace LapH {
 
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
@@ -365,6 +363,8 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
       std::vector<DilutedFactor::RndId> used;
       used.reserve(8);
       used.push_back(inner_rnd_id);
+      used.push_back(outer_rnd_id);
+      std::sort(std::begin(used), std::end(used));
 
       std::copy(std::begin(left.used_rnd_ids),
                 std::end(left.used_rnd_ids),
@@ -618,10 +618,9 @@ std::vector<cmplx> trace(std::vector<Eigen::MatrixXcd> const &quarkline1,
  *  - C40V
  */
 compcomp_t trtr(std::vector<cmplx> const &factor1,
-          std::vector<cmplx> const &factor2,
-          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-          std::vector<size_t> const &ric_ids){
-
+                std::vector<cmplx> const &factor2,
+                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
+                std::vector<size_t> const &ric_ids) {
   compcomp_t result {compcomp_t(.0, .0, .0, .0)};
 
   const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
@@ -646,6 +645,3 @@ compcomp_t trtr(std::vector<cmplx> const &factor1,
 
   return result;
 }
-
-
-}  // end of LapH namespace

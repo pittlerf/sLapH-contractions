@@ -4,8 +4,6 @@ namespace {
 std::complex<double> const I(0.0, 1.0);
 }
 
-namespace LapH {
-
 /*! Look-up table for gamma matrices.
 
   For every Gamma structure (currently 0-15) the four non-zero values are specified.
@@ -176,6 +174,4 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[15].value[3] = -I;
 
   return gamma;
-}
-
 }

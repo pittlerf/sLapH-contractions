@@ -18,9 +18,6 @@
 #include <iostream>
 #include <string>
 
-namespace LapH {
-
-
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
  public:
@@ -115,5 +112,3 @@ class QuarkLineBlock2 {
 
   static int constexpr dilD = 4;
 };
-
-}  // end of namespace

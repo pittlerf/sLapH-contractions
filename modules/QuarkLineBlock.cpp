@@ -4,8 +4,6 @@ namespace {
 std::complex<double> const I(0.0, 1.0);
 }
 
-namespace LapH {
-
 template <QuarkLineType qlt>
 QuarkLineBlock<qlt>::QuarkLineBlock(
     const size_t dilT,
@@ -304,6 +302,4 @@ template class QuarkLineBlock<QuarkLineType::Q0>;
 template class QuarkLineBlock<QuarkLineType::Q1>;
 template class QuarkLineBlock<QuarkLineType::Q2L>;
 template class QuarkLineBlock<QuarkLineType::Q2V>;
-
-}  // end of LapH namespace
 

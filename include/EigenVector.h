@@ -1,5 +1,4 @@
-#ifndef EIGENVECTOR_H_
-#define EIGENVECTOR_H_
+#pragma once
 
 #include <fstream>
 #include <iostream>
@@ -8,8 +7,6 @@
 #include <Eigen/Dense> 
 
 #include "typedefs.h"
-
-namespace LapH {
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -54,9 +51,3 @@ public:
                          const size_t verbose);
 
 };
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-} // end of namespace
-
-#endif // EIGENVECTOR_H_ 

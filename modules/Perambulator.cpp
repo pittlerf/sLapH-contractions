@@ -8,7 +8,7 @@
  *  @param quark        Contains information about dilution scheme and size
  *  @param filename     Just the file name
  */
-void LapH::Perambulator::read_perambulator(const size_t entity, 
+void Perambulator::read_perambulator(const size_t entity, 
                                            const size_t Lt,
                                            const size_t nb_eigen_vec,
                                            const quark& quark,
@@ -76,7 +76,7 @@ void LapH::Perambulator::read_perambulator(const size_t entity,
  *  Loops over \code nb_entities = quark.size() * nb_rnd_vec \endcode. For each 
  *  internally read_perambulator() for a single file is called
  */
-void LapH::Perambulator::read_perambulators_from_separate_files(
+void Perambulator::read_perambulators_from_separate_files(
                                  const size_t Lt, const size_t nb_eigen_vec,
                                  const std::vector<quark>& quark,
                                  const std::vector<std::string>&filename_list) {
