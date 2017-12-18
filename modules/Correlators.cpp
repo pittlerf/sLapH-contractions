@@ -8,6 +8,7 @@
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
+#include "h5-wrapper.h"
 
 template <int n1, int n2>
 void multiply(OperatorToFactorMap<n1 + n2> &L,

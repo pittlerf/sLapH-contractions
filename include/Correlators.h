@@ -19,14 +19,11 @@
 #include <sys/stat.h>   
 
 #include "boost/multi_array.hpp"
-#include "boost/filesystem.hpp"
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "typedefs.h"
-
-#include "H5Cpp.h"
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup{
