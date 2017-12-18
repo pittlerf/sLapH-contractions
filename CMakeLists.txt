@@ -36,6 +36,12 @@ add_definitions("-DGIT_HOST=\"${hostname}\"")
 message(STATUS "user: $ENV{USER}")
 message(STATUS "host: ${hostname}")
 
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/git.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/git.h"
+  @ONLY)
+list(APPEND SOURCES "${CMAKE_CURRENT_BINARY_DIR}/include/git.h")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
+
 ###############################################################################
 #                             External Libraries                              #
 ###############################################################################

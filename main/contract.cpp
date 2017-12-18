@@ -17,6 +17,7 @@
 
 #include "Correlators.h" // contains all other headers
 #include "global_data.h"
+#include "git.h"
 
 
 /*! Read parameters from infile and perform the specified contractions
@@ -34,10 +35,10 @@
  */
 int main (int ac, char* av[]) {
   std::cout << "This is sLapH-contractions:\n"
-            << "  git branch " << GIT_REFSPEC << "\n"
-            << "  git revision " << GIT_SHA1 << "\n"
-            << "  git state " << GIT_CHANGES << "\n"
-            << "  compiled by " << GIT_USER << " on " << GIT_HOST << "\n";
+            << "  git branch " << git_refspec << "\n"
+            << "  git revision " << git_sha1 << "\n"
+            << "  git state " << git_changes << "\n"
+            << "  compiled by " << git_user << " on " << git_host << "\n";
 
   // reading global parameters from input file
   GlobalData* global_data = GlobalData::Instance();
