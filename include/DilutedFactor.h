@@ -217,6 +217,9 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 cmplx trace(std::vector<DilutedFactor> const &left_vec,
             std::vector<DilutedFactor> const &right_vec);
 
+std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
+                                          std::vector<DilutedFactor> const &right_vec);
+
 compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
                          std::vector<DilutedTrace> const &right_vec);
 

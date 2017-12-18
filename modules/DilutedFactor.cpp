@@ -83,7 +83,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
   std::vector<DilutedFactor> result_vec;
 
   std::vector<DilutedFactor::RndId> intersection;
-  intersection.reserve(8);
+  intersection.reserve(rnd_vec_count);
 
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
@@ -319,6 +319,77 @@ cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M2,
   return result;
 }
 
+std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
+                                          std::vector<DilutedFactor> const &right_vec) {
+  //! @TODO Pull out this magic number.
+  auto constexpr rnd_vec_count = 5;
+
+  std::vector<DilutedTrace> result_vec;
+
+  for (auto const &left : left_vec) {
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
+
+    Eigen::MatrixXcd right_sum(
+        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
+
+    std::vector<DilutedFactor::RndId> intersection;
+    intersection.reserve(rnd_vec_count);
+
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices match. The inner indices need to
+      // match because the product would not make sense otherwise. The outer indices must
+      // match since we want to be able to take the trace over the result. The second
+      // condition is where this differs from the other multiplication operator.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      intersection.clear();
+      std::set_intersection(std::begin(left.used_rnd_ids),
+                            std::end(left.used_rnd_ids),
+                            std::begin(right.used_rnd_ids),
+                            std::end(right.used_rnd_ids),
+                            std::back_inserter(intersection));
+      if (intersection.size() > 0) {
+        continue;
+      }
+
+      // We want to keep track of the indices that have been contracted away. These are
+      // all the ones from the left factor, all the ones from the right factor and the one
+      // that we are contracting over right now.
+      std::vector<DilutedFactor::RndId> used;
+      used.reserve(8);
+      used.push_back(inner_rnd_id);
+
+      std::copy(std::begin(left.used_rnd_ids),
+                std::end(left.used_rnd_ids),
+                std::back_inserter(used));
+      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
+
+      std::copy(std::begin(right.used_rnd_ids),
+                std::end(right.used_rnd_ids),
+                std::back_inserter(used));
+      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      result_vec.push_back({DilutedTrace::Data{(left.data * right.data).trace()}, used});
+    }
+  }
+
+  return result_vec;
+
+}
+
 cmplx trace(std::vector<DilutedFactor> const &left_vec,
             std::vector<DilutedFactor> const &right_vec) {
   //! @TODO Pull out this magic number.
@@ -374,6 +445,8 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
 
   return result;
 }
+
+
 
 compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
                          std::vector<DilutedTrace> const &right_vec) {
