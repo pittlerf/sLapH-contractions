@@ -138,7 +138,7 @@ private:
    *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40D(CorrelatorLookup const &corr_lookup,
+  void build_C40D(std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
                   std::string output_filename);
   /*! Build neutral 4pt correlation function: Vacuum diagram
@@ -149,7 +149,7 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40V(CorrelatorLookup const &corr_lookup,
+  void build_C40V(std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
                   std::string const output_filename);
   /*! Build neutral 4pt correlation function: Cross diagram

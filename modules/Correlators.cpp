@@ -308,8 +308,8 @@ void Correlators::build_corr0(OperatorsForMesons const &meson_operator,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
-                                  std::string const output_path,
-                                  std::string const output_filename) {
+                            std::string const output_path,
+                            std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -349,10 +349,10 @@ void Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
-  if (corr_lookup.C40D.empty())
+void Correlators::build_C40D(std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
+  if (corr_lookup.empty())
     return;
 
   StopWatch swatch("C40D", 1);
@@ -365,7 +365,7 @@ void Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  for (const auto &c_look : corr_lookup.C40D) {
+  for (const auto &c_look : corr_lookup) {
     std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
 
     for (auto const block_pair : dilution_scheme) {
@@ -398,11 +398,10 @@ void Correlators::build_C40D(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
-
-  if (corr_lookup.C40V.empty())
+void Correlators::build_C40V(std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
+  if (corr_lookup.empty())
     return;
 
   StopWatch swatch("C40V");
@@ -415,24 +414,12 @@ void Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  for (const auto &c_look : corr_lookup.C40V) {
-
-    std::vector<compcomp_t> correlator(Lt,
-                                             compcomp_t(.0, .0, .0, .0));
-
-    const size_t id0 = corr_lookup.corr0[c_look.lookup[0]].lookup[0];
-    const size_t id1 = corr_lookup.corr0[c_look.lookup[1]].lookup[0];
+  for (const auto &c_look : corr_lookup) {
+    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
 
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
-
-        std::vector<size_t> random_index_combination_ids =
-            std::vector<size_t>({dil_fac_lookup.Q1[id0].id_ric_lookup,
-                                 dil_fac_lookup.Q1[id1].id_ric_lookup});
-
-        /*! @todo Write move assignment for compcomp_t and give trtr return
-         * parameter */
         correlator[t] += inner_product(
             corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
             corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
@@ -458,9 +445,9 @@ void Correlators::build_C40V(CorrelatorLookup const &corr_lookup,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_corrC(RandomVector const &randomvectors,
-                                    Perambulator const &perambulators,
-                                    OperatorsForMesons const &meson_operator,
-                                    std::vector<CorrInfo> const &corr_lookup) {
+                              Perambulator const &perambulators,
+                              OperatorsForMesons const &meson_operator,
+                              std::vector<CorrInfo> const &corr_lookup) {
   if (corr_lookup.size() == 0)
     return;
 
@@ -1634,8 +1621,8 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_C3c(randomvectors, meson_operator, perambulators, corr_lookup.C3c, output_path,
             output_filename);
   build_C20(corr_lookup.C20, output_path, output_filename);
-  build_C40D(corr_lookup, output_path, output_filename);
-  build_C40V(corr_lookup, output_path, output_filename);
+  build_C40D(corr_lookup.C40D, output_path, output_filename);
+  build_C40V(corr_lookup.C40V, output_path, output_filename);
 
   // 3. Build all other correlation functions.
   //  build_C1(meson_operator, perambulators, operator_lookup, corr_lookup.C1,
