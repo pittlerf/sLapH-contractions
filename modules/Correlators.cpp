@@ -171,14 +171,20 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 /******************************************************************************/
 /******************************************************************************/
 
-Correlators::Correlators(const size_t Lt, const size_t dilT,
-                               const size_t dilE, const size_t nev,
-                               const CorrelatorLookup &corr_lookup,
-                               OperatorLookup const &operator_lookup,
-                               QuarklineLookup const &quark_lookup)
-    : Lt(Lt), dilT(dilT), dilE(dilE), nev(nev),
+Correlators::Correlators(const size_t Lt,
+                         const size_t dilT,
+                         const size_t dilE,
+                         const size_t nev,
+                         const CorrelatorLookup &corr_lookup,
+                         OperatorLookup const &operator_lookup,
+                         QuarklineLookup const &quark_lookup)
+    : Lt(Lt),
+      dilT(dilT),
+      dilE(dilE),
+      nev(nev),
       dil_fac_lookup(DilutedFactorLookup(operator_lookup.rvdaggervr_lookuptable,
-                                         quark_lookup.Q1, quark_lookup.Q2V,
+                                         quark_lookup.Q1,
+                                         quark_lookup.Q2V,
                                          quark_lookup.Q2L)),
       ric_lookup(operator_lookup.ricQ2_lookup) {}
 
@@ -186,10 +192,10 @@ Correlators::Correlators(const size_t Lt, const size_t dilT,
  *  @deprecated
  */
 void Correlators::build_C1(OperatorsForMesons const &meson_operator,
-                                 Perambulator const &perambulators,
-                                 std::vector<CorrInfo> const &corr_lookup,
-                                 std::string const output_path,
-                                 std::string const output_filename) {
+                           Perambulator const &perambulators,
+                           std::vector<CorrInfo> const &corr_lookup,
+                           std::string const output_path,
+                           std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -222,6 +228,8 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
     swatch.stop();
   }  // parallel part ends here
 
+  HDF5Handle handle(output_path, "C1", output_filename);
+
   // normalisation
   for (const auto &c_look : corr_lookup) {
     for (auto &corr_t : correlator[c_look.id]) {
@@ -230,8 +238,9 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
         diluted_trace.data /= 5 * Lt;
       }
     }
-    // write data to file
-    // FIXME filehandle.write(correlator[c_look.id], c_look);
+
+    auto group = handle.create_group(c_look.hdf5_dataset_name);
+    write_heterogenious(group, correlator[c_look.id]);
   }
   swatch.print();
 }
@@ -1606,9 +1615,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_C40V(corr_lookup.C40V, output_path, output_filename);
 
   // 3. Build all other correlation functions.
-  //  build_C1(meson_operator, perambulators, operator_lookup, corr_lookup.C1,
-  //                                           quark_lookup, output_path,
-  //                                           output_filename);
+  build_C1(meson_operator, perambulators, corr_lookup.C1, output_path, output_filename);
   build_C4cC(randomvectors, meson_operator, perambulators, corr_lookup.C4cC, output_path,
              output_filename);
   build_C4cB(randomvectors, meson_operator, perambulators, corr_lookup.C4cB, output_path,

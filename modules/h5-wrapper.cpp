@@ -3,6 +3,9 @@
 #include "boost/filesystem.hpp"
 
 #include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
 
 void create_folder(std::string const &path) {
   if (access(path.c_str(), 0) != 0) {
@@ -15,6 +18,111 @@ void create_folder(std::string const &path) {
   }
 }
 
+struct Complex1Times {
+  int t;
+  complex_t c;
+};
+
 template <>
-void write(HDF5Handle &handle, std::vector<cmplx> const &payload) {
+H5::CompType make_comp_type<cmplx>() {
+  H5::CompType cmplx_w(2 * sizeof(double));
+  auto type = H5::PredType::NATIVE_DOUBLE;
+  cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
+  cmplx_w.insertMember("im", HOFFSET(complex_t, im), type);
+
+  return cmplx_w;
+}
+
+template <>
+H5::CompType make_comp_type<compcomp_t>() {
+  H5::CompType cmplxcmplx_w(4 * sizeof(double));
+  auto type = H5::PredType::NATIVE_DOUBLE;
+  cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
+  cmplxcmplx_w.insertMember("reim", HOFFSET(compcomp_t, reim), type);
+  cmplxcmplx_w.insertMember("imre", HOFFSET(compcomp_t, imre), type);
+  cmplxcmplx_w.insertMember("imim", HOFFSET(compcomp_t, imim), type);
+
+  return cmplxcmplx_w;
+}
+
+template <>
+H5::CompType make_comp_type<Complex1Times>() {
+  H5::CompType comp_type(sizeof(Complex1Times));
+  auto const type_int = H5::PredType::NATIVE_INT;
+  auto const type = H5::PredType::NATIVE_DOUBLE;
+  comp_type.insertMember("t", HOFFSET(Complex1Times, t), type_int);
+  comp_type.insertMember("re", HOFFSET(Complex1Times, c.re), type);
+  comp_type.insertMember("im", HOFFSET(Complex1Times, c.im), type);
+
+  return comp_type;
+}
+
+template <>
+void write_homogenious(H5::DataSet &data_set, std::vector<cmplx> const &payload) {
+  data_set.write(payload.data(), make_comp_type<cmplx>());
+}
+
+template <>
+void write_homogenious(H5::DataSet &data_set, std::vector<compcomp_t> const &payload) {
+  data_set.write(payload.data(), make_comp_type<compcomp_t>());
+}
+
+template <>
+void write_heterogenious(H5::Group &group, std::vector<DilutedTrace> const &payload) {
+  std::map<std::string, std::vector<cmplx>> data;
+
+  for (auto const &elem : payload) {
+    std::ostringstream oss;
+    bool first = false;
+    for (auto const &id : elem.used_rnd_ids) {
+      if (!first) {
+        first = true;
+        oss << "_";
+      }
+      oss << "rnd" << id;
+    }
+    std::string const key = oss.str();
+
+    data[key].push_back(elem.data);
+  }
+
+  for (auto const &pair : data) {
+    hsize_t dim(pair.second.size());
+    H5::DataSpace dspace(1, &dim);
+    auto data_set =
+        group.createDataSet(pair.first.c_str(), make_comp_type<cmplx>(), dspace);
+    data_set.write(pair.second.data(), make_comp_type<cmplx>());
+  }
+}
+
+template <>
+void write_heterogenious(H5::Group &group,
+                         boost::detail::multi_array::sub_array<std::vector<DilutedTrace>,
+                                                               1ul> const &payload) {
+  std::map<std::string, std::vector<Complex1Times>> data;
+
+  for (int t = 0; t < payload.size(); ++t) {
+    for (auto const &elem : payload[t]) {
+      std::ostringstream oss;
+      bool first = false;
+      for (auto const &id : elem.used_rnd_ids) {
+        if (!first) {
+          first = true;
+          oss << "_";
+        }
+        oss << "rnd" << id;
+      }
+      std::string const key = oss.str();
+
+      data[key].push_back(Complex1Times{t, {elem.data.real(), elem.data.imag()}});
+    }
+  }
+
+  for (auto const &pair : data) {
+    hsize_t dim(pair.second.size());
+    H5::DataSpace dspace(1, &dim);
+    auto data_set =
+        group.createDataSet(pair.first.c_str(), make_comp_type<cmplx>(), dspace);
+    data_set.write(pair.second.data(), make_comp_type<cmplx>());
+  }
 }
