@@ -1,0 +1,7 @@
+#pragma once
+
+char const *const git_sha1 = "@git_sha1@";
+char const *const git_refspec = "@git_refspec@";
+char const *const git_changes = "@git_changes@";
+char const *const git_user = "@git_user@";
+char const *const git_host = "@git_host@";
