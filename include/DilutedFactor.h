@@ -20,9 +20,8 @@
 
 namespace LapH {
 
-template <typename Data_>
-struct GeneralDilutedFactor {
-  using Data = Data_;
+struct DilutedFactor {
+  using Data = Eigen::MatrixXcd;
   using RndId = int8_t;
 
   Data data;
@@ -30,8 +29,13 @@ struct GeneralDilutedFactor {
   std::vector<RndId> used_rnd_ids;
 };
 
-using DilutedFactor = GeneralDilutedFactor<Eigen::MatrixXcd>;
-using DilutedScalar = GeneralDilutedFactor<cmplx>;
+struct DilutedTrace {
+  using Data = cmplx;
+  using RndId = int8_t;
+
+  Data data;
+  std::vector<RndId> used_rnd_ids;
+};
 
 /*! Product yielding the off-diagonal elements.
 
@@ -213,7 +217,7 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 cmplx trace(std::vector<DilutedFactor> const &left_vec,
             std::vector<DilutedFactor> const &right_vec);
 
-compcomp_t trace(std::vector<DilutedScalar> const &left_vec,
-                 std::vector<DilutedScalar> const &right_vec);
+compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
+                         std::vector<DilutedTrace> const &right_vec);
 
 }  // end of namespace

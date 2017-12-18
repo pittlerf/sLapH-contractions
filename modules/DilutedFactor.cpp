@@ -375,33 +375,20 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
   return result;
 }
 
-compcomp_t trace(std::vector<DilutedScalar> const &left_vec,
-                 std::vector<DilutedScalar> const &right_vec) {
+compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
+                         std::vector<DilutedTrace> const &right_vec) {
   //! @TODO Pull out this magic number.
   auto constexpr rnd_vec_count = 5;
 
   compcomp_t result(0.0, 0.0, 0.0, 0.0);
 
   for (auto const &left : left_vec) {
-    auto const outer_rnd_id = left.ric.first;
-    auto const inner_rnd_id = left.ric.second;
-
     cmplx right_sum(0.0, 0.0);
 
     std::vector<DilutedFactor::RndId> intersection;
     intersection.reserve(rnd_vec_count);
 
     for (auto const &right : right_vec) {
-      // We want to make the inner and outer indices match. The inner indices need to
-      // match because the product would not make sense otherwise. The outer indices must
-      // match since we want to be able to take the trace over the result. The second
-      // condition is where this differs from the other multiplication operator.
-      bool const is_allowed =
-          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
-      if (!is_allowed) {
-          continue;
-      }
-
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
       intersection.clear();
