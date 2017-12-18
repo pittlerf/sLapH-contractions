@@ -87,6 +87,7 @@ void RandomVector::read_random_vector(const std::string& filename) {
   if(check_read_in !=  (int) vec.size())
     std::cout << "It seems that not all data are written to: "
               << filename.c_str() << "\n" << std::endl;
+  fclose(fp);
 
 }
 // -----------------------------------------------------------------------------
@@ -107,6 +108,7 @@ void RandomVector::read_random_vector(const size_t entity,
   if(check_read_in !=  length)
     std::cout << "It seems that not all data are read from: "
               << filename.c_str() << "\n" << std::endl;
+  fclose(fp);
 
 }
 // -----------------------------------------------------------------------------
