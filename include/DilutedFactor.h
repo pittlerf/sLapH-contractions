@@ -149,19 +149,6 @@ void Q1xQ1(std::vector<DilutedFactor> &result,
            size_t const dilE,
            size_t const dilD);
 
-/*! Create vector<MatrixXcd> with Q1*Q1 for all rnd vecs not equal
- *  - C30
- *  - C40B
- *  - C40C
- */
-void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
-           std::vector<Eigen::MatrixXcd> const &quarkline1,
-           std::vector<Eigen::MatrixXcd> const &quarkline2,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const ric_ids,
-           size_t const dilE,
-           size_t const dilD);
-
 /*! Create vector<MatrixXcd> with Q0*Q2 for all rnd vecs not equal
  *  - (corrC)
  *  - C4cB

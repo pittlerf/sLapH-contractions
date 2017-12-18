@@ -201,34 +201,6 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
-void Q1xQ1(std::vector<Eigen::MatrixXcd> &result,
-           std::vector<Eigen::MatrixXcd> const &quarkline1,
-           std::vector<Eigen::MatrixXcd> const &quarkline2,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const ric_ids,
-           size_t const dilE,
-           size_t const dilD) {
-  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  size_t result_rnd_counter = 0;
-  for (const auto &rnd0 : ric0) {
-    for (const auto &rnd1 : ric1) {
-
-      auto const idr0 = &rnd0 - &ric0[0];
-      auto const idr1 = &rnd1 - &ric1[0];
-
-      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-
-        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
-
-        result[result_rnd_counter] = quarkline1[idr0] * quarkline2[idr1];
-        ++result_rnd_counter;
-      }
-    }
-  }
-}
-
 /*! 
  *  Multiply Operator with 0 quarks and Operator with 2 quarks
  *
