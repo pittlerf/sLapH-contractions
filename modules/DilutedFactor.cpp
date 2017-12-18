@@ -289,6 +289,30 @@ cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M2,
   return result;
 }
 
+std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec) {
+  std::vector<DilutedTrace> result_vec;
+
+  for (auto const &elem : vec) {
+    // We only want to use diagonal elements.
+    if (elem.ric.first != elem.ric.second) {
+      continue;
+    }
+
+    DilutedTrace result = {elem.data.trace(), elem.used_rnd_ids};
+
+    auto const outer_rnd_id = elem.ric.first;
+    result.used_rnd_ids.push_back(outer_rnd_id);
+    std::inplace_merge(std::begin(result.used_rnd_ids),
+                       std::end(result.used_rnd_ids) - 1,
+                       std::end(result.used_rnd_ids));
+
+    result_vec.push_back(result);
+  }
+
+  return result_vec;
+
+}
+
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
                                           std::vector<DilutedFactor> const &right_vec) {
   //! @TODO Pull out this magic number.
