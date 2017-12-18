@@ -23,9 +23,9 @@ for cfg in {% for config in config_ids %}{{ config }} {% endfor %}; do
   
     pushd cnfg${j}
     {% if machine == 'qbig' %}
-    sbatch job_script_qbig_slurm.js
+    sbatch job_script_qbig_slurm.sh
     {% elif machine == 'jureca' %}
-    sbatch job_script_jureca.js
+    sbatch job_script_jureca.sh
     {% endif %}
     popd
   
