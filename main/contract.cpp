@@ -52,13 +52,11 @@ int main (int ac, char* av[]) {
   // ---------------------------------------------------------------------------
   // Creating instances of perambulators, random vectors, operators, and 
   // correlators. The eigenvectors are read from disc in the operator class.
-  Perambulator perambulators(
-                                 global_data->get_peram_construct().nb_entities,
-                                 global_data->get_peram_construct().size_rows,
-                                 global_data->get_peram_construct().size_cols);
-  RandomVector randomvectors(
-                               global_data->get_rnd_vec_construct().nb_entities,
-                               global_data->get_rnd_vec_construct().length);
+  Perambulator perambulators(global_data->get_peram_construct().nb_entities,
+                             global_data->get_peram_construct().size_rows,
+                             global_data->get_peram_construct().size_cols);
+  RandomVector randomvectors(global_data->get_rnd_vec_construct().nb_entities,
+                             global_data->get_rnd_vec_construct().length);
 
   OperatorsForMesons meson_operators(
                             global_data->get_Lt(), global_data->get_Lx(),

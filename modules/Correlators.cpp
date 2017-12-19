@@ -916,20 +916,21 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
     size_t M2_counter = 0;
 
     for (const auto &c_look : corr_lookup) {
-      const auto &ric0 =
-          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric1 =
-          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-              .rnd_vec_ids;
-      const auto &ric2 =
-          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[2]].id_ric_lookup]
-              .rnd_vec_ids;
-      if (ric0.size() != ric1.size() || ric0.size() != ric2.size()) {
-        std::cout << "rnd combinations are not the same in build_C3+"
-                  << std::endl;
-        exit(0);
-      }
+//      const auto &ric0 =
+//          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
+//              .rnd_vec_ids;
+//      const auto &ric1 =
+//          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
+//              .rnd_vec_ids;
+//      const auto &ric2 =
+//          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[2]].id_ric_lookup]
+//              .rnd_vec_ids;
+//      std::cout << ric0.size() << ric1.size() << ric2.size() << std::endl;;
+//      if (ric0.size() != ric1.size() || ric0.size() != ric2.size()) {
+//        std::cout << "rnd combinations are not the same in build_C3+"
+//                  << std::endl;
+//        exit(0);
+//      }
 
       // creating memeory for M1
       // -------------------------------------------------
@@ -1264,8 +1265,8 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
   quantum_num_ids.reserve(corr_lookup.size());
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids.push_back(
-        {std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-         std::array<size_t, 1>{c_look.lookup[1]}});
+        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
+         std::array<size_t, 1>{c_look.lookup[1]}));
   }
 
 #pragma omp parallel
