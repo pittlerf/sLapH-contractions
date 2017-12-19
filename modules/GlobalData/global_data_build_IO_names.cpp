@@ -44,9 +44,6 @@ static std::vector<std::string> create_perambulator_file_names (
     char dil_scheme_E = q.dilution_E.back();
     char dil_scheme_D = q.dilution_D.back();
     
-    char temp1[200];
-    char temp2[200];
-
     for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
       // data path for qbig contractions
       auto const path =
@@ -68,20 +65,15 @@ static std::string create_eigenvector_file_name (
                                          const size_t config,
                                          const std::string& path_eigenvectors,
                                          const std::string& name_eigenvectors) {
-  char name[200];
-  std::string filename = path_eigenvectors + "/" + name_eigenvectors;
-  sprintf(name, "%s.%04d.", filename.c_str(), (int) config);
-  return name;
-
+  return (boost::format("%s/%s.%04d.") % path_eigenvectors % name_eigenvectors %
+          static_cast<int>(config))
+      .str();
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::string create_correlator_file_name (const size_t config) {
-  char name[200];
-  std::string filename = "_cnfg";
-  sprintf(name, "%s%04d.h5", filename.c_str(), (int) config);
-  return name;
+static std::string create_correlator_file_name(const size_t config) {
+  return (boost::format("_cnfg%04d.h5") % static_cast<int>(config)).str();
 }
 
 } // end anonymous namespace
