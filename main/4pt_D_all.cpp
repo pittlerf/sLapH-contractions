@@ -9,7 +9,8 @@
 
 #include <iostream>
 
-#include "omp.h"
+#include <omp.h>
+#include <boost/format.hpp>
 
 #include "global_data_typedefs.h"
 #include "Perambulator.h"

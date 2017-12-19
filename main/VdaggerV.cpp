@@ -10,7 +10,8 @@
 #include <iomanip>
 #include <iostream>
 
-#include "omp.h"
+#include <omp.h>
+#include <boost/format.hpp>
 
 #include "EigenVector.h"
 #include "typedefs.h"

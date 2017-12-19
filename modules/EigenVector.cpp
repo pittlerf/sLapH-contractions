@@ -1,5 +1,7 @@
 #include "EigenVector.h"
 
+#include <boost/format.hpp>
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void EigenVector::read_eigen_vector(const std::string& filename, 
@@ -42,14 +44,10 @@ void EigenVector::read_eigen_vector(const std::string& filename,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void EigenVector::read_eigen_vector(const std::string& filename,
-                                          const size_t verbose){
-
-  for(int t = 0; t < V.size(); t++){
-    char buff[10];
-    sprintf(buff, "%03d", t);
-    read_eigen_vector(filename + buff, t, verbose);
+void EigenVector::read_eigen_vector(const std::string &filename, const size_t verbose) {
+  for (int t = 0; t < V.size(); t++) {
+    std::string path = (boost::format("%s%03d") % filename % t).str();
+    read_eigen_vector(path, t, verbose);
   }
 }
-
 
