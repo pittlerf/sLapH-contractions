@@ -20,7 +20,8 @@ void create_folder(std::string const &path) {
 
 struct Complex1Times {
   int t;
-  complex_t c;
+  double re;
+  double im;
 };
 
 template <>
@@ -51,8 +52,8 @@ H5::CompType make_comp_type<Complex1Times>() {
   auto const type_int = H5::PredType::NATIVE_INT;
   auto const type = H5::PredType::NATIVE_DOUBLE;
   comp_type.insertMember("t", HOFFSET(Complex1Times, t), type_int);
-  comp_type.insertMember("re", HOFFSET(Complex1Times, c.re), type);
-  comp_type.insertMember("im", HOFFSET(Complex1Times, c.im), type);
+  comp_type.insertMember("re", HOFFSET(Complex1Times, re), type);
+  comp_type.insertMember("im", HOFFSET(Complex1Times, im), type);
 
   return comp_type;
 }
@@ -67,6 +68,7 @@ void write_homogenious(H5::DataSet &data_set, std::vector<compcomp_t> const &pay
   data_set.write(payload.data(), make_comp_type<compcomp_t>());
 }
 
+#if 0
 template <>
 void write_heterogenious(H5::Group &group, std::vector<DilutedTrace> const &payload) {
   std::map<std::string, std::vector<cmplx>> data;
@@ -94,6 +96,7 @@ void write_heterogenious(H5::Group &group, std::vector<DilutedTrace> const &payl
     data_set.write(pair.second.data(), make_comp_type<cmplx>());
   }
 }
+#endif
 
 template <>
 void write_heterogenious(H5::Group &group,
@@ -104,25 +107,30 @@ void write_heterogenious(H5::Group &group,
   for (int t = 0; t < payload.size(); ++t) {
     for (auto const &elem : payload[t]) {
       std::ostringstream oss;
-      bool first = false;
+      bool first = true;
       for (auto const &id : elem.used_rnd_ids) {
         if (!first) {
-          first = true;
+          first = false;
           oss << "_";
         }
-        oss << "rnd" << id;
+        oss << "rnd";
+        // The `static_cast<int>` is needed because otherwise the `uint8_t` is interpreted
+        // as `signed char` and then this will define the string representation. We want
+        // it interpreted as an integer.
+        oss << static_cast<int>(id);
       }
       std::string const key = oss.str();
 
-      data[key].push_back(Complex1Times{t, {elem.data.real(), elem.data.imag()}});
+      data[key].push_back(Complex1Times{t, elem.data.real(), elem.data.imag()});
     }
   }
+
+  auto const &comp_type = make_comp_type<Complex1Times>();
 
   for (auto const &pair : data) {
     hsize_t dim(pair.second.size());
     H5::DataSpace dspace(1, &dim);
-    auto data_set =
-        group.createDataSet(pair.first.c_str(), make_comp_type<cmplx>(), dspace);
-    data_set.write(pair.second.data(), make_comp_type<cmplx>());
+    auto data_set = group.createDataSet(pair.first.c_str(), comp_type, dspace);
+    data_set.write(pair.second.data(), comp_type);
   }
 }
