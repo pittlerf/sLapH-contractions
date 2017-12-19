@@ -13,7 +13,7 @@ set -x
 
 sourcedir=$(pwd)
 
-for buildtype in release; do
+for buildtype in debug; do
     builddir=../sLapH-contractions-$buildtype
     rm -rf "$builddir"
     mkdir "$builddir"

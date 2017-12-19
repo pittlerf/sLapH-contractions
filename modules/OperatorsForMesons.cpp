@@ -401,8 +401,7 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void OperatorsForMesons::build_rvdaggerv(
-                                            const RandomVector& rnd_vec) {
+void OperatorsForMesons::build_rvdaggerv(const RandomVector& rnd_vec) {
 
   // check if vdaggerv is already build
   if(not is_vdaggerv_set){
