@@ -144,21 +144,16 @@ void check_random_combinations<QuarkLineType::Q2V>(std::string const &diagram,
                                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                                std::vector<QuarklineQ2Indices> const &Q2_lookup){
-   const auto &ric0 =
-       ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup]
-           .rnd_vec_ids;
-   const auto &ric1 =
-      ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric2 =
-       ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric3 =
-       ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric0 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric2 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric3 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
 
-   if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-       ric0.size() != ric3.size()) {
-     std::string error_message = 
-       std::string("rnd combinations are not the same in ") + diagram;
-     throw std::length_error(error_message);
+  if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
+      ric0.size() != ric3.size()) {
+    std::string error_message =
+        std::string("rnd combinations are not the same in ") + diagram;
+    throw std::length_error(error_message);
    }
 }
 
@@ -168,21 +163,16 @@ void check_random_combinations<QuarkLineType::Q2L>(std::string const &diagram,
                                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                                std::vector<QuarklineQ2Indices> const &Q2_lookup){
-   const auto &ric0 =
-       ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup]
-           .rnd_vec_ids;
-   const auto &ric1 =
-      ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric2 =
-       ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-   const auto &ric3 =
-       ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric0 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric1 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric2 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
+  const auto &ric3 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
 
-   if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-       ric0.size() != ric3.size()) {
-     std::string error_message = 
-       std::string("rnd combinations are not the same in ") + diagram;
-     throw std::length_error(error_message);
+  if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
+      ric0.size() != ric3.size()) {
+    std::string error_message =
+        std::string("rnd combinations are not the same in ") + diagram;
+    throw std::length_error(error_message);
    }
 }
 
