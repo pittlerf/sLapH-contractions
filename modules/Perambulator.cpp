@@ -19,7 +19,7 @@ void Perambulator::read_perambulator(const size_t entity,
   std::cout << "\tReading perambulator from file:\n\t\t" << filename << "\n";
 
   // reading the data into temporary array
-  vec perambulator_read(peram[entity].size());
+  std::vector<cmplx> perambulator_read(peram[entity].size());
   if((fp = fopen(filename.c_str(), "rb")) == NULL){
     std::cout << "failed to open file to read perambulator: " 
               << filename << "\n" << std::endl;

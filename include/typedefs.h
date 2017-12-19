@@ -29,7 +29,6 @@ using SmallVectorRndId = boost::container::static_vector<RndId, max_rnd_ids>;
 
 /*! @{ Abbreviation for complex data types */
 typedef std::complex<double> cmplx;
-typedef std::vector<cmplx> vec;
 /*! @} */
 
 struct DilutedFactor {

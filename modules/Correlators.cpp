@@ -698,7 +698,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
   WriteHDF5Correlator filehandle(output_path, "C4+C", output_filename,
                                  comp_type_factory_tr());
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -706,7 +706,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
 #pragma omp parallel
   {
     swatch.start();
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
@@ -890,13 +890,13 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
   {
     swatch.start();
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
@@ -1073,7 +1073,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   WriteHDF5Correlator filehandle(
       output_path, "C4+B", output_filename, comp_type_factory_tr());
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -1081,7 +1081,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
 #pragma omp parallel
   {
     swatch.start();
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
@@ -1256,7 +1256,7 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
   WriteHDF5Correlator filehandle(output_path, "C30", output_filename,
                                  comp_type_factory_tr());
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -1271,8 +1271,8 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
 #pragma omp parallel
   {
     swatch.start();
-    // std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
@@ -1344,7 +1344,7 @@ void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
   WriteHDF5Correlator filehandle(output_path, "C40C", output_filename,
                                  comp_type_factory_tr());
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -1359,8 +1359,8 @@ void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 #pragma omp parallel
   {
     swatch.start();
-    // std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
@@ -1469,7 +1469,7 @@ void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
   WriteHDF5Correlator filehandle(output_path, "C40B", output_filename,
                                  comp_type_factory_tr());
 
-  std::vector<vec> correlator(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -1483,8 +1483,8 @@ void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 #pragma omp parallel
   {
     swatch.start();
-    // std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
-    std::vector<vec> C(corr_lookup.size(), vec(Lt, cmplx(.0, .0)));
+    // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);

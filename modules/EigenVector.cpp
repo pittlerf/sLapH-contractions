@@ -6,7 +6,7 @@ void EigenVector::read_eigen_vector(const std::string& filename,
                                           const size_t t, const size_t verbose){
 
   // buffer for read in
-  vec eigen_vec(V[t].rows());
+  std::vector<cmplx> eigen_vec(V[t].rows());
   std::cout << "\tReading eigenvectors from files:" << filename << std::endl;
 
   // setting V[t] to zero

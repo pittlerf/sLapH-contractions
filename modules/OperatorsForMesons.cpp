@@ -61,7 +61,7 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
     std::cout << "\twriting VdaggerV to file:" << pathname+filename 
               << std::endl;
     // buffer for writing
-    vec eigen_vec(Vt.size());
+    std::vector<cmplx> eigen_vec(Vt.size());
     for (size_t ncol = 0; ncol < Vt.cols(); ncol++) {
       for(size_t nrow = 0; nrow < Vt.rows(); nrow++){
         eigen_vec.at(ncol*Vt.rows() + nrow) = (Vt)(nrow, ncol);
@@ -258,7 +258,7 @@ void OperatorsForMesons::read_vdaggerv(const int config){
           std::cout << "\treading VdaggerV from file:" << infile << std::endl;
 
           // buffer for reading
-          vec eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
           file.read(reinterpret_cast<char*>(&eigen_vec[0]), 
                     vdaggerv[op.id][t].size()*sizeof(cmplx));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
@@ -340,7 +340,7 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
         std::cout << "\treading VdaggerV from file:" << infile1 << std::endl;
         for(size_t t = 0; t < Lt; ++t){
           // buffer for reading
-          vec eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
           file1.read(reinterpret_cast<char*>(&eigen_vec[0]), 
                     vdaggerv[op.id][t].size()*sizeof(cmplx));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
@@ -361,7 +361,7 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
         std::cout << "\treading VdaggerV from file:" << infile2 << std::endl;
         for(size_t t = 0; t < Lt; ++t){
           // buffer for reading
-          vec eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
           file2.read(reinterpret_cast<char*>(&eigen_vec[0]), 
                     vdaggerv[op.id][t].size()*sizeof(cmplx));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
