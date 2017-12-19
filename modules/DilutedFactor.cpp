@@ -80,8 +80,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
   std::vector<DilutedFactor> result_vec;
 
-  std::vector<DilutedFactor::RndId> intersection;
-  intersection.reserve(rnd_vec_count);
+  SmallVectorRndId intersection;
 
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
@@ -110,8 +109,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      std::vector<DilutedFactor::RndId> used;
-      used.reserve(8);
+      SmallVectorRndId used;
       used.push_back(inner_rnd_id);
 
       std::copy(std::begin(left.used_rnd_ids),
@@ -327,8 +325,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
-    std::vector<DilutedFactor::RndId> intersection;
-    intersection.reserve(rnd_vec_count);
+    SmallVectorRndId intersection;
 
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
@@ -356,8 +353,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      std::vector<DilutedFactor::RndId> used;
-      used.reserve(8);
+      SmallVectorRndId used;
       used.push_back(inner_rnd_id);
       used.push_back(outer_rnd_id);
       std::sort(std::begin(used), std::end(used));
@@ -400,8 +396,7 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
-    std::vector<DilutedFactor::RndId> intersection;
-    intersection.reserve(rnd_vec_count);
+    SmallVectorRndId intersection;
 
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
@@ -454,8 +449,7 @@ compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
   for (auto const &left : left_vec) {
     cmplx right_sum(0.0, 0.0);
 
-    std::vector<DilutedFactor::RndId> intersection;
-    intersection.reserve(rnd_vec_count);
+    SmallVectorRndId intersection;
 
     for (auto const &right : right_vec) {
       // We also need to be careful to not combine factors which have common used random

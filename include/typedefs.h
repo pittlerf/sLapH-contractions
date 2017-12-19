@@ -19,6 +19,15 @@
 #include "Eigen/Core"
 #include "Eigen/Dense"
 #include "boost/multi_array.hpp"
+#include "boost/container/static_vector.hpp"
+
+#include "SmallVector.h"
+
+int constexpr max_rnd_ids = 10;
+
+using RndId = int8_t;
+//using SmallVectorRndId = SmallVector<RndId, max_rnd_ids>;
+using SmallVectorRndId = boost::container::static_vector<RndId, max_rnd_ids>;
 
 /*! @{ Abbreviation for complex data types */
 typedef std::complex<double> cmplx;
@@ -27,19 +36,17 @@ typedef std::vector<cmplx> vec;
 
 struct DilutedFactor {
   using Data = Eigen::MatrixXcd;
-  using RndId = int8_t;
 
   Data data;
   std::pair<RndId, RndId> ric;
-  std::vector<RndId> used_rnd_ids;
+  SmallVectorRndId used_rnd_ids;
 };
 
 struct DilutedTrace {
   using Data = cmplx;
-  using RndId = int8_t;
 
   Data data;
-  std::vector<RndId> used_rnd_ids;
+  SmallVectorRndId used_rnd_ids;
 };
 
 /*! Data type for momentum */
