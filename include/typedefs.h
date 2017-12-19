@@ -21,8 +21,6 @@
 #include "boost/multi_array.hpp"
 #include "boost/container/static_vector.hpp"
 
-#include "SmallVector.h"
-
 int constexpr max_rnd_ids = 10;
 
 using RndId = int8_t;

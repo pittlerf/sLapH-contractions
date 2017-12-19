@@ -70,6 +70,29 @@ void M1xM2(Eigen::MatrixXcd &result,
   result = (M1 * result);
 }
 
+bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right) {
+  SmallVectorRndId intersection;
+
+  std::set_intersection(std::begin(left),
+                        std::end(left),
+                        std::begin(right),
+                        std::end(right),
+                        std::back_inserter(intersection));
+  return intersection.size() > 0;
+}
+
+void merge_append(SmallVectorRndId &data, SmallVectorRndId const &addition) {
+  auto const old_end = std::end(data);
+  std::copy(std::begin(addition), std::end(addition), std::back_inserter(data));
+  std::inplace_merge(std::begin(data), old_end, std::end(data));
+}
+
+void merge_push_back(SmallVectorRndId &data, RndId const &addition) {
+  auto const old_end = std::end(data);
+  data.push_back(addition);
+  std::inplace_merge(std::begin(data), old_end, std::end(data));
+}
+
 } // end of anonymous namespace 
 
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
@@ -79,8 +102,6 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
   auto constexpr dilD = 4;
 
   std::vector<DilutedFactor> result_vec;
-
-  SmallVectorRndId intersection;
 
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
@@ -96,13 +117,7 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      intersection.clear();
-      std::set_intersection(std::begin(left.used_rnd_ids),
-                            std::end(left.used_rnd_ids),
-                            std::begin(right.used_rnd_ids),
-                            std::end(right.used_rnd_ids),
-                            std::back_inserter(intersection));
-      if (intersection.size() > 0) {
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
         continue;
       }
 
@@ -111,16 +126,8 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
       // that we are contracting over right now.
       SmallVectorRndId used;
       used.push_back(inner_rnd_id);
-
-      std::copy(std::begin(left.used_rnd_ids),
-                std::end(left.used_rnd_ids),
-                std::back_inserter(used));
-      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
-
-      std::copy(std::begin(right.used_rnd_ids),
-                std::end(right.used_rnd_ids),
-                std::back_inserter(used));
-      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
+      merge_append(used, left.used_rnd_ids);
+      merge_append(used, right.used_rnd_ids);
 
       result_vec.push_back({Eigen::MatrixXcd{left.data * right.data},
                             std::make_pair(left.ric.first, right.ric.second),
@@ -299,10 +306,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec)
     DilutedTrace result = {elem.data.trace(), elem.used_rnd_ids};
 
     auto const outer_rnd_id = elem.ric.first;
-    result.used_rnd_ids.push_back(outer_rnd_id);
-    std::inplace_merge(std::begin(result.used_rnd_ids),
-                       std::end(result.used_rnd_ids) - 1,
-                       std::end(result.used_rnd_ids));
+    merge_push_back(result.used_rnd_ids, outer_rnd_id);
 
     result_vec.push_back(result);
   }
@@ -325,8 +329,6 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
-    SmallVectorRndId intersection;
-
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
       // match because the product would not make sense otherwise. The outer indices must
@@ -340,13 +342,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      intersection.clear();
-      std::set_intersection(std::begin(left.used_rnd_ids),
-                            std::end(left.used_rnd_ids),
-                            std::begin(right.used_rnd_ids),
-                            std::end(right.used_rnd_ids),
-                            std::back_inserter(intersection));
-      if (intersection.size() > 0) {
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
         continue;
       }
 
@@ -354,19 +350,10 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
       SmallVectorRndId used;
-      used.push_back(inner_rnd_id);
-      used.push_back(outer_rnd_id);
-      std::sort(std::begin(used), std::end(used));
-
-      std::copy(std::begin(left.used_rnd_ids),
-                std::end(left.used_rnd_ids),
-                std::back_inserter(used));
-      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
-
-      std::copy(std::begin(right.used_rnd_ids),
-                std::end(right.used_rnd_ids),
-                std::back_inserter(used));
-      std::inplace_merge(std::begin(used), std::begin(used) + 1, std::end(used));
+      merge_push_back(used, inner_rnd_id);
+      merge_push_back(used, outer_rnd_id);
+      merge_append(used, left.used_rnd_ids);
+      merge_append(used, right.used_rnd_ids);
 
       // The right sides that we encounter at this point have the same left and right
       // random vector indices. They may differ in the set of used random vector indices.
@@ -396,8 +383,6 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
-    SmallVectorRndId intersection;
-
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
       // match because the product would not make sense otherwise. The outer indices must
@@ -411,13 +396,7 @@ cmplx trace(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      intersection.clear();
-      std::set_intersection(std::begin(left.used_rnd_ids),
-                            std::end(left.used_rnd_ids),
-                            std::begin(right.used_rnd_ids),
-                            std::end(right.used_rnd_ids),
-                            std::back_inserter(intersection));
-      if (intersection.size() > 0) {
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
         continue;
       }
 
@@ -449,18 +428,10 @@ compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
   for (auto const &left : left_vec) {
     cmplx right_sum(0.0, 0.0);
 
-    SmallVectorRndId intersection;
-
     for (auto const &right : right_vec) {
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      intersection.clear();
-      std::set_intersection(std::begin(left.used_rnd_ids),
-                            std::end(left.used_rnd_ids),
-                            std::begin(right.used_rnd_ids),
-                            std::end(right.used_rnd_ids),
-                            std::back_inserter(intersection));
-      if (intersection.size() > 0) {
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
         continue;
       }
 
