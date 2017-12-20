@@ -264,7 +264,7 @@ Operators make_operator_list(const std::string& operator_string) {
     for(const auto& mom_vec_tmp : mom_vec){ // momenta
       for(auto mom : mom_vec_tmp){
 
-        op_list.push_back(QuantumNumbers(gammas, dil_vec, mom));
+        op_list.push_back({gammas, dil_vec, mom});
       }
     }
   }

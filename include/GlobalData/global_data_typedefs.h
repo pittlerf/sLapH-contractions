@@ -8,6 +8,7 @@
 #pragma once
 
 #include <typedefs.h>
+#include <ostream>
 
 
 /*! Small struct which contains all information to build and read random 
@@ -69,7 +70,7 @@ struct quark {
       id(id), path(path) {}
 };
 
-/******************************************************************************/
+
 /*! Struct that contains all physical information specifying a quantum field 
  *  operator in the infile:
  *
@@ -80,27 +81,25 @@ struct quark {
  */
 struct QuantumNumbers{
 
-public:
+//  using Data = Eigen::Vector3i;
+  using VectorData = std::array<int, 3>;
 
   std::vector<int> gamma;
-  std::array<int, 3> displacement;
-  std::array<int, 3> momentum;
-
-  inline void write() const{
-    std::cout << "\tmomentum: " << momentum[0] << momentum[1] << momentum[2];
-    std::cout << "\n\tdisplacement: " << displacement[0] << displacement[1] 
-              << displacement[2] << "\n\tgamma struct: ";
-    for(const auto& g : gamma)
-      std::cout << g;
-    std::cout << "\n" << std::endl;
-  }
-
-  /*! Constructor */
-  QuantumNumbers (std::vector<int> _gamma, std::array<int, 3> _displacement, 
-                  std::array<int, 3> _momentum) :
-      gamma(_gamma), displacement(_displacement), momentum(_momentum) {}
+  VectorData displacement;
+  VectorData momentum;
 
 };
+
+inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn){
+  os << "\tmomentum: " << qn.momentum[0] << qn.momentum[1] << qn.momentum[2]
+     << "\n\tdisplacement: " << qn.displacement[0] << qn.displacement[1] 
+     << qn.displacement[2] << "\n\tgamma struct: ";
+  for(const auto& g : qn.gamma)
+    std::cout << g;
+  std::cout << "\n" << std::endl;
+
+  return os;
+}
 
 /*! Struct that contains all information specifying the correlator in the 
  *  infile:
@@ -114,24 +113,12 @@ public:
  */
 struct Correlators_2 {
 
-/*! @{ */
-/*! @todo Change to private at a later point
- */
 public: 
   std::string type;
   std::vector<int> quark_numbers;
   std::vector<int> operator_numbers;
   std::string GEVP;
   std::vector<std::array<int, 3> > tot_mom;
-/*! @} */
-
-public:
-/*! Constructor */
-  Correlators_2(std::string type, std::vector<int> quark_numbers, 
-              std::vector<int> operator_numbers, std::string GEVP, 
-              std::vector< std::array<int, 3> > tot_mom) :
-      type(type), quark_numbers(quark_numbers), 
-      operator_numbers(operator_numbers), GEVP(GEVP), tot_mom(tot_mom) {}
 
 };
 

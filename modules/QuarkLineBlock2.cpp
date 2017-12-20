@@ -56,6 +56,9 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
+      /*! @bug by using rid1 and rid2 instead of rnd_id.first and rnd_id.second,
+       *       different quark flavors are not seperated
+       */
       Ql[time_key][{op.id}].push_back({matrix, std::make_pair(rid1, rid2), {}});
     }
   }

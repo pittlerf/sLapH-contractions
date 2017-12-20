@@ -20,6 +20,8 @@
 
 namespace {
 
+using Vector = QuantumNumbers::VectorData;
+
 /******************************************************************************/
 /*! @{
  *  Linear algebra functions for 3-momenta
@@ -27,13 +29,12 @@ namespace {
  *  @todo Replace that by operator overloading or Eigen
  */
 
-int compute_norm_squ(const std::array<int, 3>& in){
+int compute_norm_squ(Vector const &in){
   return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
 }
 
-std::array<int, 3> add_momenta(const std::array<int, 3>& in1, 
-                                      const std::array<int, 3>& in2){
-  return {{in1[0]+in2[0], in1[1]+in2[1], in1[2]+in2[2]}};
+Vector add_momenta(Vector const &in1, Vector const &in2){
+  return {in1[0]+in2[0], in1[1]+in2[1], in1[2]+in2[2]};
 }
 
 /*! 
@@ -45,8 +46,8 @@ std::array<int, 3> add_momenta(const std::array<int, 3>& in1,
  *
  *  @returns     true if @f$|\mathtt{p_tot}|^2 \in \mathtt{P}@f$, false otherwise     
  */
-bool desired_total_momentum(const std::array<int, 3>& p_tot,
-                            const std::vector< std::array<int, 3> >& P){
+bool desired_total_momentum(Vector const &p_tot,
+                            std::vector<Vector> const &P){
 
   /*! If no total momentum is specified, there is no selection.
    *  @todo It is better to force the user to specify P. Catch that in 
@@ -64,8 +65,8 @@ bool desired_total_momentum(const std::array<int, 3>& p_tot,
   }
 }
 
-static bool equal(const std::array<int, 3>& p_so, 
-                  const std::array<int, 3>& p_si){
+static bool equal(Vector const &p_so, 
+                  Vector const &p_si){
 
   // momenta at source and sink must be equal - sign comes from daggering
   if((p_so[0] != -p_si[0]) || (p_so[1] != -p_si[1]) || (p_so[2] != -p_si[2])){
@@ -89,8 +90,8 @@ static bool equal(const std::array<int, 3>& p_so,
  *  @warning Cutoff is hardcoded in this function!
  *  @warning No cutoff for P > 4 is implemented! 
  */
-static bool momenta_below_cutoff(const std::array<int, 3>& p1,
-                                 const std::array<int, 3>& p2) {
+static bool momenta_below_cutoff(Vector const &p1,
+                                 Vector const &p2) {
 
   const int p1_abs_squared = compute_norm_squ(p1);
   const int p2_abs_squared = compute_norm_squ(p2);
@@ -103,7 +104,7 @@ static bool momenta_below_cutoff(const std::array<int, 3>& p1,
   cutoff[3] = 7;
   cutoff[4] = 4;
 
-  const std::array<int, 3> p_tot = add_momenta(p1, p2);
+  const Vector p_tot = add_momenta(p1, p2);
   const int p_tot_abs_squared = compute_norm_squ(p_tot);
 
   if(p_tot_abs_squared > 4){
@@ -166,12 +167,12 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     // Build all combinations of operators and impose momentum conservation 
     // and cutoffs
     for(const auto& op0 : qn_op[0]){
-      std::array<int, 3> p_so = op0.momentum;
+      Vector p_so = op0.momentum;
 
       if( desired_total_momentum(p_so, correlator.tot_mom) ){
 
         for(const auto& op1 : qn_op[1]){ 
-          std::array<int, 3> p_si = op1.momentum;
+          Vector p_si = op1.momentum;
   
           // momentum at source and sink must always be the same for 2pt fcts.
           if( equal(p_so, p_si) ){
@@ -191,15 +192,15 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 
     for(const auto& op0 : qn_op[0]){
     for(const auto& op2 : qn_op[2]){ 
-      std::array<int, 3> p_so_1 = op0.momentum;
-      std::array<int, 3> p_so_2 = op2.momentum;
-      std::array<int, 3> p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so_1 = op0.momentum;
+      Vector p_so_2 = op2.momentum;
+      Vector p_so = add_momenta(p_so_1, p_so_2);
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
 
         for(const auto& op1 : qn_op[1]){ 
-          std::array<int, 3> p_si = op1.momentum;
+          Vector p_si = op1.momentum;
 
           if( desired_total_momentum(p_si, correlator.tot_mom) ){
 
@@ -233,18 +234,18 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 
     for(const auto& op0 : qn_op[0]){
     for(const auto& op2 : qn_op[2]){ 
-      std::array<int, 3> p_so_1 = op0.momentum;
-      std::array<int, 3> p_so_2 = op2.momentum;
-      std::array<int, 3> p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so_1 = op0.momentum;
+      Vector p_so_2 = op2.momentum;
+      Vector p_so = add_momenta(p_so_1, p_so_2);
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
 
         for(const auto& op1 : qn_op[1]){ 
         for(const auto& op3 : qn_op[3]){
-          std::array<int, 3> p_si_1 = op1.momentum;
-          std::array<int, 3> p_si_2 = op3.momentum;
-          std::array<int, 3> p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si_1 = op1.momentum;
+          Vector p_si_2 = op3.momentum;
+          Vector p_si = add_momenta(p_si_1, p_si_2);
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
@@ -280,18 +281,18 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 
     for(const auto& op0 : qn_op[0]){
     for(const auto& op3 : qn_op[3]){
-      std::array<int, 3> p_so_1 = op0.momentum;
-      std::array<int, 3> p_so_2 = op3.momentum;
-      std::array<int, 3> p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so_1 = op0.momentum;
+      Vector p_so_2 = op3.momentum;
+      Vector p_so = add_momenta(p_so_1, p_so_2);
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
 
         for(const auto& op1 : qn_op[1]){ 
         for(const auto& op2 : qn_op[2]){
-          std::array<int, 3> p_si_1 = op1.momentum;
-          std::array<int, 3> p_si_2 = op2.momentum;
-          std::array<int, 3> p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si_1 = op1.momentum;
+          Vector p_si_2 = op2.momentum;
+          Vector p_si = add_momenta(p_si_1, p_si_2);
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
@@ -356,18 +357,18 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 
     for(const auto& op0 : qn_op[0]){
     for(const auto& op2 : qn_op[2]){ 
-      std::array<int, 3> p_so_1 = op0.momentum;
-      std::array<int, 3> p_so_2 = op2.momentum;
-      std::array<int, 3> p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so_1 = op0.momentum;
+      Vector p_so_2 = op2.momentum;
+      Vector p_so = add_momenta(p_so_1, p_so_2);
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
 
         for(const auto& op1 : qn_op[1]){ 
         for(const auto& op3 : qn_op[3]){
-          std::array<int, 3> p_si_1 = op1.momentum;
-          std::array<int, 3> p_si_2 = op3.momentum;
-          std::array<int, 3> p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si_1 = op1.momentum;
+          Vector p_si_2 = op3.momentum;
+          Vector p_si = add_momenta(p_si_1, p_si_2);
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
@@ -509,12 +510,12 @@ void build_VdaggerV_lookup(
                              auto c1 = (vdv_qn.displacement == qn.displacement);
                              auto c2 = (vdv_qn.momentum == qn.momentum);
                              // also negative momentum is checked
-                             const std::array<int, 3> pm = {{-qn.momentum[0],
+                             const Vector pm = {{-qn.momentum[0],
                                                             -qn.momentum[1],
                                                             -qn.momentum[2]}};
                              auto c3 = (vdv_qn.momentum == pm);
                              // TODO: Think about the daggering!!
-                             const std::array<int, 3> zero = {{0,0,0}};
+                             const Vector zero = {{0,0,0}};
                              if (c1 and c2){
                                dagger = false;
                                return true;
@@ -2261,7 +2262,7 @@ void GlobalData::init_lookup_tables() {
    *  where momentum and displacement are both zero, or to -1 if no such entry
    *  is found.
    */
-  const std::array<int, 3> zero = {0,0,0};
+  const QuantumNumbers::VectorData zero = {0,0,0};
   bool found = false;
   for(const auto& op_vdv : operator_lookuptable.vdaggerv_lookup)
     if( (op_vdv.momentum == zero) && (op_vdv.displacement == zero) ){
