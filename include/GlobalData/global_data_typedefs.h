@@ -81,14 +81,30 @@ struct quark {
  */
 struct QuantumNumbers{
 
-//  using Data = Eigen::Vector3i;
-  using VectorData = std::array<int, 3>;
+  using VectorData = Eigen::Vector3i;
+//  using VectorData = std::array<int, 3>;
 
   std::vector<int> gamma;
   VectorData displacement;
   VectorData momentum;
 
 };
+
+inline std::string to_string(std::vector<int> const &vec){
+  std::string result("");
+  for(int el : vec){
+    result += std::to_string(el);
+  }
+  return result;
+}
+
+inline std::string to_string(Eigen::Vector3i const &vec){
+  std::string result("");
+  for(int i = 0; i < 3; i++){
+    result += std::to_string(vec[i]);
+  }
+  return result;
+}
 
 inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn){
   os << "\tmomentum: " << qn.momentum[0] << qn.momentum[1] << qn.momentum[2]
@@ -113,12 +129,13 @@ inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn){
  */
 struct Correlators_2 {
 
-public: 
+  using VectorData = Eigen::Vector3i;
+
   std::string type;
   std::vector<int> quark_numbers;
   std::vector<int> operator_numbers;
   std::string GEVP;
-  std::vector<std::array<int, 3> > tot_mom;
+  std::vector<VectorData> tot_mom;
 
 };
 

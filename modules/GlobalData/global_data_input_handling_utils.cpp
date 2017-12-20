@@ -3,6 +3,8 @@
 
 namespace {
 
+using Vector = QuantumNumbers::VectorData;
+
 // *****************************************************************************
 // A helper function to simplify the main part.
 template<class T>
@@ -31,9 +33,9 @@ inline std::ostream& operator<< (std::ostream& stream, const quark& quark) {
 }
 
 // *****************************************************************************
-inline std::array<int, 3> create_3darray_from_string(std::string in) { 
+inline Vector create_3darray_from_string(std::string in) { 
 
-  std::array<int, 3> out;
+  Vector out;
   std::vector<std::string> tokens;
   // erasing the brakets at the beginning and the end
   in.erase(0,2);
@@ -41,21 +43,21 @@ inline std::array<int, 3> create_3darray_from_string(std::string in) {
 
   boost::split(tokens, in, boost::is_any_of(","));
 
-  return {{boost::lexical_cast<int>(tokens[0]),
+  return {boost::lexical_cast<int>(tokens[0]),
           boost::lexical_cast<int>(tokens[1]),
-          boost::lexical_cast<int>(tokens[2]) }};
+          boost::lexical_cast<int>(tokens[2]) };
 
 }
 // *****************************************************************************
 inline void create_all_momentum_combinations(const int p, 
-                                        std::vector<std::array<int, 3> >& out) {
+                                        std::vector<Vector >& out) {
   // creating all momentum combinations possible and needed
   int max_p = p;
-  std::vector<std::array<int, 3> > all_p;
+  std::vector<Vector> all_p;
   for(int p1 = -max_p; p1 < max_p+1; p1++)
     for(int p2 = -max_p; p2 < max_p+1; p2++)
       for(int p3 = -max_p; p3 < max_p+1; p3++)
-        all_p.push_back({{p1, p2, p3}});
+        all_p.push_back({p1, p2, p3});
   // copying wanted combinations into out array
   for(const auto& all : all_p)
     if(p == all[0]*all[0] + all[1]*all[1] + all[2]*all[2])
@@ -64,8 +66,7 @@ inline void create_all_momentum_combinations(const int p,
 }
 // *****************************************************************************
 inline void create_mom_array_from_string(std::string in, 
-                                        std::vector<std::vector<std::array
-                                                   <int, 3> > >& out) {
+                                        std::vector<std::vector<Vector>>& out) {
   // erase the p (first entry)
   in.erase(0,1);
   std::vector<std::string> tokens;
@@ -227,8 +228,8 @@ Operators make_operator_list(const std::string& operator_string) {
     std::vector<std::string> tokens;
     boost::split(tokens, op_t, boost::is_any_of("."));
     std::vector<int> gammas;
-    std::array<int, 3> dil_vec;
-    std::vector<std::vector<std::array<int, 3> > >mom_vec;
+    Vector dil_vec;
+    std::vector<std::vector<Vector > >mom_vec;
     for (auto str : tokens){
       // getting the gamma structure
       if(str.compare(0,1,"g") == 0)
@@ -236,7 +237,7 @@ Operators make_operator_list(const std::string& operator_string) {
       // getting the displacement indices
       else if (str.compare(0,1,"d") == 0) {
         if(str.compare(1,1,"0") == 0)
-          dil_vec = {{0, 0, 0}};
+          dil_vec = {0, 0, 0};
         else if (str.compare(1,1,"(") == 0)
           dil_vec = create_3darray_from_string(str);
         else {
@@ -307,7 +308,7 @@ Correlators_2 make_correlator(const std::string& correlator_string){
   std::vector<int> quark_number;
   std::vector<int> operator_number;
   std::string GEVP;
-  std::vector< std::array<int, 3> > tot_mom;
+  std::vector< Vector > tot_mom;
 
   for (auto corr_t : correlator_tokens){
     // getting the type name
