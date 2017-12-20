@@ -91,18 +91,17 @@ private:
                    OperatorsForMesons const &meson_operator,
                    std::vector<CorrInfo> const &corr_lookup);
 
-  // Functions to build correlation functions
   
-  /*! Build 1pt correlation function 
-   *  @f{align}{
-   *    C = \langle D_\mathtt{Q0}^{-1}(t|t') \Gamma_\mathtt{Op0} \rangle
-   *  @f}
-   */
-  void build_C1(OperatorsForMesons const &meson_operator,
+  /*! Temporal memory for tr(Q1) */
+  DilutedTraceCollection2 corr_part_trQ1;
+  /*! Build 1pt loops */
+  void build_part_trQ1(OperatorsForMesons const &meson_operator,
                 Perambulator const &perambulators,
                 std::vector<CorrInfo> const &corr_lookup,
                 std::string const output_path,
                 std::string const output_filename);
+
+  // Functions to build correlation functions
 
   /*! Build neutral 2pt correlation function 
    *  @f{align}{
@@ -113,6 +112,16 @@ private:
   void build_C20(std::vector<CorrInfo> const &corr_lookup, 
                  std::string const output_path, 
                  std::string const filename);
+
+  /*! Build neutral 2pt correlation function 
+   *  @f{align}{
+   *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} \rangle \cdot
+   *        \langle D_\mathtt{Q1}^{-1}(t'|t') \Gamma_\mathtt{Op1} \rangle
+   *  @f}
+   */
+  void build_C20V(std::vector<CorrInfo> const &corr_lookup,
+                  std::string const output_path,
+                  std::string const output_filename);
 
   /*! Build neutral 3pt correlation function 
    *  @f{align}{

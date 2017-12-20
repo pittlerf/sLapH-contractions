@@ -208,7 +208,7 @@ void operator_input_data_handling (
  *    correlator_list = @em type : @em quark : @em operator : ... : [@em GEVP] : 
  *                      [@em P] 
  *    where the following abbreviationswhere used
- *    - @em type {C1,C2+,C20,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,C40C,C40B} :
+ *    - @em type {C1,C2+,C20,C20V,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,C40C,C40B} :
  *                              Identifier for the Wick diagram to be 
  *                              calculated. @see { LapH::Correlators }
  *    - @em quark {"Q%d"} :     Specifies which of the quarks from the infile

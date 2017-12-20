@@ -191,7 +191,7 @@ Correlators::Correlators(const size_t Lt,
 /*!
  *  @deprecated
  */
-void Correlators::build_C1(OperatorsForMesons const &meson_operator,
+void Correlators::build_part_trQ1(OperatorsForMesons const &meson_operator,
                            Perambulator const &perambulators,
                            std::vector<CorrInfo> const &corr_lookup,
                            std::string const output_path,
@@ -201,7 +201,7 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
 
   StopWatch swatch("C1");
 
-  DilutedTraceCollection2 correlator(boost::extents[corr_lookup.size()][Lt]);
+  corr_part_trQ1.resize(boost::extents[corr_lookup.size()][Lt]);
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -220,7 +220,7 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
           perambulators, meson_operator, t, b, dil_fac_lookup.Q1, ric_lookup);
 
       for (const auto &c_look : corr_lookup) {
-        correlator[c_look.id][t] =
+        corr_part_trQ1[c_look.id][t] =
             factor_to_trace(quarklines(t, b).at({c_look.lookup[0]}));
       }
     }
@@ -232,7 +232,7 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
 
   // normalisation
   for (const auto &c_look : corr_lookup) {
-    for (auto &corr_t : correlator[c_look.id]) {
+    for (auto &corr_t : corr_part_trQ1[c_look.id]) {
       for (auto &diluted_trace : corr_t) {
         // TODO: Hard Coded atm - Be carefull
         diluted_trace.data /= 5 * Lt;
@@ -240,13 +240,56 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
     }
 
     auto group = handle.create_group(c_look.hdf5_dataset_name);
-    write_heterogenious(group, correlator[c_look.id]);
+    write_heterogenious(group, corr_part_trQ1[c_look.id]);
   }
   swatch.print();
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+void Correlators::build_C20V(std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
+  if (corr_lookup.empty())
+    return;
+
+  StopWatch swatch("C20V");
+  swatch.start();
+
+  // every element of corr_lookup contains the same filename. Wlog choose the
+  // first element
+  WriteHDF5Correlator filehandle(output_path, "C20V", output_filename,
+                                 comp_type_factory_trtr());
+
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
+  for (const auto &c_look : corr_lookup) {
+    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
+
+    for (auto const block_pair : dilution_scheme) {
+      for (auto const slice_pair : block_pair) {
+        int const t = get_time_delta(slice_pair, Lt);
+        correlator[t] += inner_product(
+            corr_part_trQ1[c_look.lookup[0]][slice_pair.source()],
+            corr_part_trQ1[c_look.lookup[1]][slice_pair.sink()]);
+      }
+    }
+
+    // normalisation
+    for (auto &corr : correlator) {
+      corr.rere /= (5U * 4U) * Lt;
+      corr.reim /= (5U * 4U) * Lt;
+      corr.imre /= (5U * 4U) * Lt;
+      corr.imim /= (5U * 4U) * Lt;
+    }
+
+    // write data to file
+    filehandle.write(correlator, c_look);
+  }
+
+  swatch.stop();
+  swatch.print();
+}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -1600,6 +1643,10 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                  std::string const output_path,
                                  std::string const output_filename) {
 
+  build_part_trQ1(meson_operator, perambulators, corr_lookup.C1, output_path, 
+                  output_filename);
+  build_C20V(corr_lookup.C20V, output_path, output_filename);
+
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
   build_C2c(corr_lookup.C2c, output_path, output_filename);
@@ -1616,7 +1663,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_C40V(corr_lookup.C40V, output_path, output_filename);
 
   // 3. Build all other correlation functions.
-  build_C1(meson_operator, perambulators, corr_lookup.C1, output_path, output_filename);
   build_C4cC(randomvectors, meson_operator, perambulators, corr_lookup.C4cC, output_path,
              output_filename);
   build_C4cB(randomvectors, meson_operator, perambulators, corr_lookup.C4cB, output_path,

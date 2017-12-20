@@ -160,8 +160,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
   }
-  else if (correlator.type == "C2+" || correlator.type == "C20" ||
-           correlator.type == "Check") {
+  else if (correlator.type == "C2+" || correlator.type == "C20" || 
+           correlator.type == "C20V" || correlator.type == "Check") {
 
     // Build all combinations of operators and impose momentum conservation 
     // and cutoffs
@@ -416,8 +416,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 /******************************************************************************/
 /*! Create the names for output files and hdf5 datasets.
  *
- *  @param[in]  corr_type {C1,C2+,C20,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,C40V,
- *                         C40C,C40B} :
+ *  @param[in]  corr_type {C1,C2+,C20,C20V,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,
+ *                         C40V,C40C,C40B} :
  *  @param[in]  cnfg :            Number of first gauge configuration
  *  @param[in]  outpath           Output path from the infile.
  *  @param[in]  overwrite {yes,no} : deprecated
@@ -1413,6 +1413,82 @@ static void build_C3c_lookup(
 /******************************************************************************/
 /******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C20. Also sets
+ *  C1.
+ *  
+ *  @param[in]  quantum_numbers   A list of all physical quantum numbers as 
+ *                                specified in the QuantumNumbers struct that 
+ *                                are possible for @em correlator
+ *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
+ *                                correspondence to @em quantum_numbers
+ *  @param[in]  Q1_indices        List of indices referring to lookup table
+ *                                for Q1
+ *  @param[out] corr_lookup       Lookup table containing lookup tables for 
+ *                                all correlators this code can calculate.
+ *                                This function sets corr_lookup.C20
+ *
+ *  C20V contains C1. To reuse C1, they all contain indices
+ *  of C1 which in turn contains the indices for Q1.
+
+ *  @bug I am fairly certain that the quarks are mixed up. It is 
+ *        also wrong in init_lookup_tables() (MW 27.3.17)
+ */
+
+static void build_C20V_lookup(
+      const std::vector<std::string>& hdf5_dataset_name,
+      const std::vector<std::vector<size_t> >& Q1_indices, 
+      CorrelatorLookup& corr_lookup){
+
+  size_t row = 0;
+  for(const auto& Q1 : Q1_indices){
+    std::vector<size_t> indices1 = {Q1[0]};
+    std::vector<size_t> indices2 = {Q1[1]};
+    auto it_C20V = std::find_if(corr_lookup.C20V.begin(), 
+                                corr_lookup.C20V.end(),
+                          [&](CorrInfo corr)
+                          {
+                            return (corr.hdf5_dataset_name == 
+                                    hdf5_dataset_name[row]); 
+                          });
+    if(it_C20V == corr_lookup.C20V.end()){
+      size_t id1, id2;
+      auto it1 = std::find_if(corr_lookup.C1.begin(), 
+                              corr_lookup.C1.end(),
+                              [&](CorrInfo corr)
+                              {
+                                return (corr.lookup == indices1); 
+                              });
+      if((it1 == corr_lookup.C1.end())){
+        corr_lookup.C1.emplace_back(CorrInfo(corr_lookup.C1.size(), 
+                                  "", indices1, std::vector<int>({})));
+        id1 = corr_lookup.C1.back().id;
+      }
+      else
+        id1 = (*it1).id;
+      auto it2 = std::find_if(corr_lookup.C1.begin(), 
+                              corr_lookup.C1.end(),
+                              [&](CorrInfo corr)
+                              {
+                                return (corr.lookup == indices2); 
+                              });
+      if((it2 == corr_lookup.C1.end())){
+        corr_lookup.C1.emplace_back(CorrInfo(corr_lookup.C1.size(), 
+                                  "", indices2, std::vector<int>({})));
+        id2 = corr_lookup.C1.back().id;
+      }
+      else
+        id2 = (*it2).id;
+
+      corr_lookup.C20V.emplace_back(CorrInfo(corr_lookup.C20V.size(), 
+                      hdf5_dataset_name[row], std::vector<size_t>({id1, id2}), 
+                      std::vector<int>({})));
+    }
+    row++;
+  }  
+}
+
+/******************************************************************************/
+/******************************************************************************/
+/*! Create lookuptable where to find the quarklines to build C20. Also sets
  *  corr0.
  *  
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers as 
@@ -1981,7 +2057,7 @@ void GlobalData::init_lookup_tables() {
       build_C4cB_lookup(quantum_numbers, hdf5_dataset_name, 
                         rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
-    else if (correlator.type == "C20") {
+    else if (correlator.type == "C20" || correlator.type == "C20V") {
       // 3. build the lookuptable for rVdaggerV and return an array of indices
       //    corresponding to the 'quantum_numbers' computed in step 1.
       std::vector<size_t> rnd_vec_id;
@@ -2011,8 +2087,14 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
-      build_C20_lookup(hdf5_dataset_name, Q1_indices, 
+      if(correlator.type == "C20"){
+        build_C20_lookup(hdf5_dataset_name, Q1_indices, 
                        correlator_lookuptable);
+      }
+      else if(correlator.type == "C20V"){
+        build_C20V_lookup(hdf5_dataset_name, Q1_indices, 
+                       correlator_lookuptable);
+      }
     }
     else if (correlator.type == "C30") {
       std::vector<size_t> rnd_vec_id;
