@@ -2057,7 +2057,40 @@ void GlobalData::init_lookup_tables() {
       build_C4cB_lookup(quantum_numbers, hdf5_dataset_name, 
                         rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
-    else if (correlator.type == "C20" || correlator.type == "C20V") {
+    else if (correlator.type == "C20V") {
+      // 3. build the lookuptable for rVdaggerV and return an array of indices
+      //    corresponding to the 'quantum_numbers' computed in step 1.
+      std::vector<size_t> rnd_vec_id;
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[0], 
+                                 operator_lookuptable.ricQ1_lookup) );
+      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
+                                 correlator.quark_numbers[1], 
+                                 operator_lookuptable.ricQ1_lookup) );
+
+      std::vector<std::vector<size_t> > rvdv_indices;
+      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
+                             operator_lookuptable.rvdaggerv_lookuptable,
+                             rvdv_indices);
+      // 4. build the lookuptable for Q1 and return an array of indices
+      //    corresponding to the 'quantum_numbers' computed in step 1.
+      // The size of this lookuptable needs to be known beforehand, because it
+      // is build recursevely!
+      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
+                            std::vector<size_t>(rvdv_indices[0].size()));
+      build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+                      0, true, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[0],
+                      1, true, quantum_numbers, quarks, rvdv_indices, 
+                      operator_lookuptable.ricQ2_lookup,
+                      quarkline_lookuptable.Q1, Q1_indices);
+      // 5. build the lookuptable for the correlation functions
+      build_C20V_lookup(hdf5_dataset_name, Q1_indices, 
+                       correlator_lookuptable);
+    }
+    else if (correlator.type == "C20") {
       // 3. build the lookuptable for rVdaggerV and return an array of indices
       //    corresponding to the 'quantum_numbers' computed in step 1.
       std::vector<size_t> rnd_vec_id;
@@ -2087,14 +2120,8 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
-      if(correlator.type == "C20"){
-        build_C20_lookup(hdf5_dataset_name, Q1_indices, 
+      build_C20_lookup(hdf5_dataset_name, Q1_indices, 
                        correlator_lookuptable);
-      }
-      else if(correlator.type == "C20V"){
-        build_C20V_lookup(hdf5_dataset_name, Q1_indices, 
-                       correlator_lookuptable);
-      }
     }
     else if (correlator.type == "C30") {
       std::vector<size_t> rnd_vec_id;

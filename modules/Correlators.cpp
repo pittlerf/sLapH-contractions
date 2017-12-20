@@ -239,8 +239,8 @@ void Correlators::build_part_trQ1(OperatorsForMesons const &meson_operator,
       }
     }
 
-    auto group = handle.create_group(c_look.hdf5_dataset_name);
-    write_heterogenious(group, corr_part_trQ1[c_look.id]);
+//    auto group = handle.create_group(c_look.hdf5_dataset_name);
+//    write_heterogenious(group, corr_part_trQ1[c_look.id]);
   }
   swatch.print();
 }
