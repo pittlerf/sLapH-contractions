@@ -6,6 +6,8 @@
 #include <string>
 #include <utility>
 
+#include "global_data.h"
+
 namespace {
 
 /*! M1xM2 for 4pt functions */
@@ -595,4 +597,100 @@ compcomp_t trtr(std::vector<cmplx> const &factor1,
   }
 
   return result;
+}
+
+int constexpr max_flavor = 8;
+using UpTo = boost::container::static_vector<RndId, max_flavor>;
+
+UpTo get_max_used(DilutedFactor const &df, UpTo const &rnd_offset) {
+  SmallVectorRndId used = df.used_rnd_ids;
+  merge_push_back(used, df.ric.first);
+  merge_push_back(used, df.ric.second);
+
+  UpTo result(rnd_offset.size() - 1, 0);
+
+  // Iterate through every random vector index that is either used internally or
+  // externally.
+  for (auto const id : used) {
+    // Iterate through the quark flavors that we have.
+    for (int f = 0; f < rnd_offset.size() - 1; ++f) {
+      // Does the current random vector index belong to the current flavor?
+      if (rnd_offset[f] <= id && id < rnd_offset[f + 1]) {
+        // Is this random vector index larger than the largest one stored so far? If so,
+        // update this.
+        if (result[f] < id) {
+          result[f] = id;
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+template <typename T>
+T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor> const &,
+                                   std::vector<DilutedFactor> const &)> func,
+                   std::vector<DilutedFactor> const &left_vec,
+                   std::vector<DilutedFactor> const &right_vec) {
+
+  // Extract the number of random vectors per quark flavor.
+  auto const &quarks = GlobalData::Instance()->quarks();
+  UpTo rnd_count;
+  std::transform(std::begin(quarks),
+                 std::end(quarks),
+                 std::back_inserter(rnd_count),
+                 [](quark const &q) { return q.number_of_rnd_vec; });
+
+  // Obtain the offsets for the random vector ids per quark flavor. This basically is an
+  // exclusive scan, but this is not in the standard library until C++17.
+  UpTo rnd_offset;
+  rnd_offset.push_back(0);
+  std::partial_sum(
+      std::begin(rnd_count), std::end(rnd_count), std::back_inserter(rnd_offset));
+
+  std::map<UpTo, T> results;
+
+  // We start with the case where in every flavor we only use 1 random vector.
+  UpTo upto(quarks.size(), 1);
+
+  // We want to go until we have used all available random vectors.
+  UpTo upto_max = rnd_count;
+
+  while (upto != upto_max) {
+    // We only want to take those diluted factors that make use of the highest allowed
+    // random vector index for each flavor, but nothing more and nothing less. This avoids
+    // repeated use of the same `DilutedFactor`.
+    std::vector<DilutedFactor> left_filtered;
+    std::copy_if(std::begin(left_vec),
+                 std::end(left_vec),
+                 std::back_inserter(left_filtered),
+                 [&rnd_offset, &upto](DilutedFactor const &df) {
+                   return get_max_used(df, rnd_offset) == upto;
+                 });
+
+    // Same for the right.
+    std::vector<DilutedFactor> right_filtered;
+    std::copy_if(std::begin(right_vec),
+                 std::end(right_vec),
+                 std::back_inserter(right_filtered),
+                 [&rnd_offset, &upto](DilutedFactor const &df) {
+                   return get_max_used(df, rnd_offset) == upto;
+                 });
+
+    // Now we apply the function to the limited set.
+    results[upto] = func(left_filtered, right_filtered);
+
+    // Iterate to the next element. Do this by increasing the lowest digit. If that
+    // overflows, reset it and increase the next digit by one.
+    ++upto[0];
+    for (int i = 1; i < upto.size(); ++i) {
+      if (upto[i - 1] == rnd_count[i - 1] + 1) {
+        upto[i - 1] = 1;
+        ++upto[i];
+      }
+    }
+  }
+
+  return results;
 }
