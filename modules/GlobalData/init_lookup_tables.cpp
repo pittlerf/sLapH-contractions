@@ -23,19 +23,6 @@ namespace {
 using Vector = QuantumNumbers::VectorData;
 
 /******************************************************************************/
-/*! @{
- *  Linear algebra functions for 3-momenta
- *  
- *  @todo Replace that by operator overloading or Eigen
- */
-
-int compute_norm_squ(Vector const &in){
-  return in[0]*in[0] + in[1]*in[1] + in[2]*in[2];
-}
-
-Vector add_momenta(Vector const &in1, Vector const &in2){
-  return {in1[0]+in2[0], in1[1]+in2[1], in1[2]+in2[2]};
-}
 
 /*! 
  *  Check whether a momentum is within the set of desired momenta specified 
@@ -65,18 +52,6 @@ bool desired_total_momentum(Vector const &p_tot,
   }
 }
 
-static bool equal(Vector const &p_so, 
-                  Vector const &p_si){
-
-  // momenta at source and sink must be equal - sign comes from daggering
-  if((p_so[0] != -p_si[0]) || (p_so[1] != -p_si[1]) || (p_so[2] != -p_si[2])){
-    return false;
-  }
-  else{
-    return true;
-  }
-}
-
 /*!
  *  For multi-meson operators check whether the sum of momenta at the same 
  *  time slice is above a given cutoff
@@ -93,9 +68,6 @@ static bool equal(Vector const &p_so,
 static bool momenta_below_cutoff(Vector const &p1,
                                  Vector const &p2) {
 
-  const int p1_abs_squared = compute_norm_squ(p1);
-  const int p2_abs_squared = compute_norm_squ(p2);
-
   std::map<int,int> cutoff;
   // default value is the default initializer of type int: cutoff[default] = 0;
   cutoff[0] = 4;
@@ -104,23 +76,20 @@ static bool momenta_below_cutoff(Vector const &p1,
   cutoff[3] = 7;
   cutoff[4] = 4;
 
-  const Vector p_tot = add_momenta(p1, p2);
-  const int p_tot_abs_squared = compute_norm_squ(p_tot);
+  const Vector p_tot = p1+p2;
 
-  if(p_tot_abs_squared > 4){
+  if(p_tot.squaredNorm() > 4){
     std::cout << "In momenta_below_cutoff(): WARNING! No cutoff for P > 4"
               << " implemented" << std::endl;
   }
 
-  if( (p1_abs_squared + p2_abs_squared) > cutoff[p_tot_abs_squared] ) {
+  if( p1.squaredNorm() + p2.squaredNorm() > cutoff[p_tot.squaredNorm()] ) {
     return false;
   }
   else {
     return true;
   }
 }
-
-/*! @} */
 
 } // end of unnamed namespace
 
@@ -175,7 +144,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
           Vector p_si = op1.momentum;
   
           // momentum at source and sink must always be the same for 2pt fcts.
-          if( equal(p_so, p_si) ){
+          if(p_so == -p_si){
   
             std::vector<QuantumNumbers> single_vec_qn = {op0, op1};
             quantum_numbers.emplace_back(single_vec_qn);
@@ -194,7 +163,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op2 : qn_op[2]){ 
       Vector p_so_1 = op0.momentum;
       Vector p_so_2 = op2.momentum;
-      Vector p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so = p_so_1 + p_so_2;
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
@@ -204,13 +173,13 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
 
           if( desired_total_momentum(p_si, correlator.tot_mom) ){
 
-            if( equal(p_so, p_si) ){
+            if(p_so == -p_si){
 
-              const int p_tot = compute_norm_squ(p_si);
+              const int p_tot = p_si.squaredNorm();
               counter[p_tot]++;
   
-              std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2};
-              quantum_numbers.emplace_back(single_vec_qn);
+              quantum_numbers.emplace_back(
+                  std::vector<QuantumNumbers>{op0, op1, op2});
             }
           }
         }
@@ -236,7 +205,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op2 : qn_op[2]){ 
       Vector p_so_1 = op0.momentum;
       Vector p_so_2 = op2.momentum;
-      Vector p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so = p_so_1 + p_so_2;
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
@@ -245,19 +214,19 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
         for(const auto& op3 : qn_op[3]){
           Vector p_si_1 = op1.momentum;
           Vector p_si_2 = op3.momentum;
-          Vector p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si = p_si_1 + p_si_2;
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
   
-            if( equal(p_so, p_si) ){
+            if(p_so == -p_si){
 
-              const int p_tot = compute_norm_squ(p_si);
+              const int p_tot = p_si.squaredNorm();
               counter[p_tot]++;
   
               // create combinations
-              std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
-              quantum_numbers.emplace_back(single_vec_qn);
+              quantum_numbers.emplace_back(
+                  std::vector<QuantumNumbers>{op0, op1, op2, op3});
             }
           }
         }}
@@ -283,7 +252,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op3 : qn_op[3]){
       Vector p_so_1 = op0.momentum;
       Vector p_so_2 = op3.momentum;
-      Vector p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so = p_so_1 + p_so_2;
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
@@ -292,19 +261,19 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
         for(const auto& op2 : qn_op[2]){
           Vector p_si_1 = op1.momentum;
           Vector p_si_2 = op2.momentum;
-          Vector p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si = p_si_1 + p_si_2;
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
   
-            if( equal(p_so, p_si) ){
+            if(p_so == -p_si){
 
-              const int p_tot = compute_norm_squ(p_si);
+              const int p_tot = p_si.squaredNorm();
               counter[p_tot]++;
   
               // create combinations
-              std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
-              quantum_numbers.emplace_back(single_vec_qn);
+              quantum_numbers.emplace_back(
+                  std::vector<QuantumNumbers>{op0, op1, op2, op3});
             }
           }
         }}
@@ -320,33 +289,6 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     std::cout << "\tTest finished - Combinations: " 
               << total_number_of_combinations << std::endl;
 
-//      if(tot_mom_l == 0){
-//        if(mom0 > 3 || mom0 == 0)
-//          continue;
-//        counter_mom0++;
-//      }
-//      else if(tot_mom_v_l == std::array<int,3>({{0,0,1}})){
-//        if((mom0 + mom3) > 5)
-//          continue;
-//        counter_mom1++;
-//      }
-//      else if(tot_mom_v_l == std::array<int,3>({{0,1,1}})){
-//        if((mom0 + mom3) > 6)
-//          continue;
-//        counter_mom2++;
-//      }
-//      else if(tot_mom_v_l == std::array<int,3>({{1,1,1}})){
-//        if((mom0 + mom3) > 7)
-//          continue;
-//        counter_mom3++;
-//      }
-//      else if(tot_mom_v_l == std::array<int,3>({{0,0,2}})){
-//        if((mom0 + mom3) > 4)
-//          continue;
-//        counter_mom4++;
-//      }
-//      else
-//        continue; // maximum momentum is 4
   }
 
   /*! @todo Check whether that is identical to C4+D */
@@ -359,7 +301,7 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op2 : qn_op[2]){ 
       Vector p_so_1 = op0.momentum;
       Vector p_so_2 = op2.momentum;
-      Vector p_so = add_momenta(p_so_1, p_so_2);
+      Vector p_so = p_so_1 + p_so_2;
 
       if( desired_total_momentum(p_so, correlator.tot_mom) &&
           momenta_below_cutoff(p_so_1, p_so_2) ){
@@ -368,19 +310,19 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
         for(const auto& op3 : qn_op[3]){
           Vector p_si_1 = op1.momentum;
           Vector p_si_2 = op3.momentum;
-          Vector p_si = add_momenta(p_si_1, p_si_2);
+          Vector p_si = p_si_1 + p_si_2;
     
           if( desired_total_momentum(p_si, correlator.tot_mom) &&
               momenta_below_cutoff(p_si_1, p_si_2) ){
   
-            if( equal(p_so, p_si) ){
+            if(p_so == -p_si){
 
-              const int p_tot = compute_norm_squ(p_si);
+              const int p_tot = p_si.squaredNorm();
               counter[p_tot]++;
   
               // create combinations
-              std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
-              quantum_numbers.emplace_back(single_vec_qn);
+              quantum_numbers.emplace_back(
+                  std::vector<QuantumNumbers>{op0, op1, op2, op3});
             }
           }
         }}
@@ -408,8 +350,8 @@ void build_quantum_numbers_from_correlator_list(const Correlators_2& correlator,
     for(const auto& op1 : qn_op[1]){ 
     for(const auto& op2 : qn_op[2]){ 
     for(const auto& op3 : qn_op[3]){ // all combinations of operators
-      std::vector<QuantumNumbers> single_vec_qn = {op0, op1, op2, op3};
-      quantum_numbers.emplace_back(single_vec_qn);
+      quantum_numbers.emplace_back(
+          std::vector<QuantumNumbers>{op0, op1, op2, op3});
     }}}}
   }
 }
