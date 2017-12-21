@@ -432,15 +432,11 @@ using UpTo = boost::container::static_vector<RndId, max_flavor>;
 
 template <size_t rvecs>
 UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
-  SmallVectorRndId<rvecs + 2> used = df.used_rnd_ids;
-  merge_push_back(used, df.ric.first);
-  merge_push_back(used, df.ric.second);
-
   UpTo result(rnd_offset.size() - 1, 0);
 
   // Iterate through every random vector index that is either used internally or
   // externally.
-  for (auto const id : used) {
+  for (auto const id : df.used_rnd_ids) {
     // Iterate through the quark flavors that we have.
     for (int f = 0; f < rnd_offset.size() - 1; ++f) {
       // Does the current random vector index belong to the current flavor?
@@ -460,7 +456,7 @@ UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
 template <size_t rvecs>
 std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
   // Extract the number of random vectors per quark flavor.
-  auto const &quarks = GlobalData::Instance()->quarks();
+  auto const &quarks = GlobalData::Instance()->get_quarks();
   UpTo rnd_count;
   std::transform(std::begin(quarks),
                  std::end(quarks),
@@ -486,7 +482,7 @@ std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &tra
   // vector index used per flavor.
   for (auto const &trace : traces) {
     auto const &max_used = get_max_used(trace, rnd_offset);
-    results[max_used] += trace;
+    results[max_used] += trace.data;
   }
 
   // In the result we want to also accumulate everything below into the current one. There

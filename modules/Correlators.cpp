@@ -235,12 +235,13 @@ void Correlators::build_C1(OperatorsForMesons const &meson_operator,
     for (auto &corr_t : correlator[c_look.id]) {
       for (auto &diluted_trace : corr_t) {
         // TODO: Hard Coded atm - Be carefull
-        diluted_trace.data /= 5 * Lt;
+        diluted_trace.data /= Lt;
       }
     }
 
     auto group = handle.create_group(c_look.hdf5_dataset_name);
-    //write_heterogenious(group, correlator[c_look.id]);
+    std::cout << "Going to write" << std::endl;
+    write_heterogenious(group, correlator[c_look.id]);
   }
   swatch.print();
 }
