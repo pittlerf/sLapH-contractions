@@ -255,7 +255,7 @@ struct VdaggerVRandomLookup{
   VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
             const size_t id_ric_lookup, const bool need_vdaggerv_daggering) :
              id(id), id_vdaggerv(id_vdaggerv), id_ric_lookup(id_ric_lookup),
-             need_vdaggerv_daggering(need_vdaggerv_daggering), gamma({}), 
+             need_vdaggerv_daggering(need_vdaggerv_daggering), gamma({5}), 
              rnd_vec_ids({}) {};
   VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
             const bool need_vdaggerv_daggering, const std::vector<int> gamma, const std::vector<std::pair<size_t, size_t>> rnd_vec_ids) :

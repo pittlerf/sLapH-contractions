@@ -119,7 +119,7 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
 
     for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key){
       auto const &op = quarkline_indices[operator_key];
-      const size_t gamma_id = 5; //op.gamma[0];
+      const size_t gamma_id = op.gamma[0];
       Eigen::MatrixXcd vdv;
       if (op.need_vdaggerv_daggering == false)
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
@@ -159,17 +159,6 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
           }
         }
 
-//        for (size_t block_x = 0; block_x < 4; block_x++) {
-//          for (size_t block_y = 0; block_y < 4; block_y++) {
-//            for (size_t vec_y = 0; vec_y < nev; ++vec_y) {
-//              size_t blk = block_y + (vec_y + nev * t1) * 4;
-//              matrix.block(
-//                  dilE * block_y + vec_y % dilE, dilE * block_x, 1, dilE) +=
-//                  value * M.block(vec_y, dilE * block_x, 1, dilE) *
-//                  std::conj(rnd_vec(rnd_id.first, blk));
-//            }
-//          }
-//        }
         check = rnd_id.second;
         rnd_counter++;
 
