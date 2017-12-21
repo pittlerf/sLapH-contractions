@@ -1007,7 +1007,7 @@ QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= (5 * 4 * 3) * Lt; // TODO: Hard Coded atm - Be careful
+      corr /= (6 * 5 * 4) * Lt; // TODO: Hard Coded atm - Be careful
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);

@@ -153,7 +153,7 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
           const size_t gamma_index = gamma_vec[gamma_id].row[block];
           for (size_t vec_i = 0; vec_i < nev; vec_i++) {
             size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
-            matrix.block(vec_i % dilE + dilE * gamma_index, 0, 1, dilE) +=
+            matrix.block(vec_i % dilE + dilE * gamma_index, block*dilE, 1, dilE) +=
                 value * M.block(vec_i,block*dilE, 1, dilE) * 
                 std::conj(rnd_vec(rnd_id.first, blk));
           }
