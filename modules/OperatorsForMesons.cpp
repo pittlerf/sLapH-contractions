@@ -110,19 +110,6 @@ OperatorsForMesons::OperatorsForMesons
   vdaggerv.resize(boost::extents[
                              operator_lookuptable.vdaggerv_lookup.size()][Lt]);
 
-  rvdaggerv.resize(operator_lookuptable.rvdaggerv_lookuptable.size());
-  size_t counter = 0;
-  for(auto& rvdv_level1 : rvdaggerv){
-    rvdv_level1.resize(Lt);
-    size_t nb_rnd_combinations = 
-        operator_lookuptable.ricQ1_lookup[
-                           operator_lookuptable.rvdaggerv_lookuptable[counter].
-                    id_ric_lookup].rnd_vec_ids.size();
-    counter++;
-    for(auto& rvdv_level2 : rvdv_level1)
-      rvdv_level2.resize(nb_rnd_combinations);
-  }
-
   // the momenta only need to be calculated for a subset of quantum numbers
   // (see VdaggerV::build_vdaggerv)
   momentum.resize(boost::extents[
@@ -399,57 +386,6 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
   is_vdaggerv_set = true;
   
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void OperatorsForMesons::build_rvdaggerv(const RandomVector& rnd_vec) {
-
-  // check if vdaggerv is already build
-  if(not is_vdaggerv_set){
-    std::cout << "\n\n\tCaution: vdaggerv is not set and rvdaggerv cannot be" 
-              << " computed\n\n" << std::endl;
-    exit(0);
-  }
-
-  clock_t t2 = clock();
-  std::cout << "\tbuild rvdaggerv:";
-
-  for(auto& rvdv_level1 : rvdaggerv)
-    for(auto& rvdv_level2 : rvdv_level1)
-      for(auto& rvdv_level3 : rvdv_level2)
-        rvdv_level3 = Eigen::MatrixXcd::Zero(4*dilE, nb_ev);
-
-#pragma omp parallel for schedule(dynamic)
-  for(size_t t = 0; t < Lt; t++){
-
-  // rvdaggerv is calculated by multiplying vdaggerv with the same quantum
-  // numbers with random vectors from the left.
-  for(const auto& op : operator_lookuptable.rvdaggerv_lookuptable){
-
-    Eigen::MatrixXcd vdv;
-    if(op.need_vdaggerv_daggering == false)
-      vdv = vdaggerv[op.id_vdaggerv][t];
-    else
-      vdv = vdaggerv[op.id_vdaggerv][t].adjoint();
-
-    size_t rid = 0;
-    for(const auto& rnd_id : 
-              operator_lookuptable.ricQ1_lookup[op.id_ric_lookup].rnd_vec_ids){
-
-      for(size_t block = 0; block < 4; block++){
-      for(size_t vec_i = 0; vec_i < nb_ev; ++vec_i) {
-        size_t blk =  block + vec_i * 4 + 4 * nb_ev * t;
-        
-        rvdaggerv[op.id][t][rid].block(vec_i%dilE + dilE*block, 0, 1, nb_ev) += 
-             vdv.row(vec_i) * std::conj(rnd_vec(rnd_id, blk));
-      }}
-      rid++;
-    }
-  }}// time and operator loops end here
-
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\tSUCCESS - " << std::fixed 
-    << ((float) t2)/CLOCKS_PER_SEC << " seconds" << std::endl;
-}
 
 // ------------------------ INTERFACE ------------------------------------------
 // -----------------------------------------------------------------------------
@@ -481,21 +417,8 @@ void OperatorsForMesons::create_operators(const std::string& filename,
               << std::endl;
     exit(0);
   }
-  build_rvdaggerv(rnd_vec);
 }
 
-/******************************************************************************/
-/*!
- *  E.g. after building Quarkline Q1, vdaggerv is no longer needed and can be 
- *  deleted to free up space
- *
- *  Resizes rvdaggerv to 0
- */void OperatorsForMesons::free_memory_rvdaggerv(){
-  for(auto& rvdv_level1 : rvdaggerv)
-    for(auto& rvdv_level2 : rvdv_level1)
-      for(auto& rvdv_level3 : rvdv_level2)
-        rvdv_level3.resize(0, 0);
-}
 
 /******************************************************************************/
 /*!
