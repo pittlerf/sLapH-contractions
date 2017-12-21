@@ -675,63 +675,6 @@ static void build_rVdaggerVr_lookup(const std::vector<size_t>& rnd_vec_id,
 }
 
 /******************************************************************************/
-/*! For each correlator create lookuptable where to find the VdaggerV-operators
- *  and random index combinations necessary to build rVdaggerV
- *  
- *  @param[in]  rnd_vec_id        Indices of random index combinations wanted 
- *                                for rVdaggerV
- *  @param[in]  vdv_indices       Indices of QuantumNumbers  wanted for 
- *                                rVdaggerV
- *  @param[out] rvdaggervr_lookup Unique list of combinations of @em rnd_vec_id
- *                                and @em vdv_indices needed
- *  @param[out] rvdv_indices      List of indices referring to 
- *                                @em rvdaggerv_lookup. Entries correspond to
- *                                entries of @em vdv_indices
- *
- *  For detailed summary @see build_rVdaggerVr_lookup(). In contrast 
- *  @em rnd_vec_id refers to RandomIndexCombinationsQ1 and thus there is 
- *  exactly the same number of entries as for @vdv_indices
- *
- *  @todo Think about merging this and build_rVdaggerVr_lookup into one
- *        function. For n-point functions also the other one needs a vector
- *        of rnd_vec_id!
- */
-static void build_rVdaggerV_lookup(const std::vector<size_t> rnd_vec_id, 
-         const std::vector<std::vector<std::pair<size_t, bool> > >& vdv_indices,
-         std::vector<VdaggerVRandomLookup>& rvdaggerv_lookup,
-         std::vector<std::vector<size_t> >& rvdv_indices) {
-
-  for(const auto& vdv_row : vdv_indices){
-
-    std::vector<size_t> rvdv_indices_row;
-    for(size_t i = 0; i < vdv_row.size(); i++){
-      const auto& vdv = vdv_row.at(i);
-      const auto& rnd = rnd_vec_id.at(i);
-
-      auto it = std::find_if(rvdaggerv_lookup.begin(), rvdaggerv_lookup.end(),
-                           [&](VdaggerVRandomLookup vdv_qn)
-                           {
-                             auto c1 = (vdv_qn.id_ric_lookup == rnd);
-                             auto c2 = (vdv_qn.id_vdaggerv == vdv.first);
-                             auto c3 = (vdv_qn.need_vdaggerv_daggering == 
-                                        vdv.second); 
-                             return (c1 && c2 && c3);
-                           });
-
-      if(it != rvdaggerv_lookup.end()) {
-        rvdv_indices_row.emplace_back((*it).id);
-      }
-      else {
-        rvdaggerv_lookup.emplace_back(VdaggerVRandomLookup(
-                         rvdaggerv_lookup.size(), vdv.first, rnd, vdv.second));
-        rvdv_indices_row.emplace_back(rvdaggerv_lookup.back().id);
-      }
-    }
-    rvdv_indices.emplace_back(rvdv_indices_row);
-  }
-}
-
-/******************************************************************************/
 /******************************************************************************/
 /*! Create lookuptable where to find the perambulators, VdaggerV-operators
  *  and random index combinations necessary to build Q2 quarkline
@@ -1012,7 +955,7 @@ static void build_C2c_lookup(
  *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
  *                                correspondence to @em quantum_numbers
  *  @param[in]  rvdvr_indices     List of indices referring to lookup table
- *                                for rvdaggerv. 
+ *                                for rvdaggervr. 
  *  @param[in]  Q2_indices        List of indices referring to lookup table
  *                                for Q2
  *  @param[out] corr_lookup       Lookup table containing lookup tables for 
@@ -1096,7 +1039,7 @@ static void build_C4cD_lookup(
  *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
  *                                correspondence to @em quantum_numbers
  *  @param[in]  rvdvr_indices     List of indices referring to lookup table
- *                                for rvdaggerv. 
+ *                                for rvdaggervr. 
  *  @param[in]  Q2_indices        List of indices referring to lookup table
  *                                for Q2
  *  @param[out] corr_lookup       Lookup table containing lookup tables for 
@@ -1762,16 +1705,8 @@ void GlobalData::init_lookup_tables() {
     build_VdaggerV_lookup(quantum_numbers, operator_lookuptable.vdaggerv_lookup,
                                                                    vdv_indices);
     if (correlator.type == "C1") {
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[0],
                       0, true, quantum_numbers, quarks, 
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
@@ -1815,19 +1750,6 @@ void GlobalData::init_lookup_tables() {
      *      Q2 by Q1 in step 4.
      */
     else if (correlator.type == "C3+") {
-      std::vector<size_t> rnd_vec_id_uncharged;
-      rnd_vec_id_uncharged.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      // these are just dummies
-      rnd_vec_id_uncharged.emplace_back( rnd_vec_id_uncharged[0] );
-      rnd_vec_id_uncharged.emplace_back( rnd_vec_id_uncharged[0] );
-      
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id_uncharged, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
-
       std::vector<size_t> rnd_vec_id_charged;
       for( auto const &op : operator_lookuptable.ricQ2_lookup)
       rnd_vec_id_charged.emplace_back(set_rnd_vec_charged(quarks, 
@@ -1835,16 +1757,16 @@ void GlobalData::init_lookup_tables() {
                                            correlator.quark_numbers[0], false,
                                            operator_lookuptable.ricQ2_lookup));
       // these are just dummies
-      rnd_vec_id_charged.emplace_back( rnd_vec_id_uncharged[0] );
-      rnd_vec_id_charged.emplace_back( rnd_vec_id_uncharged[0] );
+      rnd_vec_id_charged.emplace_back( rnd_vec_id_charged[0] );
+      rnd_vec_id_charged.emplace_back( rnd_vec_id_charged[0] );
 
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id_charged, vdv_indices,
                               quarkline_lookuptable.Q0,
                               rvdvr_indices);
 
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[2],
                       1, false, quantum_numbers, quarks, 
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
@@ -1972,26 +1894,8 @@ void GlobalData::init_lookup_tables() {
                         rvdvr_indices, Q2_indices, correlator_lookuptable);
     }
     else if (correlator.type == "C20V") {
-      // 3. build the lookuptable for rVdaggerV and return an array of indices
-      //    corresponding to the 'quantum_numbers' computed in step 1.
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
-      // 4. build the lookuptable for Q1 and return an array of indices
-      //    corresponding to the 'quantum_numbers' computed in step 1.
-      // The size of this lookuptable needs to be known beforehand, because it
-      // is build recursevely!
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
                       0, true, quantum_numbers, quarks, 
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
@@ -2002,31 +1906,17 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
-      // 5. build the lookuptable for the correlation functions
+
       build_C20V_lookup(hdf5_dataset_name, Q1_indices, 
                        correlator_lookuptable);
     }
     else if (correlator.type == "C20") {
-      // 3. build the lookuptable for rVdaggerV and return an array of indices
-      //    corresponding to the 'quantum_numbers' computed in step 1.
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
       // 4. build the lookuptable for Q1 and return an array of indices
       //    corresponding to the 'quantum_numbers' computed in step 1.
       // The size of this lookuptable needs to be known beforehand, because it
       // is build recursevely!
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
                       0, false, quantum_numbers, quarks,  
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
@@ -2042,24 +1932,10 @@ void GlobalData::init_lookup_tables() {
                        correlator_lookuptable);
     }
     else if (correlator.type == "C30") {
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[2], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
       // The size of this lookuptable needs to be known beforehand, because it
       // is build recursevely!
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
       // should be correlator.quark_numbers[1], correlator.quark_numbers[0],
                       0, false, quantum_numbers, quarks, 
@@ -2083,27 +1959,10 @@ void GlobalData::init_lookup_tables() {
     }
     else if (correlator.type == "C40D" || correlator.type == "C40V") {
 
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[2], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[3], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
       // The size of this lookuptable needs to be known beforehand, because it
       // is build recursevely!
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
                       0, false, quantum_numbers, quarks,  
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
@@ -2132,27 +1991,10 @@ void GlobalData::init_lookup_tables() {
                           correlator_lookuptable);
     }
     else if (correlator.type == "C40C" || correlator.type == "C40B") {
-      std::vector<size_t> rnd_vec_id;
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[0], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[1], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[2], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      rnd_vec_id.emplace_back( set_rnd_vec_uncharged(quarks, 
-                                 correlator.quark_numbers[3], 
-                                 operator_lookuptable.ricQ1_lookup) );
-      std::vector<std::vector<size_t> > rvdv_indices;
-      build_rVdaggerV_lookup(rnd_vec_id, vdv_indices,
-                             operator_lookuptable.rvdaggerv_lookuptable,
-                             rvdv_indices);
       // The size of this lookuptable needs to be known beforehand, because it
       // is build recursevely!
-      std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
-                            std::vector<size_t>(rvdv_indices[0].size()));
+      std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
+                            std::vector<size_t>(quantum_numbers[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
                       0, false, quantum_numbers, quarks,  
                       operator_lookuptable.vdaggerv_lookup, vdv_indices,
