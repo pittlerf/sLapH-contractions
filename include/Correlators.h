@@ -80,7 +80,8 @@ private:
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   DilutedTraceCollection corr0; 
   /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  void build_corr0(OperatorsForMesons const &meson_operator, 
+  void build_corr0(RandomVector const &randomvectors,
+                   OperatorsForMesons const &meson_operator, 
                    Perambulator const &perambulators,
                    std::vector<CorrInfo> const &corr_lookup);
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
@@ -95,7 +96,8 @@ private:
   /*! Temporal memory for tr(Q1) */
   DilutedTraceCollection2 corr_part_trQ1;
   /*! Build 1pt loops */
-  void build_part_trQ1(OperatorsForMesons const &meson_operator,
+  void build_part_trQ1(RandomVector const &randomvectors,
+                   OperatorsForMesons const &meson_operator, 
                 Perambulator const &perambulators,
                 std::vector<CorrInfo> const &corr_lookup,
                 std::string const output_path,
@@ -130,7 +132,8 @@ private:
    *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
    *  @f}
    */
-  void build_C30(OperatorsForMesons const &meson_operator,
+  void build_C30(RandomVector const &randomvectors,
+                   OperatorsForMesons const &meson_operator, 
                   Perambulator const &perambulators,
                   std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
@@ -166,7 +169,8 @@ private:
    *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40C(OperatorsForMesons const &meson_operator,
+  void build_C40C(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator, 
                   Perambulator const &perambulators,
                   std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
@@ -179,7 +183,8 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C40B(OperatorsForMesons const &meson_operator,
+  void build_C40B(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator, 
                   Perambulator const &perambulators,
                   std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,

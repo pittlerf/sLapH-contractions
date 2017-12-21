@@ -21,11 +21,16 @@
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
  public:
-  QuarkLineBlock2(const size_t dilT,
-                  const size_t dilE,
-                  const size_t nev,
-                  const typename QuarkLineIndices<qlt>::type &quarkline_indices,
-                  const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
+
+  QuarkLineBlock2(
+    RandomVector const &random_vector,
+    Perambulator const &perambulator,
+    OperatorsForMesons const &_meson_operator,
+    size_t const dilT,
+    size_t const dilE,
+    size_t const nev,
+    typename QuarkLineIndices<qlt>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
 
   std::vector<DilutedFactor> const &operator()(const int t,
                                                const int b,
@@ -70,31 +75,12 @@ class QuarkLineBlock2 {
 
   void clear() { Ql.clear(); }
 
-  // ----------------- INTERFACE FOR BUILDING QUARKLINES -----------------------
-  // ---------------------------------------------------------------------------
-  void build_Q1_one_t(const Perambulator &peram,
-                      const OperatorsForMesons &meson_operator,
-                      const int t_source,
+  void build_Q1_one_t(const int t_source,
                       const int t_sink,
                       const typename QuarkLineIndices<qlt>::type &ql_lookup,
                       const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
 
-  void build(const Perambulator &peram,
-             const OperatorsForMesons &meson_operator,
-             const int t_source,
-             const int t_sink,
-             const typename QuarkLineIndices<qlt>::type &ql_lookup,
-             const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
-
-  void build_block_pair(Perambulator const &peram,
-                        OperatorsForMesons const &meson_operator,
-                        DilutionIterator const &block_pair,
-                        typename QuarkLineIndices<qlt>::type const &ql_lookup,
-                        std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
-  // Overload for Q0
-  void build_block_pair(RandomVector const &rnd_vec,
-                        OperatorsForMesons const &meson_operator,
-                        DilutionIterator const &block_pair,
+  void build_block_pair(DilutionIterator const &block_pair,
                         typename QuarkLineIndices<qlt>::type const &ql_lookup,
                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
 
@@ -108,6 +94,9 @@ class QuarkLineBlock2 {
     */
   std::map<std::pair<int, int>, OperatorToFactorMap<1>> Ql;
 
+  RandomVector const &rnd_vec;
+  Perambulator const &peram;
+  OperatorsForMesons const &meson_operator;
   const size_t dilT, dilE, nev;
 
   static int constexpr dilD = 4;

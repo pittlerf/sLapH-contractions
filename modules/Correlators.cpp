@@ -191,7 +191,8 @@ Correlators::Correlators(const size_t Lt,
 /*!
  *  @deprecated
  */
-void Correlators::build_part_trQ1(OperatorsForMesons const &meson_operator,
+void Correlators::build_part_trQ1(RandomVector const &randomvectors,
+                           OperatorsForMesons const &meson_operator,
                            Perambulator const &perambulators,
                            std::vector<CorrInfo> const &corr_lookup,
                            std::string const output_path,
@@ -209,15 +210,14 @@ void Correlators::build_part_trQ1(OperatorsForMesons const &meson_operator,
   {
     swatch.start();
 
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
 #pragma omp for schedule(dynamic)
     for (int t = 0; t < Lt; ++t) {
       auto const b = dilution_scheme.time_to_block(t);
 
-      quarklines.build_Q1_one_t(
-          perambulators, meson_operator, t, b, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_Q1_one_t(t, b, dil_fac_lookup.Q1, ric_lookup);
 
       for (const auto &c_look : corr_lookup) {
         corr_part_trQ1[c_look.id][t] =
@@ -293,9 +293,10 @@ void Correlators::build_C20V(std::vector<CorrInfo> const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_corr0(OperatorsForMesons const &meson_operator,
-                                    Perambulator const &perambulators,
-                                    std::vector<CorrInfo> const &corr_lookup) {
+void Correlators::build_corr0(RandomVector const &randomvectors,
+                              OperatorsForMesons const &meson_operator,
+                              Perambulator const &perambulators,
+                              std::vector<CorrInfo> const &corr_lookup) {
   if (corr_lookup.empty())
     return;
 
@@ -309,7 +310,7 @@ void Correlators::build_corr0(OperatorsForMesons const &meson_operator,
   {
     swatch.start();
 
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator,
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -319,8 +320,7 @@ void Correlators::build_corr0(OperatorsForMesons const &meson_operator,
 
       auto const block_pair = dilution_scheme[b];
 
-      quarklines.build_block_pair(
-          perambulators, meson_operator, block_pair, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
@@ -726,11 +726,11 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_C4cC(RandomVector const &randomvectors,
-                                   OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
-                                   std::vector<CorrInfo> const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
+                             OperatorsForMesons const &meson_operator,
+                             Perambulator const &perambulators,
+                             std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -1104,11 +1104,11 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_C4cB(RandomVector const &randomvectors,
-                                   OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
-                                   std::vector<CorrInfo> const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
+                             OperatorsForMesons const &meson_operator,
+                             Perambulator const &perambulators,
+                             std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -1285,11 +1285,12 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   swatch.print();
 }
 
-void Correlators::build_C30(OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
-                                   std::vector<CorrInfo> const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
+void Correlators::build_C30(RandomVector const &randomvectors,
+                            OperatorsForMesons const &meson_operator,
+                            Perambulator const &perambulators,
+                            std::vector<CorrInfo> const &corr_lookup,
+                            std::string const output_path,
+                            std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -1318,7 +1319,7 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
     // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -1327,8 +1328,7 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(perambulators, meson_operator, block_pair,
-                                  dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1372,11 +1372,12 @@ void Correlators::build_C30(OperatorsForMesons const &meson_operator,
   swatch.print();
 }
 
-void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
-                                   std::vector<CorrInfo> const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
+void Correlators::build_C40C(RandomVector const &randomvectors,
+                             OperatorsForMesons const &meson_operator,
+                             Perambulator const &perambulators,
+                             std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -1406,37 +1407,8 @@ void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
     // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
-
-      //const auto &ric0 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric1 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric2 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric3 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-      //       ric0.size() != ric3.size()){
-      //      std::cout << "rnd combinations are not the same in build_corr0"
-      //                << std::endl;
-      //      exit(0);
-      //    }
-
-      //      try {
-      //        check_random_combinations<QuarkLineType::Q2L>(
-      //            std::string("C4cB"), c_look.lookup, ric_lookup,
-      //            dil_fac_lookup.Q0, dil_fac_lookup.Q2L);
-      //      }
-      //      catch (const std::length_error& le) {
-      //        std::cerr << "Length error: " << le.what() << '\n';
-      //      }
-
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1444,8 +1416,7 @@ void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(perambulators, meson_operator, block_pair,
-                                  dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1498,11 +1469,12 @@ void Correlators::build_C40C(OperatorsForMesons const &meson_operator,
 /*!
  *  @note Not optimised.
  */
-void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
-                                   std::vector<CorrInfo> const &corr_lookup,
-                                   std::string const output_path,
-                                   std::string const output_filename) {
+void Correlators::build_C40B(RandomVector const &randomvectors,
+                             OperatorsForMesons const &meson_operator,
+                             Perambulator const &perambulators,
+                             std::vector<CorrInfo> const &corr_lookup,
+                             std::string const output_path,
+                             std::string const output_filename) {
   if (corr_lookup.empty())
     return;
 
@@ -1530,37 +1502,8 @@ void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
     // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
+    QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
         dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
-
-      //const auto &ric0 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[0]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric1 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric2 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[2]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //const auto &ric3 =
-      //    ric_lookup[dil_fac_lookup.Q1[c_look.lookup[3]].id_ric_lookup]
-      //        .rnd_vec_ids;
-      //    if(ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-      //       ric0.size() != ric3.size()){
-      //      std::cout << "rnd combinations are not the same in build_corr0"
-      //                << std::endl;
-      //      exit(0);
-      //    }
-
-      //      try {
-      //        check_random_combinations<QuarkLineType::Q2L>(
-      //            std::string("C4cB"), c_look.lookup, ric_lookup,
-      //            dil_fac_lookup.Q0, dil_fac_lookup.Q2L);
-      //      }
-      //      catch (const std::length_error& le) {
-      //        std::cerr << "Length error: " << le.what() << '\n';
-      //      }
-
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1568,8 +1511,7 @@ void Correlators::build_C40B(OperatorsForMesons const &meson_operator,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(perambulators, meson_operator, block_pair,
-                                  dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1643,7 +1585,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                  std::string const output_path,
                                  std::string const output_filename) {
 
-  build_part_trQ1(meson_operator, perambulators, corr_lookup.C1, output_path, 
+  build_part_trQ1(randomvectors, meson_operator, perambulators, corr_lookup.C1, output_path, 
                   output_filename);
   build_C20V(corr_lookup.C20V, output_path, output_filename);
 
@@ -1654,7 +1596,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_C4cV(corr_lookup, output_path, output_filename);
 
   // 2. Build all functions which need corr0 and free it afterwards.
-  build_corr0(meson_operator, perambulators, corr_lookup.corr0);
+  build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
   // in C3c, also corr0 is build, since this is much faster
 //  build_C3c(randomvectors, meson_operator, perambulators, corr_lookup.C3c, output_path,
 //            output_filename);
@@ -1667,10 +1609,10 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
              output_filename);
   build_C4cB(randomvectors, meson_operator, perambulators, corr_lookup.C4cB, output_path,
              output_filename);
-  build_C30(meson_operator, perambulators, corr_lookup.C30, output_path,
+  build_C30(randomvectors, meson_operator, perambulators, corr_lookup.C30, output_path,
             output_filename);
-  build_C40C(meson_operator, perambulators, corr_lookup.C40C, output_path,
+  build_C40C(randomvectors, meson_operator, perambulators, corr_lookup.C40C, output_path,
              output_filename);
-  build_C40B(meson_operator, perambulators, corr_lookup.C40B, output_path,
+  build_C40B(randomvectors, meson_operator, perambulators, corr_lookup.C40B, output_path,
              output_filename);
 }

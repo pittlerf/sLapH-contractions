@@ -8,20 +8,22 @@ std::complex<double> const I(0.0, 1.0);
 
 template <QuarkLineType qlt>
 QuarkLineBlock2<qlt>::QuarkLineBlock2(
-    const size_t dilT,
-    const size_t dilE,
-    const size_t nev,
-    const typename QuarkLineIndices<qlt>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup)
-    : dilT(dilT), dilE(dilE), nev(nev) {}
+    RandomVector const &random_vector,
+    Perambulator const &perambulator,
+    OperatorsForMesons const &_meson_operator,
+    size_t const dilT,
+    size_t const dilE,
+    size_t const nev,
+    typename QuarkLineIndices<qlt>::type const &quarkline_indices,
+    std::vector<RandomIndexCombinationsQ2> const &ric_lookup)
+    : peram(perambulator), rnd_vec(random_vector), 
+      meson_operator(_meson_operator), dilT(dilT), dilE(dilE), nev(nev) {}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
-    Perambulator const &peram,
-    OperatorsForMesons const &meson_operator,
     int const t1,
     int const t2_block,
     typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
@@ -43,13 +45,27 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
       auto const gamma_id = op.gamma[0];
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
+      
+      Eigen::MatrixXcd vdv;
+      if (op.need_vdaggerv_daggering == false)
+        vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
+      else
+        vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
+
+      Eigen::MatrixXcd rvdaggerv = Eigen::MatrixXcd::Zero(4*dilE, nev);
+  
+      for(size_t block = 0; block < 4; block++){
+      for(size_t vec_i = 0; vec_i < nev; ++vec_i) {
+        size_t blk =  block + vec_i * 4 + 4 * nev * t1;
+        rvdaggerv.block(vec_i%dilE + dilE*block, 0, 1, nev) += 
+             vdv.row(vec_i) * std::conj(rnd_vec(rnd_id.first, blk));
+      }}
 
       for (int row = 0; row < 4; row++) {
         for (int col = 0; col < 4; col++) {
           matrix.block(row * dilE, col * dilE, dilE, dilE) =
               gamma_vec[gamma_id].value[row] *
-              meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
-                  .block(row * dilE, 0, dilE, nev) *
+              rvdaggerv.block(row * dilE, 0, dilE, nev) *
               peram[rnd_id.second].block((t1 * 4 + gamma_vec[gamma_id].row[row]) * nev,
                                          (t2_block * 4 + col) * dilE,
                                          nev,
@@ -69,16 +85,12 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
 /*! @todo Think about better names for time indices */
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
-    Perambulator const &peram,
-    OperatorsForMesons const &meson_operator,
     DilutionIterator const &block_pair,
     typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
     std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
   for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
     std::cout << slice_pair_one_sink << std::endl;
-    build_Q1_one_t(peram,
-                   meson_operator,
-                   slice_pair_one_sink.source(),
+    build_Q1_one_t(slice_pair_one_sink.source(),
                    slice_pair_one_sink.sink_block(),
                    quarkline_indices,
                    ric_lookup);
@@ -92,9 +104,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
     // TODO However, this also means that we are doing more work then needed. We should
     // think about keeping those elements with the same source and sink block around
     // longer, because we are going to need them a bunch of times later on.
-    build_Q1_one_t(peram,
-                   meson_operator,
-                   slice_pair_one_sink.source(),
+    build_Q1_one_t(slice_pair_one_sink.source(),
                    slice_pair_one_sink.source_block(),
                    quarkline_indices,
                    ric_lookup);
