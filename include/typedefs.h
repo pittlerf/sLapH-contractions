@@ -274,23 +274,17 @@ struct QuarklineQ1Indices {
   size_t id_rvdaggerv;    
   /*! Identifies physical content and random index of peram */
   size_t id_peram;        
-  /*! Pair of random vectors: 
-   *  - First used for rvdaggerv 
-   *  - Second used for peram
+  /*! The entries of the pair correspond to the first and second random index.
+   *  Contains the first random index corresponding to @em id_q1 and @em id_q2
+   *  respectively, so that rnd_vec_id - offset is the actual random seed number
    */
-  size_t id_ric_lookup; 
+  std::pair<size_t, size_t> offset;
+  /*! The entries of the pair correspond to the first and second random index.
+   *  List of all possible combinations of random vector indices for quarks
+   *  specified by @em id_q1 and @em id_q2
+   */
+  std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
   std::vector<int> gamma; /*!< List of necessarry gamma combinations */
-  /*! Just a small constructor to ensure easy filling of its vector form */
-  QuarklineQ1Indices(const size_t id,
-                     const size_t id_rvdaggerv,
-                     const size_t id_peram,
-                     const size_t id_ric_lookup,
-                     const std::vector<int> &gamma)
-      : id(id),
-        id_rvdaggerv(id_rvdaggerv),
-        id_peram(id_peram),
-        id_ric_lookup(id_ric_lookup),
-        gamma(gamma){};
 };
 
 /******************************************************************************/

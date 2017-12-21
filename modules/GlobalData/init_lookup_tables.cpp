@@ -867,15 +867,19 @@ static void build_Q1_lookup(const size_t id_quark_used,
                            auto c1 = (q1.id_peram == id_quark_used);
                            auto c2 = (q1.gamma == qn.gamma);
                            auto c3 = (q1.id_rvdaggerv == rvdv);
-                           auto c4 = (q1.id_ric_lookup == rnd_index);
+                           auto c4 = (q1.rnd_vec_ids == ric_lookup[rnd_index].rnd_vec_ids);
                            return c1 && c2 && c3 && c4;
                          });
     if(it != Q1.end()) {
         Q1_indices[row][operator_id] = (*it).id;
     }
     else {
-      Q1.emplace_back(QuarklineQ1Indices(Q1.size(), rvdv, id_quark_used, 
-                                                         rnd_index, qn.gamma));
+      Q1.emplace_back(QuarklineQ1Indices{Q1.size(), 
+                                         rvdv, 
+                                         id_quark_used, 
+                                         ric_lookup[rnd_index].offset, 
+                                         ric_lookup[rnd_index].rnd_vec_ids, 
+                                         qn.gamma});
       Q1_indices[row][operator_id] = Q1.back().id;
     }
   }

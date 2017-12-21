@@ -35,8 +35,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
   }
 
   for (auto const &op : quarkline_indices) {
-    auto const offset = ric_lookup[op.id_ric_lookup].offset.first;
-    for (auto const &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
+    auto const offset = op.offset.first;
+    for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const rid1 = rnd_id.first - offset;
       auto const rid2 = rnd_id.second - offset;
 

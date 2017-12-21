@@ -39,63 +39,63 @@ QuarkLineBlock<qlt>::QuarkLineBlock(
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
-template <>
-void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
-    const Perambulator &peram,
-    const OperatorsForMesons &meson_operator,
-    const int t1,
-    const int t2_block,
-    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
-    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
-  Ql_id.push_front(std::make_pair(t1, t2_block));
-
-  // Effectively this is a right rotation.
-  std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
-
-  for (const auto &op : quarkline_indices) {
-    const size_t offset = ric_lookup[op.id_ric_lookup].offset.first;
-    size_t rnd_counter = 0;
-    for (const auto &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
-      const size_t rid1 = rnd_id.first - offset;
-      //! @todo: hard coded! VERY BAD!!!
-      const size_t gamma_id = op.gamma[0];
-      for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
-          Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
-              gamma[gamma_id].value[row] *
-              meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
-                  .block(row * dilE, 0, dilE, nev) *
-              peram[rnd_id.second].block((t1 * 4 + gamma[gamma_id].row[row]) * nev,
-                                         (t2_block * 4 + col) * dilE,
-                                         nev,
-                                         dilE);
-        }
-      }
-      rnd_counter++;
-    }
-  }
-
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-/*! @todo Think about better names for time indices */
-template <>
-void QuarkLineBlock<QuarkLineType::Q1>::build_block_pair(
-    Perambulator const &peram,
-    OperatorsForMesons const &meson_operator,
-    DilutionIterator const &block_pair,
-    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
-  for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
-    build_Q1_one_t(peram,
-                   meson_operator,
-                   slice_pair_one_sink.source(),
-                   block_pair.sink(),
-                   quarkline_indices,
-                   ric_lookup);
-  }
-}
+//template <>
+//void QuarkLineBlock<QuarkLineType::Q1>::build_Q1_one_t(
+//    const Perambulator &peram,
+//    const OperatorsForMesons &meson_operator,
+//    const int t1,
+//    const int t2_block,
+//    const typename QuarkLineIndices<QuarkLineType::Q1>::type &quarkline_indices,
+//    const std::vector<RandomIndexCombinationsQ2> &ric_lookup) {
+//  Ql_id.push_front(std::make_pair(t1, t2_block));
+//
+//  // Effectively this is a right rotation.
+//  std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+//
+//  for (const auto &op : quarkline_indices) {
+//    const size_t offset = ric_lookup[op.id_ric_lookup].offset.first;
+//    size_t rnd_counter = 0;
+//    for (const auto &rnd_id : ric_lookup[op.id_ric_lookup].rnd_vec_ids) {
+//      const size_t rid1 = rnd_id.first - offset;
+//      //! @todo: hard coded! VERY BAD!!!
+//      const size_t gamma_id = op.gamma[0];
+//      for (int row = 0; row < 4; row++) {
+//        for (int col = 0; col < 4; col++) {
+//          Ql[0][op.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) =
+//              gamma[gamma_id].value[row] *
+//              meson_operator.return_rvdaggerv(op.id_rvdaggerv, t1, rid1)
+//                  .block(row * dilE, 0, dilE, nev) *
+//              peram[rnd_id.second].block((t1 * 4 + gamma[gamma_id].row[row]) * nev,
+//                                         (t2_block * 4 + col) * dilE,
+//                                         nev,
+//                                         dilE);
+//        }
+//      }
+//      rnd_counter++;
+//    }
+//  }
+//
+//}
+//
+//// -----------------------------------------------------------------------------
+//// -----------------------------------------------------------------------------
+///*! @todo Think about better names for time indices */
+//template <>
+//void QuarkLineBlock<QuarkLineType::Q1>::build_block_pair(
+//    Perambulator const &peram,
+//    OperatorsForMesons const &meson_operator,
+//    DilutionIterator const &block_pair,
+//    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
+//    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+//  for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
+//    build_Q1_one_t(peram,
+//                   meson_operator,
+//                   slice_pair_one_sink.source(),
+//                   block_pair.sink(),
+//                   quarkline_indices,
+//                   ric_lookup);
+//  }
+//}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -299,7 +299,7 @@ void QuarkLineBlock<QuarkLineType::Q2L>::build_block_pair(
 }
 
 template class QuarkLineBlock<QuarkLineType::Q0>;
-template class QuarkLineBlock<QuarkLineType::Q1>;
+//template class QuarkLineBlock<QuarkLineType::Q1>;
 template class QuarkLineBlock<QuarkLineType::Q2L>;
 template class QuarkLineBlock<QuarkLineType::Q2V>;
 
