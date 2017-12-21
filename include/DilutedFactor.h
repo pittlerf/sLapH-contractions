@@ -17,6 +17,7 @@
 #include "OperatorsForMesons.h"
 #include "QuarkLineBlock.h"
 #include "typedefs.h"
+#include "global_data.h"
 
 template <size_t rvecs1, size_t rvecs2>
 bool has_intersection(SmallVectorRndId<rvecs1> const &left,
@@ -426,8 +427,6 @@ compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
   return result;
 }
 
-// Next feature, has to wait.
-#if 0
 int constexpr max_flavor = 8;
 using UpTo = boost::container::static_vector<RndId, max_flavor>;
 
@@ -458,12 +457,11 @@ UpTo get_max_used(DilutedFactor<rvecs> const &df, UpTo const &rnd_offset) {
   return result;
 }
 
-template <typename T>
-T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor> const &,
-                                   std::vector<DilutedFactor> const &)> func,
-                   std::vector<DilutedFactor> const &left_vec,
-                   std::vector<DilutedFactor> const &right_vec) {
-
+template <typename T, size_t rvecs1, size_t rvecs2>
+T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor<rvecs1>> const &,
+                                   std::vector<DilutedFactor<rvecs2>> const &)> func,
+                   std::vector<DilutedFactor<rvecs1>> const &left_vec,
+                   std::vector<DilutedFactor<rvecs2>> const &right_vec) {
   // Extract the number of random vectors per quark flavor.
   auto const &quarks = GlobalData::Instance()->quarks();
   UpTo rnd_count;
@@ -491,20 +489,20 @@ T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor> const &,
     // We only want to take those diluted factors that make use of the highest allowed
     // random vector index for each flavor, but nothing more and nothing less. This avoids
     // repeated use of the same `DilutedFactor`.
-    std::vector<DilutedFactor> left_filtered;
+    std::vector<DilutedFactor<rvecs1>> left_filtered;
     std::copy_if(std::begin(left_vec),
                  std::end(left_vec),
                  std::back_inserter(left_filtered),
-                 [&rnd_offset, &upto](DilutedFactor const &df) {
+                 [&rnd_offset, &upto](DilutedFactor<rvecs1> const &df) {
                    return get_max_used(df, rnd_offset) == upto;
                  });
 
     // Same for the right.
-    std::vector<DilutedFactor> right_filtered;
+    std::vector<DilutedFactor<rvecs2>> right_filtered;
     std::copy_if(std::begin(right_vec),
                  std::end(right_vec),
                  std::back_inserter(right_filtered),
-                 [&rnd_offset, &upto](DilutedFactor const &df) {
+                 [&rnd_offset, &upto](DilutedFactor<rvecs2> const &df) {
                    return get_max_used(df, rnd_offset) == upto;
                  });
 
@@ -524,4 +522,3 @@ T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor> const &,
 
   return results;
 }
-#endif

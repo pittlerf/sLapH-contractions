@@ -6,8 +6,6 @@
 #include <string>
 #include <utility>
 
-#include "global_data.h"
-
 namespace {
 
 /*! M1xM2 for 4pt functions */
