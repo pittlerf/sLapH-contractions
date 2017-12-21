@@ -776,29 +776,22 @@ static void build_Q2_lookup(const size_t id_quark1, const size_t id_quark2,
     const auto qn = quantum_numbers[row][operator_id];
     const auto vdv = vdv_indices[row][operator_id];
 
+    // Find out which index of ric_lookup contains the desired quantum 
+    // numbers and use that for Q2V
+    size_t rnd_index = set_rnd_vec_charged(quarks, id_quark1, id_quark2, 
+                                           false, ric_lookup);
     // If Q2V already contains the particular row and physical content, just 
     // set the index to the existing QuarklineQ2Indicies, otherwise generate
     // it and set the index to the new one.
-    auto it = std::find_if(Q2V.begin(), Q2V.end(),
-                         [&](QuarklineQ2Indices q2)
-                         {
-                           auto c1 = (q2.id_peram1 == id_quark1);
-                           auto c2 = (q2.id_peram2 == id_quark2);
-                           auto c3 = (q2.gamma == qn.gamma);
-                           auto c4 = (q2.need_vdaggerv_dag == vdv.second);
-                           auto c5 = (q2.id_vdaggerv == vdv.first);
-                           return c1 && c2 && c3 && c4 && c5;
-                         });
+    QuarklineQ2Indices const candidate{Q2V.size(), vdv.first, id_quark1, id_quark2, 
+          rnd_index, vdv.second, qn.gamma};
+    auto it = std::find(Q2V.begin(), Q2V.end(), candidate);
+
     if(it != Q2V.end()) {
       Q2_indices[row][operator_id] = (*it).id;
     }
     else {
-      // Find out which index of ric_lookup contains the desired quantum 
-      // numbers and use that for Q2V
-      size_t rnd_index = set_rnd_vec_charged(quarks, id_quark1, id_quark2, 
-                                             false, ric_lookup);
-      Q2V.emplace_back(QuarklineQ2Indices(Q2V.size(), vdv.first, id_quark1, 
-                                   id_quark2, rnd_index, vdv.second, qn.gamma));
+      Q2V.emplace_back(candidate);
       Q2_indices[row][operator_id] = Q2V.back().id;
     }
   }

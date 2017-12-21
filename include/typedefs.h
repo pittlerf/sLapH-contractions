@@ -326,15 +326,21 @@ struct QuarklineQ2Indices {
   bool need_vdaggerv_dag;
   std::vector<int> gamma; /*!< List of necessarry gamma combinations */
 
-  /*! Just a small constructor to ensure easy filling of its vector form */
-  QuarklineQ2Indices(const size_t id, const size_t id_vdaggerv, 
-                     const size_t id_peram1, const size_t id_peram2, 
-                     const size_t id_ric_lookup, const bool need_vdaggerv_dag,
-                     const std::vector<int>& gamma) :
-                   id(id), id_vdaggerv(id_vdaggerv), id_peram1(id_peram1),
-                   id_peram2(id_peram2), id_ric_lookup(id_ric_lookup), 
-                   need_vdaggerv_dag(need_vdaggerv_dag), gamma(gamma) {};
 };
+
+inline bool operator==(
+    QuarklineQ2Indices const &first, 
+    QuarklineQ2Indices const second){
+
+  if((first.id_peram1 == second.id_peram1) &&
+     (first.id_peram2 == second.id_peram2) &&
+     (first.gamma == second.gamma) &&
+     (first.need_vdaggerv_dag == second.need_vdaggerv_dag) &&
+     (first.id_vdaggerv == second.id_vdaggerv))
+    return true;
+  else
+    return false;
+}
 
 /******************************************************************************/
 /*! Maps index from CorrelatorLookup to QuarklineQ1Indicies or 
