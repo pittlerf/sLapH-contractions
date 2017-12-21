@@ -250,17 +250,8 @@ struct OperatorLookup{
    */
   std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup;
 
-  /*! Specifies the random vector index in case of rvdaggerv */
-  std::vector<RandomIndexCombinationsQ1> ricQ1_lookup;
   /*! Specifies the random vector indices in case of rvdaggervr */
   std::vector<RandomIndexCombinationsQ2> ricQ2_lookup;
-
-  /*! @{ 
-   *  Specifies which entries of @em vdaggerv_lookup and @em ric_lookup shall
-   *  be combined
-   */
-  std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  
-  /*! @} */
 
   /*! For @f$ \vec{p} = 0 @f$, @f$ V^\dagger exp(ipx) V = \mathbb{1} @f$. If 
    *  applicable This contains the index of @em vdaggerv_lookup where it can 
