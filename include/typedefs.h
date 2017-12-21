@@ -282,6 +282,7 @@ struct OperatorLookup{
  */
 struct QuarklineQ1Indices {
   size_t id;
+  size_t id_rvdaggerv;           
   /*! Identifies physical content and random index of rvdaggerv */
   size_t id_vdaggerv;           
   /*! Flag that indicates whether VdaggerV must be daggered (prior to 

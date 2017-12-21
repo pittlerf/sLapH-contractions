@@ -843,6 +843,7 @@ static void build_Q1_lookup(const size_t id_quark_used,
          const bool C1,
          const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
          const std::vector<quark>& quarks,
+         std::vector<VdaggerVRandomLookup> const &rvdv_lookup,
          const std::vector<std::vector<size_t> >& rvdv_indices,
          std::vector<RandomIndexCombinationsQ2>& ric_lookup,
          std::vector<QuarklineQ1Indices>& Q1,
@@ -850,7 +851,7 @@ static void build_Q1_lookup(const size_t id_quark_used,
 
   for(size_t row = 0; row < quantum_numbers.size(); row++){
     const auto qn = quantum_numbers[row][operator_id];
-    const auto rvdv = rvdv_indices[row][operator_id];
+    const auto rvdv_id = rvdv_indices[row][operator_id];
     // Find out which index of ric_lookup contains the desired quantum 
     // numbers and use that for Q2V. Bug with order?
     const size_t rnd_index = set_rnd_vec_charged(quarks, id_quark_used,
@@ -866,16 +867,19 @@ static void build_Q1_lookup(const size_t id_quark_used,
                          {
                            auto c1 = (q1.id_peram == id_quark_used);
                            auto c2 = (q1.gamma == qn.gamma);
-                           auto c3 = (q1.id_rvdaggerv == rvdv);
-                           auto c4 = (q1.rnd_vec_ids == ric_lookup[rnd_index].rnd_vec_ids);
-                           return c1 && c2 && c3 && c4;
+                           auto c3 = (q1.id_vdaggerv == rvdv_lookup[rvdv_id].id_vdaggerv);
+                           auto c4 = (q1.need_vdaggerv_daggering == rvdv_lookup[rvdv_id].need_vdaggerv_daggering);
+                           auto c5 = (q1.rnd_vec_ids == ric_lookup[rnd_index].rnd_vec_ids);
+                           return c1 && c2 && c3 && c4 && c5;
                          });
     if(it != Q1.end()) {
         Q1_indices[row][operator_id] = (*it).id;
     }
     else {
       Q1.emplace_back(QuarklineQ1Indices{Q1.size(), 
-                                         rvdv, 
+                           rvdv_id,
+                           rvdv_lookup[rvdv_id].id_vdaggerv,
+                           rvdv_lookup[rvdv_id].need_vdaggerv_daggering,
                                          id_quark_used, 
                                          ric_lookup[rnd_index].offset, 
                                          ric_lookup[rnd_index].rnd_vec_ids, 
@@ -1778,7 +1782,8 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[0],
-                      0, true, quantum_numbers, quarks, rvdv_indices, 
+                      0, true, quantum_numbers, quarks, 
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_C1_lookup(quantum_numbers, hdf5_dataset_name,
@@ -1850,7 +1855,8 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[2],
-                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      1, false, quantum_numbers, quarks, 
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
 
@@ -1996,11 +2002,13 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-                      0, true, quantum_numbers, quarks, rvdv_indices, 
+                      0, true, quantum_numbers, quarks, 
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[0],
-                      1, true, quantum_numbers, quarks, rvdv_indices, 
+                      1, true, quantum_numbers, quarks,
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
@@ -2029,11 +2037,13 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      0, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[0],
-                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      1, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       // 5. build the lookuptable for the correlation functions
@@ -2061,17 +2071,20 @@ void GlobalData::init_lookup_tables() {
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
       // should be correlator.quark_numbers[1], correlator.quark_numbers[0],
-                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      0, false, quantum_numbers, quarks, 
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[2],
       // should be correlator.quark_numbers[2], correlator.quark_numbers[1],
-                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      1, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[2], correlator.quark_numbers[0],
       // should be correlator.quark_numbers[0], correlator.quark_numbers[2],
-                      2, false, quantum_numbers, quarks, rvdv_indices, 
+                      2, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_C30_lookup(hdf5_dataset_name, Q1_indices, 
@@ -2101,19 +2114,23 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      0, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[0],
-                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      1, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
-                      2, false, quantum_numbers, quarks, rvdv_indices, 
+                      2, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[3], correlator.quark_numbers[2],
-                      3, false, quantum_numbers, quarks, rvdv_indices, 
+                      3, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       if (correlator.type == "C40D")
@@ -2146,19 +2163,23 @@ void GlobalData::init_lookup_tables() {
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
                             std::vector<size_t>(rvdv_indices[0].size()));
       build_Q1_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-                      0, false, quantum_numbers, quarks, rvdv_indices, 
+                      0, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[1], correlator.quark_numbers[2],
-                      1, false, quantum_numbers, quarks, rvdv_indices, 
+                      1, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
-                      2, false, quantum_numbers, quarks, rvdv_indices, 
+                      2, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       build_Q1_lookup(correlator.quark_numbers[3], correlator.quark_numbers[0],
-                      3, false, quantum_numbers, quarks, rvdv_indices, 
+                      3, false, quantum_numbers, quarks,  
+                      operator_lookuptable.rvdaggerv_lookuptable, rvdv_indices,
                       operator_lookuptable.ricQ2_lookup,
                       quarkline_lookuptable.Q1, Q1_indices);
       if (correlator.type == "C40C")
