@@ -1804,7 +1804,7 @@ void GlobalData::init_lookup_tables() {
                                             operator_lookuptable.ricQ2_lookup));
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
       /*! 4. Build the lookuptable for Q2 and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
@@ -1849,7 +1849,7 @@ void GlobalData::init_lookup_tables() {
 
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id_charged, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
 
       std::vector<std::vector<size_t> > Q1_indices(rvdv_indices.size(),
@@ -1884,7 +1884,7 @@ void GlobalData::init_lookup_tables() {
                                             operator_lookuptable.ricQ2_lookup));
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
       std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
                                   std::vector<size_t>(rvdvr_indices[0].size()));
@@ -1911,7 +1911,7 @@ void GlobalData::init_lookup_tables() {
                                             operator_lookuptable.ricQ2_lookup));
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
       std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
                                   std::vector<size_t>(rvdvr_indices[0].size()));
@@ -1938,7 +1938,7 @@ void GlobalData::init_lookup_tables() {
                                             operator_lookuptable.ricQ2_lookup));
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
       std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
                                   std::vector<size_t>(rvdvr_indices[0].size()));
@@ -1965,7 +1965,7 @@ void GlobalData::init_lookup_tables() {
                                             operator_lookuptable.ricQ2_lookup));
       std::vector<std::vector<size_t> > rvdvr_indices;
       build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-                              operator_lookuptable.rvdaggervr_lookuptable,
+                              quarkline_lookuptable.Q0,
                               rvdvr_indices);
       std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
                                   std::vector<size_t>(rvdvr_indices[0].size()));

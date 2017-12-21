@@ -260,7 +260,6 @@ struct OperatorLookup{
    *  be combined
    */
   std::vector<VdaggerVRandomLookup> rvdaggerv_lookuptable;  
-  std::vector<VdaggerVRandomLookup> rvdaggervr_lookuptable;  
   /*! @} */
 
   /*! For @f$ \vec{p} = 0 @f$, @f$ V^\dagger exp(ipx) V = \mathbb{1} @f$. If 
@@ -272,6 +271,7 @@ struct OperatorLookup{
 
 };
 
+using QuarklineQ0Indices = VdaggerVRandomLookup;  
 /******************************************************************************/
 /*! Indices needed to uniquely identify Q1 objects
  *
@@ -362,6 +362,7 @@ inline bool operator==(
  *              are built on the fly
  */
 struct QuarklineLookup{
+  std::vector<QuarklineQ0Indices> Q0;
   std::vector<QuarklineQ1Indices> Q1;
   std::vector<QuarklineQ2Indices> Q2V;
   std::vector<QuarklineQ2Indices> Q2L;

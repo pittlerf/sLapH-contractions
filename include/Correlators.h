@@ -27,17 +27,10 @@
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup{
-  DilutedFactorLookup(std::vector<VdaggerVRandomLookup> const &_rvdaggervr_lookup,
-                      std::vector<QuarklineQ1Indices> const &_Q1,
-                      std::vector<QuarklineQ2Indices> const &_Q2V,
-                      std::vector<QuarklineQ2Indices> const &_Q2L)
-    : Q0(_rvdaggervr_lookup), Q1(_Q1), Q2V(_Q2V), Q2L(_Q2L) {}
-
   std::vector<VdaggerVRandomLookup> const Q0;  
   std::vector<QuarklineQ1Indices> const Q1;
   std::vector<QuarklineQ2Indices> const Q2V;
   std::vector<QuarklineQ2Indices> const Q2L;
-
 };
 
 /******************************************************************************/
