@@ -431,7 +431,7 @@ int constexpr max_flavor = 8;
 using UpTo = boost::container::static_vector<RndId, max_flavor>;
 
 template <size_t rvecs>
-UpTo get_max_used(DilutedFactor<rvecs> const &df, UpTo const &rnd_offset) {
+UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
   SmallVectorRndId<rvecs + 2> used = df.used_rnd_ids;
   merge_push_back(used, df.ric.first);
   merge_push_back(used, df.ric.second);
@@ -457,11 +457,8 @@ UpTo get_max_used(DilutedFactor<rvecs> const &df, UpTo const &rnd_offset) {
   return result;
 }
 
-template <typename T, size_t rvecs1, size_t rvecs2>
-T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor<rvecs1>> const &,
-                                   std::vector<DilutedFactor<rvecs2>> const &)> func,
-                   std::vector<DilutedFactor<rvecs1>> const &left_vec,
-                   std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+template <size_t rvecs>
+std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
   // Extract the number of random vectors per quark flavor.
   auto const &quarks = GlobalData::Instance()->quarks();
   UpTo rnd_count;
@@ -477,7 +474,7 @@ T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor<rvecs1>> const &,
   std::partial_sum(
       std::begin(rnd_count), std::end(rnd_count), std::back_inserter(rnd_offset));
 
-  std::map<UpTo, T> results;
+  std::map<UpTo, cmplx> results;
 
   // We start with the case where in every flavor we only use 1 random vector.
   UpTo upto(quarks.size(), 1);
@@ -486,37 +483,12 @@ T by_rnd_vec_count(std::function<T(std::vector<DilutedFactor<rvecs1>> const &,
   UpTo upto_max = rnd_count;
 
   while (upto != upto_max) {
-    // We only want to take those diluted factors that make use of the highest allowed
-    // random vector index for each flavor, but nothing more and nothing less. This avoids
-    // repeated use of the same `DilutedFactor`.
-    std::vector<DilutedFactor<rvecs1>> left_filtered;
-    std::copy_if(std::begin(left_vec),
-                 std::end(left_vec),
-                 std::back_inserter(left_filtered),
-                 [&rnd_offset, &upto](DilutedFactor<rvecs1> const &df) {
-                   return get_max_used(df, rnd_offset) == upto;
-                 });
-
-    // Same for the right.
-    std::vector<DilutedFactor<rvecs2>> right_filtered;
-    std::copy_if(std::begin(right_vec),
-                 std::end(right_vec),
-                 std::back_inserter(right_filtered),
-                 [&rnd_offset, &upto](DilutedFactor<rvecs2> const &df) {
-                   return get_max_used(df, rnd_offset) == upto;
-                 });
-
-    // Now we apply the function to the limited set.
-    results[upto] = func(left_filtered, right_filtered);
-
-    // Iterate to the next element. Do this by increasing the lowest digit. If that
-    // overflows, reset it and increase the next digit by one.
-    ++upto[0];
-    for (int i = 1; i < upto.size(); ++i) {
-      if (upto[i - 1] == rnd_count[i - 1] + 1) {
-        upto[i - 1] = 1;
-        ++upto[i];
-      }
+    // We only want to take those DilutedTrace that make use of the highest allowed random
+    // vector index for each flavor, but nothing more and nothing less. This avoids
+    // repeated use of the same DilutedTrace.
+    for (auto const &trace : traces) {
+      auto const &max_used = get_max_used(trace, rnd_offset);
+      results[max_used] += trace;
     }
   }
 
