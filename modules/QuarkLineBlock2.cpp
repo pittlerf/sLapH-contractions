@@ -34,7 +34,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     return;
   }
 
-  for (auto const &op : quarkline_indices) {
+  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key){
+    auto const &op = quarkline_indices[operator_key];
     for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const gamma_id = op.gamma[0];
       Eigen::MatrixXcd matrix =
@@ -66,7 +67,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-      Ql[time_key][{op.id}].push_back({matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
+      Ql[time_key][{operator_key}].push_back({matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
 }

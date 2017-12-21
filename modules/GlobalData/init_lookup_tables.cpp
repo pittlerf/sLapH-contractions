@@ -862,25 +862,18 @@ static void build_Q1_lookup(const size_t id_quark_used,
     // If Q2V already contains the particular row and physical content, just 
     // set the index to the existing QuarklineQ2Indicies, otherwise generate
     // it and set the index to the new one.
-    auto it = std::find_if(Q1.begin(), Q1.end(),
-                         [&](QuarklineQ1Indices q1)
-                         {
-                           auto c3 = (q1.id_vdaggerv == rvdv_lookup[rvdv_id].id_vdaggerv);
-                           auto c4 = (q1.need_vdaggerv_daggering == rvdv_lookup[rvdv_id].need_vdaggerv_daggering);
-                           auto c5 = (q1.rnd_vec_ids == ric_lookup[rnd_index].rnd_vec_ids);
-                           auto c2 = (q1.gamma == qn.gamma);
-                           return c2 && c3 && c4 && c5;
-                         });
+    QuarklineQ1Indices const candidate{rvdv_lookup[rvdv_id].id_vdaggerv,
+                                       rvdv_lookup[rvdv_id].need_vdaggerv_daggering,
+                                       qn.gamma,
+                                       ric_lookup[rnd_index].rnd_vec_ids};
+    auto it = std::find(Q1.begin(), Q1.end(), candidate);
+
     if(it != Q1.end()) {
-        Q1_indices[row][operator_id] = (*it).id;
+        Q1_indices[row][operator_id] = it - Q1.begin();
     }
     else {
-      Q1.emplace_back(QuarklineQ1Indices{Q1.size(), 
-                           rvdv_lookup[rvdv_id].id_vdaggerv,
-                           rvdv_lookup[rvdv_id].need_vdaggerv_daggering,
-                           ric_lookup[rnd_index].rnd_vec_ids, 
-                           qn.gamma});
-      Q1_indices[row][operator_id] = Q1.back().id;
+      Q1_indices[row][operator_id] = Q1.size();
+      Q1.emplace_back(candidate);
     }
   }
 }

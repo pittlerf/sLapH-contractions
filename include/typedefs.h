@@ -281,21 +281,36 @@ using QuarklineQ0Indices = VdaggerVRandomLookup;
  *    Q1 = rvdaggerv * gamma * peram
  */
 struct QuarklineQ1Indices {
-  size_t id;
-  /*! Identifies physical content and random index of rvdaggerv */
-  size_t id_vdaggerv;           
+
+  /*! Identifies physical content of @f$ V^dagger V @f$ */
+  size_t id_vdaggerv;     
   /*! Flag that indicates whether VdaggerV must be daggered (prior to 
    *  multiplication with random vectors) to get the correct quantum numbers
    */
   bool need_vdaggerv_daggering;
+
+  /*! List of necessarry gamma combinations */       
+  std::vector<int> gamma;
 
   /*! The entries of the pair correspond to the first and second random index.
    *  List of all possible combinations of random vector indices for quarks
    *  specified by @em id_q1 and @em id_q2
    */
   std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
-  std::vector<int> gamma; /*!< List of necessarry gamma combinations */
 };
+
+inline bool operator==(
+    QuarklineQ1Indices const &first, 
+    QuarklineQ1Indices const second){
+
+  if((first.id_vdaggerv == second.id_vdaggerv) &&
+     (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
+     (first.gamma == second.gamma) &&
+     (first.rnd_vec_ids == second.rnd_vec_ids))
+    return true;
+  else
+    return false;
+}
 
 /******************************************************************************/
 /*! Indices needed to uniquely identify Q2 objects
