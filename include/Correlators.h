@@ -78,7 +78,7 @@ private:
   std::vector<RandomIndexCombinationsQ2> const ric_lookup;
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  DilutedTraceCollection corr0; 
+  DilutedTraceCollection<2> corr0; 
   /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   void build_corr0(OperatorsForMesons const &meson_operator, 
                    Perambulator const &perambulators,

@@ -24,26 +24,27 @@
 int constexpr max_rnd_ids = 10;
 
 using RndId = int8_t;
-//using SmallVectorRndId = SmallVector<RndId, max_rnd_ids>;
-using SmallVectorRndId = boost::container::static_vector<RndId, max_rnd_ids>;
 
-/*! @{ Abbreviation for complex data types */
 typedef std::complex<double> cmplx;
-/*! @} */
 
+template <size_t rvecs>
+using SmallVectorRndId = boost::container::static_vector<RndId, rvecs>;
+
+template <size_t rvecs>
 struct DilutedFactor {
   using Data = Eigen::MatrixXcd;
 
   Data data;
   std::pair<RndId, RndId> ric;
-  SmallVectorRndId used_rnd_ids;
+  boost::container::static_vector<RndId, rvecs> used_rnd_ids;
 };
 
+template <size_t rvecs>
 struct DilutedTrace {
   using Data = cmplx;
 
   Data data;
-  SmallVectorRndId used_rnd_ids;
+  boost::container::static_vector<RndId, rvecs> used_rnd_ids;
 };
 
 /*! Data type for momentum */
@@ -59,8 +60,14 @@ typedef boost::multi_array<cmplx, 10> array_cd_d10;
 
 /*! Special type for Correlators */
 typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
-typedef boost::multi_array<std::vector<DilutedTrace>, 3> DilutedTraceCollection;
-typedef boost::multi_array<std::vector<DilutedTrace>, 2> DilutedTraceCollection2;
+
+// TODO (Martin Ueding 2017-12-21): Rename this to DilutedTraceCollection3.
+template <size_t rvecs>
+using DilutedTraceCollection = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3>;
+
+template <size_t rvecs>
+using DilutedTraceCollection2 = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2>;
+
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
