@@ -222,6 +222,18 @@ struct VdaggerVRandomLookup{
              need_vdaggerv_daggering(need_vdaggerv_daggering) {};
 };
 
+inline bool operator==(
+    VdaggerVRandomLookup const &first, 
+    VdaggerVRandomLookup const second){
+
+  if((first.id_ric_lookup == second.id_ric_lookup) &&
+     (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
+     (first.id_vdaggerv == second.id_vdaggerv))
+    return true;
+  else
+    return false;
+}
+
 /******************************************************************************/
 /*! Struct that contains all information for a sLapH operator 
  *
@@ -271,7 +283,12 @@ struct OperatorLookup{
 struct QuarklineQ1Indices {
   size_t id;
   /*! Identifies physical content and random index of rvdaggerv */
-  size_t id_rvdaggerv;    
+  size_t id_vdaggerv;           
+  /*! Flag that indicates whether VdaggerV must be daggered (prior to 
+   *  multiplication with random vectors) to get the correct quantum numbers
+   */
+  bool need_vdaggerv_daggering;
+
   /*! Identifies physical content and random index of peram */
   size_t id_peram;        
   /*! The entries of the pair correspond to the first and second random index.
