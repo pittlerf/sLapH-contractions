@@ -482,14 +482,47 @@ std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &tra
   // We want to go until we have used all available random vectors.
   UpTo upto_max = rnd_count;
 
-  while (upto != upto_max) {
-    // We only want to take those DilutedTrace that make use of the highest allowed random
-    // vector index for each flavor, but nothing more and nothing less. This avoids
-    // repeated use of the same DilutedTrace.
-    for (auto const &trace : traces) {
-      auto const &max_used = get_max_used(trace, rnd_offset);
-      results[max_used] += trace;
+  // Accumulate the individual contributions into a bucket labeled with the highest random
+  // vector index used per flavor.
+  for (auto const &trace : traces) {
+    auto const &max_used = get_max_used(trace, rnd_offset);
+    results[max_used] += trace;
+  }
+
+  // In the result we want to also accumulate everything below into the current one. There
+  // might be an efficient n-dimensional scan algorithm, but this will very likely not be
+  // the performance critical part, therefore we just implement it in an easy way with a
+  // deep copy.
+  auto const parts = results;
+
+  for (auto &result : results) {
+    int summands = 0;
+    for (auto const &part : parts) {
+      // We must skip the element itself, otherwise it would be accumulated onto itself.
+      if (result.first == part.first) {
+        continue;
+      }
+
+      // Take the difference in the maximum random vector index for each flavor.
+      auto diff = result.first;
+      for (int i = 0; i < diff.size(); ++i) {
+        diff[i] -= part.first[i];
+      }
+
+      // Are none the differences positive? This means that all random vector indices used
+      // are smaller or equal and therefore this contributed. The case where all
+      // differences are zero is excluded already at this point.
+      bool const none_positive =
+          std::none_of(std::begin(diff), std::end(diff), [](RndId d) { return d > 0; });
+      // If so, accumulate this onto the result.
+      if (none_positive) {
+        result.second += part.second;
+        ++summands;
+      }
     }
+
+    // Normalize.
+    result.second /= summands;
   }
 
   return results;
