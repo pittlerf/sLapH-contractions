@@ -1790,13 +1790,6 @@ void GlobalData::init_lookup_tables() {
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2L, Q2_indices);
 
-//      std::vector<std::vector<size_t> > Q2_indices(quantum_numbers.size(),
-//                                 std::vector<size_t>(quantum_numbers[0].size()));
-//      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[0],
-//                      0, quantum_numbers, quarks, vdv_indices, 
-//                      operator_lookuptable.ricQ2_lookup,
-//                      quarkline_lookuptable.Q2L, Q2_indices);
-
       build_C3c_lookup(quantum_numbers, hdf5_dataset_name, 
                        Q0_indices, Q1_indices, Q2_indices, 
                        correlator_lookuptable);
