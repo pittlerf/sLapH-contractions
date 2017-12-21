@@ -194,47 +194,6 @@ struct RandomIndexCombinationsQ1{
 };  
 
 /******************************************************************************/
-/*! Struct that holds all information on which VdaggerV must be diluted with 
- *  which random vector.
- *
- *  For rVdaggerV and rVdaggerVr the VdaggerV-operators are additionaly 
- *  multiplied with random vectors. For both, VdaggerV and random index
- *  combinations there are lookuptables in OperatorLookup. This struct contains
- *  the id's of vdaggerv and ric which belong together.
- */
-struct VdaggerVRandomLookup{
-  size_t id;
-  /*! id of vdaggerv_lookup in OperatorLookup */
-  size_t id_vdaggerv;           
-  /*! id of ricQ1_lookup for rvdaggerv or ricQ2_lookup for rvdaggervr in 
-   *  OperatorLookup 
-   */
-  size_t id_ric_lookup;
-  /*! Flag that indicates whether VdaggerV must be daggered (prior to 
-   *  multiplication with random vectors) to get the correct quantum numbers
-   */
-  bool need_vdaggerv_daggering;
-
-  /*! Just a small constructor to ensure easy filling of its vector form */
-  VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
-            const size_t id_ric_lookup, const bool need_vdaggerv_daggering) :
-             id(id), id_vdaggerv(id_vdaggerv), id_ric_lookup(id_ric_lookup),
-             need_vdaggerv_daggering(need_vdaggerv_daggering) {};
-};
-
-inline bool operator==(
-    VdaggerVRandomLookup const &first, 
-    VdaggerVRandomLookup const second){
-
-  if((first.id_ric_lookup == second.id_ric_lookup) &&
-     (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
-     (first.id_vdaggerv == second.id_vdaggerv))
-    return true;
-  else
-    return false;
-}
-
-/******************************************************************************/
 /*! Struct that contains all information for a sLapH operator 
  *
  *  @todo confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable
@@ -261,6 +220,61 @@ struct OperatorLookup{
   int index_of_unity;
 
 };
+
+/******************************************************************************/
+/*! Struct that holds all information on which VdaggerV must be diluted with 
+ *  which random vector.
+ *
+ *  For rVdaggerV and rVdaggerVr the VdaggerV-operators are additionaly 
+ *  multiplied with random vectors. For both, VdaggerV and random index
+ *  combinations there are lookuptables in OperatorLookup. This struct contains
+ *  the id's of vdaggerv and ric which belong together.
+ */
+struct VdaggerVRandomLookup{
+  size_t id;
+  /*! id of vdaggerv_lookup in OperatorLookup */
+  size_t id_vdaggerv;           
+  /*! id of ricQ1_lookup for rvdaggerv or ricQ2_lookup for rvdaggervr in 
+   *  OperatorLookup 
+   */
+  size_t id_ric_lookup;
+  /*! Flag that indicates whether VdaggerV must be daggered (prior to 
+   *  multiplication with random vectors) to get the correct quantum numbers
+   */
+  bool need_vdaggerv_daggering;
+
+  /*! List of necessarry gamma combinations */       
+  std::vector<int> gamma;
+
+  /*! The entries of the pair correspond to the first and second random index.
+   *  List of all possible combinations of random vector indices for quarks
+   *  specified by @em id_q1 and @em id_q2
+   */
+  std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
+
+  VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
+            const size_t id_ric_lookup, const bool need_vdaggerv_daggering) :
+             id(id), id_vdaggerv(id_vdaggerv), id_ric_lookup(id_ric_lookup),
+             need_vdaggerv_daggering(need_vdaggerv_daggering), gamma({}), 
+             rnd_vec_ids({}) {};
+  VdaggerVRandomLookup(const size_t id, const size_t id_vdaggerv,
+            const bool need_vdaggerv_daggering, const std::vector<int> gamma, const std::vector<std::pair<size_t, size_t>> rnd_vec_ids) :
+             id(id), id_vdaggerv(id_vdaggerv),
+             need_vdaggerv_daggering(need_vdaggerv_daggering), gamma(gamma), rnd_vec_ids(rnd_vec_ids), id_ric_lookup(0) {};
+
+};
+
+inline bool operator==(
+    VdaggerVRandomLookup const &first, 
+    VdaggerVRandomLookup const second){
+
+  if((first.id_ric_lookup == second.id_ric_lookup) &&
+     (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
+     (first.id_vdaggerv == second.id_vdaggerv))
+    return true;
+  else
+    return false;
+}
 
 using QuarklineQ0Indices = VdaggerVRandomLookup;  
 /******************************************************************************/
@@ -335,6 +349,12 @@ struct QuarklineQ2Indices {
    */
   bool need_vdaggerv_dag;
   std::vector<int> gamma; /*!< List of necessarry gamma combinations */
+
+  /*! The entries of the pair correspond to the first and second random index.
+   *  List of all possible combinations of random vector indices for quarks
+   *  specified by @em id_q1 and @em id_q2
+   */
+  std::vector<std::pair<size_t, size_t> > rnd_vec_ids;
 
 };
 
