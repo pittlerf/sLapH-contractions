@@ -29,8 +29,7 @@ class QuarkLineBlock2 {
     size_t const dilT,
     size_t const dilE,
     size_t const nev,
-    typename QuarkLineIndices<qlt>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
+    typename QuarkLineIndices<qlt>::type const &quarkline_indices);
 
   std::vector<DilutedFactor> const &operator()(const int t,
                                                const int b,
@@ -76,13 +75,9 @@ class QuarkLineBlock2 {
   void clear() { Ql.clear(); }
 
   void build_Q1_one_t(const int t_source,
-                      const int t_sink,
-                      const typename QuarkLineIndices<qlt>::type &ql_lookup,
-                      const std::vector<RandomIndexCombinationsQ2> &ric_lookup);
+                      const int t_sink);
 
-  void build_block_pair(DilutionIterator const &block_pair,
-                        typename QuarkLineIndices<qlt>::type const &ql_lookup,
-                        std::vector<RandomIndexCombinationsQ2> const &ric_lookup);
+  void build_block_pair(DilutionIterator const &block_pair);
 
  private:
   /*!
@@ -98,6 +93,7 @@ class QuarkLineBlock2 {
   Perambulator const &peram;
   OperatorsForMesons const &meson_operator;
   const size_t dilT, dilE, nev;
+  typename QuarkLineIndices<qlt>::type const &quarkline_indices;
 
   static int constexpr dilD = 4;
 };

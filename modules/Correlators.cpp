@@ -182,10 +182,10 @@ Correlators::Correlators(const size_t Lt,
       dilT(dilT),
       dilE(dilE),
       nev(nev),
-      dil_fac_lookup(DilutedFactorLookup{quark_lookup.Q0,
-                                         quark_lookup.Q1,
-                                         quark_lookup.Q2V,
-                                         quark_lookup.Q2L}),
+      dil_fac_lookup({quark_lookup.Q0,
+                      quark_lookup.Q1,
+                      quark_lookup.Q2V,
+                      quark_lookup.Q2L}),
       ric_lookup(operator_lookup.ricQ2_lookup) {}
 
 /*!
@@ -211,13 +211,13 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
     swatch.start();
 
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
-        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1);
 
 #pragma omp for schedule(dynamic)
     for (int t = 0; t < Lt; ++t) {
       auto const b = dilution_scheme.time_to_block(t);
 
-      quarklines.build_Q1_one_t(t, b, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_Q1_one_t(t, b);
 
       for (const auto &c_look : corr_lookup) {
         corr_part_trQ1[c_look.id][t] =
@@ -311,7 +311,7 @@ void Correlators::build_corr0(RandomVector const &randomvectors,
     swatch.start();
 
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator,
-        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -320,7 +320,7 @@ void Correlators::build_corr0(RandomVector const &randomvectors,
 
       auto const block_pair = dilution_scheme[b];
 
-      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
@@ -1320,7 +1320,7 @@ void Correlators::build_C30(RandomVector const &randomvectors,
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
-        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1328,7 +1328,7 @@ void Correlators::build_C30(RandomVector const &randomvectors,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1408,7 +1408,7 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
-        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1416,7 +1416,7 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1503,7 +1503,7 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
-        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
+        dilT, dilE, nev, dil_fac_lookup.Q1);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -1511,7 +1511,7 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(block_pair, dil_fac_lookup.Q1, ric_lookup);
+      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);

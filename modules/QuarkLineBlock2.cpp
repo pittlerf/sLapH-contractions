@@ -14,10 +14,10 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
     size_t const dilT,
     size_t const dilE,
     size_t const nev,
-    typename QuarkLineIndices<qlt>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup)
+    typename QuarkLineIndices<qlt>::type const &_quarkline_indices)
     : peram(perambulator), rnd_vec(random_vector), 
-      meson_operator(_meson_operator), dilT(dilT), dilE(dilE), nev(nev) {}
+      meson_operator(_meson_operator), dilT(dilT), dilE(dilE), nev(nev), 
+      quarkline_indices(_quarkline_indices) {}
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -25,9 +25,7 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     int const t1,
-    int const t2_block,
-    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+    int const t2_block) {
   int const eigenspace_dirac_size = dilD * dilE;
   auto const time_key = std::make_pair(t1, t2_block);
 
@@ -85,15 +83,11 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
 /*! @todo Think about better names for time indices */
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
-    DilutionIterator const &block_pair,
-    typename QuarkLineIndices<QuarkLineType::Q1>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+    DilutionIterator const &block_pair) {
   for (auto const slice_pair_one_sink : block_pair.one_sink_slice()) {
     std::cout << slice_pair_one_sink << std::endl;
     build_Q1_one_t(slice_pair_one_sink.source(),
-                   slice_pair_one_sink.sink_block(),
-                   quarkline_indices,
-                   ric_lookup);
+                   slice_pair_one_sink.sink_block());
 
     // A `DilutionIterator` contains a source and a sink block, possibly different ones.
     // For the block diagram we need to have the `Q1` objects that start and end in the
@@ -105,9 +99,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_block_pair(
     // think about keeping those elements with the same source and sink block around
     // longer, because we are going to need them a bunch of times later on.
     build_Q1_one_t(slice_pair_one_sink.source(),
-                   slice_pair_one_sink.source_block(),
-                   quarkline_indices,
-                   ric_lookup);
+                   slice_pair_one_sink.source_block());
   }
 }
 
