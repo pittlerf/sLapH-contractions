@@ -869,7 +869,7 @@ static void build_Q1_lookup(const size_t id_quark_used,
     auto it = std::find(Q1.begin(), Q1.end(), candidate);
 
     if(it != Q1.end()) {
-        Q1_indices[row][operator_id] = it - Q1.begin();
+      Q1_indices[row][operator_id] = it - Q1.begin();
     }
     else {
       Q1_indices[row][operator_id] = Q1.size();

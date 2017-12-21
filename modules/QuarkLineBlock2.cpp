@@ -47,27 +47,28 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
       else
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
 
-      Eigen::MatrixXcd rvdaggerv = Eigen::MatrixXcd::Zero(4*dilE, nev);
+      Eigen::MatrixXcd rvdaggerv = Eigen::MatrixXcd::Zero(eigenspace_dirac_size, nev);
   
-      for(size_t block = 0; block < 4; block++){
+      for(size_t block = 0; block < dilD; block++){
       for(size_t vec_i = 0; vec_i < nev; ++vec_i) {
-        size_t blk =  block + vec_i * 4 + 4 * nev * t1;
+        size_t blk =  block + vec_i * dilD + dilD * nev * t1;
         rvdaggerv.block(vec_i%dilE + dilE*block, 0, 1, nev) += 
              vdv.row(vec_i) * std::conj(rnd_vec(rnd_id.first, blk));
       }}
 
-      for (int row = 0; row < 4; row++) {
-        for (int col = 0; col < 4; col++) {
+      for (int row = 0; row < dilD; row++) {
+        for (int col = 0; col < dilD; col++) {
           matrix.block(row * dilE, col * dilE, dilE, dilE) =
               gamma_vec[gamma_id].value[row] *
               rvdaggerv.block(row * dilE, 0, dilE, nev) *
-              peram[rnd_id.second].block((t1 * 4 + gamma_vec[gamma_id].row[row]) * nev,
-                                         (t2_block * 4 + col) * dilE,
+              peram[rnd_id.second].block((t1 * dilD + gamma_vec[gamma_id].row[row]) * nev,
+                                         (t2_block * dilD + col) * dilE,
                                          nev,
                                          dilE);
         }
       }
-      Ql[time_key][{operator_key}].push_back({matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
+      Ql[time_key][{operator_key}].push_back(
+          {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
 }
