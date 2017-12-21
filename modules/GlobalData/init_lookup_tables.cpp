@@ -1783,7 +1783,7 @@ void GlobalData::init_lookup_tables() {
                             std::vector<size_t>(quantum_numbers[0].size()));
 
       rnd_index = create_rnd_vec_id(quarks, 
-          correlator.quark_numbers[2], correlator.quark_numbers[0], false,
+          correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
       build_Q2_lookup_new(0, quantum_numbers,
                       vdv_indices,

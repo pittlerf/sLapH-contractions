@@ -911,6 +911,9 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
   swatch.print();
 }
 
+/*****************************************************************************/
+/*                                 build_C3c                                 */
+/*****************************************************************************/
 void Correlators::build_C3c(RandomVector const &randomvectors,
                             OperatorsForMesons const &meson_operator,
                             Perambulator const &perambulators,
@@ -924,7 +927,7 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
 
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
-  WriteHDF5Correlator filehandle(output_path, "C3c", output_filename,
+  WriteHDF5Correlator filehandle(output_path, "C3+", output_filename,
                                  comp_type_factory_tr());
 
   std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
@@ -1011,10 +1014,6 @@ QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
   }
   swatch.print();
 }
-/*****************************************************************************/
-/*                                 build_C3c                                 */
-/*****************************************************************************/
-
 //void Correlators::build_C3c(RandomVector const &randomvectors,
 //                                  OperatorsForMesons const &meson_operator,
 //                                  Perambulator const &perambulators,

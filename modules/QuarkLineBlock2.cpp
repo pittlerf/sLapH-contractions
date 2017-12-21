@@ -38,9 +38,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     auto const &op = quarkline_indices[operator_key];
     for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const gamma_id = op.gamma[0];
-      Eigen::MatrixXcd matrix =
-          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
-      
+     
       Eigen::MatrixXcd vdv;
       if (op.need_vdaggerv_daggering == false)
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
@@ -56,6 +54,8 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
              vdv.row(vec_i) * std::conj(rnd_vec(rnd_id.first, blk));
       }}
 
+      Eigen::MatrixXcd matrix =
+          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       for (int row = 0; row < dilD; row++) {
         for (int col = 0; col < dilD; col++) {
           matrix.block(row * dilE, col * dilE, dilE, dilE) =
@@ -119,6 +119,7 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
 
     for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key){
       auto const &op = quarkline_indices[operator_key];
+      const size_t gamma_id = 5; //op.gamma[0];
       Eigen::MatrixXcd vdv;
       if (op.need_vdaggerv_daggering == false)
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
@@ -129,8 +130,10 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
       int check = -1;
       Eigen::MatrixXcd M;  // Intermediate memory
 
+      /*! Dilution of columns */
       for (const auto &rnd_id : op.rnd_vec_ids) {
         if (check != rnd_id.second) {  // this avoids recomputation
+          /*! Should be 4*new rows, but there is always just one entry not zero */
           M = Eigen::MatrixXcd::Zero(nev, 4 * dilE);
           for (size_t block = 0; block < 4; block++) {
             for (size_t vec_i = 0; vec_i < nev; vec_i++) {
@@ -141,20 +144,32 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
           }
         }
 
+        /*! Dilution of rows and creating a sparse matrix from smaller blocks */
         Eigen::MatrixXcd matrix =
-           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
+          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
-        for (size_t block_x = 0; block_x < 4; block_x++) {
-          for (size_t block_y = 0; block_y < 4; block_y++) {
-            for (size_t vec_y = 0; vec_y < nev; ++vec_y) {
-              size_t blk = block_y + (vec_y + nev * t1) * 4;
-              matrix.block(
-                  dilE * block_y + vec_y % dilE, dilE * block_x, 1, dilE) +=
-                  M.block(vec_y, dilE * block_x, 1, dilE) *
-                  std::conj(rnd_vec(rnd_id.first, blk));
-            }
+        for (size_t block = 0; block < 4; block++) {
+          const cmplx value = gamma_vec[gamma_id].value[block];
+          const size_t gamma_index = gamma_vec[gamma_id].row[block];
+          for (size_t vec_i = 0; vec_i < nev; vec_i++) {
+            size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
+            matrix.block(vec_i % dilE + dilE * gamma_index, 0, 1, dilE) +=
+                value * M.block(vec_i,block*dilE, 1, dilE) * 
+                std::conj(rnd_vec(rnd_id.first, blk));
           }
         }
+
+//        for (size_t block_x = 0; block_x < 4; block_x++) {
+//          for (size_t block_y = 0; block_y < 4; block_y++) {
+//            for (size_t vec_y = 0; vec_y < nev; ++vec_y) {
+//              size_t blk = block_y + (vec_y + nev * t1) * 4;
+//              matrix.block(
+//                  dilE * block_y + vec_y % dilE, dilE * block_x, 1, dilE) +=
+//                  value * M.block(vec_y, dilE * block_x, 1, dilE) *
+//                  std::conj(rnd_vec(rnd_id.first, blk));
+//            }
+//          }
+//        }
         check = rnd_id.second;
         rnd_counter++;
 
