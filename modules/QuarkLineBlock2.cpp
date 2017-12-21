@@ -35,11 +35,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
   }
 
   for (auto const &op : quarkline_indices) {
-    auto const offset = op.offset.first;
     for (auto const &rnd_id : op.rnd_vec_ids) {
-      auto const rid1 = rnd_id.first - offset;
-      auto const rid2 = rnd_id.second - offset;
-
       auto const gamma_id = op.gamma[0];
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
@@ -70,10 +66,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
                                          dilE);
         }
       }
-      /*! @bug by using rid1 and rid2 instead of rnd_id.first and rnd_id.second,
-       *       different quark flavors are not seperated
-       */
-      Ql[time_key][{op.id}].push_back({matrix, std::make_pair(rid1, rid2), {}});
+      Ql[time_key][{op.id}].push_back({matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
 }

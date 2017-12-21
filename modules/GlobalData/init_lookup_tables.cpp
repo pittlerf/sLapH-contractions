@@ -865,25 +865,21 @@ static void build_Q1_lookup(const size_t id_quark_used,
     auto it = std::find_if(Q1.begin(), Q1.end(),
                          [&](QuarklineQ1Indices q1)
                          {
-                           auto c1 = (q1.id_peram == id_quark_used);
-                           auto c2 = (q1.gamma == qn.gamma);
                            auto c3 = (q1.id_vdaggerv == rvdv_lookup[rvdv_id].id_vdaggerv);
                            auto c4 = (q1.need_vdaggerv_daggering == rvdv_lookup[rvdv_id].need_vdaggerv_daggering);
                            auto c5 = (q1.rnd_vec_ids == ric_lookup[rnd_index].rnd_vec_ids);
-                           return c1 && c2 && c3 && c4 && c5;
+                           auto c2 = (q1.gamma == qn.gamma);
+                           return c2 && c3 && c4 && c5;
                          });
     if(it != Q1.end()) {
         Q1_indices[row][operator_id] = (*it).id;
     }
     else {
       Q1.emplace_back(QuarklineQ1Indices{Q1.size(), 
-                           rvdv_id,
                            rvdv_lookup[rvdv_id].id_vdaggerv,
                            rvdv_lookup[rvdv_id].need_vdaggerv_daggering,
-                                         id_quark_used, 
-                                         ric_lookup[rnd_index].offset, 
-                                         ric_lookup[rnd_index].rnd_vec_ids, 
-                                         qn.gamma});
+                           ric_lookup[rnd_index].rnd_vec_ids, 
+                           qn.gamma});
       Q1_indices[row][operator_id] = Q1.back().id;
     }
   }

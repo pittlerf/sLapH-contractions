@@ -282,7 +282,6 @@ using QuarklineQ0Indices = VdaggerVRandomLookup;
  */
 struct QuarklineQ1Indices {
   size_t id;
-  size_t id_rvdaggerv;           
   /*! Identifies physical content and random index of rvdaggerv */
   size_t id_vdaggerv;           
   /*! Flag that indicates whether VdaggerV must be daggered (prior to 
@@ -290,13 +289,6 @@ struct QuarklineQ1Indices {
    */
   bool need_vdaggerv_daggering;
 
-  /*! Identifies physical content and random index of peram */
-  size_t id_peram;        
-  /*! The entries of the pair correspond to the first and second random index.
-   *  Contains the first random index corresponding to @em id_q1 and @em id_q2
-   *  respectively, so that rnd_vec_id - offset is the actual random seed number
-   */
-  std::pair<size_t, size_t> offset;
   /*! The entries of the pair correspond to the first and second random index.
    *  List of all possible combinations of random vector indices for quarks
    *  specified by @em id_q1 and @em id_q2
