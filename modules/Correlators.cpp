@@ -241,7 +241,7 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
     auto group = handle.create_group(c_look.hdf5_dataset_name);
     std::cout << "Going to write" << std::endl;
-    write_heterogenious(group, correlator[c_look.id]);
+    write_heterogenious(group, corr_part_trQ1[c_look.id]);
   }
   swatch.print();
 }
@@ -974,9 +974,9 @@ QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        OperatorToFactorMap<2> L1;
+        OperatorToFactorMap<2, 1> L1;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1>(L1,
+          multiply<1, 1, 0, 0>(L1,
                          std::get<0>(ids),
                          quarklines_Q0(slice_pair.source(), -1),
                          quarklines_Q2(slice_pair.source(), slice_pair.sink_block()));
