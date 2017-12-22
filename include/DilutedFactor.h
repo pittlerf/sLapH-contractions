@@ -17,6 +17,35 @@
 #include "OperatorsForMesons.h"
 #include "QuarkLineBlock.h"
 #include "typedefs.h"
+#include "global_data.h"
+
+template <size_t rvecs1, size_t rvecs2>
+bool has_intersection(SmallVectorRndId<rvecs1> const &left,
+                      SmallVectorRndId<rvecs2> const &right) {
+  SmallVectorRndId<rvecs1 + rvecs2> intersection;
+
+  std::set_intersection(std::begin(left),
+                        std::end(left),
+                        std::begin(right),
+                        std::end(right),
+                        std::back_inserter(intersection));
+  return intersection.size() > 0;
+}
+
+template <size_t rvecs1, size_t rvecs2>
+void merge_append(SmallVectorRndId<rvecs1> &data,
+                  SmallVectorRndId<rvecs2> const &addition) {
+  auto const old_end = std::end(data);
+  std::copy(std::begin(addition), std::end(addition), std::back_inserter(data));
+  std::inplace_merge(std::begin(data), old_end, std::end(data));
+}
+
+template <size_t rvecs>
+void merge_push_back(SmallVectorRndId<rvecs> &data, RndId const &addition) {
+  auto const old_end = std::end(data);
+  data.push_back(addition);
+  std::inplace_merge(std::begin(data), old_end, std::end(data));
+}
 
 /*! Product yielding the off-diagonal elements.
 
@@ -24,19 +53,61 @@
   that it only contains elements with _unequal_ left and right random vector index. This
   set is intended to be used as an intermediate result.
   */
-std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
-                                     std::vector<DilutedFactor> const &right_vec);
+template <size_t rvecs1, size_t rvecs2>
+std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
+    std::vector<DilutedFactor<rvecs1>> const &left_vec,
+    std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  int constexpr rvecs_total = rvecs1 + rvecs2 + 1;
+  std::vector<DilutedFactor<rvecs_total>> result_vec;
 
-inline cmplx operator+(DilutedTrace const &df, cmplx const &c) {
+  for (auto const &left : left_vec) {
+    auto const inner_rnd_id = left.ric.second;
+
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices differ. The inner indices need to
+      // match because the product would not make sense otherwise.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && left.ric.first != right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+        continue;
+      }
+
+      // We want to keep track of the indices that have been contracted away. These are
+      // all the ones from the left factor, all the ones from the right factor and the one
+      // that we are contracting over right now.
+      SmallVectorRndId<rvecs_total> used;
+      used.push_back(inner_rnd_id);
+      merge_append(used, left.used_rnd_ids);
+      merge_append(used, right.used_rnd_ids);
+
+      result_vec.push_back({Eigen::MatrixXcd{left.data * right.data},
+                            std::make_pair(left.ric.first, right.ric.second),
+                            used});
+    }
+  }
+
+  return result_vec;
+}
+
+template <size_t rvecs>
+inline cmplx operator+(DilutedTrace<rvecs> const &df, cmplx const &c) {
   return c + df.data;
 }
 
-inline cmplx operator+(cmplx const &c, DilutedTrace const &df) {
+template <size_t rvecs>
+inline cmplx operator+(cmplx const &c, DilutedTrace<rvecs> const &df) {
   return df + c;
 }
 
-template <int n>
-using OperatorToFactorMap = std::map<std::array<size_t, n>, std::vector<DilutedFactor>>;
+template <int n, size_t rvecs>
+using OperatorToFactorMap =
+    std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
 #if 0
 template <int n1, int n2>
@@ -64,8 +135,8 @@ OperatorToFactorMap<n1 + n2> operator*(OperatorToFactorMap<n1> const &left_map,
 // using OperatorToFactorMap = std::map<std::array<QuantumNumbers, n>,
 // std::vector<DilutedFactor>>;
 
-template <int n>
-std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {
+template <size_t n, size_t rvecs>
+std::string to_string(typename OperatorToFactorMap<n, rvecs>::key_type const &array) {
   std::ostringstream oss;
   oss << "{";
   for (int i = 0; i < n; ++i) {
@@ -79,11 +150,11 @@ std::string to_string(typename OperatorToFactorMap<n>::key_type const &array) {
   return oss.str();
 }
 
-template <int n>
-void print(OperatorToFactorMap<n> const &otfm) {
+template <size_t n, size_t rvecs>
+void print(OperatorToFactorMap<n, rvecs> const &otfm) {
   std::cout << "OperatorToFactorMap, size = " << otfm.size() << "\n";
   for (auto const &elem : otfm) {
-    std::cout << "  " << to_string<n>(elem.first) << " -> "
+    std::cout << "  " << to_string<n, rvecs>(elem.first) << " -> "
               << "std::vector(size = " << elem.second.size() << ")\n";
   }
 }
@@ -141,6 +212,7 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
         size_t const dilE,
         size_t const dilD);
 
+#if 0
 void Q1xQ1(std::vector<DilutedFactor> &result,
            std::vector<DilutedFactor> const &quarkline1,
            std::vector<DilutedFactor> const &quarkline2,
@@ -148,6 +220,7 @@ void Q1xQ1(std::vector<DilutedFactor> &result,
            std::vector<size_t> const ric_ids,
            size_t const dilE,
            size_t const dilD);
+#endif
 
 /*! Create vector<MatrixXcd> with Q0*Q2 for all rnd vecs not equal
  *  - (corrC)
@@ -190,13 +263,263 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
             size_t const dilE,
             size_t const dilD);
 
-cmplx trace(std::vector<DilutedFactor> const &left_vec,
-            std::vector<DilutedFactor> const &right_vec);
+template <size_t rvecs1, size_t rvecs2>
+cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
+            std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  cmplx result(0.0, 0.0);
 
-std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
-                                          std::vector<DilutedFactor> const &right_vec);
+  for (auto const &left : left_vec) {
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
 
-std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec);
+    Eigen::MatrixXcd right_sum(
+        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
-compcomp_t inner_product(std::vector<DilutedTrace> const &left_vec,
-                         std::vector<DilutedTrace> const &right_vec);
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices match. The inner indices need to
+      // match because the product would not make sense otherwise. The outer indices must
+      // match since we want to be able to take the trace over the result. The second
+      // condition is where this differs from the other multiplication operator.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+        continue;
+      }
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      right_sum += right.data;
+    }
+
+    auto const &product = left.data * right_sum;
+    result += product.trace();
+  }
+
+  return result;
+}
+
+template <size_t rvecs1, size_t rvecs2>
+std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
+    std::vector<DilutedFactor<rvecs1>> const &left_vec,
+    std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  int constexpr rvecs_result = rvecs1 + rvecs2 + 2;
+  std::vector<DilutedTrace<rvecs_result>> result_vec;
+
+  for (auto const &left : left_vec) {
+    auto const outer_rnd_id = left.ric.first;
+    auto const inner_rnd_id = left.ric.second;
+
+    Eigen::MatrixXcd right_sum(
+        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
+
+    for (auto const &right : right_vec) {
+      // We want to make the inner and outer indices match. The inner indices need to
+      // match because the product would not make sense otherwise. The outer indices must
+      // match since we want to be able to take the trace over the result. The second
+      // condition is where this differs from the other multiplication operator.
+      bool const is_allowed =
+          inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
+      if (!is_allowed) {
+          continue;
+      }
+
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+        continue;
+      }
+
+      // We want to keep track of the indices that have been contracted away. These are
+      // all the ones from the left factor, all the ones from the right factor and the one
+      // that we are contracting over right now.
+      SmallVectorRndId<rvecs_result> used;
+      merge_push_back(used, inner_rnd_id);
+      merge_push_back(used, outer_rnd_id);
+      merge_append(used, left.used_rnd_ids);
+      merge_append(used, right.used_rnd_ids);
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      result_vec.push_back(
+          {typename DilutedTrace<rvecs_result>::Data{(left.data * right.data).trace()},
+           used});
+    }
+  }
+
+  return result_vec;
+}
+
+template <size_t rvecs>
+std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
+    std::vector<DilutedFactor<rvecs>> const &vec) {
+  std::vector<DilutedTrace<rvecs + 1>> result_vec;
+
+  for (auto const &elem : vec) {
+    // We only want to use diagonal elements.
+    if (elem.ric.first != elem.ric.second) {
+      continue;
+    }
+
+    SmallVectorRndId<rvecs + 1> used;
+    std::copy(std::begin(elem.used_rnd_ids),
+              std::end(elem.used_rnd_ids),
+              std::back_inserter(used));
+
+    auto const outer_rnd_id = elem.ric.first;
+    merge_push_back(used, outer_rnd_id);
+
+    DilutedTrace<rvecs + 1> result = {elem.data.trace(), used};
+
+    result_vec.push_back(result);
+  }
+
+  return result_vec;
+
+}
+
+template <size_t rvecs1, size_t rvecs2>
+compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
+                         std::vector<DilutedTrace<rvecs2>> const &right_vec) {
+  //! @TODO Pull out this magic number.
+  auto constexpr rnd_vec_count = 5;
+
+  compcomp_t result(0.0, 0.0, 0.0, 0.0);
+
+  for (auto const &left : left_vec) {
+    cmplx right_sum(0.0, 0.0);
+
+    for (auto const &right : right_vec) {
+      // We also need to be careful to not combine factors which have common used random
+      // vector indices.
+      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+        continue;
+      }
+
+      // The right sides that we encounter at this point have the same left and right
+      // random vector indices. They may differ in the set of used random vector indices.
+      // But since we do not plan to contract the result with more DilutedFactor
+      // instances, we do not care to preserve the information about the used random
+      // vector indices. Therefore we can sum all these elements up to have less
+      // multiplications to do.
+      right_sum += right.data;
+    }
+
+    result.rere += left.data.real() * right_sum.real();
+    result.reim += left.data.real() * right_sum.imag();
+    result.imre += left.data.imag() * right_sum.real();
+    result.imim += left.data.imag() * right_sum.imag();
+  }
+
+  return result;
+}
+
+int constexpr max_flavor = 8;
+using UpTo = boost::container::static_vector<RndId, max_flavor>;
+
+template <size_t rvecs>
+UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
+  UpTo result(rnd_offset.size() - 1, 0);
+
+  // Iterate through every random vector index that is either used internally or
+  // externally.
+  for (auto const id : df.used_rnd_ids) {
+    // Iterate through the quark flavors that we have.
+    for (int f = 0; f < rnd_offset.size() - 1; ++f) {
+      // Does the current random vector index belong to the current flavor?
+      if (rnd_offset[f] <= id && id < rnd_offset[f + 1]) {
+        // Is this random vector index larger than the largest one stored so far? If so,
+        // update this.
+        if (result[f] < id) {
+          result[f] = id;
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
+template <size_t rvecs>
+std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
+  // Extract the number of random vectors per quark flavor.
+  auto const &quarks = GlobalData::Instance()->get_quarks();
+  UpTo rnd_count;
+  std::transform(std::begin(quarks),
+                 std::end(quarks),
+                 std::back_inserter(rnd_count),
+                 [](quark const &q) { return q.number_of_rnd_vec; });
+
+  // Obtain the offsets for the random vector ids per quark flavor. This basically is an
+  // exclusive scan, but this is not in the standard library until C++17.
+  UpTo rnd_offset;
+  rnd_offset.push_back(0);
+  std::partial_sum(
+      std::begin(rnd_count), std::end(rnd_count), std::back_inserter(rnd_offset));
+
+  std::map<UpTo, cmplx> results;
+
+  // We start with the case where in every flavor we only use 1 random vector.
+  UpTo upto(quarks.size(), 1);
+
+  // We want to go until we have used all available random vectors.
+  UpTo upto_max = rnd_count;
+
+  // Accumulate the individual contributions into a bucket labeled with the highest random
+  // vector index used per flavor.
+  for (auto const &trace : traces) {
+    auto const &max_used = get_max_used(trace, rnd_offset);
+    results[max_used] += trace.data;
+  }
+
+  // In the result we want to also accumulate everything below into the current one. There
+  // might be an efficient n-dimensional scan algorithm, but this will very likely not be
+  // the performance critical part, therefore we just implement it in an easy way with a
+  // deep copy.
+  auto const parts = results;
+
+  for (auto &result : results) {
+    int summands = 0;
+    for (auto const &part : parts) {
+      // We must skip the element itself, otherwise it would be accumulated onto itself.
+      if (result.first == part.first) {
+        continue;
+      }
+
+      // Take the difference in the maximum random vector index for each flavor.
+      auto diff = result.first;
+      for (int i = 0; i < diff.size(); ++i) {
+        diff[i] -= part.first[i];
+      }
+
+      // Are none the differences positive? This means that all random vector indices used
+      // are smaller or equal and therefore this contributed. The case where all
+      // differences are zero is excluded already at this point.
+      bool const none_positive =
+          std::none_of(std::begin(diff), std::end(diff), [](RndId d) { return d > 0; });
+      // If so, accumulate this onto the result.
+      if (none_positive) {
+        result.second += part.second;
+        ++summands;
+      }
+    }
+
+    // Normalize.
+    result.second /= summands;
+  }
+
+  return results;
+}

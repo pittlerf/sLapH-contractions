@@ -10,11 +10,11 @@
 #include "typedefs.h"
 #include "h5-wrapper.h"
 
-template <int n1, int n2>
-void multiply(OperatorToFactorMap<n1 + n2> &L,
+template <int n1, int n2, size_t rvecs1, size_t rvecs2>
+void multiply(OperatorToFactorMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
                     std::array<size_t, n1 + n2> const &key,
-                    OperatorToFactorMap<n1> const &factor0,
-                    OperatorToFactorMap<n2> const &factor1) {
+                    OperatorToFactorMap<n1, rvecs1> const &factor0,
+                    OperatorToFactorMap<n2, rvecs2> const &factor1) {
   if (L.count(key) == 0) {
     std::array<size_t, n1> key1;
     std::array<size_t, n2> key2;
@@ -235,12 +235,13 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
     for (auto &corr_t : corr_part_trQ1[c_look.id]) {
       for (auto &diluted_trace : corr_t) {
         // TODO: Hard Coded atm - Be carefull
-        diluted_trace.data /= 5 * Lt;
+        diluted_trace.data /= Lt;
       }
     }
 
-//    auto group = handle.create_group(c_look.hdf5_dataset_name);
-//    write_heterogenious(group, corr_part_trQ1[c_look.id]);
+    auto group = handle.create_group(c_look.hdf5_dataset_name);
+    std::cout << "Going to write" << std::endl;
+    write_heterogenious(group, correlator[c_look.id]);
   }
   swatch.print();
 }
@@ -1415,8 +1416,8 @@ void Correlators::build_C30(RandomVector const &randomvectors,
 #pragma omp parallel
   {
     swatch.start();
-    // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
-    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(corr_lookup.size(),
+                                      std::vector<cmplx>(Lt, cmplx(.0, .0)));
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(randomvectors, perambulators, meson_operator, 
         dilT, dilE, nev, dil_fac_lookup.Q1);
@@ -1432,12 +1433,12 @@ void Correlators::build_C30(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        OperatorToFactorMap<2> L1;
+        OperatorToFactorMap<2, 1> L1;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1>(L1,
-                         std::get<0>(ids),
-                         quarklines(slice_pair.source(), slice_pair.source_block()),
-                         quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(L1,
+                               std::get<0>(ids),
+                               quarklines(slice_pair.source(), slice_pair.source_block()),
+                               quarklines(slice_pair.source(), slice_pair.sink_block()));
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
@@ -1488,7 +1489,8 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
   WriteHDF5Correlator filehandle(output_path, "C40C", output_filename,
                                  comp_type_factory_tr());
 
-  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(),
+                                             std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -1520,15 +1522,15 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        OperatorToFactorMap<2> L1;
-        OperatorToFactorMap<2> L2;
+        OperatorToFactorMap<2, 1> L1;
+        OperatorToFactorMap<2, 1> L2;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1>(L1,
+          multiply<1, 1, 0, 0>(L1,
                          ids[0],
                          quarklines(slice_pair.sink(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
 
-          multiply<1, 1>(L2,
+          multiply<1, 1, 0, 0>(L2,
                          ids[1],
                          quarklines(slice_pair.sink(), slice_pair.source_block()),
                          quarklines(slice_pair.source(), slice_pair.sink_block()));
@@ -1615,18 +1617,18 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        OperatorToFactorMap<2> L1;
-        OperatorToFactorMap<2> L2;
+        OperatorToFactorMap<2, 1> L1;
+        OperatorToFactorMap<2, 1> L2;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1>(L1,
-                         ids[0],
-                         quarklines(slice_pair.source(), slice_pair.source_block()),
-                         quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(L1,
+                               ids[0],
+                               quarklines(slice_pair.source(), slice_pair.source_block()),
+                               quarklines(slice_pair.source(), slice_pair.sink_block()));
 
-          multiply<1, 1>(L2,
-                         ids[1],
-                         quarklines(slice_pair.sink(), slice_pair.sink_block()),
-                         quarklines(slice_pair.sink(), slice_pair.source_block()));
+          multiply<1, 1, 0, 0>(L2,
+                               ids[1],
+                               quarklines(slice_pair.sink(), slice_pair.sink_block()),
+                               quarklines(slice_pair.sink(), slice_pair.source_block()));
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
