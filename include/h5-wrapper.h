@@ -55,10 +55,8 @@ void write_heterogenious(
         &payload) {
   std::map<std::string, std::vector<cmplx>> data;
 
-
-
   for (int t = 0; t < payload.size(); ++t) {
-  PRINT(payload[t].size());
+    PRINT(payload[t].size());
     auto const &subs = sub_accumulate(payload[t]);
     PRINT(subs.size());
 

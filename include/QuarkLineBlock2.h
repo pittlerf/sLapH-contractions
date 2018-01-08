@@ -1,11 +1,10 @@
 #pragma once
 
+#include "DilutedFactor.h"
 #include "Gamma.h"
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "dilution-iterator.h"
-#include "typedefs.h"
-#include "DilutedFactor.h"
 #include "typedefs.h"
 
 #include "Eigen/Dense"
@@ -21,19 +20,17 @@
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
  public:
-
-  QuarkLineBlock2(
-    RandomVector const &random_vector,
-    Perambulator const &perambulator,
-    OperatorsForMesons const &_meson_operator,
-    size_t const dilT,
-    size_t const dilE,
-    size_t const nev,
-    typename QuarkLineIndices<qlt>::type const &quarkline_indices);
+  QuarkLineBlock2(RandomVector const &random_vector,
+                  Perambulator const &perambulator,
+                  OperatorsForMesons const &_meson_operator,
+                  size_t const dilT,
+                  size_t const dilE,
+                  size_t const nev,
+                  typename QuarkLineIndices<qlt>::type const &quarkline_indices);
 
   std::vector<DilutedFactor<0>> const &operator()(const int t,
-                                               const int b,
-                                               const size_t op_id) const {
+                                                  const int b,
+                                                  const size_t op_id) const {
     /*! @todo catch when t,b is an invalid index */
     auto const time_key = std::make_pair(t, b);
     typename OperatorToFactorMap<1, 0>::key_type const key{op_id};
@@ -74,8 +71,7 @@ class QuarkLineBlock2 {
 
   void clear() { Ql.clear(); }
 
-  void build_Q1_one_t(const int t_source,
-                      const int t_sink);
+  void build_Q1_one_t(const int t_source, const int t_sink);
 
   void build_block_pair(DilutionIterator const &block_pair);
 
