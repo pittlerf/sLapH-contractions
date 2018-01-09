@@ -194,8 +194,15 @@ void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
       check = rnd_id.first;
       rnd_counter++;
 
-      Ql[time_key][{operator_key}].push_back(
-          {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
+      auto const rnd_pair = std::make_pair(rnd_id.first, rnd_id.second);
+
+      #pragma omp critical
+      {
+        MU_DEBUG(rnd_id.first);
+        MU_DEBUG(rnd_id.second);
+      }
+
+      Ql[time_key][{operator_key}].push_back({matrix, rnd_pair, {}});
     }
   }
 }
