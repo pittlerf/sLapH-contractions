@@ -31,11 +31,9 @@ class QuarkLineBlock2 {
                   size_t const nev,
                   typename QuarkLineIndices<qlt>::type const &quarkline_indices);
 
-  Value const &operator[](Key const &key) const {
+  Value const &operator[](Key const &key) {
     if (Ql.count(key) == 0) {
-      std::cout << "Tried to access an element which does not exist\n";
-      std::cout << "Size of the map: " << Ql.size() << std::endl;
-      abort();
+      build(key);
     }
 
     return Ql.at(key);
@@ -43,9 +41,8 @@ class QuarkLineBlock2 {
 
   void clear() { Ql.clear(); }
 
-  void build_Q1_one_t(const int t_source, const int t_sink);
+  void build(Key const &time_key);
 
-  void build_block_pair(DilutionIterator const &block_pair);
 
  private:
   std::map<Key, Value> Ql;
