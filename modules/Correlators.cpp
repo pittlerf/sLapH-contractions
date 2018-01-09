@@ -760,163 +760,89 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-// This is necessary to ensure the correct summation of the correlation function
+  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids;
+  quantum_num_ids.reserve(corr_lookup.size());
+  for (const auto &c_look : corr_lookup) {
+    quantum_num_ids.push_back({std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+                           std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+  }
+
+
 #pragma omp parallel
   {
     swatch.start();
     std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt, cmplx(.0, .0)));
+
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
-        dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
-    QuarkLineBlock<QuarkLineType::Q2V> quarkline_Q2V(
-        dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
+    QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(
+        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
 
-    // creating memory arrays M1, M2 for intermediate storage of Quarklines
-    // ------
-    std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
-    std::vector<std::array<size_t, 3>> M1_look;
-    std::vector<std::array<size_t, 3>> M2_look;
-    size_t M1_counter = 0;
-    size_t M2_counter = 0;
-    for (const auto &c_look : corr_lookup) {
-
-      size_t norm = 0;
-
-      // creating lookup_table for M1 -----------------------------------------
-      const size_t id0 = c_look.lookup[3];
-      const size_t id1 = c_look.lookup[0];
-      auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-                              [&id0, &id1](std::array<size_t, 3> check) {
-                                return (id0 == check[1] && id1 == check[2]);
-                              });
-      if (!(it1 != M1_look.end())) {
-        M1.emplace_back(std::vector<Eigen::MatrixXcd>());
-
-        M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id1}}));
-
-        M1_counter++;
-      }
-
-      // creating lookup_table for M2 -----------------------------------------
-      const size_t id2 = c_look.lookup[1];
-      const size_t id3 = c_look.lookup[2];
-      auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
-                              [&id2, &id3](std::array<size_t, 3> check) {
-                                return (id2 == check[1] && id3 == check[2]);
-                              });
-      if (!(it2 != M2_look.end())) {
-        M2.emplace_back(std::vector<Eigen::MatrixXcd>());
-        M2_look.emplace_back(std::array<size_t, 3>({{M2_counter, id2, id3}}));
-
-        M2_counter++;
-      }
-    } // first run over lookuptable ends here - memory and new lookuptable
-// are generated ------------------------------------------------------------
+    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2V(randomvectors,
+                                                     perambulators,
+                                                     meson_operator,
+                                                     dilT,
+                                                     dilE,
+                                                     nev,
+                                                     dil_fac_lookup.Q2V);
 
 #pragma omp for schedule(dynamic)
+    // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
-      // creating quarklines
-      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
-                                  dil_fac_lookup.Q0, ric_lookup);
-      quarkline_Q2V.build_block_pair(perambulators, meson_operator, block_pair,
-                                  dil_fac_lookup.Q2V, ric_lookup);
+      // Create quarklines for all time combinations in block_pair
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        /*! Optimization by saving all products Q2V \cdot rVdaggerVr. Reuse not
-         *  optimal as M1 and M2 don't share objects but time indices are
-         *  identical in cross diagram
-         */
+        OperatorToFactorMap<2, 1> L1;
+        OperatorToFactorMap<2, 1> L2;
+        for (const auto &ids : quantum_num_ids) {
+          multiply<1, 1, 0, 0>(L1,
+                               ids[0],
+                               quarkline_Q0[{slice_pair.sink()}],
+                               quarkline_Q2V[{slice_pair.sink_block(),
+                                              slice_pair.source(),
+                                              slice_pair.sink_block()}]);
 
-        // build M1
-        // ----------------------------------------------------------------
-        for (const auto &look : M1_look) {
-
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
-
-          rVdaggerVrxQ2(M1[look[0]], 
-              quarkline_Q0(slice_pair.sink(), -1, look[1]),
-              quarkline_Q2V(slice_pair.source(), slice_pair.sink_block(), look[2]),
-              ric_lookup, random_index_combination_ids, dilE, 4);
-        }
-        // build M2
-        // ----------------------------------------------------------------
-        for (const auto &look : M2_look) {
-
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
-                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
-
-          rVdaggerVrxQ2(M2[look[0]], 
-              quarkline_Q0(slice_pair.sink(), -1, look[1]),
-              quarkline_Q2V(slice_pair.source(), slice_pair.sink_block(), look[2]),
-              ric_lookup, random_index_combination_ids, dilE, 4);
+          multiply<1, 1, 0, 0>(L2,
+                               ids[1],
+                               quarkline_Q0[{slice_pair.sink()}],
+                               quarkline_Q2V[{slice_pair.sink_block(),
+                                              slice_pair.source(),
+                                              slice_pair.sink_block()}]);
         }
 
-        /*! Optimization by summing M2 over all random vectors before
-         *  multiplying with M1
-         */
-        // Final summation for correlator
-        // ------------------------------------------
-
-        for (const auto &c_look : corr_lookup) {
-          const size_t id0 = c_look.lookup[3];
-          const size_t id1 = c_look.lookup[0];
-          // TODO: This should be an access operator
-          auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-                                  [&id0, &id1](std::array<size_t, 3> check) {
-                                    return (id0 == check[1] && id1 == check[2]);
-                                  });
-          const size_t id2 = c_look.lookup[1];
-          const size_t id3 = c_look.lookup[2];
-          auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
-                                  [&id2, &id3](std::array<size_t, 3> check) {
-                                    return (id2 == check[1] && id3 == check[2]);
-                                  });
-
-          std::vector<size_t> random_index_combination_ids =
-              std::vector<size_t>(
-                {dil_fac_lookup.Q0 [c_look.lookup[3]].id_ric_lookup,
-                 dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup,
-                 dil_fac_lookup.Q0 [c_look.lookup[1]].id_ric_lookup,
-                 dil_fac_lookup.Q2L[c_look.lookup[2]].id_ric_lookup});
-
-          // M1 and M2 implicitly contain time indices. Thus += over time is
-          // necessary
-          C[c_look.id][t] += trace(
-              M1[(*it1)[0]], M2[(*it2)[0]], ric_lookup,
-              random_index_combination_ids, dilE, 4);
-
-        } // loop over operators ends here
+        for (int i = 0; i != quantum_num_ids.size(); ++i) {
+          auto const & ids = quantum_num_ids[i];
+          C[i][t] += trace(L1[ids[0]], L2[ids[1]]);
+        }
       }
+
+      quarkline_Q0.clear();
+      quarkline_Q2V.clear();
     } // loops over time end here
 #pragma omp critical
     {
-      for (const auto &c_look : corr_lookup)
+      for (int i = 0; i != quantum_num_ids.size(); ++i) {
         for (size_t t = 0; t < Lt; t++)
-          correlator[c_look.id][t] += C[c_look.id][t];
+          correlator[i][t] += C[i][t];
+      }
     }
-
     swatch.stop();
   } // parallel part ends here
 
   // normalisation
-  for (const auto &c_look : corr_lookup) {
-    for (auto &corr : correlator[c_look.id]) {
-      corr /= (6 * 5 * 4 * 3) * Lt; // TODO: Hard Coded atm - Be carefull
+  for (int i = 0; i != quantum_num_ids.size(); ++i) {
+    for (auto &corr : correlator[i]) {
+      // @todo Hard Coded atm - Be careful
+      corr /= (6 * 5 * 4 * 3) * Lt; 
     }
     // write data to file
-    filehandle.write(correlator[c_look.id], c_look);
+    filehandle.write(correlator[i], corr_lookup[i]);
   }
-
   swatch.print();
 }
+
 
 /*****************************************************************************/
 /*                                 build_C3c                                 */
