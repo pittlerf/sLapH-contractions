@@ -487,3 +487,6 @@ struct QuarkLineIndices<QuarkLineType::Q2V> {
   typedef std::vector<QuarklineQ2Indices> type;
   static size_t constexpr num_times = 3;
 };
+
+#define MU_DEBUG(x) std::cout << std::setw(20) << #x << ": " << (x) << std::endl;
+

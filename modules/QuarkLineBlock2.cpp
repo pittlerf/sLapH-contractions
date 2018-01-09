@@ -127,10 +127,12 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
       check = rnd_id.second;
       rnd_counter++;
 
+
       Ql[time_key][{operator_key}].push_back(
           {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
+
 }
 
 // -----------------------------------------------------------------------------
@@ -157,13 +159,13 @@ void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
             if (!op.need_vdaggerv_dag)
               M.block(col * dilE, row * nev, dilE, nev) =
                   peram[rnd_id.first]
-                      .block((t1 * 4 + row) * nev, (b2 * dilD + col) * dilE, nev, dilE)
+                      .block((t1 * 4 + row) * nev, (b1 * dilD + col) * dilE, nev, dilE)
                       .adjoint() *
                   meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
             else
               M.block(col * dilE, row * nev, dilE, nev) =
                   peram[rnd_id.first]
-                      .block((t1 * 4 + row) * nev, (b2 * dilD + col) * dilE, nev, dilE)
+                      .block((t1 * 4 + row) * nev, (b1 * dilD + col) * dilE, nev, dilE)
                       .adjoint() *
                   meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
             // gamma_5 trick

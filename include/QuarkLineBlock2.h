@@ -17,6 +17,14 @@
 #include <iostream>
 #include <string>
 
+template <typename T, size_t n>
+void print(std::array<T, n> const &a) {
+  for (auto const &elem : a) {
+    std::cout << elem << "\t";
+  }
+  std::cout << std::endl;
+}
+
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
  public:
@@ -33,6 +41,11 @@ class QuarkLineBlock2 {
 
   Value const &operator[](Key const &key) {
     if (Ql.count(key) == 0) {
+#pragma omp critical(cout)
+      {
+        std::cout << "QuarkLineBlock::operator[]\t";
+        print(key);
+      }
       build(key);
     }
 
