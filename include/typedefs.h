@@ -275,9 +275,10 @@ inline bool operator==(
     VdaggerVRandomLookup const &first, 
     VdaggerVRandomLookup const second){
 
-  if((first.id_ric_lookup == second.id_ric_lookup) &&
+  if((first.id_vdaggerv == second.id_vdaggerv) &&
      (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
-     (first.id_vdaggerv == second.id_vdaggerv))
+     (first.gamma == second.gamma) &&
+     (first.rnd_vec_ids == second.rnd_vec_ids))
     return true;
   else
     return false;
@@ -369,11 +370,10 @@ inline bool operator==(
     QuarklineQ2Indices const &first, 
     QuarklineQ2Indices const second){
 
-  if((first.id_peram1 == second.id_peram1) &&
-     (first.id_peram2 == second.id_peram2) &&
-     (first.gamma == second.gamma) &&
+  if((first.id_vdaggerv == second.id_vdaggerv) &&
      (first.need_vdaggerv_dag == second.need_vdaggerv_dag) &&
-     (first.id_vdaggerv == second.id_vdaggerv))
+     (first.gamma == second.gamma) &&
+     (first.rnd_vec_ids == second.rnd_vec_ids))
     return true;
   else
     return false;

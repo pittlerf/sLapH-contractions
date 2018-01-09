@@ -62,6 +62,25 @@ struct DilutedFactorLookup{
  */
 class Correlators {
 
+public:
+  // Constructor
+  Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
+               const size_t nev, const CorrelatorLookup& corr_lookup,
+               OperatorLookup const &operator_lookup,
+               QuarklineLookup const &quark_lookup);
+  // Standard Destructor
+  ~Correlators () {};
+
+  /*! Call all functions building a correlator */
+  void contract(OperatorsForMesons const &meson_operator,
+                RandomVector const &randomvectors,
+                Perambulator const &perambulators,
+                OperatorLookup const &operator_lookup,
+                CorrelatorLookup const &corr_lookup, 
+                QuarklineLookup const &quark_lookup,
+                std::string const output_path,
+                std::string const output_filename);
+
 private:
   /*! @todo that should not be here but taken from Globaldata */
   const size_t Lt, dilT, dilE, nev;
@@ -255,22 +274,4 @@ private:
                   std::string const output_path,
                   std::string const output_filename);
 
-public:
-  // Constructor
-  Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
-               const size_t nev, const CorrelatorLookup& corr_lookup,
-               OperatorLookup const &operator_lookup,
-               QuarklineLookup const &quark_lookup);
-  // Standard Destructor
-  ~Correlators () {};
-
-  /*! Call all functions building a correlator */
-  void contract(OperatorsForMesons const &meson_operator,
-                RandomVector const &randomvectors,
-                Perambulator const &perambulators,
-                OperatorLookup const &operator_lookup,
-                CorrelatorLookup const &corr_lookup, 
-                QuarklineLookup const &quark_lookup,
-                std::string const output_path,
-                std::string const output_filename);
 };
