@@ -459,19 +459,23 @@ struct QuarkLineIndices {};
 template <>
 struct QuarkLineIndices<QuarkLineType::Q0> {
   typedef std::vector<VdaggerVRandomLookup> type;
+  static size_t constexpr num_times = 1;
 };
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q1> {
   typedef std::vector<QuarklineQ1Indices> type;
+  static size_t constexpr num_times = 2;
 };
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2L> {
   typedef std::vector<QuarklineQ2Indices> type;
+  static size_t constexpr num_times = 3;
 };
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2V> {
   typedef std::vector<QuarklineQ2Indices> type;
+  static size_t constexpr num_times = 3;
 };
