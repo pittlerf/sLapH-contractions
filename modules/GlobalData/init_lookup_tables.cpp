@@ -1890,35 +1890,7 @@ void GlobalData::init_lookup_tables() {
                        Q0_indices, Q2_indices, 
                        correlator_lookuptable);
     }
-
-//      std::vector<size_t> rnd_vec_id;
-//      rnd_vec_id.emplace_back(create_rnd_vec_id(quarks, 
-//                                            correlator.quark_numbers[0], 
-//                                            correlator.quark_numbers[1], false,
-//                                            operator_lookuptable.ricQ2_lookup));
-//      rnd_vec_id.emplace_back(create_rnd_vec_id(quarks, 
-//                                            correlator.quark_numbers[2], 
-//                                            correlator.quark_numbers[3], false,
-//                                            operator_lookuptable.ricQ2_lookup));
-//      std::vector<std::vector<size_t> > rvdvr_indices;
-//      build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-//                              quarkline_lookuptable.Q0,
-//                              rvdvr_indices);
-//      std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
-//                                  std::vector<size_t>(rvdvr_indices[0].size()));
-//      build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-//                      0, quantum_numbers, quarks, vdv_indices, 
-//                      operator_lookuptable.ricQ2_lookup,
-//                      quarkline_lookuptable.Q2V, Q2_indices);
-//      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
-//                      2, quantum_numbers, quarks, vdv_indices, 
-//                      operator_lookuptable.ricQ2_lookup,
-//                      quarkline_lookuptable.Q2V, Q2_indices);
-//      build_C4cC_lookup(quantum_numbers, hdf5_dataset_name, 
-//                        rvdvr_indices, Q2_indices, correlator_lookuptable);
-//    }
     else if (correlator.type == "C4+B") {
-
       std::vector<std::vector<size_t> > Q0_indices(quantum_numbers.size(),
                             std::vector<size_t>(quantum_numbers[0].size()));
 
@@ -1960,33 +1932,6 @@ void GlobalData::init_lookup_tables() {
                        Q0_indices, Q2_indices, 
                        correlator_lookuptable);
     }
-
-//      std::vector<size_t> rnd_vec_id;
-//      rnd_vec_id.emplace_back(create_rnd_vec_id(quarks, 
-//                                            correlator.quark_numbers[0], 
-//                                            correlator.quark_numbers[1], false,
-//                                            operator_lookuptable.ricQ2_lookup));
-//      rnd_vec_id.emplace_back(create_rnd_vec_id(quarks, 
-//                                            correlator.quark_numbers[2], 
-//                                            correlator.quark_numbers[3], false,
-//                                            operator_lookuptable.ricQ2_lookup));
-//      std::vector<std::vector<size_t> > rvdvr_indices;
-//      build_rVdaggerVr_lookup(rnd_vec_id, vdv_indices,
-//                              quarkline_lookuptable.Q0,
-//                              rvdvr_indices);
-//      std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
-//                                  std::vector<size_t>(rvdvr_indices[0].size()));
-//      build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
-//                      0, quantum_numbers, quarks, vdv_indices, 
-//                      operator_lookuptable.ricQ2_lookup,
-//                      quarkline_lookuptable.Q2L, Q2_indices);
-//      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
-//                      2, quantum_numbers, quarks, vdv_indices, 
-//                      operator_lookuptable.ricQ2_lookup,
-//                      quarkline_lookuptable.Q2L, Q2_indices);
-//      build_C4cB_lookup(quantum_numbers, hdf5_dataset_name, 
-//                        rvdvr_indices, Q2_indices, correlator_lookuptable);
-//    }
     else if (correlator.type == "C20V") {
 
       std::vector<std::vector<size_t> > Q1_indices(quantum_numbers.size(),
