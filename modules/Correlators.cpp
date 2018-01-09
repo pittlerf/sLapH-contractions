@@ -217,8 +217,6 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
     for (int t = 0; t < Lt; ++t) {
       auto const b = dilution_scheme.time_to_block(t);
 
-      quarklines.build_Q1_one_t(t, b);
-
       for (const auto &c_look : corr_lookup) {
         corr_part_trQ1[c_look.id][t] =
             factor_to_trace(quarklines[{t, b}].at({c_look.lookup[0]}));
@@ -320,8 +318,6 @@ void Correlators::build_corr0(RandomVector const &randomvectors,
       // done eventually, so this is symmetric.
 
       auto const block_pair = dilution_scheme[b];
-
-      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
@@ -495,7 +491,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q2V> quarklines_Q2V(
+    QuarkLineBlock<QuarkLineType::Q2> quarklines_Q2V(
         dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
     QuarkLineBlock<QuarkLineType::Q0> quarklines_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
@@ -533,7 +529,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
               dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup};
 
           corrC[c_look.id][t1][t2] =
-              trace<QuarkLineType::Q2V, QuarkLineType::Q0>(quarklines_Q2V,
+              trace<QuarkLineType::Q2, QuarkLineType::Q0>(quarklines_Q2V,
                                                            quarklines_Q0,
                                                            slice_pair.source(),
                                                            slice_pair.sink_block(),
@@ -754,7 +750,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
-    QuarkLineBlock<QuarkLineType::Q2V> quarkline_Q2V(
+    QuarkLineBlock<QuarkLineType::Q2> quarkline_Q2V(
         dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
 
     // creating memory arrays M1, M2 for intermediate storage of Quarklines
@@ -767,7 +763,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
     for (const auto &c_look : corr_lookup) {
 
       try {
-        check_random_combinations<QuarkLineType::Q2V>(
+        check_random_combinations<QuarkLineType::Q2>(
             std::string("C4cC"), c_look.lookup, ric_lookup, dil_fac_lookup.Q0,
             dil_fac_lookup.Q2V);
       } catch (const std::length_error &le) {
@@ -957,7 +953,7 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, 
         dil_fac_lookup.Q1);
 
-QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
+QuarkLineBlock2<QuarkLineType::Q2> quarklines_Q2(
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, 
         dil_fac_lookup.Q2L);
 
@@ -966,10 +962,6 @@ QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
       auto const block_pair = dilution_scheme[b];
 
       std::cout << block_pair << std::endl;
-
-      quarklines_Q0.build_block_pair(block_pair);
-      quarklines_Q1.build_block_pair(block_pair);
-      quarklines_Q2.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1240,22 +1232,19 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
     QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
 
-    QuarkLineBlock2<QuarkLineType::Q2L> quarkline_Q2L(randomvectors,
-                                                      perambulators,
-                                                      meson_operator,
-                                                      dilT,
-                                                      dilE,
-                                                      nev,
-                                                      dil_fac_lookup.Q2L);
+    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2L(randomvectors,
+                                                     perambulators,
+                                                     meson_operator,
+                                                     dilT,
+                                                     dilE,
+                                                     nev,
+                                                     dil_fac_lookup.Q2L);
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       // Create quarklines for all time combinations in block_pair
-
-      quarkline_Q0.build_block_pair(block_pair);
-      quarkline_Q2L.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1352,8 +1341,6 @@ void Correlators::build_C30(RandomVector const &randomvectors,
 
       std::cout << block_pair << std::endl;
 
-      quarklines.build_block_pair(block_pair);
-
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
@@ -1441,8 +1428,6 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
       auto const block_pair = dilution_scheme[b];
 
       std::cout << block_pair << std::endl;
-
-      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
@@ -1538,8 +1523,6 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
       auto const block_pair = dilution_scheme[b];
 
       std::cout << block_pair << std::endl;
-
-      quarklines.build_block_pair(block_pair);
 
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);

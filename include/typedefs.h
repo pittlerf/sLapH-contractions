@@ -395,7 +395,7 @@ struct QuarklineLookup{
 
 
 // Q0 formerly called rVdaggerVr
-enum class QuarkLineType {Q0, Q1, Q2};
+enum class QuarkLineType {Q0, Q1, Q2, Q2L, Q2V};
 
 /******************************************************************************/
 /*! All information needed to build and write the correlator given the 
@@ -470,6 +470,20 @@ struct QuarkLineIndices<QuarkLineType::Q1> {
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2> {
+  typedef std::vector<QuarklineQ2Indices> type;
+  static size_t constexpr num_times = 3;
+};
+
+
+template <>
+struct QuarkLineIndices<QuarkLineType::Q2L> {
+  typedef std::vector<QuarklineQ2Indices> type;
+  static size_t constexpr num_times = 3;
+};
+
+
+template <>
+struct QuarkLineIndices<QuarkLineType::Q2V> {
   typedef std::vector<QuarklineQ2Indices> type;
   static size_t constexpr num_times = 3;
 };

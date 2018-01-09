@@ -72,44 +72,6 @@ void M1xM2(Eigen::MatrixXcd &result,
 
 } // end of anonymous namespace 
 
-template<>
-void check_random_combinations<QuarkLineType::Q2V>(std::string const &diagram,
-                               std::vector<size_t> const &lookup,
-                               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                               std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               std::vector<QuarklineQ2Indices> const &Q2_lookup){
-  const auto &ric0 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric2 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric3 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
-
-  if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-      ric0.size() != ric3.size()) {
-    std::string error_message =
-        std::string("rnd combinations are not the same in ") + diagram;
-    throw std::length_error(error_message);
-   }
-}
-
-template<>
-void check_random_combinations<QuarkLineType::Q2L>(std::string const &diagram,
-                               std::vector<size_t> const &lookup,
-                               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                               std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               std::vector<QuarklineQ2Indices> const &Q2_lookup){
-  const auto &ric0 = ric_lookup[Q2_lookup[lookup[0]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[rvdaggervr_lookup[lookup[3]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric2 = ric_lookup[Q2_lookup[lookup[2]].id_ric_lookup].rnd_vec_ids;
-  const auto &ric3 = ric_lookup[rvdaggervr_lookup[lookup[1]].id_ric_lookup].rnd_vec_ids;
-
-  if (ric0.size() != ric1.size() || ric0.size() != ric2.size() ||
-      ric0.size() != ric3.size()) {
-    std::string error_message =
-        std::string("rnd combinations are not the same in ") + diagram;
-    throw std::length_error(error_message);
-   }
-}
-
 void Q1(std::vector<Eigen::MatrixXcd> &result, 
                     std::vector<Eigen::MatrixXcd> const &quarklines,
                     std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
@@ -251,8 +213,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 
 /*! corrC */
 template <>
-std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
-    QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
+std::vector<cmplx> trace<QuarkLineType::Q2, QuarkLineType::Q0>(
+    QuarkLineBlock<QuarkLineType::Q2> const &quarkline1,
     QuarkLineBlock<QuarkLineType::Q0> const &quarkline2,
     int const t1,
     int const b2,
