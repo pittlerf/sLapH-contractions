@@ -170,62 +170,65 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
   }
 }
 
-#if 0
-
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <>
 void QuarkLineBlock2<QuarkLineType::Q2V>::build_block_pair(
-    Perambulator const &peram,
-    OperatorsForMesons const &meson_operator,
-    DilutionIterator const &block_pair,
-    typename QuarkLineIndices<QuarkLineType::Q2V>::type const &quarkline_indices,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup) {
+    DilutionIterator const &block_pair) {
+  int const eigenspace_dirac_size = dilD * dilE;
+
   for (auto const slice_pair : block_pair.one_sink_slice()) {
     auto const t1 = slice_pair.source();
+    auto const b1 = slice_pair.sink_block();
     auto const b2 = slice_pair.sink_block();
 
-    Ql_id.push_front(std::make_pair(t1, b2));
+    Key const time_key = {b1, t1, b2};
 
-    // Effectively this is a right rotation.
-    std::rotate(Ql.rbegin(), Ql.rbegin() + 1, Ql.rend());
+    // We have already built this, therefore there is no need to do it again.
+    if (Ql.count(time_key) > 0) {
+      return;
+    }
 
-    for (const auto &qll : quarkline_indices) {
+    for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key){
+      auto const &op = quarkline_indices[operator_key];
       size_t rnd_counter = 0;
       int check = -1;
+
       Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(dilD * dilE, 4 * nev);
-      for (const auto &rnd_id : ric_lookup[qll.id_ric_lookup].rnd_vec_ids) {
+
+      for (const auto &rnd_id : op.rnd_vec_ids) {
         if (check != rnd_id.first) {  // this avoids recomputation
           for (int row = 0; row < dilD; row++) {
             for (int col = 0; col < 4; col++) {
-              if (!qll.need_vdaggerv_dag)
+              if (!op.need_vdaggerv_dag)
                 M.block(col * dilE, row * nev, dilE, nev) =
                     peram[rnd_id.first]
                         .block((t1 * 4 + row) * nev, (b2 * dilD + col) * dilE, nev, dilE)
                         .adjoint() *
-                    meson_operator.return_vdaggerv(qll.id_vdaggerv, t1);
+                    meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
               else
                 M.block(col * dilE, row * nev, dilE, nev) =
                     peram[rnd_id.first]
                         .block((t1 * 4 + row) * nev, (b2 * dilD + col) * dilE, nev, dilE)
                         .adjoint() *
-                    meson_operator.return_vdaggerv(qll.id_vdaggerv, t1).adjoint();
+                    meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
               // gamma_5 trick
               if (((row + col) == 3) || (abs(row - col) > 1))
                 M.block(col * dilE, row * nev, dilE, nev) *= -1.;
             }
           }
         }
-        Ql[0][qll.id][rnd_counter].setZero(dilD * dilE, dilD * dilE);
+        Eigen::MatrixXcd matrix =
+           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
-        const size_t gamma_id = qll.gamma[0];
+        const size_t gamma_id = op.gamma[0];
 
         for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
           const cmplx value = gamma_vec[gamma_id].value[block_dil];
           const size_t gamma_index = gamma_vec[gamma_id].row[block_dil];
           for (int row = 0; row < dilD; row++) {
             for (int col = 0; col < dilD; col++) {
-              Ql[0][qll.id][rnd_counter].block(row * dilE, col * dilE, dilE, dilE) +=
+              matrix.block(row * dilE, col * dilE, dilE, dilE) +=
                   value * M.block(row * dilE, block_dil * nev, dilE, nev) *
                   peram[rnd_id.second].block(
                       (t1 * 4 + gamma_index) * nev, (b2 * dilD + col) * dilE, nev, dilE);
@@ -234,11 +237,13 @@ void QuarkLineBlock2<QuarkLineType::Q2V>::build_block_pair(
         }
         check = rnd_id.first;
         rnd_counter++;
+
+        Ql[time_key][{operator_key}].push_back(
+          {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
       }
     }
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
