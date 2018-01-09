@@ -24,17 +24,17 @@ void multiply(OperatorToFactorMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
 
 #pragma omp critical(cout)
     {
-      std::cout << "multiply\t";
-      print(key);
+//      std::cout << "multiply\t";
+//      print(key);
 
-      MU_DEBUG(factor0.size());
-      for (auto const &elem : factor0) {
-        print(elem.first);
-      }
-      MU_DEBUG(factor1.size());
-      for (auto const &elem : factor1) {
-        print(elem.first);
-      }
+//      MU_DEBUG(factor0.size());
+//      for (auto const &elem : factor0) {
+//        print(elem.first);
+//      }
+//      MU_DEBUG(factor1.size());
+//      for (auto const &elem : factor1) {
+//        print(elem.first);
+//      }
     }
 
     auto const &f0 = factor0.at(key1);
@@ -501,52 +501,28 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q2V> quarklines_Q2V(
-        dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
-    QuarkLineBlock<QuarkLineType::Q0> quarklines_Q0(
-        dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
+    QuarkLineBlock2<QuarkLineType::Q0> quarklines_Q0(
+        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
+    QuarkLineBlock2<QuarkLineType::Q2> quarklines_Q2V(randomvectors,
+                                                      perambulators,
+                                                      meson_operator,
+                                                      dilT,
+                                                      dilE,
+                                                      nev,
+                                                      dil_fac_lookup.Q2V);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
 
-      quarklines_Q2V.build_block_pair(
-          perambulators, meson_operator, block_pair, dil_fac_lookup.Q2V, ric_lookup);
-      quarklines_Q0.build_block_pair(
-          randomvectors, meson_operator, block_pair, dil_fac_lookup.Q0, ric_lookup);
-
       for (auto const slice_pair : block_pair) {
-        auto const t1 = slice_pair.source();
-        auto const t2 = slice_pair.sink();
-
-        // building correlator
         for (const auto &c_look : corr_lookup) {
-          const auto &ric0 =
-              ric_lookup[dil_fac_lookup.Q2V[c_look.lookup[0]].id_ric_lookup].rnd_vec_ids;
-          const auto &ric1 = ric_lookup[  // just for checking
-                                 dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup]
-                                 .rnd_vec_ids;
-          if (ric0.size() != ric1.size()) {
-            std::cout << "rnd combinations are not the same in build_corrC" << std::endl;
-            exit(0);
-          }
-
-          std::vector<size_t> random_index_combination_ids{
-              dil_fac_lookup.Q2V[c_look.lookup[0]].id_ric_lookup,
-              dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup};
-
-          corrC[c_look.id][t1][t2] =
-              trace<QuarkLineType::Q2V, QuarkLineType::Q0>(quarklines_Q2V,
-                                                           quarklines_Q0,
-                                                           slice_pair.source(),
-                                                           slice_pair.sink_block(),
-                                                           slice_pair.sink(),
-                                                           c_look.lookup,
-                                                           ric_lookup,
-                                                           random_index_combination_ids,
-                                                           c_look.gamma[0],
-                                                           dilE,
-                                                           4);
+          corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
+              factor_to_trace(quarklines_Q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
+                              quarklines_Q2V[{slice_pair.sink_block(),
+                                              slice_pair.source(),
+                                              slice_pair.sink_block()}]
+                                  .at({c_look.lookup[0]}));
         }
       }
     }
@@ -591,10 +567,8 @@ void Correlators::build_C2c(std::vector<CorrInfo> const &corr_lookup,
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
-        for (const auto &corr :
-             corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()]) {
-          correlator[t] += corr;
-        }
+        auto const &c = corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+        correlator[t] += std::accumulate(std::begin(c), std::end(c), cmplx(0.0, 0.0));
       }
     }
     // normalisation
@@ -630,24 +604,15 @@ void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
   for (const auto &c_look : corr_lookup.C4cD) {
     std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
 
-    const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
-    const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
-
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        std::vector<size_t> random_index_combination_ids =
-            std::vector<size_t>({dil_fac_lookup.Q2V[id0].id_ric_lookup,
-                                 dil_fac_lookup.Q2V[id1].id_ric_lookup});
-
         /*! @todo Write move assignment for compcomp_t and give trtr return
          * parameter */
-        correlator[t] +=
-            trtr(corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-                 corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()],
-                 ric_lookup,
-                 random_index_combination_ids);
+        correlator[t] += inner_product(
+            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+            corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
       }
     }
 
@@ -688,24 +653,15 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
   for (const auto &c_look : corr_lookup.C4cV) {
     std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
 
-    const size_t id0 = corr_lookup.corrC[c_look.lookup[0]].lookup[0];
-    const size_t id1 = corr_lookup.corrC[c_look.lookup[1]].lookup[0];
-
     for (auto const block_pair : dilution_scheme) {
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        std::vector<size_t> random_index_combination_ids =
-            std::vector<size_t>({dil_fac_lookup.Q2V[id0].id_ric_lookup,
-                                 dil_fac_lookup.Q2V[id1].id_ric_lookup});
-
         /*! @todo Write move assignment for compcomp_t and give trtr return
          * parameter */
-        correlator[t] +=
-            trtr(corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                 corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()],
-                 ric_lookup,
-                 random_index_combination_ids);
+        correlator[t] += inner_product(
+            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+            corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
       }
     }
 

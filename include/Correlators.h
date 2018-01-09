@@ -78,7 +78,7 @@ private:
                    Perambulator const &perambulators,
                    std::vector<CorrInfo> const &corr_lookup);
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
-  array_corr corrC;
+  DilutedTraceCollection<2> corrC; 
   /*! Calculate tr(Q2V*rVdaggerVr) */
   void build_corrC(RandomVector const &randomvectors,
                    Perambulator const &perambulators,
