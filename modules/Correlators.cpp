@@ -491,7 +491,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
   {
     swatch.start();
 
-    QuarkLineBlock<QuarkLineType::Q2> quarklines_Q2V(
+    QuarkLineBlock<QuarkLineType::Q2V> quarklines_Q2V(
         dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
     QuarkLineBlock<QuarkLineType::Q0> quarklines_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
@@ -529,7 +529,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
               dil_fac_lookup.Q0[c_look.lookup[1]].id_ric_lookup};
 
           corrC[c_look.id][t1][t2] =
-              trace<QuarkLineType::Q2, QuarkLineType::Q0>(quarklines_Q2V,
+              trace<QuarkLineType::Q2V, QuarkLineType::Q0>(quarklines_Q2V,
                                                            quarklines_Q0,
                                                            slice_pair.source(),
                                                            slice_pair.sink_block(),
@@ -750,7 +750,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
         dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
-    QuarkLineBlock<QuarkLineType::Q2> quarkline_Q2V(
+    QuarkLineBlock<QuarkLineType::Q2V> quarkline_Q2V(
         dilT, dilE, nev, dil_fac_lookup.Q2V, ric_lookup);
 
     // creating memory arrays M1, M2 for intermediate storage of Quarklines
@@ -761,14 +761,6 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
     size_t M1_counter = 0;
     size_t M2_counter = 0;
     for (const auto &c_look : corr_lookup) {
-
-      try {
-        check_random_combinations<QuarkLineType::Q2>(
-            std::string("C4cC"), c_look.lookup, ric_lookup, dil_fac_lookup.Q0,
-            dil_fac_lookup.Q2V);
-      } catch (const std::length_error &le) {
-        std::cerr << "Length error: " << le.what() << '\n';
-      }
 
       size_t norm = 0;
 

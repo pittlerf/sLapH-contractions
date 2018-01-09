@@ -213,8 +213,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
 
 /*! corrC */
 template <>
-std::vector<cmplx> trace<QuarkLineType::Q2, QuarkLineType::Q0>(
-    QuarkLineBlock<QuarkLineType::Q2> const &quarkline1,
+std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
+    QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
     QuarkLineBlock<QuarkLineType::Q0> const &quarkline2,
     int const t1,
     int const b2,
