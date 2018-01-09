@@ -27,7 +27,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build_Q1_one_t(
     int const t1,
     int const t2_block) {
   int const eigenspace_dirac_size = dilD * dilE;
-  auto const time_key = std::make_pair(t1, t2_block);
+  Key const time_key = {t1, t2_block};
 
   // We have already built this, therefore there is no need to do it again.
   if (Ql.count(time_key) > 0) {
@@ -110,7 +110,7 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build_block_pair(
   for (auto const slice_pair : block_pair.one_sink_slice()) {
     auto const t1 = slice_pair.source();
 
-    auto const time_key = std::make_pair(t1, -1);
+    Key const time_key = {t1};
 
     // We have already built this, therefore there is no need to do it again.
     if (Ql.count(time_key) > 0) {
@@ -252,7 +252,7 @@ void QuarkLineBlock2<QuarkLineType::Q2L>::build_block_pair(
     auto const b1 = slice_pair.source_block();
     auto const b2 = slice_pair.sink_block();
 
-    auto const time_key = std::make_pair(t1, b2);
+    Key const time_key = {b1, t1, b2};
     
     // We have already built this, therefore there is no need to do it again.
     if (Ql.count(time_key) > 0) {

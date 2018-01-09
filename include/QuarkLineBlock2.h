@@ -20,6 +20,9 @@
 template <QuarkLineType qlt>
 class QuarkLineBlock2 {
  public:
+  using Key = std::array<int, QuarkLineIndices<qlt>::num_times>;
+  using Value = OperatorToFactorMap<1, 0>;
+
   QuarkLineBlock2(RandomVector const &random_vector,
                   Perambulator const &perambulator,
                   OperatorsForMesons const &_meson_operator,
@@ -28,18 +31,14 @@ class QuarkLineBlock2 {
                   size_t const nev,
                   typename QuarkLineIndices<qlt>::type const &quarkline_indices);
 
-  OperatorToFactorMap<1, 0> const &operator()(const int t, const int b) const {
-    /*! @todo catch when t,b is an invalid index */
-    auto const time_key = std::make_pair(t, b);
-
-    auto it = Ql.find(time_key);
-    if (it == Ql.end()) {
-      std::cout << "Tried to access " << t << " " << b << std::endl;
+  Value const &operator[](Key const &key) const {
+    if (Ql.count(key) == 0) {
+      std::cout << "Tried to access an element which does not exist\n";
       std::cout << "Size of the map: " << Ql.size() << std::endl;
       abort();
     }
 
-    return Ql.at(time_key);
+    return Ql.at(key);
   }
 
   void clear() { Ql.clear(); }
@@ -49,14 +48,7 @@ class QuarkLineBlock2 {
   void build_block_pair(DilutionIterator const &block_pair);
 
  private:
-  /*!
-    Containers for the three types of quark lines.
-
-    Indices:
-
-    1. Time slice
-    */
-  std::map<std::pair<int, int>, OperatorToFactorMap<1, 0>> Ql;
+  std::map<Key, Value> Ql;
 
   RandomVector const &rnd_vec;
   Perambulator const &peram;

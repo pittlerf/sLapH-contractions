@@ -221,7 +221,7 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
       for (const auto &c_look : corr_lookup) {
         corr_part_trQ1[c_look.id][t] =
-            factor_to_trace(quarklines(t, b).at({c_look.lookup[0]}));
+            factor_to_trace(quarklines[{t, b}].at({c_look.lookup[0]}));
       }
     }
 
@@ -325,11 +325,11 @@ void Correlators::build_corr0(RandomVector const &randomvectors,
 
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup) {
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] =
-              factor_to_trace(quarklines(slice_pair.source(), slice_pair.sink_block())
-                                  .at({c_look.lookup[0]}),
-                              quarklines(slice_pair.sink(), slice_pair.source_block())
-                                  .at({c_look.lookup[1]}));
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
+              quarklines[{slice_pair.source(), slice_pair.sink_block()}].at(
+                  {c_look.lookup[0]}),
+              quarklines[{slice_pair.sink(), slice_pair.source_block()}].at(
+                  {c_look.lookup[1]}));
         }
       }
     }
@@ -977,16 +977,18 @@ QuarkLineBlock2<QuarkLineType::Q2L> quarklines_Q2(
         OperatorToFactorMap<2, 1> L1;
         for (const auto &ids : quantum_num_ids) {
           multiply<1, 1, 0, 0>(L1,
-                         std::get<0>(ids),
-                         quarklines_Q0(slice_pair.source(), -1),
-                         quarklines_Q2(slice_pair.source(), slice_pair.sink_block()));
+                               std::get<0>(ids),
+                               quarklines_Q0[{slice_pair.source()}],
+                               quarklines_Q2[{slice_pair.source_block(),
+                                              slice_pair.source(),
+                                              slice_pair.sink_block()}]);
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
           auto const & ids = quantum_num_ids[i];
           C[i][t] += trace(
               L1[std::get<0>(ids)],
-              quarklines_Q1(slice_pair.sink(), slice_pair.source_block()).at(
+              quarklines_Q1[{slice_pair.sink(), slice_pair.source_block()}].at(
                   std::get<1>(ids)));
         }
       }
@@ -1435,17 +1437,18 @@ void Correlators::build_C30(RandomVector const &randomvectors,
 
         OperatorToFactorMap<2, 1> L1;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(L1,
-                               std::get<0>(ids),
-                               quarklines(slice_pair.source(), slice_pair.source_block()),
-                               quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(
+              L1,
+              std::get<0>(ids),
+              quarklines[{slice_pair.source(), slice_pair.source_block()}],
+              quarklines[{slice_pair.source(), slice_pair.sink_block()}]);
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
           auto const & ids = quantum_num_ids[i];
-          C[i][t] += trace(
-              L1[std::get<0>(ids)],
-              quarklines(slice_pair.sink(), slice_pair.source_block()).at(std::get<1>(ids)));
+          C[i][t] += trace(L1[std::get<0>(ids)],
+                           quarklines[{slice_pair.sink(), slice_pair.source_block()}].at(
+                               std::get<1>(ids)));
         }
       }
 
@@ -1525,15 +1528,17 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
         OperatorToFactorMap<2, 1> L1;
         OperatorToFactorMap<2, 1> L2;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(L1,
-                         ids[0],
-                         quarklines(slice_pair.sink(), slice_pair.source_block()),
-                         quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(
+              L1,
+              ids[0],
+              quarklines[{slice_pair.sink(), slice_pair.source_block()}],
+              quarklines[{slice_pair.source(), slice_pair.sink_block()}]);
 
-          multiply<1, 1, 0, 0>(L2,
-                         ids[1],
-                         quarklines(slice_pair.sink(), slice_pair.source_block()),
-                         quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(
+              L2,
+              ids[1],
+              quarklines[{slice_pair.sink(), slice_pair.source_block()}],
+              quarklines[{slice_pair.source(), slice_pair.sink_block()}]);
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
@@ -1620,15 +1625,17 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
         OperatorToFactorMap<2, 1> L1;
         OperatorToFactorMap<2, 1> L2;
         for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(L1,
-                               ids[0],
-                               quarklines(slice_pair.source(), slice_pair.source_block()),
-                               quarklines(slice_pair.source(), slice_pair.sink_block()));
+          multiply<1, 1, 0, 0>(
+              L1,
+              ids[0],
+              quarklines[{slice_pair.source(), slice_pair.source_block()}],
+              quarklines[{slice_pair.source(), slice_pair.sink_block()}]);
 
-          multiply<1, 1, 0, 0>(L2,
-                               ids[1],
-                               quarklines(slice_pair.sink(), slice_pair.sink_block()),
-                               quarklines(slice_pair.sink(), slice_pair.source_block()));
+          multiply<1, 1, 0, 0>(
+              L2,
+              ids[1],
+              quarklines[{slice_pair.sink(), slice_pair.sink_block()}],
+              quarklines[{slice_pair.sink(), slice_pair.source_block()}]);
         }
 
         for (int i = 0; i != quantum_num_ids.size(); ++i) {
