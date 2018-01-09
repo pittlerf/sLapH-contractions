@@ -28,33 +28,6 @@ class QuarkLineBlock2 {
                   size_t const nev,
                   typename QuarkLineIndices<qlt>::type const &quarkline_indices);
 
-  std::vector<DilutedFactor<0>> const &operator()(const int t,
-                                                  const int b,
-                                                  const size_t op_id) const {
-    /*! @todo catch when t,b is an invalid index */
-    auto const time_key = std::make_pair(t, b);
-    typename OperatorToFactorMap<1, 0>::key_type const key{op_id};
-
-    auto it = Ql.find(time_key);
-    if (it == Ql.end()) {
-      std::cout << "Tried to access " << t << " " << b << std::endl;
-      std::cout << "Size of the map: " << Ql.size() << std::endl;
-      abort();
-    }
-
-    auto const &Ql_elem = Ql.at(time_key);
-
-    auto it2 = Ql_elem.find(key);
-    if (it2 == Ql_elem.end()) {
-      std::cout << "Tried to access " << to_string<1, 0>(key) << std::endl;
-      std::cout << "Size of the map: " << Ql_elem.size() << std::endl;
-      print(Ql_elem);
-      abort();
-    }
-
-    return Ql_elem.at(key);
-  }
-
   OperatorToFactorMap<1, 0> const &operator()(const int t, const int b) const {
     /*! @todo catch when t,b is an invalid index */
     auto const time_key = std::make_pair(t, b);
