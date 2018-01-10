@@ -487,58 +487,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
 
   swatch.print();
 }
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void Correlators::build_C2c(std::vector<CorrInfo> const &corr_lookup,
-                            std::string const output_path,
-                            std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
 
-  StopWatch swatch("C2c");
-  swatch.start();
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C2+", output_filename, comp_type_factory_tr());
-
-  for (auto const &c_look : corr_lookup) {
-    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
-    //    if(c_look.outfile.find("Check") == 0){
-    //      for(int t1 = 0; t1 < Lt; t1++){
-    //        for(const auto& corr : corrC[c_look.lookup[0]][t1][t1]){
-    //          correlator[t1] += corr;
-    //        }
-    //      }
-    //      // normalisation
-    //      for(auto& corr : correlator){
-    //        corr /= corrC[c_look.lookup[0]][0][0].size();
-    //      }
-    //      // write data to file
-    //      filehandle.write(correlator, c_look);
-    //    }
-    //    else{
-    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-    for (auto const block_pair : dilution_scheme) {
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-        auto const &c = corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
-        correlator[t] += std::accumulate(std::begin(c), std::end(c), cmplx(0.0, 0.0));
-      }
-    }
-    // normalisation
-    for (auto &corr : correlator) {
-      corr /= Lt * corrC[c_look.lookup[0]][0][0].size();
-    }
-    // write data to file
-    filehandle.write(correlator, c_look);
-    //    }
-  }
-
-  swatch.stop();
-  swatch.print();
-}
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
@@ -761,7 +710,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
-  build_C2c(corr_lookup.C2c, output_path, output_filename);
   build_C4cD(corr_lookup, output_path, output_filename);
   build_C4cV(corr_lookup, output_path, output_filename);
 
@@ -776,6 +724,8 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
+
+  diagrams.emplace_back(new C2c(corr_lookup.C2c));
 
   diagrams.emplace_back(new C3c(corr_lookup.C3c));
   diagrams.emplace_back(new C30(corr_lookup.C30));

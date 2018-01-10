@@ -39,6 +39,22 @@ class Diagram {
 };
 
 /*****************************************************************************/
+/*                                    C2                                     */
+/*****************************************************************************/
+
+class C2c : public Diagram {
+ public:
+  C2c(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C2+"; }
+
+ private:
+  void contract_impl(std::vector<cmplx> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
+/*****************************************************************************/
 /*                                    C3                                     */
 /*****************************************************************************/
 
