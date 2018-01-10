@@ -14,9 +14,9 @@ C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup) {
   }
 }
 
-void C4cB::contract(std::vector<cmplx> &c,
-                    BlockIterator const &slice_pair,
-                    QuarkLineBlockCollection &q) {
+void C4cB::contract_impl(std::vector<cmplx> &c,
+                         BlockIterator const &slice_pair,
+                         QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
