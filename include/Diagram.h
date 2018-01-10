@@ -24,8 +24,12 @@ class Diagram {
 
   std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
 
+  //void build() { build_impl(); }
+
  private:
   std::vector<CorrInfo> const &corr_lookup_;
+
+  //void build_impl();
 };
 
 class DiagramComp : public Diagram {
@@ -42,6 +46,8 @@ class DiagramComp : public Diagram {
   virtual void contract_impl(std::vector<cmplx> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
+
+  //void build_impl() override { build<cmplx>(*this) }
 };
 
 class DiagramCompComp : public Diagram {
@@ -58,6 +64,8 @@ class DiagramCompComp : public Diagram {
   virtual void contract_impl(std::vector<compcomp_t> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
+
+  //void build_impl() override { build<compcomp_t>(*this) }
 };
 
 /*****************************************************************************/

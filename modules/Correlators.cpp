@@ -538,12 +538,20 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build(DiagramComp &diagram,
-                        RandomVector const &randomvectors,
-                        OperatorsForMesons const &meson_operator,
-                        Perambulator const &perambulators,
-                        std::string const output_path,
-                        std::string const output_filename) {
+void build_comp(DiagramComp &diagram,
+           RandomVector const &randomvectors,
+           OperatorsForMesons const &meson_operator,
+           Perambulator const &perambulators,
+           std::string const output_path,
+           std::string const output_filename,
+           const size_t Lt,
+           const size_t dilT,
+           const size_t dilE,
+           const size_t nev,
+           DilutedFactorLookup const &dil_fac_lookup,
+           DilutedTraceCollection<2> &corr0,
+           DilutedTraceCollection<2> &corrC,
+           DilutedTraceCollection2<1> &corr_part_trQ1) {
   if (diagram.corr_lookup().empty())
     return;
 
@@ -694,11 +702,19 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C40C(corr_lookup.C40C));
 
   for (auto &diagram : diagrams) {
-    build(*diagram.get(),
-          randomvectors,
-          meson_operator,
-          perambulators,
-          output_path,
-          output_filename);
+    build_comp(*diagram.get(),
+               randomvectors,
+               meson_operator,
+               perambulators,
+               output_path,
+               output_filename,
+               Lt,
+               dilT,
+               dilE,
+               nev,
+               dil_fac_lookup,
+               corr0,
+               corrC,
+               corr_part_trQ1);
   }
 }
