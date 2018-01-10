@@ -138,19 +138,6 @@ private:
                   std::string const output_path,
                   std::string const output_filename);
 
-  /*! Build neutral 3pt correlation function 
-   *  @f{align}{
-   *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} 
-   *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
-   *  @f}
-   */
-  void build_C30(RandomVector const &randomvectors,
-                   OperatorsForMesons const &meson_operator, 
-                  Perambulator const &perambulators,
-                  std::vector<CorrInfo> const &corr_lookup,
-                  std::string const output_path,
-                  std::string const output_filename);
 
   /*! Build neutral 4pt correlation function: Direct diagram
    *  @f{align}{
@@ -174,34 +161,7 @@ private:
   void build_C40V(std::vector<CorrInfo> const &corr_lookup,
                   std::string const output_path,
                   std::string const output_filename);
-  /*! Build neutral 4pt correlation function: Cross diagram
-   *  @f{align}{
-   *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
-   *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} 
-   *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
-   *  @f}
-   */
-  void build_C40C(RandomVector const &randomvectors,
-                  OperatorsForMesons const &meson_operator, 
-                  Perambulator const &perambulators,
-                  std::vector<CorrInfo> const &corr_lookup,
-                  std::string const output_path,
-                  std::string const output_filename);
-  /*! Build neutral 4pt correlation function: Box diagram
-   *  @f{align}{
-   *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
-   *                D_\mathtt{Q2}^{-1}(t'|t') \Gamma_\mathtt{Op2} 
-   *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
-   *  @f}
-   */
-  void build_C40B(RandomVector const &randomvectors,
-                  OperatorsForMesons const &meson_operator, 
-                  Perambulator const &perambulators,
-                  std::vector<CorrInfo> const &corr_lookup,
-                  std::string const output_path,
-                  std::string const output_filename);
+
   /*! Build charged 2pt correlation function 
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5  \Gamma_\mathtt{Op0} 
@@ -211,19 +171,7 @@ private:
   void build_C2c(std::vector<CorrInfo> const &corr_lookup,
                  std::string const output_path,
                  std::string const output_filename);
-  /*! Build neutral 3pt correlation function 
-   *  @f{align}{
-   *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} 
-   *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
-   *  @f}
-   */
-  void build_C3c(RandomVector const &randomvectors,
-                 OperatorsForMesons const &meson_operator,
-                 Perambulator const &perambulators,
-                 std::vector<CorrInfo> const &corr_lookup,
-                 std::string const output_path,
-                 std::string const output_filename);
+
   /*! Build charged 4pt correlation function: Direct diagram
    *  @f{align}{
    *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
@@ -246,28 +194,7 @@ private:
   void build_C4cV(CorrelatorLookup const &corr_lookup,
                   std::string const output_path,
                   std::string const output_filename);
-  /*! Build charged 4pt correlation function: Cross diagram
-   *  @f{align}{
-   *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
-   *                \gamma_5 D_\mathtt{Q2}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2} 
-   *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
-   *  @f}
-   */
-  void build_C4cC(RandomVector const &randomvectors,
-                  OperatorsForMesons const &meson_operator,
-                  Perambulator const &perambulators,
-                  std::vector<CorrInfo> const &corr_lookup,
-                  std::string const output_path,
-                  std::string const output_filename);
-  /*! Build charged 4pt correlation function: Box diagram
-   *  @f{align}{
-   *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0} 
-   *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
-   *                \gamma_5 D_\mathtt{Q2}^{-1}(t'|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2} 
-   *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
-   *  @f}
-   */
+
   void build(Diagram &diagram,
              RandomVector const &randomvectors,
              OperatorsForMesons const &meson_operator,

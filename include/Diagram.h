@@ -12,7 +12,7 @@ struct QuarkLineBlockCollection {
 
 class Diagram {
  public:
-   Diagram (std::vector<CorrInfo> const &corr_lookup) : corr_lookup_(corr_lookup) {}
+  Diagram(std::vector<CorrInfo> const &corr_lookup) : corr_lookup_(corr_lookup) {}
 
   virtual ~Diagram() {}
 
@@ -38,6 +38,13 @@ class Diagram {
 /*                                    C3                                     */
 /*****************************************************************************/
 
+/*! Build neutral 3pt correlation function
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
+ *  @f}
+ */
 class C3c : public Diagram {
  public:
   C3c(std::vector<CorrInfo> const &corr_lookup);
@@ -52,6 +59,13 @@ class C3c : public Diagram {
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
 };
 
+/*! Build neutral 3pt correlation function
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
+ *  @f}
+ */
 class C30 : public Diagram {
  public:
   C30(std::vector<CorrInfo> const &corr_lookup);
@@ -70,6 +84,14 @@ class C30 : public Diagram {
 /*                                    C4                                     */
 /*****************************************************************************/
 
+/*! Build charged 4pt correlation function: Box diagram
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                \gamma_5 D_\mathtt{Q2}^{-1}(t'|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C4cB : public Diagram {
  public:
   C4cB(std::vector<CorrInfo> const &corr_lookup);
@@ -84,6 +106,14 @@ class C4cB : public Diagram {
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
 
+/*! Build neutral 4pt correlation function: Box diagram
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                D_\mathtt{Q2}^{-1}(t'|t') \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C40B : public Diagram {
  public:
   C40B(std::vector<CorrInfo> const &corr_lookup);
@@ -98,6 +128,14 @@ class C40B : public Diagram {
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
 
+/*! Build charged 4pt correlation function: Cross diagram
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                \gamma_5 D_\mathtt{Q2}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C4cC : public Diagram {
  public:
   C4cC(std::vector<CorrInfo> const &corr_lookup);
@@ -112,6 +150,14 @@ class C4cC : public Diagram {
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
 
+/*! Build neutral 4pt correlation function: Cross diagram
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
+ *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C40C : public Diagram {
  public:
   C40C(std::vector<CorrInfo> const &corr_lookup);
