@@ -229,45 +229,6 @@ struct OperatorLookup {
  *  combinations there are lookuptables in OperatorLookup. This struct contains
  *  the id's of vdaggerv and ric which belong together.
  */
-struct VdaggerVRandomLookup {
-  /*! id of vdaggerv_lookup in OperatorLookup */
-  size_t id_vdaggerv;
-  /*! Flag that indicates whether VdaggerV must be daggered (prior to
-   *  multiplication with random vectors) to get the correct quantum numbers
-   */
-  bool need_vdaggerv_daggering;
-
-  /*! List of necessarry gamma combinations */
-  std::vector<int> gamma;
-
-  /*! The entries of the pair correspond to the first and second random index.
-   *  List of all possible combinations of random vector indices for quarks
-   *  specified by @em id_q1 and @em id_q2
-   */
-  std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
-
-  VdaggerVRandomLookup(const size_t id_vdaggerv,
-                       const bool need_vdaggerv_daggering,
-                       const std::vector<int> gamma,
-                       const std::vector<std::pair<size_t, size_t>> rnd_vec_ids)
-      : id_vdaggerv(id_vdaggerv),
-        need_vdaggerv_daggering(need_vdaggerv_daggering),
-        gamma(gamma),
-        rnd_vec_ids(rnd_vec_ids) {};
-};
-
-inline bool operator==(VdaggerVRandomLookup const &first,
-                       VdaggerVRandomLookup const second) {
-  if ((first.id_vdaggerv == second.id_vdaggerv) &&
-      (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
-      (first.gamma == second.gamma) && (first.rnd_vec_ids == second.rnd_vec_ids))
-    return true;
-  else
-    return false;
-}
-
-using QuarklineQ0Indices = VdaggerVRandomLookup;
-/******************************************************************************/
 /*! Indices needed to uniquely identify Q1 objects
  *
  *  Because vdaggerv is diagonal in dirac space, gamma may be factored out and
@@ -275,34 +236,6 @@ using QuarklineQ0Indices = VdaggerVRandomLookup;
  *
  *    Q1 = rvdaggerv * gamma * peram
  */
-struct QuarklineQ1Indices {
-  /*! Identifies physical content of @f$ V^dagger V @f$ */
-  size_t id_vdaggerv;
-  /*! Flag that indicates whether VdaggerV must be daggered (prior to
-   *  multiplication with random vectors) to get the correct quantum numbers
-   */
-  bool need_vdaggerv_daggering;
-
-  /*! List of necessarry gamma combinations */
-  std::vector<int> gamma;
-
-  /*! The entries of the pair correspond to the first and second random index.
-   *  List of all possible combinations of random vector indices for quarks
-   *  specified by @em id_q1 and @em id_q2
-   */
-  std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
-};
-
-inline bool operator==(QuarklineQ1Indices const &first, QuarklineQ1Indices const second) {
-  if ((first.id_vdaggerv == second.id_vdaggerv) &&
-      (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
-      (first.gamma == second.gamma) && (first.rnd_vec_ids == second.rnd_vec_ids))
-    return true;
-  else
-    return false;
-}
-
-/******************************************************************************/
 /*! Indices needed to uniquely identify Q2 objects
  *
  *  Because vdaggerv is diagonal in dirac space, gamma may be factored out.
@@ -313,32 +246,6 @@ inline bool operator==(QuarklineQ1Indices const &first, QuarklineQ1Indices const
  *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv *
  *          gamma * peram2
  */
-struct QuarklineQ2Indices {
-  size_t id;
-  /*! Identifies physical content of vdaggerv */
-  size_t id_vdaggerv;
-  /*! Flag that indicates whether VdaggerV must be daggered (prior to
-   *  multiplication with random vectors) to get the correct physical content
-   */
-  bool need_vdaggerv_dag;
-  /*! List of necessarry gamma combinations */
-  std::vector<int> gamma; 
-  /*! The entries of the pair correspond to the first and second random index.
-   *  List of all possible combinations of random vector indices for quarks
-   *  specified by @em id_q1 and @em id_q2
-   */
-  std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
-};
-
-inline bool operator==(QuarklineQ2Indices const &first, QuarklineQ2Indices const second) {
-  if ((first.id_vdaggerv == second.id_vdaggerv) &&
-      (first.need_vdaggerv_dag == second.need_vdaggerv_dag) &&
-      (first.gamma == second.gamma) && (first.rnd_vec_ids == second.rnd_vec_ids))
-    return true;
-  else
-    return false;
-}
-
 struct QuarklineIndices {
   /*! Identifies physical content of @f$ V^dagger V @f$ */
   size_t id_vdaggerv;
@@ -375,8 +282,8 @@ inline bool operator==(QuarklineIndices const &first, QuarklineIndices const sec
 struct QuarklineLookup {
   std::vector<QuarklineIndices> Q0;
   std::vector<QuarklineIndices> Q1;
-  std::vector<QuarklineQ2Indices> Q2V;
-  std::vector<QuarklineQ2Indices> Q2L;
+  std::vector<QuarklineIndices> Q2V;
+  std::vector<QuarklineIndices> Q2L;
 };
 
 // Q0 formerly called rVdaggerVr
@@ -432,9 +339,6 @@ struct CorrelatorLookup {
   std::vector<CorrInfo> C4cB;
 };
 
-/*! typetrait class which allows to use QuarklineQ1Indices for Q1 and
- *  QuarklineQ2Indices for Q2
- */
 template <QuarkLineType qlt>
 struct QuarkLineIndices {};
 
@@ -455,19 +359,19 @@ struct QuarkLineIndices<QuarkLineType::Q1> {
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2> {
-  typedef std::vector<QuarklineQ2Indices> type;
+  typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2L> {
-  typedef std::vector<QuarklineQ2Indices> type;
+  typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
 struct QuarkLineIndices<QuarkLineType::Q2V> {
-  typedef std::vector<QuarklineQ2Indices> type;
+  typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };
 

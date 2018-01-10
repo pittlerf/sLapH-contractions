@@ -31,8 +31,8 @@
 struct DilutedFactorLookup{
   std::vector<QuarklineIndices> const Q0;  
   std::vector<QuarklineIndices> const Q1;
-  std::vector<QuarklineQ2Indices> const Q2V;
-  std::vector<QuarklineQ2Indices> const Q2L;
+  std::vector<QuarklineIndices> const Q2V;
+  std::vector<QuarklineIndices> const Q2L;
 };
 
 /******************************************************************************/

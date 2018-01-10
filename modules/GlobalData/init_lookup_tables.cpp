@@ -689,7 +689,7 @@ static void build_Q2_lookup(const size_t operator_id,
          const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
          std::vector<std::vector<std::pair<size_t, bool> > > const &vdv_indices,
          std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
-         std::vector<QuarklineQ2Indices>& Q2,
+         std::vector<QuarklineIndices>& Q2,
          std::vector<std::vector<size_t> >& Q2_indices){
 
   for(size_t row = 0; row < quantum_numbers.size(); row++){
@@ -701,8 +701,7 @@ static void build_Q2_lookup(const size_t operator_id,
     // If Q2 already contains the particular row and physical content, just 
     // set the index to the existing QuarklineQ2Indicies, otherwise generate
     // it and set the index to the new one.
-    QuarklineQ2Indices const candidate{Q2.size(),
-                                       id_vdaggerv,
+    QuarklineIndices const candidate{id_vdaggerv,
                                        need_vdaggerv_daggering,
                                        qn.gamma,
                                        rnd_vec_ids};

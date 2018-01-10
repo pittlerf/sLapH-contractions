@@ -162,7 +162,7 @@ void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
       if (check != rnd_id.first) {  // this avoids recomputation
         for (int row = 0; row < dilD; row++) {
           for (int col = 0; col < 4; col++) {
-            if (!op.need_vdaggerv_dag)
+            if (!op.need_vdaggerv_daggering)
               M.block(col * dilE, row * nev, dilE, nev) =
                   peram[rnd_id.first]
                       .block((t1 * 4 + row) * nev, (b1 * dilD + col) * dilE, nev, dilE)
