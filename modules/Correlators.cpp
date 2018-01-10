@@ -1275,14 +1275,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
              output_path,
              output_filename);
 
-  C4cB c4cB(corr_lookup.C4cB);
-  build(c4cB,
-        randomvectors,
-        meson_operator,
-        perambulators,
-        output_path,
-        output_filename);
-
   build_C30(randomvectors,
             meson_operator,
             perambulators,
@@ -1296,11 +1288,17 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
              output_path,
              output_filename);
 
-  C40B c40B(corr_lookup.C40B);
-  build(c40B,
-        randomvectors,
-        meson_operator,
-        perambulators,
-        output_path,
-        output_filename);
+  // If we had C++14, we could do `make_unique`.
+  std::vector<std::unique_ptr<Diagram>> diagrams;
+  diagrams.emplace_back(new C4cB(corr_lookup.C4cB));
+  diagrams.emplace_back(new C40B(corr_lookup.C40B));
+
+  for (auto &diagram : diagrams) {
+    build(*diagram.get(),
+          randomvectors,
+          meson_operator,
+          perambulators,
+          output_path,
+          output_filename);
+  }
 }
