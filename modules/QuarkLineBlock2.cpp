@@ -25,6 +25,75 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+// rvdaggervr is calculated by multiplying vdaggerv with the same quantum
+// numbers with random vectors from right and left.
+template <>
+void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
+  int const eigenspace_dirac_size = dilD * dilE;
+
+  auto const t1 = time_key[0];
+
+  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+    auto const &op = quarkline_indices[operator_key];
+    const size_t gamma_id = op.gamma[0];
+    Eigen::MatrixXcd vdv;
+    if (op.need_vdaggerv_daggering == false)
+      vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
+    else
+      vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
+
+    size_t rnd_counter = 0;
+    int check = -1;
+    Eigen::MatrixXcd M;  // Intermediate memory
+
+    /*! Dilution of columns */
+    for (const auto &rnd_id : op.rnd_vec_ids) {
+      if (check != rnd_id.second) {  // this avoids recomputation
+        /*! Should be 4*new rows, but there is always just one entry not zero */
+        M = Eigen::MatrixXcd::Zero(nev, 4 * dilE);
+        for (size_t block = 0; block < 4; block++) {
+          for (size_t vec_i = 0; vec_i < nev; vec_i++) {
+            size_t blk = block + (vec_i + nev * t1) * 4;
+            M.block(0, vec_i % dilE + dilE * block, nev, 1) +=
+                vdv.col(vec_i) * rnd_vec(rnd_id.second, blk);
+          }
+        }
+      }
+
+      /*! Dilution of rows and creating a sparse matrix from smaller blocks */
+      Eigen::MatrixXcd matrix =
+          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
+
+      for (size_t block = 0; block < 4; block++) {
+        const cmplx value = gamma_vec[gamma_id].value[block];
+        const size_t gamma_index = gamma_vec[gamma_id].row[block];
+        for (size_t vec_i = 0; vec_i < nev; vec_i++) {
+          size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
+          matrix.block(vec_i % dilE + dilE * gamma_index, block * dilE, 1, dilE) +=
+              value * M.block(vec_i, block * dilE, 1, dilE) *
+              std::conj(rnd_vec(rnd_id.first, blk));
+        }
+      }
+
+      check = rnd_id.second;
+      rnd_counter++;
+
+      #pragma omp critical
+      {
+        MU_DEBUG(rnd_id.first);
+        MU_DEBUG(rnd_id.second);
+      }
+
+      Ql[time_key][{operator_key}].push_back(
+          {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
+    }
+  }
+
+}
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 template <>
 void QuarkLineBlock2<QuarkLineType::Q1>::build(Key const &time_key) {
@@ -70,79 +139,6 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build(Key const &time_key) {
           {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// rvdaggervr is calculated by multiplying vdaggerv with the same quantum
-// numbers with random vectors from right and left.
-template <>
-void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
-  int const eigenspace_dirac_size = dilD * dilE;
-
-  auto const t1 = time_key[0];
-
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
-    auto const &op = quarkline_indices[operator_key];
-    const size_t gamma_id = op.gamma[0];
-    Eigen::MatrixXcd vdv;
-    if (op.need_vdaggerv_daggering == false)
-      vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
-    else
-      vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
-
-    size_t rnd_counter = 0;
-    int check = -1;
-    Eigen::MatrixXcd M;  // Intermediate memory
-
-      #pragma omp critical
-      {
-        MU_DEBUG(op.id);
-      }
-
-    /*! Dilution of columns */
-    for (const auto &rnd_id : op.rnd_vec_ids) {
-      if (check != rnd_id.second) {  // this avoids recomputation
-        /*! Should be 4*new rows, but there is always just one entry not zero */
-        M = Eigen::MatrixXcd::Zero(nev, 4 * dilE);
-        for (size_t block = 0; block < 4; block++) {
-          for (size_t vec_i = 0; vec_i < nev; vec_i++) {
-            size_t blk = block + (vec_i + nev * t1) * 4;
-            M.block(0, vec_i % dilE + dilE * block, nev, 1) +=
-                vdv.col(vec_i) * rnd_vec(rnd_id.second, blk);
-          }
-        }
-      }
-
-      /*! Dilution of rows and creating a sparse matrix from smaller blocks */
-      Eigen::MatrixXcd matrix =
-          Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
-
-      for (size_t block = 0; block < 4; block++) {
-        const cmplx value = gamma_vec[gamma_id].value[block];
-        const size_t gamma_index = gamma_vec[gamma_id].row[block];
-        for (size_t vec_i = 0; vec_i < nev; vec_i++) {
-          size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
-          matrix.block(vec_i % dilE + dilE * gamma_index, block * dilE, 1, dilE) +=
-              value * M.block(vec_i, block * dilE, 1, dilE) *
-              std::conj(rnd_vec(rnd_id.first, blk));
-        }
-      }
-
-      check = rnd_id.second;
-      rnd_counter++;
-
-      #pragma omp critical
-      {
-        MU_DEBUG(rnd_id.first);
-        MU_DEBUG(rnd_id.second);
-      }
-
-      Ql[time_key][{operator_key}].push_back(
-          {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
-    }
-  }
-
 }
 
 // -----------------------------------------------------------------------------

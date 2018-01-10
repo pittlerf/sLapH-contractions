@@ -29,8 +29,8 @@
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup{
-  std::vector<VdaggerVRandomLookup> const Q0;  
-  std::vector<QuarklineQ1Indices> const Q1;
+  std::vector<QuarklineIndices> const Q0;  
+  std::vector<QuarklineIndices> const Q1;
   std::vector<QuarklineQ2Indices> const Q2V;
   std::vector<QuarklineQ2Indices> const Q2L;
 };
@@ -88,8 +88,6 @@ private:
   const size_t Lt, dilT, dilE, nev;
 
   DilutedFactorLookup const dil_fac_lookup;
-
-  std::vector<RandomIndexCombinationsQ2> const ric_lookup;
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   DilutedTraceCollection<2> corr0; 
