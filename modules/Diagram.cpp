@@ -140,6 +140,24 @@ void C4cV::contract_impl(std::vector<compcomp_t> &c,
 }
 
 /*****************************************************************************/
+/*                                   C40V                                    */
+/*****************************************************************************/
+
+C40V::C40V(std::vector<CorrInfo> const &corr_lookup) : DiagramCompComp(corr_lookup) {}
+
+void C40V::contract_impl(std::vector<compcomp_t> &c,
+                         BlockIterator const &slice_pair,
+                         QuarkLineBlockCollection &q) {
+  for (int i = 0; i != corr_lookup().size(); ++i) {
+    auto const &c_look = corr_lookup()[i];
+
+    c[i] +=
+        inner_product(q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+                      q.corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+  }
+}
+
+/*****************************************************************************/
 /*                                   C4cB                                    */
 /*****************************************************************************/
 

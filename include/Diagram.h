@@ -263,6 +263,18 @@ class C4cV : public DiagramCompComp {
                      QuarkLineBlockCollection &q) override;
 };
 
+class C40V : public DiagramCompComp {
+ public:
+  C40V(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C40V"; }
+
+ private:
+  void contract_impl(std::vector<compcomp_t> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
 /*! Build charged 4pt correlation function: Box diagram
  *  @f{align}{
  *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}

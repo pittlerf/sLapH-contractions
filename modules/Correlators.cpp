@@ -361,49 +361,6 @@ void Correlators::build_C40D(std::vector<CorrInfo> const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C40V(std::vector<CorrInfo> const &corr_lookup,
-                             std::string const output_path,
-                             std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("C40V");
-  swatch.start();
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C40V", output_filename, comp_type_factory<compcomp_t>());
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  for (const auto &c_look : corr_lookup) {
-    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
-
-    for (auto const block_pair : dilution_scheme) {
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-        correlator[t] += inner_product(
-            corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-            corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
-      }
-    }
-
-    // normalisation
-    for (auto &corr : correlator) {
-      corr /= Lt;
-    }
-
-    // write data to file
-    filehandle.write(correlator, c_look);
-  }
-
-  swatch.stop();
-  swatch.print();
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 void Correlators::build_corrC(RandomVector const &randomvectors,
                               Perambulator const &perambulators,
                               OperatorsForMesons const &meson_operator,
@@ -598,7 +555,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
 
   build_C40D(corr_lookup.C40D, output_path, output_filename);
-  build_C40V(corr_lookup.C40V, output_path, output_filename);
 
   // 3. Build all other correlation functions.
 
@@ -618,6 +574,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   diagrams.emplace_back(new C4cD(corr_lookup.C4cD));
   diagrams.emplace_back(new C4cV(corr_lookup.C4cV));
+  diagrams.emplace_back(new C40V(corr_lookup.C40V));
 
   for (auto &diagram : diagrams) {
     diagram->build(randomvectors,
