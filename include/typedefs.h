@@ -105,10 +105,13 @@ struct compcomp_t {
   double rere;   
   double reim;
   double imre;
-  double imim;   
-  compcomp_t(const double rere, const double reim, 
-             const double imre, const double imim) : 
-                              rere(rere), reim(reim), imre(imre), imim(imim) {};
+  double imim;
+
+  compcomp_t() : rere(0.0), reim(0.0), imre(0.0), imim(0.0) {}
+
+  compcomp_t(const double rere, const double reim, const double imre, const double imim)
+      : rere(rere), reim(reim), imre(imre), imim(imim) {}
+
   compcomp_t& operator+=(compcomp_t const &other){
     rere += other.rere;   
     reim += other.reim;

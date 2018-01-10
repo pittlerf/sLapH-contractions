@@ -16,12 +16,16 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 
 namespace {
 
+template <typename Numeric>
+H5::CompType comp_type_factory();
+
 /*! Creates compound datatype to write complex numbers from complex_t
  *  vectors to HDF5 file
  *
  *  @Returns cmplx_w   HDF5 compound datatype for complex numbers
  */
-H5::CompType comp_type_factory_tr() {
+template <>
+H5::CompType comp_type_factory<cmplx>() {
   H5::CompType cmplx_w(2 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
   cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
@@ -35,7 +39,8 @@ H5::CompType comp_type_factory_tr() {
  *
  *  @Returns cmplx_w   HDF5 compound datatype for structs of four doubles
  */
-H5::CompType comp_type_factory_trtr() {
+template <>
+H5::CompType comp_type_factory<compcomp_t>() {
   H5::CompType cmplxcmplx_w(4 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
   cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
@@ -138,7 +143,7 @@ class WriteHDF5Correlator {
   /*! The hdf5 compound datatype.
    *
    *  @see  H5::CompType comp_type_factory_tr()
-   *  @see  H5::CompType comp_type_factory_trtr()
+   *  @see  H5::CompType comp_type_factory<compcomp_t>()
    */
   H5::CompType comp_type;
 
@@ -234,7 +239,7 @@ void Correlators::build_C20V(std::vector<CorrInfo> const &corr_lookup,
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(
-      output_path, "C20V", output_filename, comp_type_factory_trtr());
+      output_path, "C20V", output_filename, comp_type_factory<compcomp_t>());
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -322,7 +327,7 @@ void Correlators::build_C40D(std::vector<CorrInfo> const &corr_lookup,
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(
-      output_path, "C40D", output_filename, comp_type_factory_trtr());
+      output_path, "C40D", output_filename, comp_type_factory<compcomp_t>());
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -368,7 +373,7 @@ void Correlators::build_C40V(std::vector<CorrInfo> const &corr_lookup,
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(
-      output_path, "C40V", output_filename, comp_type_factory_trtr());
+      output_path, "C40V", output_filename, comp_type_factory<compcomp_t>());
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -461,7 +466,7 @@ void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(
-      output_path, "C4+D", output_filename, comp_type_factory_trtr());
+      output_path, "C4+D", output_filename, comp_type_factory<compcomp_t>());
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -507,7 +512,7 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
   // every element of corr_lookup contains the same filename. Wlog choose the
   // first element
   WriteHDF5Correlator filehandle(
-      output_path, "C4+V", output_filename, comp_type_factory_trtr());
+      output_path, "C4+V", output_filename, comp_type_factory<compcomp_t>());
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -539,30 +544,31 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void build_comp(DiagramComp &diagram,
-                RandomVector const &randomvectors,
-                OperatorsForMesons const &meson_operator,
-                Perambulator const &perambulators,
-                std::string const output_path,
-                std::string const output_filename,
-                const size_t Lt,
-                const size_t dilT,
-                const size_t dilE,
-                const size_t nev,
-                DilutedFactorLookup const &dil_fac_lookup,
-                DilutedTraceCollection<2> &corr0,
-                DilutedTraceCollection<2> &corrC,
-                DilutedTraceCollection2<1> &corr_part_trQ1) {
+template <typename Numeric>
+void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
+                   RandomVector const &randomvectors,
+                   OperatorsForMesons const &meson_operator,
+                   Perambulator const &perambulators,
+                   std::string const output_path,
+                   std::string const output_filename,
+                   const size_t Lt,
+                   const size_t dilT,
+                   const size_t dilE,
+                   const size_t nev,
+                   DilutedFactorLookup const &dil_fac_lookup,
+                   DilutedTraceCollection<2> &corr0,
+                   DilutedTraceCollection<2> &corrC,
+                   DilutedTraceCollection2<1> &corr_part_trQ1) {
   if (diagram.corr_lookup().empty())
     return;
 
   StopWatch swatch(diagram.name());
 
   WriteHDF5Correlator filehandle(
-      output_path, diagram.name(), output_filename, comp_type_factory_tr());
+      output_path, diagram.name(), output_filename, comp_type_factory<Numeric>());
 
-  std::vector<std::vector<cmplx>> correlator(diagram.corr_lookup().size(),
-                                             std::vector<cmplx>(Lt, cmplx(.0, .0)));
+  std::vector<std::vector<Numeric>> correlator(diagram.corr_lookup().size(),
+                                             std::vector<Numeric>(Lt, Numeric{}));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -570,8 +576,8 @@ void build_comp(DiagramComp &diagram,
 #pragma omp parallel
   {
     swatch.start();
-    std::vector<std::vector<cmplx>> C(
-        Lt, std::vector<cmplx>(diagram.corr_lookup().size(), cmplx(.0, .0)));
+    std::vector<std::vector<Numeric>> C(
+        Lt, std::vector<Numeric>(diagram.corr_lookup().size(), Numeric{}));
 
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(

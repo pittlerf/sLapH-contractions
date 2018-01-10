@@ -99,20 +99,20 @@ class DiagramComp : public Diagram {
                   DilutedTraceCollection<2> &corr0,
                   DilutedTraceCollection<2> &corrC,
                   DilutedTraceCollection2<1> &corr_part_trQ1) override {
-    build_comp(*this,
-               randomvectors,
-               meson_operator,
-               perambulators,
-               output_path,
-               output_filename,
-               Lt,
-               dilT,
-               dilE,
-               nev,
-               dil_fac_lookup,
-               corr0,
-               corrC,
-               corr_part_trQ1);
+    build_diagram<cmplx>(*this,
+                         randomvectors,
+                         meson_operator,
+                         perambulators,
+                         output_path,
+                         output_filename,
+                         Lt,
+                         dilT,
+                         dilE,
+                         nev,
+                         dil_fac_lookup,
+                         corr0,
+                         corrC,
+                         corr_part_trQ1);
   }
 };
 
