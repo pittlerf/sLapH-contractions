@@ -107,6 +107,7 @@ add_executable(contract
 
   main/contract.cpp
   modules/Correlators.cpp
+  modules/Diagram.cpp
   modules/dilution-iterator.cpp
   modules/EigenVector.cpp
   modules/Gamma.cpp

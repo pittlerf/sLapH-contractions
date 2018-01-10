@@ -4,43 +4,14 @@
 
 #include "DilutedFactor.h"
 #include "QuarkLineBlock2.h"
+#include "Diagram.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "h5-wrapper.h"
 #include "typedefs.h"
 
-template <int n1, int n2, size_t rvecs1, size_t rvecs2>
-void multiply(OperatorToFactorMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
-              std::array<size_t, n1 + n2> const &key,
-              OperatorToFactorMap<n1, rvecs1> const &factor0,
-              OperatorToFactorMap<n2, rvecs2> const &factor1) {
-  if (L.count(key) == 0) {
-    std::array<size_t, n1> key1;
-    std::array<size_t, n2> key2;
-
-    std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
-    std::copy_n(std::begin(key) + n1, n2, std::begin(key2));
-
-#pragma omp critical(cout)
-    {
-//      std::cout << "multiply\t";
-//      print(key);
-
-//      MU_DEBUG(factor0.size());
-//      for (auto const &elem : factor0) {
-//        print(elem.first);
-//      }
-//      MU_DEBUG(factor1.size());
-//      for (auto const &elem : factor1) {
-//        print(elem.first);
-//      }
-    }
-
-    auto const &f0 = factor0.at(key1);
-    auto const &f1 = factor1.at(key2);
-
-    L[key] = f0 * f1;
-  }
+int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
+  return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
 namespace {
@@ -174,10 +145,6 @@ class WriteHDF5Correlator {
 };  // end of class WriteHDF5Correlator
 
 }  // end of anonymous namespace
-
-int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
-  return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
-}
 
 /******************************************************************************/
 /******************************************************************************/
@@ -909,12 +876,15 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
 #pragma omp parallel
   {
     swatch.start();
-    std::vector<std::vector<cmplx>> C(corr_lookup.size(),
-                                      std::vector<cmplx>(Lt, cmplx(.0, .0)));
+    std::vector<std::vector<cmplx>> C(
+        Lt, std::vector<cmplx>(corr_lookup.size(), cmplx(.0, .0)));
 
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
+
+    QuarkLineBlock2<QuarkLineType::Q1> quarkline_Q1(
+        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
 
     QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2L(randomvectors,
                                                      perambulators,
@@ -928,43 +898,24 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
     // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
-      // Create quarklines for all time combinations in block_pair
-
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        OperatorToFactorMap<2, 1> L1;
-        OperatorToFactorMap<2, 1> L2;
-        for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(L1,
-                               ids[0],
-                               quarkline_Q0[{slice_pair.source()}],
-                               quarkline_Q2L[{slice_pair.source_block(),
-                                              slice_pair.source(),
-                                              slice_pair.sink_block()}]);
-
-          multiply<1, 1, 0, 0>(L2,
-                               ids[1],
-                               quarkline_Q0[{slice_pair.sink()}],
-                               quarkline_Q2L[{slice_pair.sink_block(),
-                                              slice_pair.sink(),
-                                              slice_pair.source_block()}]);
-        }
-
-        for (int i = 0; i != quantum_num_ids.size(); ++i) {
-          auto const &ids = quantum_num_ids[i];
-          C[i][t] += trace(L1[ids[0]], L2[ids[1]]);
-        }
+        C4cB diagram(quantum_num_ids);
+        diagram.contract_slice_pair(
+            C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L);
       }
 
       quarkline_Q0.clear();
       quarkline_Q2L.clear();
+
     }  // loops over time end here
 #pragma omp critical
     {
       for (int i = 0; i != quantum_num_ids.size(); ++i) {
-        for (size_t t = 0; t < Lt; t++)
-          correlator[i][t] += C[i][t];
+        for (size_t t = 0; t < Lt; t++) {
+          correlator[i][t] += C[t][i];
+        }
       }
     }
     swatch.stop();

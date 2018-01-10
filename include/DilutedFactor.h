@@ -398,3 +398,37 @@ std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &tra
 
   return results;
 }
+
+template <int n1, int n2, size_t rvecs1, size_t rvecs2>
+void multiply(OperatorToFactorMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
+              std::array<size_t, n1 + n2> const &key,
+              OperatorToFactorMap<n1, rvecs1> const &factor0,
+              OperatorToFactorMap<n2, rvecs2> const &factor1) {
+  if (L.count(key) == 0) {
+    std::array<size_t, n1> key1;
+    std::array<size_t, n2> key2;
+
+    std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
+    std::copy_n(std::begin(key) + n1, n2, std::begin(key2));
+
+#pragma omp critical(cout)
+    {
+//      std::cout << "multiply\t";
+//      print(key);
+
+//      MU_DEBUG(factor0.size());
+//      for (auto const &elem : factor0) {
+//        print(elem.first);
+//      }
+//      MU_DEBUG(factor1.size());
+//      for (auto const &elem : factor1) {
+//        print(elem.first);
+//      }
+    }
+
+    auto const &f0 = factor0.at(key1);
+    auto const &f1 = factor1.at(key2);
+
+    L[key] = f0 * f1;
+  }
+}
