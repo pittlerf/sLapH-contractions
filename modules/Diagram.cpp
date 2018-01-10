@@ -1,6 +1,39 @@
 #include "Diagram.h"
 
 /*****************************************************************************/
+/*                                    C30                                    */
+/*****************************************************************************/
+
+C30::C30(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+  quantum_num_ids_.reserve(corr_lookup.size());
+
+  for (const auto &c_look : corr_lookup) {
+    quantum_num_ids_.push_back(
+        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
+                   std::array<size_t, 1>{c_look.lookup[1]}));
+  }
+}
+
+void C30::contract_impl(std::vector<cmplx> &c,
+                        BlockIterator const &slice_pair,
+                        QuarkLineBlockCollection &q) {
+  OperatorToFactorMap<2, 1> L1;
+  for (const auto &ids : quantum_num_ids_) {
+    multiply<1, 1, 0, 0>(L1,
+                         std::get<0>(ids),
+                         q.q1[{slice_pair.source(), slice_pair.source_block()}],
+                         q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
+  }
+
+  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+    auto const &ids = quantum_num_ids_[i];
+    c[i] +=
+        trace(L1[std::get<0>(ids)],
+              q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
+  }
+}
+
+/*****************************************************************************/
 /*                                   C4cB                                    */
 /*****************************************************************************/
 

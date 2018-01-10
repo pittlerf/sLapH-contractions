@@ -850,12 +850,6 @@ void Correlators::build_C30(RandomVector const &randomvectors,
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids;
-  quantum_num_ids.reserve(corr_lookup.size());
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids.push_back(
-        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-                   std::array<size_t, 1>{c_look.lookup[1]}));
-  }
 
 #pragma omp parallel
   {
@@ -968,15 +962,12 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_C40V(corr_lookup.C40V, output_path, output_filename);
 
   // 3. Build all other correlation functions.
-  build_C30(randomvectors,
-            meson_operator,
-            perambulators,
-            corr_lookup.C30,
-            output_path,
-            output_filename);
 
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
+
+  diagrams.emplace_back(new C30(corr_lookup.C30));
+
   diagrams.emplace_back(new C4cB(corr_lookup.C4cB));
   diagrams.emplace_back(new C40B(corr_lookup.C40B));
   diagrams.emplace_back(new C4cC(corr_lookup.C4cC));

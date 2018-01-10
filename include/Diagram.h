@@ -34,6 +34,28 @@ class Diagram {
   std::vector<CorrInfo> const &corr_lookup_;
 };
 
+/*****************************************************************************/
+/*                                    C3                                     */
+/*****************************************************************************/
+
+class C30 : public Diagram {
+ public:
+  C30(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C30"; }
+
+ private:
+  void contract_impl(std::vector<cmplx> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+
+  std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
+};
+
+/*****************************************************************************/
+/*                                    C4                                     */
+/*****************************************************************************/
+
 class C4cB : public Diagram {
  public:
   C4cB(std::vector<CorrInfo> const &corr_lookup);
