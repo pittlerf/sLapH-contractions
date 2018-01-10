@@ -131,7 +131,34 @@ class DiagramCompComp : public Diagram {
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
 
-  //void build_impl() override { build<compcomp_t>(*this) }
+  void build_impl(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator,
+                  Perambulator const &perambulators,
+                  std::string const output_path,
+                  std::string const output_filename,
+                  const size_t Lt,
+                  const size_t dilT,
+                  const size_t dilE,
+                  const size_t nev,
+                  DilutedFactorLookup const &dil_fac_lookup,
+                  DilutedTraceCollection<2> &corr0,
+                  DilutedTraceCollection<2> &corrC,
+                  DilutedTraceCollection2<1> &corr_part_trQ1) override {
+    build_diagram<compcomp_t>(*this,
+                              randomvectors,
+                              meson_operator,
+                              perambulators,
+                              output_path,
+                              output_filename,
+                              Lt,
+                              dilT,
+                              dilE,
+                              nev,
+                              dil_fac_lookup,
+                              corr0,
+                              corrC,
+                              corr_part_trQ1);
+  }
 };
 
 /*****************************************************************************/
@@ -209,8 +236,20 @@ class C30 : public DiagramComp {
 };
 
 /*****************************************************************************/
-/*                                    C4                                     */
+/*                                   C4                                     */
 /*****************************************************************************/
+
+class C4cD : public DiagramCompComp {
+ public:
+  C4cD(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C4+D"; }
+
+ private:
+  void contract_impl(std::vector<compcomp_t> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
 
 /*! Build charged 4pt correlation function: Box diagram
  *  @f{align}{

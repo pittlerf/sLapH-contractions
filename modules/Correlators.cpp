@@ -454,52 +454,6 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
-                             std::string const output_path,
-                             std::string const output_filename) {
-  if (corr_lookup.C4cD.empty())
-    return;
-
-  StopWatch swatch("C4cD");
-  swatch.start();
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C4+D", output_filename, comp_type_factory<compcomp_t>());
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  for (const auto &c_look : corr_lookup.C4cD) {
-    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
-
-    for (auto const block_pair : dilution_scheme) {
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-
-        /*! @todo Write move assignment for compcomp_t and give trtr return
-         * parameter */
-        correlator[t] += inner_product(
-            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-            corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
-      }
-    }
-
-    // normalisation
-    for (auto &corr : correlator) {
-      corr /= Lt;
-    }
-
-    // write data to file
-    filehandle.write(correlator, c_look);
-  }
-
-  swatch.stop();
-  swatch.print();
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
                              std::string const output_path,
                              std::string const output_filename) {
@@ -683,7 +637,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
-  build_C4cD(corr_lookup, output_path, output_filename);
   build_C4cV(corr_lookup, output_path, output_filename);
 
   // 2. Build all functions which need corr0 and free it afterwards.
@@ -708,6 +661,8 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C4cC(corr_lookup.C4cC));
   diagrams.emplace_back(new C40C(corr_lookup.C40C));
 
+  diagrams.emplace_back(new C4cD(corr_lookup.C4cD));
+
   for (auto &diagram : diagrams) {
     diagram->build(randomvectors,
                    meson_operator,
@@ -724,3 +679,34 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                    corr_part_trQ1);
   }
 }
+
+template void build_diagram<cmplx>(typename DiagramTraits<cmplx>::Diagram &diagram,
+                                   RandomVector const &randomvectors,
+                                   OperatorsForMesons const &meson_operator,
+                                   Perambulator const &perambulators,
+                                   std::string const output_path,
+                                   std::string const output_filename,
+                                   const size_t Lt,
+                                   const size_t dilT,
+                                   const size_t dilE,
+                                   const size_t nev,
+                                   DilutedFactorLookup const &dil_fac_lookup,
+                                   DilutedTraceCollection<2> &corr0,
+                                   DilutedTraceCollection<2> &corrC,
+                                   DilutedTraceCollection2<1> &corr_part_trQ1);
+
+template void build_diagram<compcomp_t>(
+    typename DiagramTraits<compcomp_t>::Diagram &diagram,
+    RandomVector const &randomvectors,
+    OperatorsForMesons const &meson_operator,
+    Perambulator const &perambulators,
+    std::string const output_path,
+    std::string const output_filename,
+    const size_t Lt,
+    const size_t dilT,
+    const size_t dilE,
+    const size_t nev,
+    DilutedFactorLookup const &dil_fac_lookup,
+    DilutedTraceCollection<2> &corr0,
+    DilutedTraceCollection<2> &corrC,
+    DilutedTraceCollection2<1> &corr_part_trQ1);
