@@ -880,13 +880,21 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
     QuarkLineBlock2<QuarkLineType::Q1> quarkline_Q1(
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
 
-    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2(randomvectors,
-                                                    perambulators,
-                                                    meson_operator,
-                                                    dilT,
-                                                    dilE,
-                                                    nev,
-                                                    dil_fac_lookup.Q2L);
+    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2L(randomvectors,
+                                                     perambulators,
+                                                     meson_operator,
+                                                     dilT,
+                                                     dilE,
+                                                     nev,
+                                                     dil_fac_lookup.Q2L);
+
+    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2V(randomvectors,
+                                                     perambulators,
+                                                     meson_operator,
+                                                     dilT,
+                                                     dilE,
+                                                     nev,
+                                                     dil_fac_lookup.Q2V);
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
@@ -895,12 +903,14 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract(C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2);
+        diagram.contract(
+            C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L, quarkline_Q2V);
       }
 
       quarkline_Q0.clear();
       quarkline_Q1.clear();
-      quarkline_Q2.clear();
+      quarkline_Q2L.clear();
+      quarkline_Q2V.clear();
 
     }  // loops over time end here
 #pragma omp critical
