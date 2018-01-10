@@ -4,7 +4,7 @@
 /*                                    C2c                                    */
 /*****************************************************************************/
 
-C2c::C2c(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+C2c::C2c(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {}
 
 void C2c::contract_impl(std::vector<cmplx> &c,
                         BlockIterator const &slice_pair,
@@ -22,7 +22,7 @@ void C2c::contract_impl(std::vector<cmplx> &c,
 /*                                    C20                                    */
 /*****************************************************************************/
 
-C20::C20(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+C20::C20(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {}
 
 void C20::contract_impl(std::vector<cmplx> &c,
                         BlockIterator const &slice_pair,
@@ -40,7 +40,7 @@ void C20::contract_impl(std::vector<cmplx> &c,
 /*                                    C3c                                    */
 /*****************************************************************************/
 
-C3c::C3c(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C3c::C3c(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -74,7 +74,7 @@ void C3c::contract_impl(std::vector<cmplx> &c,
 /*                                    C30                                    */
 /*****************************************************************************/
 
-C30::C30(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C30::C30(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -107,7 +107,7 @@ void C30::contract_impl(std::vector<cmplx> &c,
 /*                                   C4cB                                    */
 /*****************************************************************************/
 
-C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -146,7 +146,7 @@ void C4cB::contract_impl(std::vector<cmplx> &c,
 /*                                   C40B                                    */
 /*****************************************************************************/
 
-C40B::C40B(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C40B::C40B(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -183,7 +183,7 @@ void C40B::contract_impl(std::vector<cmplx> &c,
 /*                                   C4cC                                    */
 /*****************************************************************************/
 
-C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -221,7 +221,7 @@ void C4cC::contract_impl(std::vector<cmplx> &c,
 /*                                   C40C                                    */
 /*****************************************************************************/
 
-C40C::C40C(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {
+C40C::C40C(std::vector<CorrInfo> const &corr_lookup) : DiagramComp(corr_lookup) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {

@@ -538,7 +538,7 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build(Diagram &diagram,
+void Correlators::build(DiagramComp &diagram,
                         RandomVector const &randomvectors,
                         OperatorsForMesons const &meson_operator,
                         Perambulator const &perambulators,
@@ -680,7 +680,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // 3. Build all other correlation functions.
 
   // XXX If we had C++14, we could do `make_unique`.
-  std::vector<std::unique_ptr<Diagram>> diagrams;
+  std::vector<std::unique_ptr<DiagramComp>> diagrams;
 
   diagrams.emplace_back(new C2c(corr_lookup.C2c));
   diagrams.emplace_back(new C20(corr_lookup.C20));

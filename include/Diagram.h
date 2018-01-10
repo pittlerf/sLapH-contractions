@@ -9,8 +9,8 @@ struct QuarkLineBlockCollection {
   QuarkLineBlock2<QuarkLineType::Q2> &q2l;
   QuarkLineBlock2<QuarkLineType::Q2> &q2v;
 
-  DilutedTraceCollection<2> &corr0; 
-  DilutedTraceCollection<2> &corrC; 
+  DilutedTraceCollection<2> &corr0;
+  DilutedTraceCollection<2> &corrC;
   DilutedTraceCollection2<1> &corr_part_trQ1;
 };
 
@@ -20,29 +20,51 @@ class Diagram {
 
   virtual ~Diagram() {}
 
+  virtual char const *name() const = 0;
+
+  std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
+
+ private:
+  std::vector<CorrInfo> const &corr_lookup_;
+};
+
+class DiagramComp : public Diagram {
+ public:
+  DiagramComp(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+
   void contract(std::vector<cmplx> &c,
                 BlockIterator const &slice_pair,
                 QuarkLineBlockCollection &q) {
     contract_impl(c, slice_pair, q);
   }
 
-  virtual char const *name() const = 0;
-
-  std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
-
  private:
   virtual void contract_impl(std::vector<cmplx> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
+};
 
-  std::vector<CorrInfo> const &corr_lookup_;
+class DiagramCompComp : public Diagram {
+ public:
+  DiagramCompComp(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+
+  void contract(std::vector<compcomp_t> &c,
+                BlockIterator const &slice_pair,
+                QuarkLineBlockCollection &q) {
+    contract_impl(c, slice_pair, q);
+  }
+
+ private:
+  virtual void contract_impl(std::vector<compcomp_t> &c,
+                             BlockIterator const &slice_pair,
+                             QuarkLineBlockCollection &q) = 0;
 };
 
 /*****************************************************************************/
 /*                                    C2                                     */
 /*****************************************************************************/
 
-class C2c : public Diagram {
+class C2c : public DiagramComp {
  public:
   C2c(std::vector<CorrInfo> const &corr_lookup);
 
@@ -54,7 +76,7 @@ class C2c : public Diagram {
                      QuarkLineBlockCollection &q) override;
 };
 
-class C20 : public Diagram {
+class C20 : public DiagramComp {
  public:
   C20(std::vector<CorrInfo> const &corr_lookup);
 
@@ -77,7 +99,7 @@ class C20 : public Diagram {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C3c : public Diagram {
+class C3c : public DiagramComp {
  public:
   C3c(std::vector<CorrInfo> const &corr_lookup);
 
@@ -98,7 +120,7 @@ class C3c : public Diagram {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C30 : public Diagram {
+class C30 : public DiagramComp {
  public:
   C30(std::vector<CorrInfo> const &corr_lookup);
 
@@ -124,7 +146,7 @@ class C30 : public Diagram {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cB : public Diagram {
+class C4cB : public DiagramComp {
  public:
   C4cB(std::vector<CorrInfo> const &corr_lookup);
 
@@ -146,7 +168,7 @@ class C4cB : public Diagram {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40B : public Diagram {
+class C40B : public DiagramComp {
  public:
   C40B(std::vector<CorrInfo> const &corr_lookup);
 
@@ -168,7 +190,7 @@ class C40B : public Diagram {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cC : public Diagram {
+class C4cC : public DiagramComp {
  public:
   C4cC(std::vector<CorrInfo> const &corr_lookup);
 
@@ -190,7 +212,7 @@ class C4cC : public Diagram {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40C : public Diagram {
+class C40C : public DiagramComp {
  public:
   C40C(std::vector<CorrInfo> const &corr_lookup);
 

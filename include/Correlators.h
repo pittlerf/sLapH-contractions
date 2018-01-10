@@ -195,7 +195,7 @@ private:
                   std::string const output_path,
                   std::string const output_filename);
 
-  void build(Diagram &diagram,
+  void build(DiagramComp &diagram,
              RandomVector const &randomvectors,
              OperatorsForMesons const &meson_operator,
              Perambulator const &perambulators,
