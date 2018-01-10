@@ -8,6 +8,7 @@
 #include "dilution-iterator.h"
 #include "h5-wrapper.h"
 #include "typedefs.h"
+#include "Diagram.h"
 
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
@@ -539,19 +540,19 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void build_comp(DiagramComp &diagram,
-           RandomVector const &randomvectors,
-           OperatorsForMesons const &meson_operator,
-           Perambulator const &perambulators,
-           std::string const output_path,
-           std::string const output_filename,
-           const size_t Lt,
-           const size_t dilT,
-           const size_t dilE,
-           const size_t nev,
-           DilutedFactorLookup const &dil_fac_lookup,
-           DilutedTraceCollection<2> &corr0,
-           DilutedTraceCollection<2> &corrC,
-           DilutedTraceCollection2<1> &corr_part_trQ1) {
+                RandomVector const &randomvectors,
+                OperatorsForMesons const &meson_operator,
+                Perambulator const &perambulators,
+                std::string const output_path,
+                std::string const output_filename,
+                const size_t Lt,
+                const size_t dilT,
+                const size_t dilE,
+                const size_t nev,
+                DilutedFactorLookup const &dil_fac_lookup,
+                DilutedTraceCollection<2> &corr0,
+                DilutedTraceCollection<2> &corrC,
+                DilutedTraceCollection2<1> &corr_part_trQ1) {
   if (diagram.corr_lookup().empty())
     return;
 
@@ -688,7 +689,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // 3. Build all other correlation functions.
 
   // XXX If we had C++14, we could do `make_unique`.
-  std::vector<std::unique_ptr<DiagramComp>> diagrams;
+  std::vector<std::unique_ptr<Diagram>> diagrams;
 
   diagrams.emplace_back(new C2c(corr_lookup.C2c));
   diagrams.emplace_back(new C20(corr_lookup.C20));
@@ -702,19 +703,18 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C40C(corr_lookup.C40C));
 
   for (auto &diagram : diagrams) {
-    build_comp(*diagram.get(),
-               randomvectors,
-               meson_operator,
-               perambulators,
-               output_path,
-               output_filename,
-               Lt,
-               dilT,
-               dilE,
-               nev,
-               dil_fac_lookup,
-               corr0,
-               corrC,
-               corr_part_trQ1);
+    diagram->build(randomvectors,
+                   meson_operator,
+                   perambulators,
+                   output_path,
+                   output_filename,
+                   Lt,
+                   dilT,
+                   dilE,
+                   nev,
+                   dil_fac_lookup,
+                   corr0,
+                   corrC,
+                   corr_part_trQ1);
   }
 }

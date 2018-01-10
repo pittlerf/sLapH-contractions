@@ -2,6 +2,7 @@
 
 #include "QuarkLineBlock2.h"
 #include "typedefs.h"
+#include "Correlators.h"
 
 struct QuarkLineBlockCollection {
   QuarkLineBlock2<QuarkLineType::Q0> &q0;
@@ -24,12 +25,50 @@ class Diagram {
 
   std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
 
-  //void build() { build_impl(); }
+  void build(RandomVector const &randomvectors,
+             OperatorsForMesons const &meson_operator,
+             Perambulator const &perambulators,
+             std::string const output_path,
+             std::string const output_filename,
+             const size_t Lt,
+             const size_t dilT,
+             const size_t dilE,
+             const size_t nev,
+             DilutedFactorLookup const &dil_fac_lookup,
+             DilutedTraceCollection<2> &corr0,
+             DilutedTraceCollection<2> &corrC,
+             DilutedTraceCollection2<1> &corr_part_trQ1) {
+    build_impl(randomvectors,
+               meson_operator,
+               perambulators,
+               output_path,
+               output_filename,
+               Lt,
+               dilT,
+               dilE,
+               nev,
+               dil_fac_lookup,
+               corr0,
+               corrC,
+               corr_part_trQ1);
+  }
 
  private:
   std::vector<CorrInfo> const &corr_lookup_;
 
-  //void build_impl();
+  virtual void build_impl(RandomVector const &randomvectors,
+                          OperatorsForMesons const &meson_operator,
+                          Perambulator const &perambulators,
+                          std::string const output_path,
+                          std::string const output_filename,
+                          const size_t Lt,
+                          const size_t dilT,
+                          const size_t dilE,
+                          const size_t nev,
+                          DilutedFactorLookup const &dil_fac_lookup,
+                          DilutedTraceCollection<2> &corr0,
+                          DilutedTraceCollection<2> &corrC,
+                          DilutedTraceCollection2<1> &corr_part_trQ1) = 0;
 };
 
 class DiagramComp : public Diagram {
@@ -47,7 +86,34 @@ class DiagramComp : public Diagram {
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
 
-  //void build_impl() override { build<cmplx>(*this) }
+  void build_impl(RandomVector const &randomvectors,
+                  OperatorsForMesons const &meson_operator,
+                  Perambulator const &perambulators,
+                  std::string const output_path,
+                  std::string const output_filename,
+                  const size_t Lt,
+                  const size_t dilT,
+                  const size_t dilE,
+                  const size_t nev,
+                  DilutedFactorLookup const &dil_fac_lookup,
+                  DilutedTraceCollection<2> &corr0,
+                  DilutedTraceCollection<2> &corrC,
+                  DilutedTraceCollection2<1> &corr_part_trQ1) override {
+    build_comp(*this,
+               randomvectors,
+               meson_operator,
+               perambulators,
+               output_path,
+               output_filename,
+               Lt,
+               dilT,
+               dilE,
+               nev,
+               dil_fac_lookup,
+               corr0,
+               corrC,
+               corr_part_trQ1);
+  }
 };
 
 class DiagramCompComp : public Diagram {
