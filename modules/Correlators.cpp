@@ -454,50 +454,6 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
-                             std::string const output_path,
-                             std::string const output_filename) {
-  if (corr_lookup.C4cV.empty())
-    return;
-
-  StopWatch swatch("C4cV");
-  swatch.start();
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C4+V", output_filename, comp_type_factory<compcomp_t>());
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  for (const auto &c_look : corr_lookup.C4cV) {
-    std::vector<compcomp_t> correlator(Lt, compcomp_t(.0, .0, .0, .0));
-
-    for (auto const block_pair : dilution_scheme) {
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-
-        correlator[t] += inner_product(
-            corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-            corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
-      }
-    }
-
-    // normalisation
-    for (auto &corr : correlator) {
-      corr /= Lt;
-    }
-
-    // write data to file
-    filehandle.write(correlator, c_look);
-  }
-
-  swatch.stop();
-  swatch.print();
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 template <typename Numeric>
 void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
                    RandomVector const &randomvectors,
@@ -637,7 +593,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 1. Build all functions which need corrC and free it afterwards.
   build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
-  build_C4cV(corr_lookup, output_path, output_filename);
 
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
@@ -662,6 +617,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C40C(corr_lookup.C40C));
 
   diagrams.emplace_back(new C4cD(corr_lookup.C4cD));
+  diagrams.emplace_back(new C4cV(corr_lookup.C4cV));
 
   for (auto &diagram : diagrams) {
     diagram->build(randomvectors,
