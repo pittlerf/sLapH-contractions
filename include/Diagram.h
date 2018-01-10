@@ -12,6 +12,10 @@ struct QuarkLineBlockCollection {
 
 class Diagram {
  public:
+   Diagram (std::vector<CorrInfo> const &corr_lookup) : corr_lookup_(corr_lookup) {}
+
+  virtual ~Diagram() {}
+
   void contract(std::vector<cmplx> &c,
                 BlockIterator const &slice_pair,
                 QuarkLineBlockCollection &q) {
@@ -20,12 +24,14 @@ class Diagram {
 
   virtual char const *name() const = 0;
 
-  virtual ~Diagram() {}
+  std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
 
  private:
   virtual void contract_impl(std::vector<cmplx> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
+
+  std::vector<CorrInfo> const &corr_lookup_;
 };
 
 class C4cB : public Diagram {
@@ -33,6 +39,20 @@ class C4cB : public Diagram {
   C4cB(std::vector<CorrInfo> const &corr_lookup);
 
   char const *name() const override { return "C4+B"; }
+
+ private:
+  void contract_impl(std::vector<cmplx> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+
+  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+};
+
+class C40B : public Diagram {
+ public:
+  C40B(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C40B"; }
 
  private:
   void contract_impl(std::vector<cmplx> &c,

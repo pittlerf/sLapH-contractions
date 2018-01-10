@@ -848,10 +848,9 @@ void Correlators::build(Diagram &diagram,
                         RandomVector const &randomvectors,
                         OperatorsForMesons const &meson_operator,
                         Perambulator const &perambulators,
-                        std::vector<CorrInfo> const &corr_lookup,
                         std::string const output_path,
                         std::string const output_filename) {
-  if (corr_lookup.empty())
+  if (diagram.corr_lookup().empty())
     return;
 
   StopWatch swatch(diagram.name());
@@ -859,7 +858,7 @@ void Correlators::build(Diagram &diagram,
   WriteHDF5Correlator filehandle(
       output_path, diagram.name(), output_filename, comp_type_factory_tr());
 
-  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(),
+  std::vector<std::vector<cmplx>> correlator(diagram.corr_lookup().size(),
                                              std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
@@ -869,7 +868,7 @@ void Correlators::build(Diagram &diagram,
   {
     swatch.start();
     std::vector<std::vector<cmplx>> C(
-        Lt, std::vector<cmplx>(corr_lookup.size(), cmplx(.0, .0)));
+        Lt, std::vector<cmplx>(diagram.corr_lookup().size(), cmplx(.0, .0)));
 
     // building the quark line directly frees up a lot of memory
     QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(
@@ -930,7 +929,7 @@ void Correlators::build(Diagram &diagram,
       corr /= Lt;
     }
     // write data to file
-    filehandle.write(correlator[i], corr_lookup[i]);
+    filehandle.write(correlator[i], diagram.corr_lookup()[i]);
   }
   swatch.print();
 }
@@ -1281,7 +1280,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
         randomvectors,
         meson_operator,
         perambulators,
-        corr_lookup.C4cB,
         output_path,
         output_filename);
 
@@ -1297,10 +1295,12 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
              corr_lookup.C40C,
              output_path,
              output_filename);
-  build_C40B(randomvectors,
-             meson_operator,
-             perambulators,
-             corr_lookup.C40B,
-             output_path,
-             output_filename);
+
+  C40B c40B(corr_lookup.C40B);
+  build(c40B,
+        randomvectors,
+        meson_operator,
+        perambulators,
+        output_path,
+        output_filename);
 }

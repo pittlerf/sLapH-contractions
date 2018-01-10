@@ -272,7 +272,6 @@ private:
              RandomVector const &randomvectors,
              OperatorsForMesons const &meson_operator,
              Perambulator const &perambulators,
-             std::vector<CorrInfo> const &corr_lookup,
              std::string const output_path,
              std::string const output_filename);
 };
