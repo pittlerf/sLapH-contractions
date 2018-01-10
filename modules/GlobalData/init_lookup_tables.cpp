@@ -523,8 +523,9 @@ static size_t create_rnd_vec_id(const std::vector<quark>& quarks,
     for(size_t i = rndq1_start; i < rndq1_end; ++i)
       for(size_t j = rndq2_start; j < rndq2_end; ++j)
         // To avoid bias, different random vectors must have different indices.
-        if(i != j)
+        if(i != j){
           rnd_vec_comb.emplace_back(i, j);
+	}
   }
   else {
     for(size_t i = rndq1_start; i < rndq1_end; ++i)

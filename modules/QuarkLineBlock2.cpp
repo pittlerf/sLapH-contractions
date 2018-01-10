@@ -95,6 +95,11 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
     int check = -1;
     Eigen::MatrixXcd M;  // Intermediate memory
 
+      #pragma omp critical
+      {
+        MU_DEBUG(op.id);
+      }
+
     /*! Dilution of columns */
     for (const auto &rnd_id : op.rnd_vec_ids) {
       if (check != rnd_id.second) {  // this avoids recomputation
@@ -127,6 +132,11 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
       check = rnd_id.second;
       rnd_counter++;
 
+      #pragma omp critical
+      {
+        MU_DEBUG(rnd_id.first);
+        MU_DEBUG(rnd_id.second);
+      }
 
       Ql[time_key][{operator_key}].push_back(
           {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
@@ -195,12 +205,6 @@ void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
       rnd_counter++;
 
       auto const rnd_pair = std::make_pair(rnd_id.first, rnd_id.second);
-
-      #pragma omp critical
-      {
-        MU_DEBUG(rnd_id.first);
-        MU_DEBUG(rnd_id.second);
-      }
 
       Ql[time_key][{operator_key}].push_back({matrix, rnd_pair, {}});
     }
