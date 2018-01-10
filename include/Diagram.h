@@ -251,6 +251,18 @@ class C4cD : public DiagramCompComp {
                      QuarkLineBlockCollection &q) override;
 };
 
+class C40D : public DiagramCompComp {
+ public:
+  C40D(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C40D"; }
+
+ private:
+  void contract_impl(std::vector<compcomp_t> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
 class C4cV : public DiagramCompComp {
  public:
   C4cV(std::vector<CorrInfo> const &corr_lookup);
