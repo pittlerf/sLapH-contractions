@@ -1,10 +1,24 @@
 #include "Diagram.h"
 
-void C4cB::contract_slice_pair(std::vector<cmplx> &c,
-                               BlockIterator const &slice_pair,
-                               QuarkLineBlock2<QuarkLineType::Q0> &q0,
-                               QuarkLineBlock2<QuarkLineType::Q1> &q1,
-                               QuarkLineBlock2<QuarkLineType::Q2> &q2) {
+/*****************************************************************************/
+/*                                   C4cB                                    */
+/*****************************************************************************/
+
+C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup) {
+  quantum_num_ids_.reserve(corr_lookup.size());
+
+  for (const auto &c_look : corr_lookup) {
+    quantum_num_ids_.push_back(
+        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+  }
+}
+
+void C4cB::contract(std::vector<cmplx> &c,
+                    BlockIterator const &slice_pair,
+                    QuarkLineBlock2<QuarkLineType::Q0> &q0,
+                    QuarkLineBlock2<QuarkLineType::Q1> &q1,
+                    QuarkLineBlock2<QuarkLineType::Q2> &q2) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {

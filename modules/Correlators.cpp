@@ -895,8 +895,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract_slice_pair(
-            C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L);
+        diagram.contract(C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L);
       }
 
       quarkline_Q0.clear();
