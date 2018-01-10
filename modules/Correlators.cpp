@@ -854,17 +854,17 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   if (corr_lookup.empty())
     return;
 
-  StopWatch swatch("C4cB");
+  C4cB diagram(corr_lookup);
+
+  StopWatch swatch(diagram.name());
 
   WriteHDF5Correlator filehandle(
-      output_path, "C4+B", output_filename, comp_type_factory_tr());
+      output_path, diagram.name(), output_filename, comp_type_factory_tr());
 
   std::vector<std::vector<cmplx>> correlator(corr_lookup.size(),
                                              std::vector<cmplx>(Lt, cmplx(.0, .0)));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  C4cB diagram(corr_lookup);
 
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
@@ -880,13 +880,13 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
     QuarkLineBlock2<QuarkLineType::Q1> quarkline_Q1(
         randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
 
-    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2L(randomvectors,
-                                                     perambulators,
-                                                     meson_operator,
-                                                     dilT,
-                                                     dilE,
-                                                     nev,
-                                                     dil_fac_lookup.Q2L);
+    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2(randomvectors,
+                                                    perambulators,
+                                                    meson_operator,
+                                                    dilT,
+                                                    dilE,
+                                                    nev,
+                                                    dil_fac_lookup.Q2L);
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
@@ -895,11 +895,12 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract(C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L);
+        diagram.contract(C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2);
       }
 
       quarkline_Q0.clear();
-      quarkline_Q2L.clear();
+      quarkline_Q1.clear();
+      quarkline_Q2.clear();
 
     }  // loops over time end here
 #pragma omp critical

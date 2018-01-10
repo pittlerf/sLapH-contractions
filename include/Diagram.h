@@ -11,6 +11,8 @@ class Diagram {
                          QuarkLineBlock2<QuarkLineType::Q1> &q1,
                          QuarkLineBlock2<QuarkLineType::Q2> &q2) = 0;
 
+   virtual char const *name() const = 0;
+
    virtual ~Diagram() {}
 };
 
@@ -23,6 +25,8 @@ class C4cB : public Diagram {
                 QuarkLineBlock2<QuarkLineType::Q0> &q0,
                 QuarkLineBlock2<QuarkLineType::Q1> &q1,
                 QuarkLineBlock2<QuarkLineType::Q2> &q2) override;
+
+  char const *name() const override { return "C4+B"; }
 
  private:
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
