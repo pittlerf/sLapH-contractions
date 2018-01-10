@@ -550,19 +550,34 @@ static size_t create_rnd_vec_id(const std::vector<quark>& quarks,
 }
 
 /******************************************************************************/
-/*! For each correlator create lookuptable where to find the VdaggerV-operators
- *  and random indices necessary to access the correct randomvector or 
- *  perambulator respectively.
- *  
- *  @param[in]  rnd_vec_id        Indices of random index combinations wanted 
- *                                for rVdaggerVr
- *  @param[in]  vdv_indices       Indices of QuantumNumbers  wanted for 
- *                                rVdaggerVr
- *  @param[out] rvdaggervr_lookup Unique list of combinations of @em rnd_vec_id
- *                                and @em vdv_indices needed
- *  @param[out] rvdvr_indices     List of indices referring to 
- *                                @em rvdaggervr_lookup. Entries correspond to
- *                                entries of @em vdv_indices
+/*! Create lookuptable where to find the perambulators, randomvectors and 
+ *  VdaggerV-operators necessary to build a Quarkline with  *
+ *
+ *  @param[in]  operator_id     Identifies physical quantum numbers entering 
+ *  				Quarkline
+ *  @param[in]  quantum_numbers Physical quantum field operators for all 
+ *  				correlators with Dirac structure factored out
+ *  @param[in]  vdv_indices     Indices identifying VdaggerV operators
+ *  @param[out] Ql_lookup       Lookuptable containing unique combinations of 
+ *                              peram-, vdv-, and ric-indices needed to built Q1
+ *  @param[out] Q1_lookup_ids	List of indices refering to @em Q1. Entries' 
+ *                              outer vector corresponds to entries of 
+ *                              @em quantum_numbers, the inner is specified by 
+ *                              @em operator_id
+ *
+ *  The Quarkline with one quark is given by
+ *
+ *    Q1 =  rvdaggerv * gamma * peram
+ *
+ *  The Quarkline with two quarks is given by
+ *
+ *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv * 
+ *          gamma * peram2
+ *
+ *  This function creates a Lookup table of all unique index combination the
+ *  Quarkline is needed for and a list referring to the lookup table which gives 
+ *  relates the entries of the lookup table to each correlator specified in the 
+ *  infile
  */
 static void build_Quarkline_lookup(const size_t operator_id, 
          const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
@@ -577,8 +592,8 @@ static void build_Quarkline_lookup(const size_t operator_id,
     const auto id_vdaggerv = vdv_indices[row][operator_id].first;
     const auto need_vdaggerv_daggering = vdv_indices[row][operator_id].second;
 
-    // If Q0 already contains the particular row and physical content, just 
-    // set the index to the existing QuarklineIndices, otherwise generate
+    // If Ql_lookup already contains the particular row and physical content, 
+    // just set the index to the existing QuarklineIndices, otherwise generate
     // it and set the index to the new one.
     QuarklineIndices const candidate{id_vdaggerv,
                                        need_vdaggerv_daggering,
@@ -595,65 +610,6 @@ static void build_Quarkline_lookup(const size_t operator_id,
     }
   }
 }
-
-/******************************************************************************/
-/*! Create lookuptable where to find the perambulators, VdaggerV-operators
- *  and random index combinations necessary to build Q1 quarkline with field 
- *  operator @em operator_id
- *
- *  @param[in]  operator_id     Identifies needed operator from @em vdv_indices
- *  @param[in]  quantum_numbers Physical field operators for all correlators 
- *                              with Dirac structure factored out
- *  @param[in]  vdv_indices     Indices identifying VdaggerV operators
- *  @param[in]  ric_lookup      Indices identifying random vector index 
- *                              combinations
- *  @param[out] Q1              Lookuptable containing unique combinations of 
- *                              peram-, vdv-, and ric-indices needed to built Q1
- *  @param[out] Q1_indices      List of indices refering to @em Q1. Entries' 
- *                              outer vector corresponds to entries of 
- *                              @em quantum_numbers, the inner is specified by 
- *                              @em operator_id
- *
- *  The Quarkline with one quark is given by
- *
- *    Q1 =  rvdaggerv * gamma * peram
- *
- *  This function creates a Lookup table of all unique index combination Q1 is 
- *  needed for and a list referring to the lookup table which gives relates
- *  the entries of the lookup table to each correlator specified in the infile
- */
-/******************************************************************************/
-/*! Create lookuptable where to find the perambulators, VdaggerV-operators
- *  and random index combinations necessary to build Q2 quarkline
- *
- *  @param[in]  id_quark1       Identifies perambulator with gamma_5 trick
- *  @param[in]  id_quark2       Identifies perambulator without gamma_5 trick
- *  @param[in]  operator_id     Identifies needed operator from @em vdv_indices
- *  @param[in]  quantum_numbers Physical field operators for all correlators 
- *                              with Dirac structure factored out
- *  @param[in]  quarks          Quarks as specified in the infile munged into 
- *                              quark struct
- *  @param[in]  vdv_indices     Indices identifying VdaggerV operators
- *  @param[in]  ric_lookup      Indices identifying random vector index 
- *                              combinations
- *  @param[out] Q2V             Lookuptable containing unique combinations of 
- *                              peram-, vdv-, and ric-indices needed to built Q2
- *  @param[out] Q2_indices      List of indices refering to @em Q2V. Entries' 
- *                              outer vector corresponds to entries of 
- *                              @em quantum_numbers, the inner is specified by 
- *                              @em operator_id
- *
- *  The Quarkline with to quarks is given by
- *
- *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv * 
- *          gamma * peram2
- *
- *  This function creates a Lookup table of all unique index combination Q2 is 
- *  needed for and a list referring to the lookup table which gives relates
- *  the entries of the lookup table to each correlator specified in the infile
- *
- */
-
 
 /******************************************************************************/
 /******************************************************************************/
