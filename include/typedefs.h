@@ -117,6 +117,21 @@ struct compcomp_t {
 
     return *this;
   }
+
+  compcomp_t &operator/=(double const &right) {
+    rere /= right;
+    reim /= right;
+    imre /= right;
+    imim /= right;
+
+    return *this;
+  }
+
+  compcomp_t operator/(double const &right) const {
+    auto res = *this;
+    res /= right;
+    return res;
+  }
 };
 
 /******************************************************************************/

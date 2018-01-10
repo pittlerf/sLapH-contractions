@@ -137,6 +137,8 @@ cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
             std::vector<DilutedFactor<rvecs2>> const &right_vec) {
   cmplx result(0.0, 0.0);
 
+  int num_summands = 0;
+
   for (auto const &left : left_vec) {
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
@@ -168,13 +170,14 @@ cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
       // vector indices. Therefore we can sum all these elements up to have less
       // multiplications to do.
       right_sum += right.data;
+      ++num_summands;
     }
 
     auto const &product = left.data * right_sum;
     result += product.trace();
   }
 
-  return result;
+  return result / static_cast<double>(num_summands);
 }
 
 template <size_t rvecs1, size_t rvecs2>
@@ -266,6 +269,8 @@ compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
   //! @TODO Pull out this magic number.
   auto constexpr rnd_vec_count = 5;
 
+  int num_summands = 0;
+
   compcomp_t result(0.0, 0.0, 0.0, 0.0);
 
   for (auto const &left : left_vec) {
@@ -285,6 +290,7 @@ compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
       // vector indices. Therefore we can sum all these elements up to have less
       // multiplications to do.
       right_sum += right.data;
+      ++num_summands;
     }
 
     result.rere += left.data.real() * right_sum.real();
@@ -293,7 +299,7 @@ compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
     result.imim += left.data.imag() * right_sum.imag();
   }
 
-  return result;
+  return result / num_summands;
 }
 
 int constexpr max_flavor = 8;

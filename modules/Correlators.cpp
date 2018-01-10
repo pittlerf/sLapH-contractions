@@ -285,10 +285,7 @@ void Correlators::build_C20V(std::vector<CorrInfo> const &corr_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5U * 4U) * Lt;
-      corr.reim /= (5U * 4U) * Lt;
-      corr.imre /= (5U * 4U) * Lt;
-      corr.imim /= (5U * 4U) * Lt;
+      corr /= Lt;
     }
 
     // write data to file
@@ -421,10 +418,7 @@ void Correlators::build_C40D(std::vector<CorrInfo> const &corr_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5U * 4U * 3U * 2U) * Lt;
-      corr.reim /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imre /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imim /= (5U * 4U * 3U * 2U) * Lt;
+      corr /= Lt;
     }
 
     // write data to file
@@ -467,10 +461,7 @@ void Correlators::build_C40V(std::vector<CorrInfo> const &corr_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5U * 4U * 3U * 2U) * Lt;
-      corr.reim /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imre /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imim /= (5U * 4U * 3U * 2U) * Lt;
+      corr /= Lt;
     }
 
     // write data to file
@@ -617,10 +608,7 @@ void Correlators::build_C4cD(CorrelatorLookup const &corr_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5U * 4U * 3U * 2U) * Lt;
-      corr.reim /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imre /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imim /= (5U * 4U * 3U * 2U) * Lt;
+      corr /= Lt;
     }
 
     // write data to file
@@ -666,10 +654,7 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
 
     // normalisation
     for (auto &corr : correlator) {
-      corr.rere /= (5U * 4U * 3U * 2U) * Lt;
-      corr.reim /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imre /= (5U * 4U * 3U * 2U) * Lt;
-      corr.imim /= (5U * 4U * 3U * 2U) * Lt;
+      corr /= Lt;
     }
 
     // write data to file
@@ -778,8 +763,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      // @todo Hard Coded atm - Be careful
-      corr /= (6 * 5 * 4 * 3) * Lt;
+      corr /= 3 * Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -886,201 +870,14 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= (6 * 5 * 4) * Lt;  // TODO: Hard Coded atm - Be careful
+      corr /= 2* Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
   }
   swatch.print();
 }
-// void Correlators::build_C3c(RandomVector const &randomvectors,
-//                                  OperatorsForMesons const &meson_operator,
-//                                  Perambulator const &perambulators,
-//                                  std::vector<CorrInfo> const &corr_lookup,
-//                                  std::string const output_path,
-//                                  std::string const output_filename) {
-//  if (corr_lookup.empty())
-//    return;
-//
-//  // every element of corr_lookup contains the same filename. Wlog choose the
-//  // first element
-//  WriteHDF5Correlator filehandle(output_path, "C3+", output_filename,
-//                                 comp_type_factory_tr());
-//
-//  StopWatch swatch("C3c");
-//
-//  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-//
-//  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(), std::vector<cmplx>(Lt,
-//  cmplx(.0, .0)));
-//
-//// This is necessary to ensure the correct summation of the correlation function
-//#pragma omp parallel
-//  {
-//    swatch.start();
-//    std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt,
-//    cmplx(.0, .0)));
-//    // building the quark line directly frees up a lot of memory
-//    QuarkLineBlock<QuarkLineType::Q0> quarkline_Q0(
-//        dilT, dilE, nev, dil_fac_lookup.Q0, ric_lookup);
-//    QuarkLineBlock<QuarkLineType::Q2L> quarkline_Q2L(
-//        dilT, dilE, nev, dil_fac_lookup.Q2L, ric_lookup);
-//    QuarkLineBlock<QuarkLineType::Q1> quarkline_Q1(
-//        dilT, dilE, nev, dil_fac_lookup.Q1, ric_lookup);
-//
-//    // creating memory arrays M1, M2 for intermediate storage of Quarklines
-//    // ------
-//    std::vector<std::vector<Eigen::MatrixXcd>> M1, M2;
-//
-//    std::vector<std::array<size_t, 3>> M1_look;
-//    std::vector<std::array<size_t, 2>> M2_look;
-//
-//    size_t M1_counter = 0;
-//    size_t M2_counter = 0;
-//
-//    for (const auto &c_look : corr_lookup) {
-////      const auto &ric0 =
-////          ric_lookup[dil_fac_lookup.Q2L[c_look.lookup[0]].id_ric_lookup]
-////              .rnd_vec_ids;
-////      const auto &ric1 =
-////          ric_lookup[dil_fac_lookup.Q1[c_look.lookup[1]].id_ric_lookup]
-////              .rnd_vec_ids;
-////      const auto &ric2 =
-////          ric_lookup[dil_fac_lookup.Q0[c_look.lookup[2]].id_ric_lookup]
-////              .rnd_vec_ids;
-////      std::cout << ric0.size() << ric1.size() << ric2.size() << std::endl;;
-////      if (ric0.size() != ric1.size() || ric0.size() != ric2.size()) {
-////        std::cout << "rnd combinations are not the same in build_C3+"
-////                  << std::endl;
-////        exit(0);
-////      }
-//
-//      // creating memeory for M1
-//      // -------------------------------------------------
-//      /*! @warning For some reason indices 2 and 0 are interchanged here */
-//      const size_t id0 = c_look.lookup[2];
-//      const size_t id2 = c_look.lookup[0];
-//      auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-//                              [&id0, &id2](std::array<size_t, 3> check) {
-//                                return (id0 == check[1] && id2 == check[2]);
-//                              });
-//
-//      if (!(it1 != M1_look.end())) {
-//        M1.emplace_back(std::vector<Eigen::MatrixXcd>());
-//        M1_look.emplace_back(std::array<size_t, 3>({{M1_counter, id0, id2}}));
-//        ++M1_counter;
-//      }
-//
-//      // creating memory for M2
-//      // -------------------------------------------------
-//      const size_t id1 = c_look.lookup[1];
-//      auto it2 = std::find_if(
-//          M2_look.begin(), M2_look.end(),
-//          [&id1](std::array<size_t, 2> check) { return (id1 == check[1]); });
-//
-//      /*! No reuse between different gamma structures as for every entry of
-//       * corr_lookup the whole thing is rebuilt
-//       */
-//      if (!(it2 != M2_look.end())) {
-//        M2.emplace_back(std::vector<Eigen::MatrixXcd>());
-//        M2_look.emplace_back(std::array<size_t, 2>({{M2_counter, id1}}));
-//        ++M2_counter;
-//      }
-//
-//    } // first run over lookup table ends here - memory and new lookup table
-//// are generated ------------------------------------------------------------
-//
-//#pragma omp for schedule(dynamic)
-//    for (int b = 0; b < dilution_scheme.size(); ++b) {
-//      auto const block_pair = dilution_scheme[b];
-//      // creating quarklines
-//      quarkline_Q0.build_block_pair(randomvectors, meson_operator, block_pair,
-//                                      dil_fac_lookup.Q0, ric_lookup);
-//      quarkline_Q2L.build_block_pair(perambulators, meson_operator, block_pair,
-//                                      dil_fac_lookup.Q2L, ric_lookup);
-//      quarkline_Q1.build_block_pair(perambulators, meson_operator, block_pair,
-//                                     dil_fac_lookup.Q1, ric_lookup);
-//
-//      for (auto const slice_pair : block_pair) {
-//        int const t = get_time_delta(slice_pair, Lt);
-//        // build M1
-//        // ----------------------------------------------------------------
-//        for (const auto &look : M1_look) {
-//
-//          std::vector<size_t> random_index_combination_ids =
-//              std::vector<size_t>(
-//                  {dil_fac_lookup.Q0 [look[1]].id_ric_lookup,
-//                   dil_fac_lookup.Q2L[look[2]].id_ric_lookup});
-//
-//          rVdaggerVrxQ2(M1[look[0]],
-//              quarkline_Q0(slice_pair.source(), -1, look[1]),
-//              quarkline_Q2L(slice_pair.source(), slice_pair.sink_block(), look[2]),
-//              ric_lookup, random_index_combination_ids, dilE, 4);
-//        }
-//
-//        // build M2
-//        // ----------------------------------------------------------------
-//        for (const auto &look : M2_look) {
-//
-//          std::vector<size_t> random_index_combination_ids =
-//              std::vector<size_t>(
-//                  {dil_fac_lookup.Q1[look[1]].id_ric_lookup});
-//
-//          Q1(M2[look[0]],
-//             quarkline_Q1(slice_pair.sink(), slice_pair.source_block(), look[1]),
-//             ric_lookup,
-//             random_index_combination_ids,
-//             dilE, 4);
-//        }
-//
-//        // Final summation for correlator
-//        // ------------------------------------------
-//        for (const auto &c_look : corr_lookup) {
-//          const size_t id0 = c_look.lookup[2];
-//          const size_t id1 = c_look.lookup[1];
-//          const size_t id2 = c_look.lookup[0];
-//          auto it1 = std::find_if(M1_look.begin(), M1_look.end(),
-//                                  [&id0, &id2](std::array<size_t, 3> check) {
-//                                    return (id0 == check[1] && id2 == check[2]);
-//                                  });
-//          auto it2 = std::find_if(M2_look.begin(), M2_look.end(),
-//                                  [&id1](std::array<size_t, 2> check) {
-//                                    return (id1 == check[1]);
-//                                  });
-//
-//          std::vector<size_t> random_index_combination_ids =
-//              std::vector<size_t>(
-//                {dil_fac_lookup.Q2L[id0].id_ric_lookup,
-//                 dil_fac_lookup.Q1 [id1].id_ric_lookup,
-//                 dil_fac_lookup.Q0 [id2].id_ric_lookup});
-//
-//          C[c_look.id][t] += trace_3pt(
-//              M2[(*it2)[0]], M1[(*it1)[0]], ric_lookup,
-//              random_index_combination_ids, dilE, 4);
-//
-//        }
-//      }
-//    } // loops over time end here
-//#pragma omp critical
-//    {
-//      for (const auto &c_look : corr_lookup)
-//        for (size_t t = 0; t < Lt; t++)
-//          correlator[c_look.id][t] += C[c_look.id][t];
-//    }
-//    swatch.stop();
-//  } // parallel part ends here
-//
-//  // normalisation
-//  for (const auto &c_look : corr_lookup) {
-//    for (auto &corr : correlator[c_look.id]) {
-//      /*! @todo Hard Coded atm - Be careful */
-//      corr /= (6 * 5 * 4) * Lt;
-//    }
-//    // write data to file
-//    filehandle.write(correlator[c_look.id], c_look);
-//  }
-//  swatch.print();
-//}
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build_C4cB(RandomVector const &randomvectors,
@@ -1178,8 +975,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      // @todo Hard Coded atm - Be careful
-      corr /= (6 * 5 * 4 * 3) * Lt;
+      corr /= 3 * Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -1266,7 +1062,7 @@ void Correlators::build_C30(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= (5 * 4 * 3) * Lt;  // TODO: Hard Coded atm - Be carefull
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -1361,7 +1157,7 @@ void Correlators::build_C40C(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= (5 * 4 * 3 * 2) * Lt;  // TODO: Hard Coded atm - Be carefull
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -1460,7 +1256,7 @@ void Correlators::build_C40B(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= (5 * 4 * 3 * 2) * Lt;  // TODO: Hard Coded atm - Be carefull
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
