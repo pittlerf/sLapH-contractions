@@ -864,13 +864,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids;
-  quantum_num_ids.reserve(corr_lookup.size());
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids.push_back(
-        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
-  }
+  C4cB diagram(corr_lookup);
 
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
@@ -901,7 +895,6 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        C4cB diagram(quantum_num_ids);
         diagram.contract_slice_pair(
             C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L);
       }
@@ -912,7 +905,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
     }  // loops over time end here
 #pragma omp critical
     {
-      for (int i = 0; i != quantum_num_ids.size(); ++i) {
+      for (int i = 0; i != correlator.size(); ++i) {
         for (size_t t = 0; t < Lt; t++) {
           correlator[i][t] += C[t][i];
         }
@@ -922,7 +915,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   }  // parallel part ends here
 
   // normalisation
-  for (int i = 0; i != quantum_num_ids.size(); ++i) {
+  for (int i = 0; i != correlator.size(); ++i) {
     for (auto &corr : correlator[i]) {
       corr /= Lt;
     }

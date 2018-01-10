@@ -7,7 +7,7 @@ void C4cB::contract_slice_pair(std::vector<cmplx> &c,
                                QuarkLineBlock2<QuarkLineType::Q2> &q2) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
-  for (const auto &ids : quantum_num_ids) {
+  for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
         ids[0],
@@ -21,8 +21,8 @@ void C4cB::contract_slice_pair(std::vector<cmplx> &c,
         q2[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids.size(); ++i) {
-    auto const &ids = quantum_num_ids[i];
+  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+    auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
 }
