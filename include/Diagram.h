@@ -8,6 +8,10 @@ struct QuarkLineBlockCollection {
   QuarkLineBlock2<QuarkLineType::Q1> &q1;
   QuarkLineBlock2<QuarkLineType::Q2> &q2l;
   QuarkLineBlock2<QuarkLineType::Q2> &q2v;
+
+  DilutedTraceCollection<2> &corr0; 
+  DilutedTraceCollection<2> &corrC; 
+  DilutedTraceCollection2<1> &corr_part_trQ1;
 };
 
 class Diagram {

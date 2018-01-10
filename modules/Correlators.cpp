@@ -680,8 +680,13 @@ void Correlators::build(Diagram &diagram,
                                                      nev,
                                                      dil_fac_lookup.Q2V);
 
-    QuarkLineBlockCollection part_collection = {
-        quarkline_Q0, quarkline_Q1, quarkline_Q2L, quarkline_Q2V};
+    QuarkLineBlockCollection part_collection = {quarkline_Q0,
+                                                quarkline_Q1,
+                                                quarkline_Q2L,
+                                                quarkline_Q2V,
+                                                corr0,
+                                                corrC,
+                                                corr_part_trQ1};
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
