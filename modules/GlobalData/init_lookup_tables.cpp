@@ -564,7 +564,7 @@ static size_t create_rnd_vec_id(const std::vector<quark>& quarks,
  *                                @em rvdaggervr_lookup. Entries correspond to
  *                                entries of @em vdv_indices
  */
-static void build_lookup(const size_t operator_id, 
+static void build_Quarkline_lookup(const size_t operator_id, 
          const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
          std::vector<std::vector<std::pair<size_t, bool> > > const &vdv_indices,
          std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
@@ -622,38 +622,6 @@ static void build_lookup(const size_t operator_id,
  *  needed for and a list referring to the lookup table which gives relates
  *  the entries of the lookup table to each correlator specified in the infile
  */
-static void build_Q1_lookup(const size_t operator_id, 
-         const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
-         std::vector<std::vector<std::pair<size_t, bool> > > const &vdv_indices,
-         std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
-         std::vector<QuarklineIndices>& Q1,
-         std::vector<std::vector<size_t> >& Q1_indices){
-
-  for(size_t row = 0; row < quantum_numbers.size(); row++){
-    const auto qn = quantum_numbers[row][operator_id];
-
-    const auto id_vdaggerv = vdv_indices[row][operator_id].first;
-    const auto need_vdaggerv_daggering = vdv_indices[row][operator_id].second;
-
-    // If Q1 already contains the particular row and physical content, just 
-    // set the index to the existing QuarklineIndicies, otherwise generate
-    // it and set the index to the new one.
-    QuarklineIndices const candidate{id_vdaggerv,
-                                       need_vdaggerv_daggering,
-                                       qn.gamma,
-                                       rnd_vec_ids};
-    auto it = std::find(Q1.begin(), Q1.end(), candidate);
-
-    if(it != Q1.end()) {
-      Q1_indices[row][operator_id] = it - Q1.begin();
-    }
-    else {
-      Q1_indices[row][operator_id] = Q1.size();
-      Q1.emplace_back(candidate);
-    }
-  }
-}
-
 /******************************************************************************/
 /*! Create lookuptable where to find the perambulators, VdaggerV-operators
  *  and random index combinations necessary to build Q2 quarkline
@@ -684,39 +652,8 @@ static void build_Q1_lookup(const size_t operator_id,
  *  needed for and a list referring to the lookup table which gives relates
  *  the entries of the lookup table to each correlator specified in the infile
  *
- *  @todo Are id_quark1 and id_quark2 deprecated?
  */
-static void build_Q2_lookup(const size_t operator_id, 
-         const std::vector<std::vector<QuantumNumbers> >& quantum_numbers, 
-         std::vector<std::vector<std::pair<size_t, bool> > > const &vdv_indices,
-         std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
-         std::vector<QuarklineIndices>& Q2,
-         std::vector<std::vector<size_t> >& Q2_indices){
 
-  for(size_t row = 0; row < quantum_numbers.size(); row++){
-    const auto qn = quantum_numbers[row][operator_id];
-
-    const auto id_vdaggerv = vdv_indices[row][operator_id].first;
-    const auto need_vdaggerv_daggering = vdv_indices[row][operator_id].second;
-
-    // If Q2 already contains the particular row and physical content, just 
-    // set the index to the existing QuarklineQ2Indicies, otherwise generate
-    // it and set the index to the new one.
-    QuarklineIndices const candidate{id_vdaggerv,
-                                       need_vdaggerv_daggering,
-                                       qn.gamma,
-                                       rnd_vec_ids};
-    auto it = std::find(Q2.begin(), Q2.end(), candidate);
-
-    if(it != Q2.end()) {
-      Q2_indices[row][operator_id] = it - Q2.begin();
-    }
-    else {
-      Q2_indices[row][operator_id] = Q2.size();
-      Q2.emplace_back(candidate);
-    }
-  }
-}
 
 /******************************************************************************/
 /******************************************************************************/
@@ -1621,7 +1558,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[0], true, 
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -1640,7 +1577,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1654,7 +1591,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
@@ -1677,7 +1614,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(2, quantum_numbers,
+      build_Quarkline_lookup(2, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1688,7 +1625,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -1699,7 +1636,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2L, Q2_indices);
@@ -1716,14 +1653,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(3, quantum_numbers,
+      build_Quarkline_lookup(3, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1734,14 +1671,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(2, quantum_numbers,
+      build_Quarkline_lookup(2, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
@@ -1761,11 +1698,11 @@ void GlobalData::init_lookup_tables() {
 //                              rvdvr_indices);
 //      std::vector<std::vector<size_t> > Q2_indices(rvdvr_indices.size(),
 //                                  std::vector<size_t>(rvdvr_indices[0].size()));
-//      build_Q2_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
+//      build_Quarkline_lookup(correlator.quark_numbers[0], correlator.quark_numbers[1],
 //                      0, quantum_numbers, quarks, vdv_indices, 
 //                      operator_lookuptable.ricQ2_lookup,
 //                      quarkline_lookuptable.Q2V, Q2_indices);
-//      build_Q2_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
+//      build_Quarkline_lookup(correlator.quark_numbers[2], correlator.quark_numbers[3],
 //                      2, quantum_numbers, quarks, vdv_indices, 
 //                      operator_lookuptable.ricQ2_lookup,
 //                      quarkline_lookuptable.Q2V, Q2_indices);
@@ -1780,14 +1717,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(3, quantum_numbers,
+      build_Quarkline_lookup(3, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1798,14 +1735,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(2, quantum_numbers,
+      build_Quarkline_lookup(2, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
@@ -1821,14 +1758,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(3, quantum_numbers,
+      build_Quarkline_lookup(3, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1839,14 +1776,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(2, quantum_numbers,
+      build_Quarkline_lookup(2, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2V, Q2_indices);
@@ -1863,14 +1800,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(3, quantum_numbers,
+      build_Quarkline_lookup(3, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_lookup(1, quantum_numbers,
+      build_Quarkline_lookup(1, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q0, Q0_indices);
@@ -1881,14 +1818,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(0, quantum_numbers,
+      build_Quarkline_lookup(0, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2L, Q2_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q2_lookup(2, quantum_numbers,
+      build_Quarkline_lookup(2, quantum_numbers,
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q2L, Q2_indices);
@@ -1906,7 +1843,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], true,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -1914,7 +1851,7 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], true,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(1, quantum_numbers, 
+      build_Quarkline_lookup(1, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -1934,14 +1871,14 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
      rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-     build_Q1_lookup(1, quantum_numbers, 
+     build_Quarkline_lookup(1, quantum_numbers, 
                      vdv_indices,
                      operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                      quarkline_lookuptable.Q1, Q1_indices);
@@ -1959,21 +1896,21 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(1, quantum_numbers, 
+      build_Quarkline_lookup(1, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
      rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(2, quantum_numbers, 
+      build_Quarkline_lookup(2, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -1992,28 +1929,28 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(1, quantum_numbers, 
+      build_Quarkline_lookup(1, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(2, quantum_numbers, 
+      build_Quarkline_lookup(2, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(3, quantum_numbers, 
+      build_Quarkline_lookup(3, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
@@ -2034,28 +1971,28 @@ void GlobalData::init_lookup_tables() {
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[0], correlator.quark_numbers[1], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(0, quantum_numbers, 
+      build_Quarkline_lookup(0, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[1], correlator.quark_numbers[2], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(1, quantum_numbers, 
+      build_Quarkline_lookup(1, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[2], correlator.quark_numbers[3], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(2, quantum_numbers, 
+      build_Quarkline_lookup(2, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
       rnd_index = create_rnd_vec_id(quarks, 
           correlator.quark_numbers[3], correlator.quark_numbers[0], false,
           operator_lookuptable.ricQ2_lookup);
-      build_Q1_lookup(3, quantum_numbers, 
+      build_Quarkline_lookup(3, quantum_numbers, 
                       vdv_indices,
                       operator_lookuptable.ricQ2_lookup[rnd_index].rnd_vec_ids,
                       quarkline_lookuptable.Q1, Q1_indices);
