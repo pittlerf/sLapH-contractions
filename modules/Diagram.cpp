@@ -16,24 +16,21 @@ C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup) {
 
 void C4cB::contract(std::vector<cmplx> &c,
                     BlockIterator const &slice_pair,
-                    QuarkLineBlock2<QuarkLineType::Q0> &q0,
-                    QuarkLineBlock2<QuarkLineType::Q1> &q1,
-                    QuarkLineBlock2<QuarkLineType::Q2> &q2l,
-                    QuarkLineBlock2<QuarkLineType::Q2> &q2v) {
+                    QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
         ids[0],
-        q0[{slice_pair.source()}],
-        q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
+        q.q0[{slice_pair.source()}],
+        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
 
     multiply<1, 1, 0, 0>(
         L2,
         ids[1],
-        q0[{slice_pair.sink()}],
-        q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
+        q.q0[{slice_pair.sink()}],
+        q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
   }
 
   for (int i = 0; i != quantum_num_ids_.size(); ++i) {

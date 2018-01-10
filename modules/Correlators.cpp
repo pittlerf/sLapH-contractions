@@ -4,7 +4,6 @@
 
 #include "DilutedFactor.h"
 #include "QuarkLineBlock2.h"
-#include "Diagram.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "h5-wrapper.h"
@@ -845,16 +844,15 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C4cB(RandomVector const &randomvectors,
+void Correlators::build(Diagram &diagram,
+                             RandomVector const &randomvectors,
                              OperatorsForMesons const &meson_operator,
                              Perambulator const &perambulators,
-                             std::vector<CorrInfo> const &corr_lookup,
+                            std::vector<CorrInfo> const &corr_lookup,
                              std::string const output_path,
                              std::string const output_filename) {
   if (corr_lookup.empty())
     return;
-
-  C4cB diagram(corr_lookup);
 
   StopWatch swatch(diagram.name());
 
@@ -896,6 +894,9 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
                                                      nev,
                                                      dil_fac_lookup.Q2V);
 
+    QuarkLineBlockCollection part_collection = {
+        quarkline_Q0, quarkline_Q1, quarkline_Q2L, quarkline_Q2V};
+
 #pragma omp for schedule(dynamic)
     // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -903,8 +904,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract(
-            C[t], slice_pair, quarkline_Q0, quarkline_Q1, quarkline_Q2L, quarkline_Q2V);
+        diagram.contract(C[t], slice_pair, part_collection);
       }
 
       quarkline_Q0.clear();
@@ -1275,12 +1275,16 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
              corr_lookup.C4cC,
              output_path,
              output_filename);
-  build_C4cB(randomvectors,
-             meson_operator,
-             perambulators,
-             corr_lookup.C4cB,
-             output_path,
-             output_filename);
+
+  C4cB c4cB(corr_lookup.C4cB);
+  build(c4cB,
+        randomvectors,
+        meson_operator,
+        perambulators,
+        corr_lookup.C4cB,
+        output_path,
+        output_filename);
+
   build_C30(randomvectors,
             meson_operator,
             perambulators,

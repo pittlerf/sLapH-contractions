@@ -21,6 +21,7 @@
 #include "boost/multi_array.hpp"
 #include "Eigen/Dense"
 
+#include "Diagram.h"
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "typedefs.h"
@@ -267,11 +268,11 @@ private:
    *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
    *  @f}
    */
-  void build_C4cB(RandomVector const &randomvectors,
-                  OperatorsForMesons const &meson_operator,
-                  Perambulator const &perambulators,
-                  std::vector<CorrInfo> const &corr_lookup,
-                  std::string const output_path,
-                  std::string const output_filename);
-
+  void build(Diagram &diagram,
+             RandomVector const &randomvectors,
+             OperatorsForMesons const &meson_operator,
+             Perambulator const &perambulators,
+             std::vector<CorrInfo> const &corr_lookup,
+             std::string const output_path,
+             std::string const output_filename);
 };
