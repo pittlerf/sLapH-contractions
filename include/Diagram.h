@@ -189,6 +189,19 @@ class C20 : public DiagramComp {
                      QuarkLineBlockCollection &q) override;
 };
 
+
+class C20V : public DiagramCompComp {
+ public:
+  C20V(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C20V"; }
+
+ private:
+  void contract_impl(std::vector<compcomp_t> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
 /*****************************************************************************/
 /*                                    C3                                     */
 /*****************************************************************************/
