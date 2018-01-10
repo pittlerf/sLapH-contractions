@@ -763,7 +763,7 @@ void Correlators::build_C4cC(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= 3 * Lt;
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -870,7 +870,7 @@ void Correlators::build_C3c(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= 2* Lt;
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);
@@ -975,7 +975,7 @@ void Correlators::build_C4cB(RandomVector const &randomvectors,
   // normalisation
   for (int i = 0; i != quantum_num_ids.size(); ++i) {
     for (auto &corr : correlator[i]) {
-      corr /= 3 * Lt;
+      corr /= Lt;
     }
     // write data to file
     filehandle.write(correlator[i], corr_lookup[i]);

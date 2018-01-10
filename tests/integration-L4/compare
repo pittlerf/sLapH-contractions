@@ -1,12 +1,12 @@
 #!/bin/bash
-# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 
 set -e
 set -u
 
 tmp="$(mktemp)"
 
-for path in correlators-20171130/*.h5; do
+for path in correlators-20180110/*.h5; do
     basename="${path##*/}"
 
     echo "$basename"
