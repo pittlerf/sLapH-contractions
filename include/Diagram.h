@@ -54,6 +54,18 @@ class C2c : public Diagram {
                      QuarkLineBlockCollection &q) override;
 };
 
+class C20 : public Diagram {
+ public:
+  C20(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C20"; }
+
+ private:
+  void contract_impl(std::vector<cmplx> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
 /*****************************************************************************/
 /*                                    C3                                     */
 /*****************************************************************************/

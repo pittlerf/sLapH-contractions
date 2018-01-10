@@ -309,48 +309,6 @@ void Correlators::build_corr0(RandomVector const &randomvectors,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void Correlators::build_C20(std::vector<CorrInfo> const &corr_lookup,
-                            std::string const output_path,
-                            std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("C20");
-  swatch.start();
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C20", output_filename, comp_type_factory_tr());
-
-  for (const auto &c_look : corr_lookup) {
-    std::vector<cmplx> correlator(Lt, cmplx(.0, .0));
-
-    DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-    for (auto const block_pair : dilution_scheme) {
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-        /*! @todo hidden because range based but this is a loop over random */
-
-        auto const &c = corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
-        correlator[t] += std::accumulate(std::begin(c), std::end(c), cmplx(0.0, 0.0));
-      }
-    }
-    // normalisation
-    for (auto &corr : correlator) {
-      corr /= Lt * corr0[c_look.lookup[0]][0][0].size();
-    }
-
-    // write data to file
-    filehandle.write(correlator, c_look);
-  }
-
-  swatch.stop();
-  swatch.print();
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 void Correlators::build_C40D(std::vector<CorrInfo> const &corr_lookup,
                              std::string const output_path,
                              std::string const output_filename) {
@@ -716,7 +674,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
 
-  build_C20(corr_lookup.C20, output_path, output_filename);
   build_C40D(corr_lookup.C40D, output_path, output_filename);
   build_C40V(corr_lookup.C40V, output_path, output_filename);
 
@@ -726,6 +683,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
   diagrams.emplace_back(new C2c(corr_lookup.C2c));
+  diagrams.emplace_back(new C20(corr_lookup.C20));
 
   diagrams.emplace_back(new C3c(corr_lookup.C3c));
   diagrams.emplace_back(new C30(corr_lookup.C30));

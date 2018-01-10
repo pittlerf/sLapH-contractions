@@ -19,6 +19,24 @@ void C2c::contract_impl(std::vector<cmplx> &c,
 }
 
 /*****************************************************************************/
+/*                                    C20                                    */
+/*****************************************************************************/
+
+C20::C20(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+
+void C20::contract_impl(std::vector<cmplx> &c,
+                        BlockIterator const &slice_pair,
+                        QuarkLineBlockCollection &q) {
+  for (int i = 0; i != corr_lookup().size(); ++i) {
+    auto const &c_look = corr_lookup()[i];
+
+    auto const &x = q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+    c[i] += std::accumulate(std::begin(x), std::end(x), cmplx(0.0, 0.0)) /
+            static_cast<double>(x.size());
+  }
+}
+
+/*****************************************************************************/
 /*                                    C3c                                    */
 /*****************************************************************************/
 
