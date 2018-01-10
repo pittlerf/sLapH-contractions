@@ -159,42 +159,6 @@ struct VdaggerVQuantumNumbers {
 };
 
 /******************************************************************************/
-/*! Struct containing random index combinations for quarklines depending on two
- *  indices.
- *
- *  The random indices are uniquely identifying quark and random vector. Thus
- *  There are @f$ \sum_i q_i nb_rnd(q_i) @f$ random indices.
- *
- *  @todo is the offset still needed?
- */
-struct RandomIndexCombinationsQ2 {
-  size_t id;
-  /*! @{
-   *  Numbers identifying quarks in quark_list
-   */
-  size_t id_q1, id_q2;
-  /*! @} */
-  /*! The entries of the pair correspond to the first and second random index.
-   *  Contains the first random index corresponding to @em id_q1 and @em id_q2
-   *  respectively, so that rnd_vec_id - offset is the actual random seed number
-   */
-  std::pair<size_t, size_t> offset;
-  /*! The entries of the pair correspond to the first and second random index.
-   *  List of all possible combinations of random vector indices for quarks
-   *  specified by @em id_q1 and @em id_q2
-   */
-  std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
-
-  /*! Just a small constructor to ensure easy filling of its vector form */
-  RandomIndexCombinationsQ2(const size_t id,
-                            const size_t id_q1,
-                            const size_t id_q2,
-                            const std::pair<size_t, size_t> offset,
-                            const std::vector<std::pair<size_t, size_t>> &rnd_vec_ids)
-      : id(id), id_q1(id_q1), id_q2(id_q2), offset(offset), rnd_vec_ids(rnd_vec_ids){};
-};
-
-/******************************************************************************/
 /*! Struct that contains all information for a sLapH operator
  *
  *  @todo confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable
