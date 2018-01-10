@@ -108,32 +108,6 @@ template <int n, size_t rvecs>
 using OperatorToFactorMap =
     std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
-#if 0
-template <int n1, int n2>
-OperatorToFactorMap<n1 + n2> operator*(OperatorToFactorMap<n1> const &left_map,
-                                       OperatorToFactorMap<n2> const &right_map) {
-  OperatorToFactorMap<n1 + n2> result;
-
-  for (auto const &left : left_map) {
-    for (auto const &right : right_map) {
-      // Concatenate the two keys from the left and right element into the new key.
-      typename OperatorToFactorMap<n1 + n2>::key_type key;
-      auto out_it =
-          std::copy(std::begin(left.first), std::end(left.first), std::begin(key));
-      std::copy(std::begin(right.first), std::end(right.first), out_it);
-
-      // Do the actual multiplication.
-      result[key] = left.second * right.second;
-    }
-  }
-}
-#endif
-
-// Proposed:
-// template <int n>
-// using OperatorToFactorMap = std::map<std::array<QuantumNumbers, n>,
-// std::vector<DilutedFactor>>;
-
 template <size_t n, size_t rvecs>
 std::string to_string(typename OperatorToFactorMap<n, rvecs>::key_type const &array) {
   std::ostringstream oss;
@@ -157,94 +131,6 @@ void print(OperatorToFactorMap<n, rvecs> const &otfm) {
               << "std::vector(size = " << elem.second.size() << ")\n";
   }
 }
-
-/*! @todo Be more restrictive with lookup tables. .Q2V etc. is enough */
-template <QuarkLineType qlt>
-void check_random_combinations(std::string const &diagram,
-                               std::vector<size_t> const &lookup,
-                               std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                               std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
-                               std::vector<QuarklineQ2Indices> const &Q2_lookup);
-
-/*! Multiply (Q1*Q1) and take trace
- *  - corr0
- */
-std::vector<cmplx> trace(std::vector<Eigen::MatrixXcd> const &quarkline1,
-                         std::vector<Eigen::MatrixXcd> const &quarkline2,
-                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                         std::vector<size_t> const &ric_ids);
-
-/*! Multiply two traces of two Quarklines each: tr(QQ) * tr(QQ)
- */
-compcomp_t trtr(std::vector<cmplx> const &factor1,
-                std::vector<cmplx> const &factor2,
-                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                std::vector<size_t> const &ric_ids);
-
-/******************************************************************************/
-
-/*! Create vector<MatrixXcd> with Q1 for all rnd_vecs
- *  - C1
- *  - C3c
- *  - C30
- */
-void Q1(std::vector<Eigen::MatrixXcd> &result,
-        std::vector<Eigen::MatrixXcd> const &quarklines,
-        std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-        std::vector<size_t> const &ric_ids,
-        size_t const dilE,
-        size_t const dilD);
-
-#if 0
-void Q1xQ1(std::vector<DilutedFactor> &result,
-           std::vector<DilutedFactor> const &quarkline1,
-           std::vector<DilutedFactor> const &quarkline2,
-           std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-           std::vector<size_t> const ric_ids,
-           size_t const dilE,
-           size_t const dilD);
-#endif
-
-/*! Create vector<MatrixXcd> with Q0*Q2 for all rnd vecs not equal
- *  - (corrC)
- *  - C4cB
- *  - C4cC
- *  - C3c
- */
-void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result,
-                   std::vector<Eigen::MatrixXcd> const &quarkline1,
-                   std::vector<Eigen::MatrixXcd> const &quarkline2,
-                   std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                   std::vector<size_t> const &ric_ids,
-                   size_t const dilE,
-                   size_t const dilD);
-
-/*! Multiply (QQ)*(Q) and take trace
- *  - C3c
- *  - C30
- *  @calls M1xM2 for Optimization
- */
-cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M1,
-                std::vector<Eigen::MatrixXcd> const &M2,
-                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                std::vector<size_t> const &ric_ids,
-                size_t const dilE,
-                size_t const dilD);
-
-/*! Multiply (QQ)*(QQ). or
- *  and take trace
- *  - C4cC
- *  - C4cB
- *  - C40C
- *  - C40B
- *  @calls M1xM2 for Optimization
- */
-cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
-            std::vector<Eigen::MatrixXcd> const &M2,
-            std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-            std::vector<size_t> const &ric_ids,
-            size_t const dilE,
-            size_t const dilD);
 
 template <size_t rvecs1, size_t rvecs2>
 cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
