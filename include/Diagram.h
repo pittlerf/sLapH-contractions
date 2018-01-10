@@ -61,3 +61,17 @@ class C40B : public Diagram {
 
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
+
+class C40C : public Diagram {
+ public:
+  C40C(std::vector<CorrInfo> const &corr_lookup);
+
+  char const *name() const override { return "C40C"; }
+
+ private:
+  void contract_impl(std::vector<cmplx> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+
+  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+};
