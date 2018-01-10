@@ -629,113 +629,6 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
   swatch.print();
 }
 
-/*****************************************************************************/
-/*                                 build_C3c                                 */
-/*****************************************************************************/
-void Correlators::build_C3c(RandomVector const &randomvectors,
-                            OperatorsForMesons const &meson_operator,
-                            Perambulator const &perambulators,
-                            std::vector<CorrInfo> const &corr_lookup,
-                            std::string const output_path,
-                            std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("C3c");
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C3+", output_filename, comp_type_factory_tr());
-
-  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(),
-                                             std::vector<cmplx>(Lt, cmplx(.0, .0)));
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids;
-  quantum_num_ids.reserve(corr_lookup.size());
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids.push_back(
-        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-                   std::array<size_t, 1>{c_look.lookup[1]}));
-  }
-
-#pragma omp parallel
-  {
-    swatch.start();
-    // std::vector<std::vector<cmplx>> C(corr_lookup.size(), std::vector<cmplx>(Lt,
-    // cmplx(.0, .0)));
-    std::vector<std::vector<cmplx>> C(corr_lookup.size(),
-                                      std::vector<cmplx>(Lt, cmplx(.0, .0)));
-
-    QuarkLineBlock2<QuarkLineType::Q0> quarklines_Q0(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
-
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines_Q1(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
-
-    QuarkLineBlock2<QuarkLineType::Q2> quarklines_Q2(randomvectors,
-                                                     perambulators,
-                                                     meson_operator,
-                                                     dilT,
-                                                     dilE,
-                                                     nev,
-                                                     dil_fac_lookup.Q2L);
-
-#pragma omp for schedule(dynamic)
-    for (int b = 0; b < dilution_scheme.size(); ++b) {
-      auto const block_pair = dilution_scheme[b];
-
-      std::cout << block_pair << std::endl;
-
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-
-        OperatorToFactorMap<2, 1> L1;
-        for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(L1,
-                               std::get<0>(ids),
-                               quarklines_Q0[{slice_pair.source()}],
-                               quarklines_Q2[{slice_pair.source_block(),
-                                              slice_pair.source(),
-                                              slice_pair.sink_block()}]);
-        }
-
-        for (int i = 0; i != quantum_num_ids.size(); ++i) {
-          auto const &ids = quantum_num_ids[i];
-          C[i][t] +=
-              trace(L1[std::get<0>(ids)],
-                    quarklines_Q1[{slice_pair.sink(), slice_pair.source_block()}].at(
-                        std::get<1>(ids)));
-        }
-      }
-
-      quarklines_Q0.clear();
-      quarklines_Q1.clear();
-      quarklines_Q2.clear();
-    }
-#pragma omp critical
-    {
-      for (int i = 0; i != quantum_num_ids.size(); ++i) {
-        for (size_t t = 0; t < Lt; t++)
-          correlator[i][t] += C[i][t];
-      }
-    }
-    swatch.stop();
-  }  // parallel part ends here
-
-  // normalisation
-  for (int i = 0; i != quantum_num_ids.size(); ++i) {
-    for (auto &corr : correlator[i]) {
-      corr /= Lt;
-    }
-    // write data to file
-    filehandle.write(correlator[i], corr_lookup[i]);
-  }
-  swatch.print();
-}
-
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void Correlators::build(Diagram &diagram,
@@ -828,87 +721,6 @@ void Correlators::build(Diagram &diagram,
   swatch.print();
 }
 
-void Correlators::build_C30(RandomVector const &randomvectors,
-                            OperatorsForMesons const &meson_operator,
-                            Perambulator const &perambulators,
-                            std::vector<CorrInfo> const &corr_lookup,
-                            std::string const output_path,
-                            std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("C30");
-
-  // every element of corr_lookup contains the same filename. Wlog choose the
-  // first element
-  WriteHDF5Correlator filehandle(
-      output_path, "C30", output_filename, comp_type_factory_tr());
-
-  std::vector<std::vector<cmplx>> correlator(corr_lookup.size(),
-                                             std::vector<cmplx>(Lt, cmplx(.0, .0)));
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-  std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids;
-
-#pragma omp parallel
-  {
-    swatch.start();
-    std::vector<std::vector<cmplx>> C(corr_lookup.size(),
-                                      std::vector<cmplx>(Lt, cmplx(.0, .0)));
-    // building the quark line directly frees up a lot of memory
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
-
-#pragma omp for schedule(dynamic)
-    for (int b = 0; b < dilution_scheme.size(); ++b) {
-      auto const block_pair = dilution_scheme[b];
-
-      std::cout << block_pair << std::endl;
-
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-
-        OperatorToFactorMap<2, 1> L1;
-        for (const auto &ids : quantum_num_ids) {
-          multiply<1, 1, 0, 0>(
-              L1,
-              std::get<0>(ids),
-              quarklines[{slice_pair.source(), slice_pair.source_block()}],
-              quarklines[{slice_pair.source(), slice_pair.sink_block()}]);
-        }
-
-        for (int i = 0; i != quantum_num_ids.size(); ++i) {
-          auto const &ids = quantum_num_ids[i];
-          C[i][t] += trace(L1[std::get<0>(ids)],
-                           quarklines[{slice_pair.sink(), slice_pair.source_block()}].at(
-                               std::get<1>(ids)));
-        }
-      }
-
-      quarklines.clear();
-    }
-#pragma omp critical
-    {
-      for (int i = 0; i != quantum_num_ids.size(); ++i) {
-        for (size_t t = 0; t < Lt; t++)
-          correlator[i][t] += C[i][t];
-      }
-    }
-    swatch.stop();
-  }  // parallel part ends here
-
-  // normalisation
-  for (int i = 0; i != quantum_num_ids.size(); ++i) {
-    for (auto &corr : correlator[i]) {
-      corr /= Lt;
-    }
-    // write data to file
-    filehandle.write(correlator[i], corr_lookup[i]);
-  }
-  swatch.print();
-}
-
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -950,13 +762,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
-  // in C3c, also corr0 is build, since this is much faster
-  build_C3c(randomvectors,
-            meson_operator,
-            perambulators,
-            corr_lookup.C3c,
-            output_path,
-            output_filename);
+
   build_C20(corr_lookup.C20, output_path, output_filename);
   build_C40D(corr_lookup.C40D, output_path, output_filename);
   build_C40V(corr_lookup.C40V, output_path, output_filename);
@@ -966,6 +772,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
+  diagrams.emplace_back(new C3c(corr_lookup.C3c));
   diagrams.emplace_back(new C30(corr_lookup.C30));
 
   diagrams.emplace_back(new C4cB(corr_lookup.C4cB));
