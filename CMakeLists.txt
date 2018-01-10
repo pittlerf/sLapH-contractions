@@ -1,4 +1,4 @@
-# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 
 # Enforce a version that is actually available on QBiG.
 cmake_minimum_required(VERSION 2.8)
@@ -119,7 +119,6 @@ add_executable(contract
   modules/h5-wrapper.cpp
   modules/OperatorsForMesons.cpp
   modules/Perambulator.cpp
-  modules/QuarkLineBlock.cpp
   modules/QuarkLineBlock2.cpp
   modules/RandomVector.cpp
   modules/ranlxs.cpp

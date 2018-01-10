@@ -15,7 +15,6 @@
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
-#include "QuarkLineBlock.h"
 #include "typedefs.h"
 #include "global_data.h"
 
@@ -166,22 +165,6 @@ void check_random_combinations(std::string const &diagram,
                                std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
                                std::vector<VdaggerVRandomLookup> const &rvdaggervr_lookup,
                                std::vector<QuarklineQ2Indices> const &Q2_lookup);
-
-/*! Multiply (Q2V*rVdaggerV) and take trace
- *  - corrC
- */
-template <QuarkLineType qlt1, QuarkLineType qlt2>
-std::vector<cmplx> trace(QuarkLineBlock<qlt1> const &quarkline1,
-                         QuarkLineBlock<qlt2> const &quarkline2,
-                         int const t1,
-                         int const b2,
-                         int const t2,
-                         std::vector<size_t> const &lookup,
-                         std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                         std::vector<size_t> const &ric_ids,
-                         int const gamma,
-                         size_t const dilE,
-                         size_t const dilD);
 
 /*! Multiply (Q1*Q1) and take trace
  *  - corr0

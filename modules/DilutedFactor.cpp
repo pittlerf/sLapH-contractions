@@ -92,67 +92,6 @@ void Q1(std::vector<Eigen::MatrixXcd> &result,
   }
 }
 
-/*! 
- *  Multiply Operator with 0 quarks and Operator with 2 quarks
- *
- *  Dependency inversion principle: This interface will be a policy that must be 
- *  fullfilled by any linear algebra library to be used. 
- *
- *  @todo Layer of abstraction for Eigen in call parameter result
- */
-void rVdaggerVrxQ2(std::vector<Eigen::MatrixXcd> &result, 
-                   std::vector<Eigen::MatrixXcd> const &quarkline1,
-                   std::vector<Eigen::MatrixXcd> const &quarkline2,
-                   std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-                   std::vector<size_t> const &ric_ids,
-                   size_t const dilE,
-                   size_t const dilD){
-
-  /*! Assume full dilution in Dirac space in the Loop over d */
-  assert(dilD == 4);
-
-  gamma_lookup gamma_5{};
-  gamma_5.row[0] = 0;
-  gamma_5.value[0] = 1;
-  gamma_5.row[1] = 1;
-  gamma_5.value[1] = 1;
-  gamma_5.row[2] = 2;
-  gamma_5.value[2] = -1;
-  gamma_5.row[3] = 3;
-  gamma_5.value[3] = -1;
-
-
-  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  size_t result_rnd_counter = 0;
-  for (const auto &rnd0 : ric0) {
-    for (const auto &rnd1 : ric1) {
-      if (rnd0.second == rnd1.first && rnd0.first != rnd1.second) {
-
-        /*! @Note Allocation should be refactored */
-        result.emplace_back(Eigen::MatrixXcd::Zero(dilE * dilD, dilE * dilD));
-
-        const size_t idr0 = &rnd0 - &ric0[0];
-        const size_t idr1 = &rnd1 - &ric1[0];
-
-        for (size_t d = 0; d < 4; d++) {
-          //! @TODO: gamma hardcoded
-          const cmplx value = gamma_5.value[d];
-          const size_t gamma_index = gamma_5.row[d];
-
-          result[result_rnd_counter].block(d * dilE, 0, dilE, dilD * dilE) =
-              value *
-              quarkline1[idr0].block(d * dilE, gamma_index * dilE, dilE, dilE) *
-              quarkline2[idr1].block(gamma_index * dilE, 0, dilE, dilD * dilE);
-        }
-        ++result_rnd_counter;
-      }
-    }
-  }
-
-}
-
 cmplx trace_3pt(std::vector<Eigen::MatrixXcd> const &M2,
                 std::vector<Eigen::MatrixXcd> const &M1,
                 std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
@@ -211,59 +150,8 @@ cmplx trace(std::vector<Eigen::MatrixXcd> const &M1,
   return result;
 }
 
-/*! corrC */
-template <>
-std::vector<cmplx> trace<QuarkLineType::Q2V, QuarkLineType::Q0>(
-    QuarkLineBlock<QuarkLineType::Q2V> const &quarkline1,
-    QuarkLineBlock<QuarkLineType::Q0> const &quarkline2,
-    int const t1,
-    int const b2,
-    int const t2,
-    std::vector<size_t> const &lookup,
-    std::vector<RandomIndexCombinationsQ2> const &ric_lookup,
-    std::vector<size_t> const &ric_ids,
-    int const gamma,
-    size_t const dilE,
-    size_t const dilD) {
-  assert(dilD == 4);
 
-  std::vector<cmplx> result;
-
-  const auto &ric0 = ric_lookup[ric_ids[0]].rnd_vec_ids;
-  const auto &ric1 = ric_lookup[ric_ids[1]].rnd_vec_ids;
-
-  for (const auto& rnd : ric0) {
-    const auto idr0 = &rnd - &ric0[0];
-    result.emplace_back(cmplx(0.0, 0.0));
-
-    // check that ric1 and ric0 are indeed a full trace 
-    // i.e. ric1.first == ric2.second and ric1.second == ric2.first
-    const auto it1 = std::find_if(
-        ric1.begin(), ric1.end(), [&](std::pair<size_t, size_t> pair) {
-          return (pair == std::make_pair(rnd.second, rnd.first));
-        });
-    if (it1 == ric1.end()) {
-      throw std::runtime_error("something wrong with random vectors in build_corrC");
-    }
-    const auto idr1 = it1 - ric1.begin();
-
-    for (size_t d = 0; d < 4; d++) {
-      const auto gamma_index = quarkline1.return_gamma_row(gamma, d);
-      result[idr0] +=
-          quarkline1.return_gamma_val(gamma, d) *
-          ( quarkline1(t1, b2, lookup[0], idr0)
-               .block(d * dilE, gamma_index * dilE, dilE, dilE) *
-            /*! @warning idr0 instead of idr1 because rvdaggervr are interchanged */
-            quarkline2(t2, -1, lookup[1], idr1)
-               .block(gamma_index * dilE, d * dilE, dilE, dilE))
-          .trace();
-    }
-  }
-
-  return result;
-}
-
-/*! corr0 */
+/*! corr0, corrC */
 std::vector<cmplx> trace(std::vector<Eigen::MatrixXcd> const &quarkline1,
                          std::vector<Eigen::MatrixXcd> const &quarkline2,
                          std::vector<RandomIndexCombinationsQ2> const &ric_lookup,

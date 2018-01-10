@@ -3,7 +3,6 @@
 //#define DILUTION_ITERATOR_PRINT
 
 #include "DilutedFactor.h"
-#include "QuarkLineBlock.h"
 #include "QuarkLineBlock2.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
