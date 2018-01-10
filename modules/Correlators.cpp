@@ -644,8 +644,6 @@ void Correlators::build_C4cV(CorrelatorLookup const &corr_lookup,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        /*! @todo Write move assignment for compcomp_t and give trtr return
-         * parameter */
         correlator[t] += inner_product(
             corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
             corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
