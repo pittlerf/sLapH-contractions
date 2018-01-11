@@ -1340,29 +1340,10 @@ build_C40C_lookup(const std::vector<std::string> &hdf5_dataset_name,
  *                                for Q1
  *  @param[out] corr_lookup       Lookup table containing lookup tables for
  *                                all correlators this code can calculate.
- *                                This function sets corr_lookup.C40B
+ *
+ *  @bug I am fairly certain that the quarks are mixed up. It is
+ *        also wrong in init_lookup_tables() (MW 27.3.17)
  */
-static void
-build_C40B_lookup(const std::vector<std::string> &hdf5_dataset_name,
-                  const std::vector<std::vector<size_t>> &Q1_indices,
-                  CorrelatorLookup &corr_lookup) {
-  size_t row = 0;
-  // Indices for correlator_lookup.C40B are one-to-one the indices for
-  // Q1_indices
-  for (const auto &Q1 : Q1_indices) {
-    auto it = std::find_if(corr_lookup.C40B.begin(), corr_lookup.C40B.end(),
-                           [&](CorrInfo corr) {
-      return (corr.hdf5_dataset_name == hdf5_dataset_name[row]);
-    });
-    if (it == corr_lookup.C40B.end()) {
-      corr_lookup.C40B.emplace_back(CorrInfo(corr_lookup.C40B.size(),
-                                             hdf5_dataset_name[row], Q1,
-                                             std::vector<int>({})));
-    }
-    row++;
-  }
-}
-
 static void build_C40B_lookup(
     std::vector<quark> const &quarks, 
     std::vector<int> const &quark_numbers,
@@ -1374,8 +1355,7 @@ static void build_C40B_lookup(
     std::vector<QuarklineIndices> &Q1_lookup, 
     std::vector<CorrInfo> &c_look) {
 
-  std::vector<size_t> Q1_indices(
-      std::vector<size_t>(quantum_numbers[0].size()));
+  std::vector<size_t> Q1_indices(std::vector<size_t>(quantum_numbers[0].size()));
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
   // Build the correlator and dataset names for hdf5 output files
@@ -1408,6 +1388,7 @@ static void build_C40B_lookup(
     CorrInfo candidate{c_look.size(), hdf5_dataset_name, Q1_indices,
                        std::vector<int>({})};
 
+    /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
 
     if (it == c_look.end()) {
