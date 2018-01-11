@@ -185,6 +185,10 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
+        if (diagram->corr_info().empty()) {
+          continue;
+        }
+
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
