@@ -305,6 +305,7 @@ struct CorrelatorLookup {
   std::vector<CorrInfo> C4cD;
   std::vector<CorrInfo> C4cV;
 
+  std::vector<CorrInfo> C30V;
   std::vector<CorrInfo> C30;
   std::vector<CorrInfo> C3c;
 
