@@ -199,16 +199,7 @@ private:
 
 template <typename Numeric>
 void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
-                   RandomVector const &randomvectors,
-                   OperatorsForMesons const &meson_operator,
-                   Perambulator const &perambulators,
                    std::string const output_path,
                    std::string const output_filename,
                    const size_t Lt,
-                   const size_t dilT,
-                   const size_t dilE,
-                   const size_t nev,
-                   DilutedFactorLookup const &dil_fac_lookup,
-                   DilutedTraceCollection<2> &corr0,
-                   DilutedTraceCollection<2> &corrC,
-                   DilutedTraceCollection2<1> &corr_part_trQ1);
+                   const size_t dilT, QuarkLineBlockCollection &q);

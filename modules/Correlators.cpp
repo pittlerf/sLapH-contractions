@@ -324,19 +324,10 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
 // -----------------------------------------------------------------------------
 template <typename Numeric>
 void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
-                   RandomVector const &randomvectors,
-                   OperatorsForMesons const &meson_operator,
-                   Perambulator const &perambulators,
                    std::string const output_path,
                    std::string const output_filename,
                    const size_t Lt,
-                   const size_t dilT,
-                   const size_t dilE,
-                   const size_t nev,
-                   DilutedFactorLookup const &dil_fac_lookup,
-                   DilutedTraceCollection<2> &corr0,
-                   DilutedTraceCollection<2> &corrC,
-                   DilutedTraceCollection2<1> &corr_part_trQ1) {
+                   const size_t dilT, QuarkLineBlockCollection &q) {
   if (diagram.corr_lookup().empty())
     return;
 
@@ -358,35 +349,6 @@ void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
         Lt, std::vector<Numeric>(diagram.corr_lookup().size(), Numeric{}));
 
     // building the quark line directly frees up a lot of memory
-    QuarkLineBlock2<QuarkLineType::Q0> quarkline_Q0(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
-
-    QuarkLineBlock2<QuarkLineType::Q1> quarkline_Q1(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
-
-    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2L(randomvectors,
-                                                     perambulators,
-                                                     meson_operator,
-                                                     dilT,
-                                                     dilE,
-                                                     nev,
-                                                     dil_fac_lookup.Q2L);
-
-    QuarkLineBlock2<QuarkLineType::Q2> quarkline_Q2V(randomvectors,
-                                                     perambulators,
-                                                     meson_operator,
-                                                     dilT,
-                                                     dilE,
-                                                     nev,
-                                                     dil_fac_lookup.Q2V);
-
-    QuarkLineBlockCollection part_collection = {quarkline_Q0,
-                                                quarkline_Q1,
-                                                quarkline_Q2L,
-                                                quarkline_Q2V,
-                                                corr0,
-                                                corrC,
-                                                corr_part_trQ1};
 
 #pragma omp for schedule(dynamic)
     // Perform contraction here
@@ -395,13 +357,10 @@ void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract(C[t], slice_pair, part_collection);
+        diagram.contract(C[t], slice_pair, q);
       }
 
-      quarkline_Q0.clear();
-      quarkline_Q1.clear();
-      quarkline_Q2L.clear();
-      quarkline_Q2V.clear();
+      q.clear();
 
     }  // loops over time end here
 #pragma omp critical
@@ -451,6 +410,10 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                            QuarklineLookup const &quark_lookup,
                            std::string const output_path,
                            std::string const output_filename) {
+
+
+
+
   build_part_trQ1(randomvectors,
                   meson_operator,
                   perambulators,
@@ -463,6 +426,17 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
+
+  QuarkLineBlockCollection part_collection(randomvectors,
+                                           perambulators,
+                                           meson_operator,
+                                           dilT,
+                                           dilE,
+                                           nev,
+                                           dil_fac_lookup,
+                                           corr0,
+                                           corrC,
+                                           corr_part_trQ1);
 
   // 3. Build all other correlation functions.
 
@@ -487,49 +461,19 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C40V(corr_lookup.C40V));
 
   for (auto &diagram : diagrams) {
-    diagram->build(randomvectors,
-                   meson_operator,
-                   perambulators,
-                   output_path,
-                   output_filename,
-                   Lt,
-                   dilT,
-                   dilE,
-                   nev,
-                   dil_fac_lookup,
-                   corr0,
-                   corrC,
-                   corr_part_trQ1);
+    diagram->build(output_path, output_filename, Lt, dilT, part_collection);
   }
 }
 
 template void build_diagram<cmplx>(typename DiagramTraits<cmplx>::Diagram &diagram,
-                                   RandomVector const &randomvectors,
-                                   OperatorsForMesons const &meson_operator,
-                                   Perambulator const &perambulators,
                                    std::string const output_path,
                                    std::string const output_filename,
                                    const size_t Lt,
-                                   const size_t dilT,
-                                   const size_t dilE,
-                                   const size_t nev,
-                                   DilutedFactorLookup const &dil_fac_lookup,
-                                   DilutedTraceCollection<2> &corr0,
-                                   DilutedTraceCollection<2> &corrC,
-                                   DilutedTraceCollection2<1> &corr_part_trQ1);
+                                   const size_t dilT, QuarkLineBlockCollection &q);
 
 template void build_diagram<compcomp_t>(
     typename DiagramTraits<compcomp_t>::Diagram &diagram,
-    RandomVector const &randomvectors,
-    OperatorsForMesons const &meson_operator,
-    Perambulator const &perambulators,
     std::string const output_path,
     std::string const output_filename,
     const size_t Lt,
-    const size_t dilT,
-    const size_t dilE,
-    const size_t nev,
-    DilutedFactorLookup const &dil_fac_lookup,
-    DilutedTraceCollection<2> &corr0,
-    DilutedTraceCollection<2> &corrC,
-    DilutedTraceCollection2<1> &corr_part_trQ1);
+    const size_t dilT, QuarkLineBlockCollection &q);

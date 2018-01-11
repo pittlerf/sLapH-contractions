@@ -17,3 +17,5 @@ template <>
 struct DiagramTraits<compcomp_t> {
   using Diagram = DiagramCompComp;
 };
+
+class QuarkLineBlockCollection;
