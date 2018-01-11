@@ -88,101 +88,6 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
   swatch.print();
 }
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void Correlators::build_corr0(RandomVector const &randomvectors,
-                              OperatorsForMesons const &meson_operator,
-                              Perambulator const &perambulators,
-                              std::vector<CorrInfo> const &corr_lookup) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("corr0");
-
-  corr0.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-#pragma omp parallel
-  {
-    swatch.start();
-
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
-
-#pragma omp for schedule(dynamic)
-    for (int b = 0; b < dilution_scheme.size(); ++b) {
-      // Notation is that `t1` is the source and `t2` the sink. Both will be
-      // done eventually, so this is symmetric.
-
-      auto const block_pair = dilution_scheme[b];
-
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup) {
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
-              quarklines[{slice_pair.source(), slice_pair.sink_block()}].at(
-                  {c_look.lookup[0]}),
-              quarklines[{slice_pair.sink(), slice_pair.source_block()}].at(
-                  {c_look.lookup[1]}));
-        }
-      }
-    }
-    swatch.stop();
-  }
-
-  swatch.print();
-}
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void Correlators::build_corrC(RandomVector const &randomvectors,
-                              Perambulator const &perambulators,
-                              OperatorsForMesons const &meson_operator,
-                              std::vector<CorrInfo> const &corr_lookup) {
-  if (corr_lookup.size() == 0)
-    return;
-
-  StopWatch swatch("corrC");
-
-  corrC.resize(boost::extents[corr_lookup.size()][Lt][Lt]);
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-#pragma omp parallel
-  {
-    swatch.start();
-
-    QuarkLineBlock2<QuarkLineType::Q0> quarklines_Q0(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q0);
-    QuarkLineBlock2<QuarkLineType::Q2> quarklines_Q2V(randomvectors,
-                                                      perambulators,
-                                                      meson_operator,
-                                                      dilT,
-                                                      dilE,
-                                                      nev,
-                                                      dil_fac_lookup.Q2V);
-
-#pragma omp for schedule(dynamic)
-    for (int b = 0; b < dilution_scheme.size(); ++b) {
-      auto const block_pair = dilution_scheme[b];
-
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup) {
-          corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
-              factor_to_trace(quarklines_Q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
-                              quarklines_Q2V[{slice_pair.sink_block(),
-                                              slice_pair.source(),
-                                              slice_pair.sink_block()}]
-                                  .at({c_look.lookup[0]}));
-        }
-      }
-    }
-    swatch.stop();
-  }
-
-  swatch.print();
-}
-
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -215,10 +120,10 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                   output_filename);
 
   // 1. Build all functions which need corrC and free it afterwards.
-  build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
+  //build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
 
   // 2. Build all functions which need corr0 and free it afterwards.
-  build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
+  //build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
 
   // 3. Build all other correlation functions.
 
@@ -244,9 +149,12 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
+  corrC.resize(boost::extents[corr_lookup.corrC.size()][Lt][Lt]);
+  corr0.resize(boost::extents[corr_lookup.corr0.size()][Lt][Lt]);
+
 #pragma omp parallel
   {
-    QuarkLineBlockCollection part_collection(randomvectors,
+    QuarkLineBlockCollection q(randomvectors,
                                              perambulators,
                                              meson_operator,
                                              dilT,
@@ -261,15 +169,38 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
 
+      // Build corrC.
+      for (auto const slice_pair : block_pair) {
+        for (const auto &c_look : corr_lookup.corrC) {
+          corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
+              factor_to_trace(q.q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
+                              q.q2v[{slice_pair.sink_block(),
+                                     slice_pair.source(),
+                                     slice_pair.sink_block()}]
+                                  .at({c_look.lookup[0]}));
+        }
+      }
+
+      // Build corr0.
+      for (auto const slice_pair : block_pair) {
+        for (const auto &c_look : corr_lookup.corr0) {
+          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
+              q.q1[{slice_pair.source(), slice_pair.sink_block()}].at({c_look.lookup[0]}),
+              q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(
+                  {c_look.lookup[1]}));
+        }
+      }
+
+      // Build the diagrams.
       for (auto &diagram : diagrams) {
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
-          diagram->contract(t, slice_pair, part_collection);
+          diagram->contract(t, slice_pair, q);
         }  // End of slice pair loop.
       }    // End of diagram loop.
 
-      part_collection.clear();
+      q.clear();
     }  // End of block pair loop.
 
     for (auto &diagram : diagrams) {

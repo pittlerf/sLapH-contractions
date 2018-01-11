@@ -91,18 +91,9 @@ private:
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
   DilutedTraceCollection<2> corr0; 
-  /*! Calculate tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  void build_corr0(RandomVector const &randomvectors,
-                   OperatorsForMesons const &meson_operator, 
-                   Perambulator const &perambulators,
-                   std::vector<CorrInfo> const &corr_lookup);
+
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
   DilutedTraceCollection<2> corrC; 
-  /*! Calculate tr(Q2V*rVdaggerVr) */
-  void build_corrC(RandomVector const &randomvectors,
-                   Perambulator const &perambulators,
-                   OperatorsForMesons const &meson_operator,
-                   std::vector<CorrInfo> const &corr_lookup);
 
   
   /*! Temporal memory for tr(Q1) */
