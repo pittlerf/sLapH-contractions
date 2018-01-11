@@ -30,8 +30,7 @@ Correlators::Correlators(const size_t Lt,
       dilE(dilE),
       nev(nev),
       dil_fac_lookup(
-          {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L}),
-      ric_lookup(operator_lookup.ricQ2_lookup) {}
+          {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L}) {}
 
 /*!
  *  @deprecated
