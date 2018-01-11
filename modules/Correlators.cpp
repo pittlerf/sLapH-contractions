@@ -119,14 +119,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                   output_path,
                   output_filename);
 
-  // 1. Build all functions which need corrC and free it afterwards.
-  //build_corrC(randomvectors, perambulators, meson_operator, corr_lookup.corrC);
-
-  // 2. Build all functions which need corr0 and free it afterwards.
-  //build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
-
-  // 3. Build all other correlation functions.
-
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
