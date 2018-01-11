@@ -266,16 +266,16 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
           int const t = get_time_delta(slice_pair, Lt);
 
           diagram->contract(t, slice_pair, part_collection);
-        }
-      }
+        }  // End of slice pair loop.
+      }    // End of diagram loop.
 
       part_collection.clear();
-    }
+    }  // End of block pair loop.
 
     for (auto &diagram : diagrams) {
       diagram->reduce();
     }
-  }
+  }  // End of parallel section.
 
   for (auto &diagram : diagrams) {
     diagram->write();
