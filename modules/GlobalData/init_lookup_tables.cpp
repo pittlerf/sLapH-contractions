@@ -619,7 +619,7 @@ static void build_Quarkline_lookup_one_qn(
 }
 
 static size_t build_trQ1_lookup(std::vector<size_t> const ql_ids,
-                                 std::vector<CorrInfo> &trQ1_lookup) {
+                                std::vector<CorrInfo> &trQ1_lookup) {
   CorrInfo candidate(trQ1_lookup.size(), "", ql_ids);
   auto it = std::find(trQ1_lookup.begin(), trQ1_lookup.end(), candidate);
   if (it == trQ1_lookup.end()) {
@@ -712,9 +712,7 @@ static void build_C1_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C1", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
-                       hdf5_dataset_name,
-                       {id1}};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -786,9 +784,7 @@ static void build_C20V_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
-                       hdf5_dataset_name,
-                       {id1, id2}};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1, id2}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -863,9 +859,7 @@ static void build_C2c_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C2+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
-                       hdf5_dataset_name,
-                       {id1}};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -935,9 +929,7 @@ static void build_C20_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
-                       hdf5_dataset_name,
-                       {id1}};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1024,7 +1016,6 @@ static void build_C30V_lookup(
   }
 }
 
-
 /******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C3c.
  *
@@ -1084,8 +1075,7 @@ static void build_C3c_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C3+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1150,8 +1140,7 @@ static void build_C30_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C30", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1163,7 +1152,7 @@ static void build_C30_lookup(
 }
 
 /******************************************************************************/
-/*! Create lookuptable where to find the quarklines to build C4cD. Also sets 
+/*! Create lookuptable where to find the quarklines to build C4cD. Also sets
  *  corrC.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
@@ -1333,7 +1322,7 @@ static void build_C40D_lookup(
 }
 
 /******************************************************************************/
-/*! Create lookuptable where to find the quarklines to build C4cV. Also sets 
+/*! Create lookuptable where to find the quarklines to build C4cV. Also sets
  *  corrC.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
@@ -1628,8 +1617,7 @@ static void build_C40C_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1766,8 +1754,7 @@ static void build_C40B_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1818,24 +1805,53 @@ void GlobalData::init_lookup_tables() {
         quantum_numbers, operator_lookuptable.vdaggerv_lookup, vdv_indices);
     std::vector<std::pair<size_t, size_t>> rnd_index;
     if (correlator.type == "C1") {
-       build_C1_lookup(quarks,
-                        correlator.quark_numbers,
-                        start_config,
-                        path_output,
-                        overwrite,
-                        quantum_numbers,
-                        vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.trQ1,
-                        correlator_lookuptable.C1);    
+      build_C1_lookup(quarks,
+                      correlator.quark_numbers,
+                      start_config,
+                      path_output,
+                      overwrite,
+                      quantum_numbers,
+                      vdv_indices,
+                      quarkline_lookuptable.Q1,
+                      correlator_lookuptable.trQ1,
+                      correlator_lookuptable.C1);
     } else if (correlator.type == "C2+" || correlator.type == "Check") {
       /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
        *  4. Build the lookuptable for Q2 and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
-       *  5. Build the lookuptable for the correlation functions 
+       *  5. Build the lookuptable for the correlation functions
        */
       build_C2c_lookup(quarks,
+                       correlator.quark_numbers,
+                       start_config,
+                       path_output,
+                       overwrite,
+                       quantum_numbers,
+                       vdv_indices,
+                       quarkline_lookuptable.Q0,
+                       quarkline_lookuptable.Q2V,
+                       correlator_lookuptable.corrC,
+                       correlator_lookuptable.C2c);
+    }
+    /*! 6. Repeat steps 1.-5. for all correlators in correlator_list. Where
+     *      applicable rVdaggerVr must be replaced by rVdaggerV in step 3. and
+     *      Q2 by Q1 in step 4.
+     */
+    else if (correlator.type == "C3+") {
+      build_C3c_lookup(quarks,
+                       correlator.quark_numbers,
+                       start_config,
+                       path_output,
+                       overwrite,
+                       quantum_numbers,
+                       vdv_indices,
+                       quarkline_lookuptable.Q0,
+                       quarkline_lookuptable.Q1,
+                       quarkline_lookuptable.Q2L,
+                       correlator_lookuptable.C3c);
+    } else if (correlator.type == "C4+D") {
+      build_C4cD_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
                         path_output,
@@ -1845,38 +1861,9 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q0,
                         quarkline_lookuptable.Q2V,
                         correlator_lookuptable.corrC,
-                        correlator_lookuptable.C2c);
-    }
-    /*! 6. Repeat steps 1.-5. for all correlators in correlator_list. Where
-     *      applicable rVdaggerVr must be replaced by rVdaggerV in step 3. and
-     *      Q2 by Q1 in step 4.
-     */
-    else if (correlator.type == "C3+") {
-      build_C3c_lookup(quarks,
-                        correlator.quark_numbers,
-                        start_config,
-                        path_output,
-                        overwrite,
-                        quantum_numbers,
-                        vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q1,
-                        quarkline_lookuptable.Q2L,
-                        correlator_lookuptable.C3c);
-    } else if (correlator.type == "C4+D") {
-       build_C4cD_lookup(quarks,
-                        correlator.quark_numbers,
-                        start_config,
-                        path_output,
-                        overwrite,
-                        quantum_numbers,
-                        vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V, 
-			correlator_lookuptable.corrC,
                         correlator_lookuptable.C4cD);
     } else if (correlator.type == "C4+V") {
-       build_C4cV_lookup(quarks,
+      build_C4cV_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
                         path_output,
@@ -1884,11 +1871,11 @@ void GlobalData::init_lookup_tables() {
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V, 
-			correlator_lookuptable.corrC,
+                        quarkline_lookuptable.Q2V,
+                        correlator_lookuptable.corrC,
                         correlator_lookuptable.C4cV);
     } else if (correlator.type == "C4+C") {
-       build_C4cC_lookup(quarks,
+      build_C4cC_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
                         path_output,
@@ -1896,10 +1883,10 @@ void GlobalData::init_lookup_tables() {
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V, 
+                        quarkline_lookuptable.Q2V,
                         correlator_lookuptable.C4cC);
     } else if (correlator.type == "C4+B") {
-       build_C4cB_lookup(quarks,
+      build_C4cB_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
                         path_output,
@@ -1907,10 +1894,10 @@ void GlobalData::init_lookup_tables() {
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2L, 
+                        quarkline_lookuptable.Q2L,
                         correlator_lookuptable.C4cB);
     } else if (correlator.type == "C20V") {
-       build_C20V_lookup(quarks,
+      build_C20V_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
                         path_output,
@@ -1921,17 +1908,17 @@ void GlobalData::init_lookup_tables() {
                         correlator_lookuptable.trQ1,
                         correlator_lookuptable.C20V);
     } else if (correlator.type == "C20") {
-       build_C20_lookup(quarks,
-                        correlator.quark_numbers,
-                        start_config,
-                        path_output,
-                        overwrite,
-                        quantum_numbers,
-                        vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.corr0,
-                        correlator_lookuptable.C20);
-     } else if (correlator.type == "C30V") {
+      build_C20_lookup(quarks,
+                       correlator.quark_numbers,
+                       start_config,
+                       path_output,
+                       overwrite,
+                       quantum_numbers,
+                       vdv_indices,
+                       quarkline_lookuptable.Q1,
+                       correlator_lookuptable.corr0,
+                       correlator_lookuptable.C20);
+    } else if (correlator.type == "C30V") {
       build_C30V_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
@@ -1945,14 +1932,14 @@ void GlobalData::init_lookup_tables() {
                         correlator_lookuptable.C30V);
     } else if (correlator.type == "C30") {
       build_C30_lookup(quarks,
-                        correlator.quark_numbers,
-                        start_config,
-                        path_output,
-                        overwrite,
-                        quantum_numbers,
-                        vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.C30);
+                       correlator.quark_numbers,
+                       start_config,
+                       path_output,
+                       overwrite,
+                       quantum_numbers,
+                       vdv_indices,
+                       quarkline_lookuptable.Q1,
+                       correlator_lookuptable.C30);
     } else if (correlator.type == "C40D") {
       build_C40D_lookup(quarks,
                         correlator.quark_numbers,
