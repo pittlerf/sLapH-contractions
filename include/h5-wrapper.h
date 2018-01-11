@@ -4,6 +4,8 @@
 
 #include "H5Cpp.h"
 
+#include <boost/filesystem.hpp>
+
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -93,3 +95,106 @@ void write_heterogenious(
     data_set.write(pair.second.data(), comp_type);
   }
 }
+
+
+template <typename Numeric>
+H5::CompType comp_type_factory();
+
+/*! Class to write correlations function to files in hdf5 format
+ *
+ *  @Warning  Dependency inversion principle is violated: Class depends on the
+ *            concrete implementation of hdf5
+ */
+class WriteHDF5Correlator {
+ public:
+  WriteHDF5Correlator(const std::string output_path,
+                      const std::string diagram,
+                      const std::string output_filename,
+                      const H5::CompType &_comp_type)
+      : comp_type(_comp_type) {
+    create_folder_for_hdf5_file(output_path.c_str());
+
+    const H5std_string file_name((output_path + "/" + diagram + output_filename).c_str());
+    open_or_create_hdf5_file(file_name);
+  }
+
+  /*! Writes data to file
+   *
+   *  @Param corr       The data to write
+   *  @Param corr_info  Contains the hdf5_dataset_name
+   *
+   *  @todo   It is sufficient to pass the hdf5_dataset_name
+   *  @todo   corr_datatype would be better as class template typename
+   *
+   *  @remark The type corr_datatype is always either complex_t or
+   *          compcomp_t. The function body is identical for both types
+   *          as everything is specified by corr_info. Thus the template
+   *          overload
+   */
+  template <typename corr_datatype>
+  void write(const std::vector<corr_datatype> &corr, const CorrInfo &corr_info) {
+    // Turn off the autoprinting when an exception occurs because fuck you
+    // thats why
+    H5::Exception::dontPrint();
+    // That's right bitches!
+
+    // create the dataset to write data ----------------------------------------
+    H5::Group group;
+    H5::DataSet dset;
+    H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
+    hsize_t dim(corr.size());
+    H5::DataSpace dspace(1, &dim);
+
+    // actual write
+    try {
+      dset = file.createDataSet(dataset_name, comp_type, dspace);
+      dset.write(&corr[0], comp_type);
+
+      // closing of dset is delegated to destructor ~DataSet
+
+    } catch (H5::Exception &e) {
+      e.printError();
+    }
+  }
+
+ private:
+  /*! Checks whether output path exists and if not creates it
+   *
+   *  @param[in] path Path where hdf5 file shall be written
+   */
+  void create_folder_for_hdf5_file(const char *path) {
+    if (access(path, 0) != 0) {
+      std::cout << "\tdirectory " << path << " does not exist and will be created";
+      boost::filesystem::path dir(path);
+      if (boost::filesystem::create_directories(dir))
+        std::cout << "\tSuccess" << std::endl;
+      else
+        std::cout << "\tFailure" << std::endl;
+    }
+  }
+
+  /*! Opens output file in Truncation mode by default
+   *
+   *  @param[in]  name String containing path+filename of the desired file
+   *  @param[out] file File pointer to hdf5 file
+   *
+   *  @todo If overwrite=no flag is set, rather than H5F_ACC_TRUNC should be
+   *        replaced by H5F_ACC_EXCL
+   *
+   *  @throws H5::exception if something goes wrong
+   */
+  void open_or_create_hdf5_file(const H5std_string &name) {
+    file = H5::H5File(name, H5F_ACC_TRUNC);
+  }
+
+  /*! The hdf5 file pointer */
+  H5::H5File file;
+  /*! The hdf5 compound datatype.
+   *
+   *  @see  H5::CompType comp_type_factory_tr()
+   *  @see  H5::CompType comp_type_factory<compcomp_t>()
+   */
+  H5::CompType comp_type;
+
+};  // end of class WriteHDF5Correlator
+

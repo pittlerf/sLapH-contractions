@@ -9,147 +9,11 @@
 #include "h5-wrapper.h"
 #include "typedefs.h"
 #include "Diagram.h"
+#include "Reduction.h"
 
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
-
-namespace {
-
-template <typename Numeric>
-H5::CompType comp_type_factory();
-
-/*! Creates compound datatype to write complex numbers from complex_t
- *  vectors to HDF5 file
- *
- *  @Returns cmplx_w   HDF5 compound datatype for complex numbers
- */
-template <>
-H5::CompType comp_type_factory<cmplx>() {
-  H5::CompType cmplx_w(2 * sizeof(double));
-  auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
-  cmplx_w.insertMember("im", HOFFSET(complex_t, im), type);
-
-  return cmplx_w;
-}
-
-/*! Creates compound datatype to write complex numbers from compcomp_t
- *  vectors to HDF5 file
- *
- *  @Returns cmplx_w   HDF5 compound datatype for structs of four doubles
- */
-template <>
-H5::CompType comp_type_factory<compcomp_t>() {
-  H5::CompType cmplxcmplx_w(4 * sizeof(double));
-  auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
-  cmplxcmplx_w.insertMember("reim", HOFFSET(compcomp_t, reim), type);
-  cmplxcmplx_w.insertMember("imre", HOFFSET(compcomp_t, imre), type);
-  cmplxcmplx_w.insertMember("imim", HOFFSET(compcomp_t, imim), type);
-
-  return cmplxcmplx_w;
-}
-
-/*! Class to write correlations function to files in hdf5 format
- *
- *  @Warning  Dependency inversion principle is violated: Class depends on the
- *            concrete implementation of hdf5
- */
-class WriteHDF5Correlator {
- public:
-  WriteHDF5Correlator(const std::string output_path,
-                      const std::string diagram,
-                      const std::string output_filename,
-                      const H5::CompType &_comp_type)
-      : comp_type(_comp_type) {
-    create_folder_for_hdf5_file(output_path.c_str());
-
-    const H5std_string file_name((output_path + "/" + diagram + output_filename).c_str());
-    open_or_create_hdf5_file(file_name);
-  }
-
-  /*! Writes data to file
-   *
-   *  @Param corr       The data to write
-   *  @Param corr_info  Contains the hdf5_dataset_name
-   *
-   *  @todo   It is sufficient to pass the hdf5_dataset_name
-   *  @todo   corr_datatype would be better as class template typename
-   *
-   *  @remark The type corr_datatype is always either complex_t or
-   *          compcomp_t. The function body is identical for both types
-   *          as everything is specified by corr_info. Thus the template
-   *          overload
-   */
-  template <typename corr_datatype>
-  void write(const std::vector<corr_datatype> &corr, const CorrInfo &corr_info) {
-    // Turn off the autoprinting when an exception occurs because fuck you
-    // thats why
-    H5::Exception::dontPrint();
-    // That's right bitches!
-
-    // create the dataset to write data ----------------------------------------
-    H5::Group group;
-    H5::DataSet dset;
-    H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
-    hsize_t dim(corr.size());
-    H5::DataSpace dspace(1, &dim);
-
-    // actual write
-    try {
-      dset = file.createDataSet(dataset_name, comp_type, dspace);
-      dset.write(&corr[0], comp_type);
-
-      // closing of dset is delegated to destructor ~DataSet
-
-    } catch (H5::Exception &e) {
-      e.printError();
-    }
-  }
-
- private:
-  /*! Checks whether output path exists and if not creates it
-   *
-   *  @param[in] path Path where hdf5 file shall be written
-   */
-  void create_folder_for_hdf5_file(const char *path) {
-    if (access(path, 0) != 0) {
-      std::cout << "\tdirectory " << path << " does not exist and will be created";
-      boost::filesystem::path dir(path);
-      if (boost::filesystem::create_directories(dir))
-        std::cout << "\tSuccess" << std::endl;
-      else
-        std::cout << "\tFailure" << std::endl;
-    }
-  }
-
-  /*! Opens output file in Truncation mode by default
-   *
-   *  @param[in]  name String containing path+filename of the desired file
-   *  @param[out] file File pointer to hdf5 file
-   *
-   *  @todo If overwrite=no flag is set, rather than H5F_ACC_TRUNC should be
-   *        replaced by H5F_ACC_EXCL
-   *
-   *  @throws H5::exception if something goes wrong
-   */
-  void open_or_create_hdf5_file(const H5std_string &name) {
-    file = H5::H5File(name, H5F_ACC_TRUNC);
-  }
-
-  /*! The hdf5 file pointer */
-  H5::H5File file;
-  /*! The hdf5 compound datatype.
-   *
-   *  @see  H5::CompType comp_type_factory_tr()
-   *  @see  H5::CompType comp_type_factory<compcomp_t>()
-   */
-  H5::CompType comp_type;
-
-};  // end of class WriteHDF5Correlator
-
-}  // end of anonymous namespace
 
 /******************************************************************************/
 /******************************************************************************/
@@ -333,11 +197,7 @@ void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
 
   StopWatch swatch(diagram.name());
 
-  WriteHDF5Correlator filehandle(
-      output_path, diagram.name(), output_filename, comp_type_factory<Numeric>());
-
-  std::vector<std::vector<Numeric>> correlator(diagram.corr_lookup().size(),
-                                             std::vector<Numeric>(Lt, Numeric{}));
+  Reduction<Numeric> reduction(diagram, output_path, output_filename, Lt);
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -363,25 +223,13 @@ void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
       q.clear();
 
     }  // loops over time end here
-#pragma omp critical
-    {
-      for (int i = 0; i != correlator.size(); ++i) {
-        for (size_t t = 0; t < Lt; t++) {
-          correlator[i][t] += C[t][i];
-        }
-      }
-    }
+    reduction.reduce(C);
+
     swatch.stop();
   }  // parallel part ends here
 
-  // normalisation
-  for (int i = 0; i != correlator.size(); ++i) {
-    for (auto &corr : correlator[i]) {
-      corr /= Lt;
-    }
-    // write data to file
-    filehandle.write(correlator[i], diagram.corr_lookup()[i]);
-  }
+  reduction.write();
+
   swatch.print();
 }
 
