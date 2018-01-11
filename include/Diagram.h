@@ -1,8 +1,9 @@
 #pragma once
 
-#include "QuarkLineBlock2.h"
-#include "typedefs.h"
 #include "Correlators.h"
+#include "QuarkLineBlock2.h"
+#include "Reduction.h"
+#include "typedefs.h"
 
 struct QuarkLineBlockCollection {
   QuarkLineBlockCollection(RandomVector const &random_vector,
@@ -77,7 +78,8 @@ class Diagram {
   void build(std::string const output_path,
              std::string const output_filename,
              const size_t Lt,
-             const size_t dilT, QuarkLineBlockCollection &q) {
+             const size_t dilT,
+             QuarkLineBlockCollection &q) {
     build_impl(output_path, output_filename, Lt, dilT, q);
   }
 
@@ -87,52 +89,38 @@ class Diagram {
   virtual void build_impl(std::string const output_path,
                           std::string const output_filename,
                           const size_t Lt,
-                          const size_t dilT, QuarkLineBlockCollection &q) = 0;
+                          const size_t dilT,
+                          QuarkLineBlockCollection &q) = 0;
 };
 
-class DiagramComp : public Diagram {
+template <typename Numeric_>
+class DiagramNumeric : public Diagram {
  public:
-  DiagramComp(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
+  using Numeric = Numeric_;
 
-  void contract(std::vector<cmplx> &c,
+  DiagramNumeric(std::vector<CorrInfo> const &corr_lookup,
+                 std::string const &output_path,
+                 std::string const &output_filename,
+                 int const Lt)
+      : Diagram(corr_lookup) {}
+
+  void contract(std::vector<Numeric> &c,
                 BlockIterator const &slice_pair,
                 QuarkLineBlockCollection &q) {
     contract_impl(c, slice_pair, q);
   }
 
  private:
-  virtual void contract_impl(std::vector<cmplx> &c,
+  virtual void contract_impl(std::vector<Numeric> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
 
   void build_impl(std::string const output_path,
                   std::string const output_filename,
                   const size_t Lt,
-                  const size_t dilT, QuarkLineBlockCollection &q) override {
-    build_diagram<cmplx>(*this, output_path, output_filename, Lt, dilT, q);
-  }
-};
-
-class DiagramCompComp : public Diagram {
- public:
-  DiagramCompComp(std::vector<CorrInfo> const &corr_lookup) : Diagram(corr_lookup) {}
-
-  void contract(std::vector<compcomp_t> &c,
-                BlockIterator const &slice_pair,
-                QuarkLineBlockCollection &q) {
-    contract_impl(c, slice_pair, q);
-  }
-
- private:
-  virtual void contract_impl(std::vector<compcomp_t> &c,
-                             BlockIterator const &slice_pair,
-                             QuarkLineBlockCollection &q) = 0;
-
-  void build_impl(std::string const output_path,
-                  std::string const output_filename,
-                  const size_t Lt,
-                  const size_t dilT, QuarkLineBlockCollection &q) override {
-    build_diagram<compcomp_t>(*this, output_path, output_filename, Lt, dilT, q);
+                  const size_t dilT,
+                  QuarkLineBlockCollection &q) override {
+    build_diagram<Numeric>(*this, output_path, output_filename, Lt, dilT, q);
   }
 };
 
@@ -140,9 +128,11 @@ class DiagramCompComp : public Diagram {
 /*                                    C2                                     */
 /*****************************************************************************/
 
-class C2c : public DiagramComp {
+class C2c : public DiagramNumeric<cmplx> {
  public:
-  C2c(std::vector<CorrInfo> const &corr_lookup);
+  C2c(std::vector<CorrInfo> const &corr_lookup,
+      std::string const &output_path,
+      std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C2+"; }
 
@@ -152,9 +142,11 @@ class C2c : public DiagramComp {
                      QuarkLineBlockCollection &q) override;
 };
 
-class C20 : public DiagramComp {
+class C20 : public DiagramNumeric<cmplx> {
  public:
-  C20(std::vector<CorrInfo> const &corr_lookup);
+  C20(std::vector<CorrInfo> const &corr_lookup,
+      std::string const &output_path,
+      std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C20"; }
 
@@ -164,10 +156,11 @@ class C20 : public DiagramComp {
                      QuarkLineBlockCollection &q) override;
 };
 
-
-class C20V : public DiagramCompComp {
+class C20V : public DiagramNumeric<compcomp_t> {
  public:
-  C20V(std::vector<CorrInfo> const &corr_lookup);
+  C20V(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C20V"; }
 
@@ -188,9 +181,11 @@ class C20V : public DiagramCompComp {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C3c : public DiagramComp {
+class C3c : public DiagramNumeric<cmplx> {
  public:
-  C3c(std::vector<CorrInfo> const &corr_lookup);
+  C3c(std::vector<CorrInfo> const &corr_lookup,
+      std::string const &output_path,
+      std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C3+"; }
 
@@ -209,9 +204,11 @@ class C3c : public DiagramComp {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C30 : public DiagramComp {
+class C30 : public DiagramNumeric<cmplx> {
  public:
-  C30(std::vector<CorrInfo> const &corr_lookup);
+  C30(std::vector<CorrInfo> const &corr_lookup,
+      std::string const &output_path,
+      std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C30"; }
 
@@ -227,9 +224,11 @@ class C30 : public DiagramComp {
 /*                                   C4                                     */
 /*****************************************************************************/
 
-class C4cD : public DiagramCompComp {
+class C4cD : public DiagramNumeric<compcomp_t> {
  public:
-  C4cD(std::vector<CorrInfo> const &corr_lookup);
+  C4cD(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C4+D"; }
 
@@ -239,9 +238,11 @@ class C4cD : public DiagramCompComp {
                      QuarkLineBlockCollection &q) override;
 };
 
-class C40D : public DiagramCompComp {
+class C40D : public DiagramNumeric<compcomp_t> {
  public:
-  C40D(std::vector<CorrInfo> const &corr_lookup);
+  C40D(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C40D"; }
 
@@ -251,9 +252,11 @@ class C40D : public DiagramCompComp {
                      QuarkLineBlockCollection &q) override;
 };
 
-class C4cV : public DiagramCompComp {
+class C4cV : public DiagramNumeric<compcomp_t> {
  public:
-  C4cV(std::vector<CorrInfo> const &corr_lookup);
+  C4cV(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C4+V"; }
 
@@ -263,9 +266,11 @@ class C4cV : public DiagramCompComp {
                      QuarkLineBlockCollection &q) override;
 };
 
-class C40V : public DiagramCompComp {
+class C40V : public DiagramNumeric<compcomp_t> {
  public:
-  C40V(std::vector<CorrInfo> const &corr_lookup);
+  C40V(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C40V"; }
 
@@ -283,9 +288,11 @@ class C40V : public DiagramCompComp {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cB : public DiagramComp {
+class C4cB : public DiagramNumeric<cmplx> {
  public:
-  C4cB(std::vector<CorrInfo> const &corr_lookup);
+  C4cB(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C4+B"; }
 
@@ -305,9 +312,11 @@ class C4cB : public DiagramComp {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40B : public DiagramComp {
+class C40B : public DiagramNumeric<cmplx> {
  public:
-  C40B(std::vector<CorrInfo> const &corr_lookup);
+  C40B(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C40B"; }
 
@@ -327,9 +336,11 @@ class C40B : public DiagramComp {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cC : public DiagramComp {
+class C4cC : public DiagramNumeric<cmplx> {
  public:
-  C4cC(std::vector<CorrInfo> const &corr_lookup);
+  C4cC(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C4+C"; }
 
@@ -349,9 +360,11 @@ class C4cC : public DiagramComp {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40C : public DiagramComp {
+class C40C : public DiagramNumeric<cmplx> {
  public:
-  C40C(std::vector<CorrInfo> const &corr_lookup);
+  C40C(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename, int const Lt);
 
   char const *name() const override { return "C40C"; }
 

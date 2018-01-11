@@ -187,7 +187,7 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <typename Numeric>
-void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
+void build_diagram(DiagramNumeric<Numeric> &diagram,
                    std::string const output_path,
                    std::string const output_filename,
                    const size_t Lt,
@@ -291,37 +291,38 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  diagrams.emplace_back(new C2c(corr_lookup.C2c));
-  diagrams.emplace_back(new C20(corr_lookup.C20));
-  diagrams.emplace_back(new C20V(corr_lookup.C20V));
+  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C3c(corr_lookup.C3c));
-  diagrams.emplace_back(new C30(corr_lookup.C30));
+  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C4cB(corr_lookup.C4cB));
-  diagrams.emplace_back(new C40B(corr_lookup.C40B));
-  diagrams.emplace_back(new C4cC(corr_lookup.C4cC));
-  diagrams.emplace_back(new C40C(corr_lookup.C40C));
+  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C4cD(corr_lookup.C4cD));
-  diagrams.emplace_back(new C40D(corr_lookup.C40D));
-  diagrams.emplace_back(new C4cV(corr_lookup.C4cV));
-  diagrams.emplace_back(new C40V(corr_lookup.C40V));
+  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
   for (auto &diagram : diagrams) {
     diagram->build(output_path, output_filename, Lt, dilT, part_collection);
   }
 }
 
-template void build_diagram<cmplx>(typename DiagramTraits<cmplx>::Diagram &diagram,
+template void build_diagram<cmplx>(DiagramNumeric<cmplx> &diagram,
                                    std::string const output_path,
                                    std::string const output_filename,
                                    const size_t Lt,
-                                   const size_t dilT, QuarkLineBlockCollection &q);
+                                   const size_t dilT,
+                                   QuarkLineBlockCollection &q);
 
-template void build_diagram<compcomp_t>(
-    typename DiagramTraits<compcomp_t>::Diagram &diagram,
-    std::string const output_path,
-    std::string const output_filename,
-    const size_t Lt,
-    const size_t dilT, QuarkLineBlockCollection &q);
+template void build_diagram<compcomp_t>(DiagramNumeric<compcomp_t> &diagram,
+                                        std::string const output_path,
+                                        std::string const output_filename,
+                                        const size_t Lt,
+                                        const size_t dilT,
+                                        QuarkLineBlockCollection &q);

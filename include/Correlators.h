@@ -198,7 +198,7 @@ private:
 };
 
 template <typename Numeric>
-void build_diagram(typename DiagramTraits<Numeric>::Diagram &diagram,
+void build_diagram(DiagramNumeric<Numeric> &diagram,
                    std::string const output_path,
                    std::string const output_filename,
                    const size_t Lt,
