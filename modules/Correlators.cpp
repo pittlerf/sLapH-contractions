@@ -195,42 +195,28 @@ void build_diagram(DiagramNumeric<Numeric> &diagram,
   if (diagram.corr_lookup().empty())
     return;
 
-  StopWatch swatch(diagram.name());
-
-  Reduction<Numeric> reduction(diagram, output_path, output_filename, Lt);
-
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
 // This is necessary to ensure the correct summation of the correlation function
 #pragma omp parallel
   {
-    swatch.start();
-    std::vector<std::vector<Numeric>> C(
-        Lt, std::vector<Numeric>(diagram.corr_lookup().size(), Numeric{}));
-
-    // building the quark line directly frees up a lot of memory
 
 #pragma omp for schedule(dynamic)
-    // Perform contraction here
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       auto const block_pair = dilution_scheme[b];
       for (auto const slice_pair : block_pair) {
         int const t = get_time_delta(slice_pair, Lt);
 
-        diagram.contract(C[t], slice_pair, q);
+        diagram.contract(t, slice_pair, q);
       }
 
       q.clear();
 
     }  // loops over time end here
-    reduction.reduce(C);
-
-    swatch.stop();
+    diagram.reduce();
   }  // parallel part ends here
 
-  reduction.write();
-
-  swatch.print();
+  diagram.write();
 }
 
 /******************************************************************************/
@@ -275,16 +261,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
 
-  QuarkLineBlockCollection part_collection(randomvectors,
-                                           perambulators,
-                                           meson_operator,
-                                           dilT,
-                                           dilE,
-                                           nev,
-                                           dil_fac_lookup,
-                                           corr0,
-                                           corrC,
-                                           corr_part_trQ1);
 
   // 3. Build all other correlation functions.
 
@@ -308,8 +284,43 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
   diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+
+#pragma omp parallel
+  {
+    QuarkLineBlockCollection part_collection(randomvectors,
+                                             perambulators,
+                                             meson_operator,
+                                             dilT,
+                                             dilE,
+                                             nev,
+                                             dil_fac_lookup,
+                                             corr0,
+                                             corrC,
+                                             corr_part_trQ1);
+
+#pragma omp for schedule(dynamic)
+    for (int b = 0; b < dilution_scheme.size(); ++b) {
+      auto const block_pair = dilution_scheme[b];
+
+      for (auto &diagram : diagrams) {
+        for (auto const slice_pair : block_pair) {
+          int const t = get_time_delta(slice_pair, Lt);
+
+          diagram->contract(t, slice_pair, part_collection);
+        }
+      }
+
+      part_collection.clear();
+    }
+
+    for (auto &diagram : diagrams) {
+      diagram->reduce();
+    }
+  }
+
   for (auto &diagram : diagrams) {
-    diagram->build(output_path, output_filename, Lt, dilT, part_collection);
+    diagram->write();
   }
 }
 

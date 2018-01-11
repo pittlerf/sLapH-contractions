@@ -83,6 +83,14 @@ class Diagram {
     build_impl(output_path, output_filename, Lt, dilT, q);
   }
 
+  virtual void contract(int const t,
+                BlockIterator const &slice_pair,
+                QuarkLineBlockCollection &q) = 0;
+
+  virtual void reduce() = 0;
+
+  virtual void write() = 0;
+
  private:
   std::vector<CorrInfo> const &corr_lookup_;
 
@@ -98,16 +106,53 @@ class DiagramNumeric : public Diagram {
  public:
   using Numeric = Numeric_;
 
-  DiagramNumeric(std::vector<CorrInfo> const &corr_lookup,
+  DiagramNumeric(std::vector<CorrInfo> const &_corr_lookup,
                  std::string const &output_path,
                  std::string const &output_filename,
                  int const Lt)
-      : Diagram(corr_lookup) {}
+      : Diagram(_corr_lookup),
+        output_path_(output_path),
+        output_filename_(output_filename),
+        Lt_(Lt),
+        correlator_(corr_lookup().size(), std::vector<Numeric>(Lt, Numeric{})),
+        c_(omp_get_max_threads(),
+           std::vector<std::vector<Numeric>>(
+               Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
 
-  void contract(std::vector<Numeric> &c,
+  void contract(int const t,
                 BlockIterator const &slice_pair,
-                QuarkLineBlockCollection &q) {
-    contract_impl(c, slice_pair, q);
+                QuarkLineBlockCollection &q) override {
+    int const tid = omp_get_thread_num();
+    contract_impl(c_.at(tid).at(t), slice_pair, q);
+  }
+
+  void reduce() override {
+    int const tid = omp_get_thread_num();
+
+#pragma omp critical
+    {
+      for (int i = 0; i != correlator_.size(); ++i) {
+        for (size_t t = 0; t < Lt_; t++) {
+          correlator_[i][t] += c_[tid][t][i];
+        }
+      }
+    }
+  }
+
+  void write() override {
+    assert(output_path_ != "");
+    assert(output_filename_ != "");
+    
+    WriteHDF5Correlator filehandle(
+        output_path_, name(), output_filename_, comp_type_factory<Numeric>());
+
+    for (int i = 0; i != correlator_.size(); ++i) {
+      for (auto &corr : correlator_[i]) {
+        corr /= Lt_;
+      }
+      // write data to file
+      filehandle.write(correlator_[i], corr_lookup()[i]);
+    }
   }
 
  private:
@@ -122,6 +167,14 @@ class DiagramNumeric : public Diagram {
                   QuarkLineBlockCollection &q) override {
     build_diagram<Numeric>(*this, output_path, output_filename, Lt, dilT, q);
   }
+
+  std::string const &output_path_;
+  std::string const &output_filename_;
+
+  int const Lt_;
+
+  std::vector<std::vector<Numeric>> correlator_;
+  std::vector<std::vector<std::vector<Numeric>>> c_;
 };
 
 /*****************************************************************************/
