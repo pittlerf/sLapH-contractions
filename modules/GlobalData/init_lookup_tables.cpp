@@ -797,154 +797,6 @@ static void build_C2c_lookup(
 }
 
 /******************************************************************************/
-/*! Create lookuptable where to find the quarklines and rVdaggerVr-operators,
- *  to build C4cD. Also sets corrC.
- *
- *  @param[in]  quantum_numbers   A list of all physical quantum numbers as
- *                                specified in the QuantumNumbers struct that
- *                                are possible for @em correlator
- *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
- *                                correspondence to @em quantum_numbers
- *  @param[in]  rvdvr_indices     List of indices referring to lookup table
- *                                for rvdaggervr.
- *  @param[in]  Q2_indices        List of indices referring to lookup table
- *                                for Q2
- *  @param[out] corr_lookup       Lookup table containing lookup tables for
- *                                all correlators this code can calculate.
- *                                This function sets corr_lookup.C4cD and adds
- *                                all used unique combinations to
- *                                corr_lookup.corrC
- *
- *  C4cD like C4cV contains C2c. To reuse C2c, they all contain indices
- *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
- *
- */
-static void build_C4cD_lookup(
-    const std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
-    const std::vector<std::string> &hdf5_dataset_name,
-    const std::vector<std::vector<size_t>> &rvdvr_indices,
-    const std::vector<std::vector<size_t>> &Q2_indices,
-    CorrelatorLookup &corr_lookup) {
-  /*! Loop over all distinct physical quantum numbers desired for C4cD */
-  for (size_t row = 0; row < hdf5_dataset_name.size(); row++) {
-    /*! Index for corrC is set to vector containing index for Quarkline first
-     *  and index for rVdaggerVr second.
-     *  Explicitly builds Op0:Op1 and Op2:Op3
-     */
-    std::vector<size_t> indices1 = {Q2_indices[row][0], rvdvr_indices[row][1]};
-    std::vector<size_t> indices2 = {Q2_indices[row][2], rvdvr_indices[row][3]};
-
-    auto it_C4cD = std::find_if(
-        corr_lookup.C4cD.begin(), corr_lookup.C4cD.end(), [&](CorrInfo corr) {
-          return (corr.hdf5_dataset_name == hdf5_dataset_name[row]);
-        });
-
-    if (it_C4cD == corr_lookup.C4cD.end()) {
-      size_t id1, id2;
-      auto it1 = std::find_if(corr_lookup.corrC.begin(),
-                              corr_lookup.corrC.end(),
-                              [&](CorrInfo corr) { return (corr.lookup == indices1); });
-      if (it1 == corr_lookup.corrC.end()) {
-        corr_lookup.corrC.emplace_back(CorrInfo(
-            corr_lookup.corrC.size(), "", indices1, quantum_numbers[row][1].gamma));
-        id1 = corr_lookup.corrC.back().id;
-      } else
-        id1 = (*it1).id;
-
-      auto it2 = std::find_if(corr_lookup.corrC.begin(),
-                              corr_lookup.corrC.end(),
-                              [&](CorrInfo corr) { return (corr.lookup == indices2); });
-      if (it2 == corr_lookup.corrC.end()) {
-        corr_lookup.corrC.emplace_back(CorrInfo(
-            corr_lookup.corrC.size(), "", indices2, quantum_numbers[row][3].gamma));
-        id2 = corr_lookup.corrC.back().id;
-      } else
-        id2 = (*it2).id;
-
-      corr_lookup.C4cD.emplace_back(CorrInfo(corr_lookup.C4cD.size(),
-                                             hdf5_dataset_name[row],
-                                             std::vector<size_t>({id1, id2}),
-                                             std::vector<int>({})));
-    }
-  }
-}
-
-/******************************************************************************/
-/*! Create lookuptable where to find the quarklines and rVdaggerVr-operators,
- *  to build C4cV Also sets corrC.
- *
- *  @param[in]  quantum_numbers   A list of all physical quantum numbers as
- *                                specified in the QuantumNumbers struct that
- *                                are possible for @em correlator
- *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
- *                                correspondence to @em quantum_numbers
- *  @param[in]  rvdvr_indices     List of indices referring to lookup table
- *                                for rvdaggervr.
- *  @param[in]  Q2_indices        List of indices referring to lookup table
- *                                for Q2
- *  @param[out] corr_lookup       Lookup table containing lookup tables for
- *                                all correlators this code can calculate.
- *                                This function sets corr_lookup.C4cV and adds
- *                                all used unique combinations to
- *                                corr_lookup.corrC
- *
- *  C4cV like C4cC contains C2c. To reuse C2c, they all contain indices
- *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
- *
- *  @todo The gamma attribut is set for corrC but not for C2c, C4cD, C4cV.
- *        Vice versa the corrlator names and hdf5_dataset_names are set for
- *        the latter but not corrC. Thats bs. (MW)
- */
-static void build_C4cV_lookup(
-    const std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
-    const std::vector<std::string> &hdf5_dataset_name,
-    const std::vector<std::vector<size_t>> &rvdvr_indices,
-    const std::vector<std::vector<size_t>> &Q2_indices,
-    CorrelatorLookup &corr_lookup) {
-  for (size_t row = 0; row < hdf5_dataset_name.size(); row++) {
-    /*! Index for corrC is set to vector containing index for Quarkline first
-     *  and index for rVdaggerVr second.
-     *  Explicitly builds Op0:Op1 and Op2:Op3
-     */
-    std::vector<size_t> indices1 = {Q2_indices[row][0], rvdvr_indices[row][1]};
-    std::vector<size_t> indices2 = {Q2_indices[row][2], rvdvr_indices[row][3]};
-
-    auto it_C4cV = std::find_if(
-        corr_lookup.C4cV.begin(), corr_lookup.C4cV.end(), [&](CorrInfo corr) {
-          return (corr.hdf5_dataset_name == hdf5_dataset_name[row]);
-        });
-
-    if (it_C4cV == corr_lookup.C4cV.end()) {
-      size_t id1, id2;
-      auto it1 = std::find_if(corr_lookup.corrC.begin(),
-                              corr_lookup.corrC.end(),
-                              [&](CorrInfo corr) { return (corr.lookup == indices1); });
-      if (it1 == corr_lookup.corrC.end()) {
-        corr_lookup.corrC.emplace_back(CorrInfo(
-            corr_lookup.corrC.size(), "", indices1, quantum_numbers[row][1].gamma));
-        id1 = corr_lookup.corrC.back().id;
-      } else
-        id1 = (*it1).id;
-
-      auto it2 = std::find_if(corr_lookup.corrC.begin(),
-                              corr_lookup.corrC.end(),
-                              [&](CorrInfo corr) { return (corr.lookup == indices2); });
-      if (it2 == corr_lookup.corrC.end()) {
-        corr_lookup.corrC.emplace_back(CorrInfo(
-            corr_lookup.corrC.size(), "", indices2, quantum_numbers[row][3].gamma));
-        id2 = corr_lookup.corrC.back().id;
-      } else
-        id2 = (*it2).id;
-
-      corr_lookup.C4cV.emplace_back(CorrInfo(corr_lookup.C4cV.size(),
-                                             hdf5_dataset_name[row],
-                                             std::vector<size_t>({id1, id2}),
-                                             std::vector<int>({})));
-    }
-  }
-}
-
-/******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C20.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
@@ -1229,6 +1081,95 @@ static void build_C30_lookup(
 }
 
 /******************************************************************************/
+/*! Create lookuptable where to find the quarklines to build C4cD. Also sets 
+ *  corrC.
+ *
+ *  @param[in]  quarks            Quarks as read from the infile and processed
+ *                                into quark struct
+ *  @param[in]  quark_numbers     List which quarks are specified in the infile
+ *  @param[in]  start_config      Number of first gauge configuration
+ *  @param[in]  path_output       Output path from the infile.
+ *  @param[in]  overwrite {yes,no} : deprecated
+ *  @param[in]  quantum_numbers   A list of all physical quantum numbers
+ *                                quantum field operators for all correlators
+ *                                with Dirac structure factored out that are
+ *                                possible for @em correlator
+ *  @param[in]  vdv_indices       Indices identifying VdaggerV operators
+ *  @param[out] Q0_lookup         Lookuptable containing unique combinations of
+ *                                peram-, vdv-, and ric-indices needed to built
+ *                                Q0
+ *  @param[out] Q2V_lookup        Lookuptable containing unique combinations of
+ *                                peram-, vdv-, and ric-indices needed to built
+ *                                Q2V
+ *  @param[out] trQ0Q2_lookup     Lookuptable containign unique combinations of
+ *                                parts tr(Q0Q2).
+ *                                Also known as corrC
+ *  @param[out] c_look            Lookup table for C4cD
+ *
+ *  C4cD like C4cC contains C2c. To reuse C2c, they all contain indices
+ *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
+ *
+ *  @bug I am fairly certain that the quarks are mixed up. It is
+ *        also wrong in init_lookup_tables() (MW 27.3.17)
+ */
+static void build_C4cD_lookup(
+    std::vector<quark> const &quarks,
+    std::vector<int> const &quark_numbers,
+    int start_config,
+    const std::string &path_output,
+    const std::string &overwrite,
+    std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
+    std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
+    std::vector<QuarklineIndices> &Q0_lookup,
+    std::vector<QuarklineIndices> &Q2V_lookup,
+    std::vector<CorrInfo> &trQ0Q2_lookup,
+    std::vector<CorrInfo> &c_look) {
+  std::vector<size_t> ql_ids(4);
+  std::vector<std::pair<size_t, size_t>> ric_ids;
+
+  // Build the correlator and dataset names for hdf5 output files
+  std::vector<std::string> quark_types;
+  for (const auto &id : quark_numbers)
+    quark_types.emplace_back(quarks[id].type);
+
+  for (size_t d = 0; d < quantum_numbers.size(); ++d) {
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    build_Quarkline_lookup_one_qn(
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
+    build_Quarkline_lookup_one_qn(
+        1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    build_Quarkline_lookup_one_qn(
+        2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
+    build_Quarkline_lookup_one_qn(
+        3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+
+    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+     *  numbers to 0,1 / 2,3
+     */
+    auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
+    auto id2 = build_corrC_lookup({ql_ids[2], ql_ids[3]}, trQ0Q2_lookup);
+
+    std::string hdf5_dataset_name = build_hdf5_dataset_name(
+        "C4+D", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+
+    CorrInfo candidate{c_look.size(),
+                       hdf5_dataset_name,
+                       std::vector<size_t>({id1, id2}),
+                       std::vector<int>({})};
+
+    /*! XXX Better with std::set */
+    auto it = std::find(c_look.begin(), c_look.end(), candidate);
+
+    if (it == c_look.end()) {
+      c_look.push_back(candidate);
+    }
+  }
+}
+
+/******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C40D.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
@@ -1310,7 +1251,8 @@ static void build_C40D_lookup(
 }
 
 /******************************************************************************/
-/*! Create lookuptable where to find the quarklines to build C4cV.
+/*! Create lookuptable where to find the quarklines to build C4cV. Also sets 
+ *  corrC.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
  *                                into quark struct
@@ -1333,6 +1275,9 @@ static void build_C40D_lookup(
  *                                parts tr(Q0Q2).
  *                                Also known as corrC
  *  @param[out] c_look            Lookup table for C4cV
+ *
+ *  C4cV like C4cC contains C2c. To reuse C2c, they all contain indices
+ *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
  *        also wrong in init_lookup_tables() (MW 27.3.17)
@@ -1857,50 +1802,17 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q2L,
                         correlator_lookuptable.C3c);
     } else if (correlator.type == "C4+D") {
-      std::vector<std::vector<size_t>> Q0_indices(
-          quantum_numbers.size(), std::vector<size_t>(quantum_numbers[0].size()));
-
-      rnd_index = create_rnd_vec_id(
-          quarks, correlator.quark_numbers[1], correlator.quark_numbers[0], false);
-      build_Quarkline_lookup(1,
-                             quantum_numbers,
-                             vdv_indices,
-                             rnd_index,
-                             quarkline_lookuptable.Q0,
-                             Q0_indices);
-      rnd_index = create_rnd_vec_id(
-          quarks, correlator.quark_numbers[3], correlator.quark_numbers[2], false);
-      build_Quarkline_lookup(3,
-                             quantum_numbers,
-                             vdv_indices,
-                             rnd_index,
-                             quarkline_lookuptable.Q0,
-                             Q0_indices);
-
-      std::vector<std::vector<size_t>> Q2_indices(
-          quantum_numbers.size(), std::vector<size_t>(quantum_numbers[0].size()));
-
-      rnd_index = create_rnd_vec_id(
-          quarks, correlator.quark_numbers[0], correlator.quark_numbers[1], false);
-      build_Quarkline_lookup(0,
-                             quantum_numbers,
-                             vdv_indices,
-                             rnd_index,
-                             quarkline_lookuptable.Q2V,
-                             Q2_indices);
-      rnd_index = create_rnd_vec_id(
-          quarks, correlator.quark_numbers[2], correlator.quark_numbers[3], false);
-      build_Quarkline_lookup(2,
-                             quantum_numbers,
-                             vdv_indices,
-                             rnd_index,
-                             quarkline_lookuptable.Q2V,
-                             Q2_indices);
-      build_C4cD_lookup(quantum_numbers,
-                        hdf5_dataset_name,
-                        Q0_indices,
-                        Q2_indices,
-                        correlator_lookuptable);
+       build_C4cD_lookup(quarks,
+                        correlator.quark_numbers,
+                        start_config,
+                        path_output,
+                        overwrite,
+                        quantum_numbers,
+                        vdv_indices,
+                        quarkline_lookuptable.Q0,
+                        quarkline_lookuptable.Q2V, 
+			correlator_lookuptable.corrC,
+                        correlator_lookuptable.C4cD);
     } else if (correlator.type == "C4+V") {
        build_C4cV_lookup(quarks,
                         correlator.quark_numbers,
