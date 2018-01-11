@@ -199,7 +199,6 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
-// void Correlators::contract (Quarklines& quarklines,
 void Correlators::contract(OperatorsForMesons const &meson_operator,
                            RandomVector const &randomvectors,
                            Perambulator const &perambulators,
