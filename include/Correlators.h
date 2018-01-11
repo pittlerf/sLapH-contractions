@@ -70,8 +70,6 @@ public:
                const size_t nev, const CorrelatorLookup& corr_lookup,
                OperatorLookup const &operator_lookup,
                QuarklineLookup const &quark_lookup);
-  // Standard Destructor
-  ~Correlators () {};
 
   /*! Call all functions building a correlator */
   void contract(OperatorsForMesons const &meson_operator,
