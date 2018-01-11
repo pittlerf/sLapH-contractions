@@ -75,14 +75,6 @@ class Diagram {
 
   std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
 
-  void build(std::string const output_path,
-             std::string const output_filename,
-             const size_t Lt,
-             const size_t dilT,
-             QuarkLineBlockCollection &q) {
-    build_impl(output_path, output_filename, Lt, dilT, q);
-  }
-
   virtual void contract(int const t,
                 BlockIterator const &slice_pair,
                 QuarkLineBlockCollection &q) = 0;
@@ -93,12 +85,6 @@ class Diagram {
 
  private:
   std::vector<CorrInfo> const &corr_lookup_;
-
-  virtual void build_impl(std::string const output_path,
-                          std::string const output_filename,
-                          const size_t Lt,
-                          const size_t dilT,
-                          QuarkLineBlockCollection &q) = 0;
 };
 
 template <typename Numeric_>
@@ -159,14 +145,6 @@ class DiagramNumeric : public Diagram {
   virtual void contract_impl(std::vector<Numeric> &c,
                              BlockIterator const &slice_pair,
                              QuarkLineBlockCollection &q) = 0;
-
-  void build_impl(std::string const output_path,
-                  std::string const output_filename,
-                  const size_t Lt,
-                  const size_t dilT,
-                  QuarkLineBlockCollection &q) override {
-    build_diagram<Numeric>(*this, output_path, output_filename, Lt, dilT, q);
-  }
 
   std::string const &output_path_;
   std::string const &output_filename_;

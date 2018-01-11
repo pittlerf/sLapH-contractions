@@ -184,41 +184,6 @@ void Correlators::build_corrC(RandomVector const &randomvectors,
   swatch.print();
 }
 
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-template <typename Numeric>
-void build_diagram(DiagramNumeric<Numeric> &diagram,
-                   std::string const output_path,
-                   std::string const output_filename,
-                   const size_t Lt,
-                   const size_t dilT, QuarkLineBlockCollection &q) {
-  if (diagram.corr_lookup().empty())
-    return;
-
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
-
-// This is necessary to ensure the correct summation of the correlation function
-#pragma omp parallel
-  {
-
-#pragma omp for schedule(dynamic)
-    for (int b = 0; b < dilution_scheme.size(); ++b) {
-      auto const block_pair = dilution_scheme[b];
-      for (auto const slice_pair : block_pair) {
-        int const t = get_time_delta(slice_pair, Lt);
-
-        diagram.contract(t, slice_pair, q);
-      }
-
-      q.clear();
-
-    }  // loops over time end here
-    diagram.reduce();
-  }  // parallel part ends here
-
-  diagram.write();
-}
-
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -323,17 +288,3 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
     diagram->write();
   }
 }
-
-template void build_diagram<cmplx>(DiagramNumeric<cmplx> &diagram,
-                                   std::string const output_path,
-                                   std::string const output_filename,
-                                   const size_t Lt,
-                                   const size_t dilT,
-                                   QuarkLineBlockCollection &q);
-
-template void build_diagram<compcomp_t>(DiagramNumeric<compcomp_t> &diagram,
-                                        std::string const output_path,
-                                        std::string const output_filename,
-                                        const size_t Lt,
-                                        const size_t dilT,
-                                        QuarkLineBlockCollection &q);

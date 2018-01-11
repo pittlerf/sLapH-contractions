@@ -196,10 +196,3 @@ private:
                   std::string const output_path,
                   std::string const output_filename);
 };
-
-template <typename Numeric>
-void build_diagram(DiagramNumeric<Numeric> &diagram,
-                   std::string const output_path,
-                   std::string const output_filename,
-                   const size_t Lt,
-                   const size_t dilT, QuarkLineBlockCollection &q);
