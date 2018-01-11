@@ -76,8 +76,8 @@ class Diagram {
   std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
 
   virtual void contract(int const t,
-                BlockIterator const &slice_pair,
-                QuarkLineBlockCollection &q) = 0;
+                        BlockIterator const &slice_pair,
+                        QuarkLineBlockCollection &q) = 0;
 
   virtual void reduce() = 0;
 
@@ -128,7 +128,7 @@ class DiagramNumeric : public Diagram {
   void write() override {
     assert(output_path_ != "");
     assert(output_filename_ != "");
-    
+
     WriteHDF5Correlator filehandle(
         output_path_, name(), output_filename_, comp_type_factory<Numeric>());
 
@@ -159,11 +159,18 @@ class DiagramNumeric : public Diagram {
 /*                                    C2                                     */
 /*****************************************************************************/
 
+/*! Build charged 2pt correlation function
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5  \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
+ *  @f}
+ */
 class C2c : public DiagramNumeric<cmplx> {
  public:
   C2c(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
-      std::string const &output_filename, int const Lt);
+      std::string const &output_filename,
+      int const Lt);
 
   char const *name() const override { return "C2+"; }
 
@@ -173,11 +180,18 @@ class C2c : public DiagramNumeric<cmplx> {
                      QuarkLineBlockCollection &q) override;
 };
 
+/*! Build neutral 2pt correlation function
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
+ *  @f}
+ */
 class C20 : public DiagramNumeric<cmplx> {
  public:
   C20(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
-      std::string const &output_filename, int const Lt);
+      std::string const &output_filename,
+      int const Lt);
 
   char const *name() const override { return "C20"; }
 
@@ -187,11 +201,18 @@ class C20 : public DiagramNumeric<cmplx> {
                      QuarkLineBlockCollection &q) override;
 };
 
+/*! Build neutral 2pt correlation function
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} \rangle \cdot
+ *        \langle D_\mathtt{Q1}^{-1}(t'|t') \Gamma_\mathtt{Op1} \rangle
+ *  @f}
+ */
 class C20V : public DiagramNumeric<compcomp_t> {
  public:
   C20V(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C20V"; }
 
@@ -216,7 +237,8 @@ class C3c : public DiagramNumeric<cmplx> {
  public:
   C3c(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
-      std::string const &output_filename, int const Lt);
+      std::string const &output_filename,
+      int const Lt);
 
   char const *name() const override { return "C3+"; }
 
@@ -239,7 +261,8 @@ class C30 : public DiagramNumeric<cmplx> {
  public:
   C30(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
-      std::string const &output_filename, int const Lt);
+      std::string const &output_filename,
+      int const Lt);
 
   char const *name() const override { return "C30"; }
 
@@ -255,11 +278,20 @@ class C30 : public DiagramNumeric<cmplx> {
 /*                                   C4                                     */
 /*****************************************************************************/
 
+/*! Build charged 4pt correlation function: Direct diagram
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle \cdot
+ *        \langle \gamma_5 D_\mathtt{Q2}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C4cD : public DiagramNumeric<compcomp_t> {
  public:
   C4cD(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C4+D"; }
 
@@ -269,11 +301,20 @@ class C4cD : public DiagramNumeric<compcomp_t> {
                      QuarkLineBlockCollection &q) override;
 };
 
+/*! Build neutral 4pt correlation function: Direct diagram
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle \cdot
+ *        \langle D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C40D : public DiagramNumeric<compcomp_t> {
  public:
   C40D(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C40D"; }
 
@@ -283,11 +324,20 @@ class C40D : public DiagramNumeric<compcomp_t> {
                      QuarkLineBlockCollection &q) override;
 };
 
+/*! Build charged 4pt correlation function: Vacuum diagram
+ *  @f{align}{
+ *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t) \Gamma_\mathtt{Op1} \rangle \cdot
+ *        \langle \gamma_5 D_\mathtt{Q2}^{-1}(t'|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C4cV : public DiagramNumeric<compcomp_t> {
  public:
   C4cV(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C4+V"; }
 
@@ -297,11 +347,20 @@ class C4cV : public DiagramNumeric<compcomp_t> {
                      QuarkLineBlockCollection &q) override;
 };
 
+/*! Build neutral 4pt correlation function: Vacuum diagram
+ *  @f{align}{
+ *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
+ *                D_\mathtt{Q1}^{-1}(t|t) \Gamma_\mathtt{Op1} \rangle \cdot
+ *        \langle D_\mathtt{Q2}^{-1}(t'|t') \Gamma_\mathtt{Op2}
+ *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
+ *  @f}
+ */
 class C40V : public DiagramNumeric<compcomp_t> {
  public:
   C40V(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C40V"; }
 
@@ -323,7 +382,8 @@ class C4cB : public DiagramNumeric<cmplx> {
  public:
   C4cB(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C4+B"; }
 
@@ -347,7 +407,8 @@ class C40B : public DiagramNumeric<cmplx> {
  public:
   C40B(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C40B"; }
 
@@ -371,7 +432,8 @@ class C4cC : public DiagramNumeric<cmplx> {
  public:
   C4cC(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C4+C"; }
 
@@ -395,7 +457,8 @@ class C40C : public DiagramNumeric<cmplx> {
  public:
   C40C(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
-       std::string const &output_filename, int const Lt);
+       std::string const &output_filename,
+       int const Lt);
 
   char const *name() const override { return "C40C"; }
 
