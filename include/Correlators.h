@@ -66,20 +66,23 @@ class Correlators {
 
 public:
   // Constructor
-  Correlators (const size_t Lt, const size_t dilT, const size_t dilE, 
-               const size_t nev, const CorrelatorLookup& corr_lookup,
-               OperatorLookup const &operator_lookup,
-               QuarklineLookup const &quark_lookup);
+ Correlators(const size_t Lt,
+             const size_t dilT,
+             const size_t dilE,
+             const size_t nev,
+             const CorrelatorLookup &corr_lookup,
+             OperatorLookup const &operator_lookup,
+             QuarklineLookup const &quark_lookup);
 
-  /*! Call all functions building a correlator */
-  void contract(OperatorsForMesons const &meson_operator,
-                RandomVector const &randomvectors,
-                Perambulator const &perambulators,
-                OperatorLookup const &operator_lookup,
-                CorrelatorLookup const &corr_lookup, 
-                QuarklineLookup const &quark_lookup,
-                std::string const output_path,
-                std::string const output_filename);
+ /*! Call all functions building a correlator */
+ void contract(OperatorsForMesons const &meson_operator,
+               RandomVector const &randomvectors,
+               Perambulator const &perambulators,
+               OperatorLookup const &operator_lookup,
+               CorrelatorLookup const &corr_lookup,
+               QuarklineLookup const &quark_lookup,
+               std::string const output_path,
+               std::string const output_filename);
 
 private:
   /*! @todo that should not be here but taken from Globaldata */
@@ -91,9 +94,8 @@ private:
   DilutedTraceCollection<2> corr0; 
 
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
-  DilutedTraceCollection<2> corrC; 
+  DilutedTraceCollection<2> corrC;
 
-  
   /*! Temporal memory for tr(Q1) */
   DilutedTraceCollection2<1> corr_part_trQ1;
   /*! Build 1pt loops */
