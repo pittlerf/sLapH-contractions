@@ -290,6 +290,8 @@ inline bool operator==(CorrInfo const &first, CorrInfo const &second){
  *  @todo modular programming looks different
  */
 struct CorrelatorLookup {
+
+  std::vector<CorrInfo> trQ1;
   std::vector<CorrInfo> C1;
   std::vector<CorrInfo> C1T;
   std::vector<CorrInfo> C20V;
