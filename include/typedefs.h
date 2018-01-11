@@ -269,12 +269,16 @@ struct CorrInfo {
            const std::vector<size_t> &lookup,
            const std::vector<int> &gamma)
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
+  CorrInfo(const size_t id,
+           const std::string &hdf5_dataset_name,
+           const std::vector<size_t> &lookup)
+      : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(std::vector<int>({})){};
+
 };
 
 inline bool operator==(CorrInfo const &first, CorrInfo const &second){
-//  if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
-//      (first.lookup == second.lookup))
-  if (first.hdf5_dataset_name == second.hdf5_dataset_name)
+  if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
+      (first.lookup == second.lookup))
     return true;
   else
     return false;
