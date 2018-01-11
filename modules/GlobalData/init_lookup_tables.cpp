@@ -1331,15 +1331,21 @@ build_C40C_lookup(const std::vector<std::string> &hdf5_dataset_name,
 /******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C40B.
  *
- *  @param[in]  quantum_numbers   A list of all physical quantum numbers as
- *                                specified in the QuantumNumbers struct that
- *                                are possible for @em correlator
- *  @param[in]  hdf5_dataset_name Names for the datasets in one-to-one
- *                                correspondence to @em quantum_numbers
- *  @param[in]  Q1_indices        List of indices referring to lookup table
- *                                for Q1
- *  @param[out] corr_lookup       Lookup table containing lookup tables for
- *                                all correlators this code can calculate.
+ *  @param[in]  quarks            Quarks as read from the infile and processed 
+ *                                into quark struct
+ *  @param[in]  quark_numbers     List which quarks are specified in the infile
+ *  @param[in]  start_config      Number of first gauge configuration
+ *  @param[in]  path_output       Output path from the infile.
+ *  @param[in]  overwrite {yes,no} : deprecated
+ *  @param[in]  quantum_numbers   A list of all physical quantum numbers 
+ *                                quantum field operators for all correlators 
+ *                                with Dirac structure factored out that are 
+ *                                possible for @em correlator
+ *  @param[in]  vdv_indices       Indices identifying VdaggerV operators
+ *  @param[out] Q1_lookup         Lookuptable containing unique combinations of
+ *                                peram-, vdv-, and ric-indices needed to built 
+ *                                Q1
+ *  @param[out] c_look            Lookup table for C40B
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
  *        also wrong in init_lookup_tables() (MW 27.3.17)
