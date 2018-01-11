@@ -271,6 +271,15 @@ struct CorrInfo {
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
 };
 
+inline bool operator==(CorrInfo const &first, CorrInfo const &second){
+//  if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
+//      (first.lookup == second.lookup))
+  if (first.hdf5_dataset_name == second.hdf5_dataset_name)
+    return true;
+  else
+    return false;
+}
+
 /******************************************************************************/
 /*! Contains information on all correlators
  *
