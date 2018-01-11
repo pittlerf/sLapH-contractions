@@ -208,10 +208,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                            QuarklineLookup const &quark_lookup,
                            std::string const output_path,
                            std::string const output_filename) {
-
-
-
-
   build_part_trQ1(randomvectors,
                   meson_operator,
                   perambulators,
@@ -224,7 +220,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   // 2. Build all functions which need corr0 and free it afterwards.
   build_corr0(randomvectors, meson_operator, perambulators, corr_lookup.corr0);
-
 
   // 3. Build all other correlation functions.
 
