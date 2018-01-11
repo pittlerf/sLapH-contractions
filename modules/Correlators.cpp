@@ -147,15 +147,15 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 #pragma omp parallel
   {
     QuarkLineBlockCollection q(randomvectors,
-                                             perambulators,
-                                             meson_operator,
-                                             dilT,
-                                             dilE,
-                                             nev,
-                                             dil_fac_lookup,
-                                             corr0,
-                                             corrC,
-                                             corr_part_trQ1);
+                               perambulators,
+                               meson_operator,
+                               dilT,
+                               dilE,
+                               nev,
+                               dil_fac_lookup,
+                               corr0,
+                               corrC,
+                               corr_part_trQ1);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -185,7 +185,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
-        if (diagram->corr_info().empty()) {
+        if (diagram->corr_lookup().empty()) {
           continue;
         }
 

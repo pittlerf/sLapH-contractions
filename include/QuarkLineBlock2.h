@@ -41,11 +41,6 @@ class QuarkLineBlock2 {
 
   Value const &operator[](Key const &key) {
     if (Ql.count(key) == 0) {
-#pragma omp critical(cout)
-      {
-        std::cout << "QuarkLineBlock::operator[]\t";
-        print(key);
-      }
       build(key);
     }
 
