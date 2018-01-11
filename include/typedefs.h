@@ -293,7 +293,6 @@ struct CorrelatorLookup {
 
   std::vector<CorrInfo> trQ1;
   std::vector<CorrInfo> C1;
-  std::vector<CorrInfo> C1T;
   std::vector<CorrInfo> C20V;
 
   std::vector<CorrInfo> corr0;

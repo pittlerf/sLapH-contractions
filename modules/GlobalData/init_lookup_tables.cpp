@@ -121,7 +121,7 @@ void build_quantum_numbers_from_correlator_list(
    *
    *  @todo Think about a way to avoid these if conditions.
    */
-  if (correlator.type == "C1" || correlator.type == "C1T") {
+  if (correlator.type == "C1") {
     for (const auto &op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
   } else if (correlator.type == "C2+" || correlator.type == "C20" ||
