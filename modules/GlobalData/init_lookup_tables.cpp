@@ -769,10 +769,10 @@ static void build_C20V_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[0], true);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[1], true);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -845,10 +845,10 @@ static void build_C2c_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
@@ -915,10 +915,10 @@ static void build_C20_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -989,18 +989,18 @@ static void build_C30V_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[2], true);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    auto id1 = build_corr0_lookup({ql_ids[2], ql_ids[0]}, trQ1Q1_lookup);
-    auto id2 = build_trQ1_lookup({ql_ids[1]}, trQ1_lookup);
+    auto id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
+    auto id2 = build_trQ1_lookup({ql_ids[2]}, trQ1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
@@ -1063,13 +1063,13 @@ static void build_C3c_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
@@ -1128,13 +1128,13 @@ static void build_C30_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -1205,16 +1205,16 @@ static void build_C4cD_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
-    build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
@@ -1286,16 +1286,16 @@ static void build_C40D_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
-    build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -1375,16 +1375,16 @@ static void build_C4cV_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
-    build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
@@ -1456,16 +1456,16 @@ static void build_C40V_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
-    build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -1523,7 +1523,7 @@ static void build_C4cC_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2L_lookup,
+    std::vector<QuarklineIndices> &Q2V_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1536,16 +1536,16 @@ static void build_C4cC_lookup(
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
-        3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
-    build_Quarkline_lookup_one_qn(
-        1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
+        1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    build_Quarkline_lookup_one_qn(
+        2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
-        2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
+        3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
@@ -1602,16 +1602,16 @@ static void build_C40C_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -1673,16 +1673,16 @@ static void build_C4cB_lookup(
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
-        3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
-    build_Quarkline_lookup_one_qn(
-        1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
-        0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+        1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    build_Quarkline_lookup_one_qn(
+        3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
@@ -1739,16 +1739,16 @@ static void build_C40B_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[2], false);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[3], false);
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
