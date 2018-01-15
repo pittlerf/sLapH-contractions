@@ -677,8 +677,6 @@ static size_t build_corrC_lookup(std::vector<size_t> const ql_ids,
  *                                Also known as corr0
  *  @param[out] c_look            Lookup table for C20
  *
- *  @bug I am fairly certain that the quarks are mixed up. It is
- *        also wrong in init_lookup_tables() (MW 27.3.17)
  */
 static void build_C1_lookup(
     std::vector<quark> const &quarks,
@@ -700,7 +698,10 @@ static void build_C1_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    /*! Here the outgoing and incoming quarkline are identical. Thus ric_ids 
+     *  must get true 
+     */
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[0], true);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, Q1_indices);
 
@@ -768,10 +769,10 @@ static void build_C20V_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
-    ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
+    ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
@@ -998,8 +999,8 @@ static void build_C30V_lookup(
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    auto id1 = build_trQ1_lookup({ql_ids[1]}, trQ1_lookup);
-    auto id2 = build_corr0_lookup({ql_ids[2], ql_ids[0]}, trQ1Q1_lookup);
+    auto id1 = build_corr0_lookup({ql_ids[2], ql_ids[0]}, trQ1Q1_lookup);
+    auto id2 = build_trQ1_lookup({ql_ids[1]}, trQ1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
