@@ -269,7 +269,20 @@ struct CorrInfo {
            const std::vector<size_t> &lookup,
            const std::vector<int> &gamma)
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
+  CorrInfo(const size_t id,
+           const std::string &hdf5_dataset_name,
+           const std::vector<size_t> &lookup)
+      : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(std::vector<int>({})){};
+
 };
+
+inline bool operator==(CorrInfo const &first, CorrInfo const &second){
+  if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
+      (first.lookup == second.lookup))
+    return true;
+  else
+    return false;
+}
 
 /******************************************************************************/
 /*! Contains information on all correlators
@@ -277,8 +290,9 @@ struct CorrInfo {
  *  @todo modular programming looks different
  */
 struct CorrelatorLookup {
+
+  std::vector<CorrInfo> trQ1;
   std::vector<CorrInfo> C1;
-  std::vector<CorrInfo> C1T;
   std::vector<CorrInfo> C20V;
 
   std::vector<CorrInfo> corr0;
@@ -291,6 +305,7 @@ struct CorrelatorLookup {
   std::vector<CorrInfo> C4cD;
   std::vector<CorrInfo> C4cV;
 
+  std::vector<CorrInfo> C30V;
   std::vector<CorrInfo> C30;
   std::vector<CorrInfo> C3c;
 
