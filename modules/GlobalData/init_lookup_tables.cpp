@@ -993,9 +993,11 @@ static void build_C30V_lookup(
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
+
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[1], false);
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
+
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[2], true);
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
