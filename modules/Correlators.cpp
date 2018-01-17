@@ -128,6 +128,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
   diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt));
 
   diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
   diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));

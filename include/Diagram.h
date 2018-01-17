@@ -274,6 +274,21 @@ class C30 : public DiagramNumeric<cmplx> {
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
 };
 
+class C30V : public DiagramNumeric<compcomp_t> {
+ public:
+  C30V(std::vector<CorrInfo> const &corr_lookup,
+       std::string const &output_path,
+       std::string const &output_filename,
+       int const Lt);
+
+  char const *name() const override { return "C30V"; }
+
+ private:
+  void contract_impl(std::vector<compcomp_t> &c,
+                     BlockIterator const &slice_pair,
+                     QuarkLineBlockCollection &q) override;
+};
+
 /*****************************************************************************/
 /*                                   C4                                     */
 /*****************************************************************************/

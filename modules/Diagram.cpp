@@ -141,6 +141,28 @@ void C30::contract_impl(std::vector<cmplx> &c,
 }
 
 /*****************************************************************************/
+/*                                   C30V                                    */
+/*****************************************************************************/
+
+C30V::C30V(std::vector<CorrInfo> const &corr_lookup,
+           std::string const &output_path,
+           std::string const &output_filename,
+           int const Lt)
+    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
+
+void C30V::contract_impl(std::vector<compcomp_t> &c,
+                         BlockIterator const &slice_pair,
+                         QuarkLineBlockCollection &q) {
+  for (int i = 0; i != corr_lookup().size(); ++i) {
+    auto const &c_look = corr_lookup()[i];
+
+    c[i] +=
+        inner_product(q.corr_part_trQ1[c_look.lookup[0]][slice_pair.source()],
+                      q.corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+  }
+}
+
+/*****************************************************************************/
 /*                                   C4cD                                    */
 /*****************************************************************************/
 
