@@ -157,8 +157,8 @@ void C30V::contract_impl(std::vector<compcomp_t> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.corr_part_trQ1[c_look.lookup[0]][slice_pair.source()],
-                      q.corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+        inner_product(q.corr_part_trQ1[c_look.lookup[1]][slice_pair.source()],
+                      q.corr0[c_look.lookup[0]][slice_pair.sink()][slice_pair.sink()]);
   }
 }
 
