@@ -267,10 +267,7 @@ class C30 : public DiagramNumeric<cmplx> {
 
 class C30V : public DiagramNumeric<compcomp_t> {
  public:
-  C30V(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C30V"; }
 
