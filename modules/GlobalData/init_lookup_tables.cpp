@@ -985,8 +985,9 @@ static void build_C30V_lookup(
 
   // Build the correlator and dataset names for hdf5 output files
   std::vector<std::string> quark_types;
-  for (const auto &id : quark_numbers)
+  for (const auto &id : quark_numbers) {
     quark_types.emplace_back(quarks[id].type);
+  }
 
   for (size_t d = 0; d < quantum_numbers.size(); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
