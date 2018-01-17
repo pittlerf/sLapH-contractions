@@ -1002,14 +1002,14 @@ static void build_C30V_lookup(
     build_Quarkline_lookup_one_qn(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    auto const id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
-    auto const id2 = build_trQ1_lookup({ql_ids[2]}, trQ1_lookup);
+    auto const id0 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
+    auto const id1 = build_trQ1_lookup({ql_ids[2]}, trQ1_lookup);
 
     std::string const hdf5_dataset_name = build_hdf5_dataset_name(
         "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
     CorrInfo const candidate{
-        c_look.size(), hdf5_dataset_name, {id1, id2}, std::vector<int>{}};
+        c_look.size(), hdf5_dataset_name, {id0, id1}, std::vector<int>{}};
 
     /*! XXX Better with std::set */
     auto const it = std::find(c_look.begin(), c_look.end(), candidate);
