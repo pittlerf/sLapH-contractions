@@ -1009,7 +1009,7 @@ static void build_C30V_lookup(
         "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
     CorrInfo const candidate{
-        c_look.size(), hdf5_dataset_name, {id1, id2}, std::vector<int>({})};
+        c_look.size(), hdf5_dataset_name, {id1, id2}, std::vector<int>{}};
 
     /*! XXX Better with std::set */
     auto const it = std::find(c_look.begin(), c_look.end(), candidate);
