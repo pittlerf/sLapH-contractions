@@ -4,12 +4,6 @@
 /*                                    C2c                                    */
 /*****************************************************************************/
 
-C2c::C2c(std::vector<CorrInfo> const &corr_lookup,
-         std::string const &output_path,
-         std::string const &output_filename,
-         int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {}
-
 void C2c::contract_impl(std::vector<cmplx> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
@@ -26,12 +20,6 @@ void C2c::contract_impl(std::vector<cmplx> &c,
 /*                                    C20                                    */
 /*****************************************************************************/
 
-C20::C20(std::vector<CorrInfo> const &corr_lookup,
-         std::string const &output_path,
-         std::string const &output_filename,
-         int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {}
-
 void C20::contract_impl(std::vector<cmplx> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
@@ -47,12 +35,6 @@ void C20::contract_impl(std::vector<cmplx> &c,
 /*****************************************************************************/
 /*                                    C20V                                   */
 /*****************************************************************************/
-
-C20V::C20V(std::vector<CorrInfo> const &corr_lookup,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
 
 void C20V::contract_impl(std::vector<compcomp_t> &c,
                          BlockIterator const &slice_pair,
@@ -166,12 +148,6 @@ void C30V::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C4cD                                    */
 /*****************************************************************************/
 
-C4cD::C4cD(std::vector<CorrInfo> const &corr_lookup,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
-
 void C4cD::contract_impl(std::vector<compcomp_t> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
@@ -187,12 +163,6 @@ void C4cD::contract_impl(std::vector<compcomp_t> &c,
 /*****************************************************************************/
 /*                                   C40D                                    */
 /*****************************************************************************/
-
-C40D::C40D(std::vector<CorrInfo> const &corr_lookup,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
 
 void C40D::contract_impl(std::vector<compcomp_t> &c,
                          BlockIterator const &slice_pair,
@@ -210,12 +180,6 @@ void C40D::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C4cV                                    */
 /*****************************************************************************/
 
-C4cV::C4cV(std::vector<CorrInfo> const &corr_lookup,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
-
 void C4cV::contract_impl(std::vector<compcomp_t> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
@@ -231,12 +195,6 @@ void C4cV::contract_impl(std::vector<compcomp_t> &c,
 /*****************************************************************************/
 /*                                   C40V                                    */
 /*****************************************************************************/
-
-C40V::C40V(std::vector<CorrInfo> const &corr_lookup,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : DiagramNumeric<compcomp_t>(corr_lookup, output_path, output_filename, Lt) {}
 
 void C40V::contract_impl(std::vector<compcomp_t> &c,
                          BlockIterator const &slice_pair,

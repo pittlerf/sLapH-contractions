@@ -167,10 +167,7 @@ class DiagramNumeric : public Diagram {
  */
 class C2c : public DiagramNumeric<cmplx> {
  public:
-  C2c(std::vector<CorrInfo> const &corr_lookup,
-      std::string const &output_path,
-      std::string const &output_filename,
-      int const Lt);
+  using DiagramNumeric<cmplx>::DiagramNumeric;
 
   char const *name() const override { return "C2+"; }
 
@@ -188,10 +185,7 @@ class C2c : public DiagramNumeric<cmplx> {
  */
 class C20 : public DiagramNumeric<cmplx> {
  public:
-  C20(std::vector<CorrInfo> const &corr_lookup,
-      std::string const &output_path,
-      std::string const &output_filename,
-      int const Lt);
+  using DiagramNumeric<cmplx>::DiagramNumeric;
 
   char const *name() const override { return "C20"; }
 
@@ -209,10 +203,7 @@ class C20 : public DiagramNumeric<cmplx> {
  */
 class C20V : public DiagramNumeric<compcomp_t> {
  public:
-  C20V(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C20V"; }
 
@@ -303,10 +294,7 @@ class C30V : public DiagramNumeric<compcomp_t> {
  */
 class C4cD : public DiagramNumeric<compcomp_t> {
  public:
-  C4cD(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C4+D"; }
 
@@ -326,10 +314,7 @@ class C4cD : public DiagramNumeric<compcomp_t> {
  */
 class C40D : public DiagramNumeric<compcomp_t> {
  public:
-  C40D(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C40D"; }
 
@@ -349,10 +334,7 @@ class C40D : public DiagramNumeric<compcomp_t> {
  */
 class C4cV : public DiagramNumeric<compcomp_t> {
  public:
-  C4cV(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C4+V"; }
 
@@ -372,10 +354,7 @@ class C4cV : public DiagramNumeric<compcomp_t> {
  */
 class C40V : public DiagramNumeric<compcomp_t> {
  public:
-  C40V(std::vector<CorrInfo> const &corr_lookup,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
+  using DiagramNumeric<compcomp_t>::DiagramNumeric;
 
   char const *name() const override { return "C40V"; }
 
