@@ -70,7 +70,7 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
     swatch.stop();
   }  // parallel part ends here
 
-  HDF5Handle handle(output_path, "C1", output_filename);
+  //HDF5Handle handle(output_path, "C1", output_filename);
 
   // normalisation
   for (const auto &c_look : corr_lookup) {
@@ -81,9 +81,9 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
       }
     }
 
-    auto group = handle.create_group(c_look.hdf5_dataset_name);
+    //auto group = handle.create_group(c_look.hdf5_dataset_name);
     std::cout << "Going to write" << std::endl;
-    write_heterogenious(group, corr_part_trQ1[c_look.id]);
+    //write_heterogenious(group, corr_part_trQ1[c_look.id]);
   }
   swatch.print();
 }
@@ -115,7 +115,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   build_part_trQ1(randomvectors,
                   meson_operator,
                   perambulators,
-                  corr_lookup.C1,
+                  corr_lookup.trQ1,
                   output_path,
                   output_filename);
 
