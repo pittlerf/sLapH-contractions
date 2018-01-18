@@ -11,6 +11,8 @@
 #include "Diagram.h"
 #include "Reduction.h"
 
+#include <iomanip>
+
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
@@ -160,6 +162,15 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
+      #pragma omp critical(cout)
+      {
+        std::cout << "Thread " << std::setw(3) << omp_get_thread_num() << " of "
+                  << std::setw(3) << omp_get_num_threads() << " starts with block pair "
+                  << std::setw(5) << b << " of " << std::setw(5) << dilution_scheme.size()
+                  << "." << std::endl;
+      }
+
+
       auto const block_pair = dilution_scheme[b];
 
       // Build corrC.
