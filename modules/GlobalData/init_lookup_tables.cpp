@@ -145,7 +145,8 @@ void build_quantum_numbers_from_correlator_list(
     }
   }
 
-  else if (correlator.type == "C3+" || correlator.type == "C30") {
+  else if (correlator.type == "C3+" || correlator.type == "C30" ||
+           correlator.type == "C30V") {
     std::cout << "Constructing momentum combinations for C3" << std::endl;
 
     std::map<int, int> counter; /*! initialized with zero */
