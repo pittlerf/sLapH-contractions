@@ -2,14 +2,14 @@
 
 //#define DILUTION_ITERATOR_PRINT
 
+#include "Diagram.h"
 #include "DilutedFactor.h"
 #include "QuarkLineBlock2.h"
+#include "Reduction.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "h5-wrapper.h"
 #include "typedefs.h"
-#include "Diagram.h"
-#include "Reduction.h"
 
 #include <iomanip>
 
@@ -105,14 +105,13 @@ void contract(const size_t Lt,
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
-      #pragma omp critical(cout)
+#pragma omp critical(cout)
       {
         std::cout << "Thread " << std::setw(3) << omp_get_thread_num() << " of "
                   << std::setw(3) << omp_get_num_threads() << " starts with block pair "
                   << std::setw(5) << b << " of " << std::setw(5) << dilution_scheme.size()
                   << "." << std::endl;
       }
-
 
       auto const block_pair = dilution_scheme[b];
 
