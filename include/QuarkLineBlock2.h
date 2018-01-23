@@ -31,13 +31,14 @@ class DilutedFactorFactory {
   using Key = std::array<int, DilutedFactorTypeTraits<qlt>::num_times>;
   using Value = DilutedFactors<1, 0>;
 
-  DilutedFactorFactory(RandomVector const &random_vector,
-                  Perambulator const &perambulator,
-                  OperatorFactory const &_meson_operator,
-                  size_t const dilT,
-                  size_t const dilE,
-                  size_t const nev,
-                  typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices);
+  DilutedFactorFactory(
+      RandomVector const &random_vector,
+      Perambulator const &perambulator,
+      OperatorFactory const &_meson_operator,
+      size_t const dilT,
+      size_t const dilE,
+      size_t const nev,
+      typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices);
 
   Value const &operator[](Key const &key) {
     if (Ql.count(key) == 0) {
@@ -50,7 +51,6 @@ class DilutedFactorFactory {
   void clear() { Ql.clear(); }
 
   void build(Key const &time_key);
-
 
  private:
   std::map<Key, Value> Ql;

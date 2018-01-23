@@ -15,8 +15,8 @@
 #include "Eigen/Dense"
 
 #include "OperatorsForMesons.h"
-#include "typedefs.h"
 #include "global_data.h"
+#include "typedefs.h"
 
 template <size_t rvecs1, size_t rvecs2>
 bool has_intersection(SmallVectorRndId<rvecs1> const &left,
@@ -71,7 +71,7 @@ std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
       bool const is_allowed =
           inner_rnd_id == right.ric.first && left.ric.first != right.ric.second;
       if (!is_allowed) {
-          continue;
+        continue;
       }
 
       // We also need to be careful to not combine factors which have common used random
@@ -114,8 +114,7 @@ inline Complex operator+(Complex const &c, DilutedTrace<rvecs> const &df) {
 }
 
 template <int n, size_t rvecs>
-using DilutedFactors =
-    std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
+using DilutedFactors = std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
 template <size_t n, size_t rvecs>
 std::string to_string(typename DilutedFactors<n, rvecs>::key_type const &array) {
@@ -143,7 +142,7 @@ void print(DilutedFactors<n, rvecs> const &otfm) {
 
 template <size_t rvecs1, size_t rvecs2>
 Complex trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
-            std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+              std::vector<DilutedFactor<rvecs2>> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
@@ -166,7 +165,7 @@ Complex trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
       bool const is_allowed =
           inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
       if (!is_allowed) {
-          continue;
+        continue;
       }
 
       // We also need to be careful to not combine factors which have common used random
@@ -223,7 +222,7 @@ std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
       bool const is_allowed =
           inner_rnd_id == right.ric.first && outer_rnd_id == right.ric.second;
       if (!is_allowed) {
-          continue;
+        continue;
       }
 
       // We also need to be careful to not combine factors which have common used random
@@ -295,12 +294,11 @@ std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
   }
 
   return result_vec;
-
 }
 
 template <size_t rvecs1, size_t rvecs2>
 ComplexProduct inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
-                         std::vector<DilutedTrace<rvecs2>> const &right_vec) {
+                             std::vector<DilutedTrace<rvecs2>> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 

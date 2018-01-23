@@ -2,19 +2,19 @@
 
 #include "Correlators.h"
 #include "QuarkLineBlock2.h"
-#include "typedefs.h"
 #include "h5-wrapper.h"
+#include "typedefs.h"
 
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
-                           Perambulator const &perambulator,
-                           OperatorFactory const &meson_operator,
-                           size_t const dilT,
-                           size_t const dilE,
-                           size_t const nev,
-                           size_t const Lt,
-                           DilutedFactorLookup const &dil_fac_lookup,
-                           DiagramIndicesCollection const &corr_lookup)
+               Perambulator const &perambulator,
+               OperatorFactory const &meson_operator,
+               size_t const dilT,
+               size_t const dilE,
+               size_t const nev,
+               size_t const Lt,
+               DilutedFactorLookup const &dil_fac_lookup,
+               DiagramIndicesCollection const &corr_lookup)
       : q0(random_vector,
            perambulator,
            meson_operator,
@@ -110,9 +110,7 @@ class DiagramNumeric : public Diagram {
            std::vector<std::vector<Numeric>>(
                Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
 
-  void contract(int const t,
-                BlockIterator const &slice_pair,
-                DiagramParts &q) override {
+  void contract(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
     contract_impl(c_.at(tid).at(t), slice_pair, q);
   }

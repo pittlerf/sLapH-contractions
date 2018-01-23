@@ -32,7 +32,7 @@ void build_corr0(DiagramParts &q,
                  int const b1,
                  int const b2) {
   q.trQ1Q1[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
-                                               q.q1[{t2, b1}].at({c_look.lookup[1]}));
+                                                q.q1[{t2, b1}].at({c_look.lookup[1]}));
 }
 
 /******************************************************************************/
@@ -96,14 +96,14 @@ void contract(const size_t Lt,
     swatch.start();
 
     DiagramParts q(randomvectors,
-                               perambulators,
-                               meson_operator,
-                               dilT,
-                               dilE,
-                               nev,
-                               Lt,
-                               dil_fac_lookup,
-                               corr_lookup);
+                   perambulators,
+                   meson_operator,
+                   dilT,
+                   dilE,
+                   nev,
+                   Lt,
+                   dil_fac_lookup,
+                   corr_lookup);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -161,8 +161,7 @@ void contract(const size_t Lt,
         auto const b = slice_pair.source_block();
 
         for (const auto &c_look : corr_lookup.trQ1) {
-          q.trQ1[c_look.id][t] =
-              factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+          q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
 
           for (auto &diluted_trace : q.trQ1[c_look.id][t]) {
             diluted_trace.data /= Lt;
@@ -198,5 +197,4 @@ void contract(const size_t Lt,
   for (auto &diagram : diagrams) {
     diagram->write();
   }
-
 }

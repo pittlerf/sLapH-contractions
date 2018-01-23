@@ -15,7 +15,9 @@ StopWatch::StopWatch(char const *const message, int const threads)
   std::cout << "[Start    ] " << message << std::endl;
 }
 
-void StopWatch::start() { store_to(starts_); }
+void StopWatch::start() {
+  store_to(starts_);
+}
 
 void StopWatch::stop() {
   assert(summands() > 0 && "This stopwatch has not been started yet, cannot stop.");

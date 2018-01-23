@@ -1,8 +1,7 @@
 #include "dilution-iterator.h"
 
 std::ostream &operator<<(std::ostream &os, DilutionIterator const &di) {
-  os << "DilutionIterator(source=" << di.source() << ", sink=" << di.sink()
-     <<  ")";
+  os << "DilutionIterator(source=" << di.source() << ", sink=" << di.sink() << ")";
   return os;
 }
 

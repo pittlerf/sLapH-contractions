@@ -109,7 +109,10 @@ struct ComplexProduct {
 
   ComplexProduct() : rere(0.0), reim(0.0), imre(0.0), imim(0.0) {}
 
-  ComplexProduct(const double rere, const double reim, const double imre, const double imim)
+  ComplexProduct(const double rere,
+                 const double reim,
+                 const double imre,
+                 const double imim)
       : rere(rere), reim(reim), imre(imre), imim(imim) {}
 
   ComplexProduct &operator+=(ComplexProduct const &other) {
@@ -265,17 +268,17 @@ struct DiagramIndex {
   std::vector<int> gamma;
   /*! Just a small constructor to ensure easy filling of its vector form */
   DiagramIndex(const size_t id,
-           const std::string &hdf5_dataset_name,
-           const std::vector<size_t> &lookup,
-           const std::vector<int> &gamma)
+               const std::string &hdf5_dataset_name,
+               const std::vector<size_t> &lookup,
+               const std::vector<int> &gamma)
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
   DiagramIndex(const size_t id,
-           const std::string &hdf5_dataset_name,
-           const std::vector<size_t> &lookup)
+               const std::string &hdf5_dataset_name,
+               const std::vector<size_t> &lookup)
       : DiagramIndex(id, hdf5_dataset_name, lookup, std::vector<int>({})){};
 };
 
-inline bool operator==(DiagramIndex const &first, DiagramIndex const &second){
+inline bool operator==(DiagramIndex const &first, DiagramIndex const &second) {
   if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
       (first.lookup == second.lookup))
     return true;
@@ -289,7 +292,6 @@ inline bool operator==(DiagramIndex const &first, DiagramIndex const &second){
  *  @todo modular programming looks different
  */
 struct DiagramIndicesCollection {
-
   std::vector<DiagramIndex> trQ1;
   std::vector<DiagramIndex> C1;
   std::vector<DiagramIndex> C20V;

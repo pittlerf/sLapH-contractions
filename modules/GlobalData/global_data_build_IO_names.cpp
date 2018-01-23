@@ -6,13 +6,11 @@ namespace {
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::vector<std::string> create_rnd_vector_file_names (
-                                    const int config, const int nb_of_eigen_vec,
-                                    const std::vector<quark> quarks) {
-
-  std::vector<std::string> filename_list; // the return vector of file names
+static std::vector<std::string> create_rnd_vector_file_names(
+    const int config, const int nb_of_eigen_vec, const std::vector<quark> quarks) {
+  std::vector<std::string> filename_list;  // the return vector of file names
   // running over all quarks
-  for(const auto& q: quarks){
+  for (const auto &q : quarks) {
     for (int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i) {
       // building paths and filenames for rnd vecs
       auto const path =
@@ -29,22 +27,22 @@ static std::vector<std::string> create_rnd_vector_file_names (
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::vector<std::string> create_perambulator_file_names (
-                                              const int config, const int Lt,
-                                              const int Lx, const int Ly, 
-                                              const int Lz, 
-                                              const std::vector<quark> quarks) {
-
-  std::vector<std::string> filename_list; // the return vector of file names
+static std::vector<std::string> create_perambulator_file_names(
+    const int config,
+    const int Lt,
+    const int Lx,
+    const int Ly,
+    const int Lz,
+    const std::vector<quark> quarks) {
+  std::vector<std::string> filename_list;  // the return vector of file names
 
   // running over all quarks
-  for(const auto& q: quarks){
-
+  for (const auto &q : quarks) {
     char dil_scheme_T = q.dilution_T.back();
     char dil_scheme_E = q.dilution_E.back();
     char dil_scheme_D = q.dilution_D.back();
-    
-    for(int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i){
+
+    for (int rnd_vec_i = 0; rnd_vec_i < q.number_of_rnd_vec; ++rnd_vec_i) {
       // data path for qbig contractions
       auto const path =
           (boost::format("%s/cnfg%04d/rnd_vec_%02d/"
@@ -61,10 +59,9 @@ static std::vector<std::string> create_perambulator_file_names (
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::string create_eigenvector_file_name (
-                                         const size_t config,
-                                         const std::string& path_eigenvectors,
-                                         const std::string& name_eigenvectors) {
+static std::string create_eigenvector_file_name(const size_t config,
+                                                const std::string &path_eigenvectors,
+                                                const std::string &name_eigenvectors) {
   return (boost::format("%s/%s.%04d.") % path_eigenvectors % name_eigenvectors %
           static_cast<int>(config))
       .str();
@@ -76,7 +73,7 @@ static std::string create_correlator_file_name(const size_t config) {
   return (boost::format("_cnfg%04d.h5") % static_cast<int>(config)).str();
 }
 
-} // end anonymous namespace
+}  // end anonymous namespace
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -84,15 +81,13 @@ static std::string create_correlator_file_name(const size_t config) {
  * @param config Configuration number for which paths and file names shall be
  *               constructed
  */
-void GlobalData::build_IO_names(const size_t config){
-
-  rnd_vec_construct.filename_list = create_rnd_vector_file_names(
-                                           config, number_of_eigen_vec, quarks);
-  peram_construct.filename_list = create_perambulator_file_names(
-                                                config, Lt, Lx, Ly, Lz, quarks);
-  filename_eigenvectors = create_eigenvector_file_name(config, 
-                                          path_eigenvectors, name_eigenvectors);
+void GlobalData::build_IO_names(const size_t config) {
+  rnd_vec_construct.filename_list =
+      create_rnd_vector_file_names(config, number_of_eigen_vec, quarks);
+  peram_construct.filename_list =
+      create_perambulator_file_names(config, Lt, Lx, Ly, Lz, quarks);
+  filename_eigenvectors =
+      create_eigenvector_file_name(config, path_eigenvectors, name_eigenvectors);
 
   filename_ending_correlators = create_correlator_file_name(config);
-
 }

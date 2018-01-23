@@ -13,23 +13,23 @@
 #include <iostream>
 #include <string>
 
-#include "boost/multi_array.hpp"
-#include "boost/filesystem.hpp"
 #include "Eigen/Dense"
+#include "boost/filesystem.hpp"
+#include "boost/multi_array.hpp"
 
 #include "EigenVector.h"
 #include "RandomVector.h"
 #include "typedefs.h"
 
-/*! Calculates operators as they emerge in correlation functions using the 
+/*! Calculates operators as they emerge in correlation functions using the
  *  stochastic estimates from the stochastic Laplacian Heaviside method
  *
- *  Basically this calculates every operator of the form 
+ *  Basically this calculates every operator of the form
  *  - VdaggerV    : @f$ V^\dagger exp(ipx) V @f$
  *  - rVdaggerV   : @f$ (P^(b)\rho V)^\dagger exp(ipx) V @f$
  *  - rVdaggerVr  : @f$ (P^(b)\rho V)^\dagger exp(ipx) (P^(b)\rho V) @f$
  *
- *  It is straightforward to generalize the operators for Displacement, but 
+ *  It is straightforward to generalize the operators for Displacement, but
  *  not implemented
  *
  *  @TODO Implement derivate operators
@@ -37,9 +37,7 @@
  *  @note (MW 21.12.2017) rVdaggerV moved to QuarkLineBlock
  */
 class OperatorFactory {
-
-private:
-
+ private:
   // Containers for operators which are accessible from outside
   array_Xcd_d2_eigen vdaggerv;
   /*! @cond
@@ -47,7 +45,7 @@ private:
    */
   array_cd_d2 momentum;
   /*! @endcond */
-  
+
   /****************************************************************************/
   /*! @TODO comment private members */
   const OperatorLookup operator_lookuptable;
@@ -60,35 +58,39 @@ private:
   // Internal functions to build individual operators --> The interface to these
   // functions is 'create_Operators'
   // input -> filename: name and path of eigenvectors
-  void build_vdaggerv(const std::string& filename, const int config);
+  void build_vdaggerv(const std::string &filename, const int config);
   void read_vdaggerv(const int config);
   void read_vdaggerv_liuming(const int config);
 
-public:
+ public:
   /*! Constructor which allocates memory for all operators */
-  OperatorFactory(const size_t Lt, const size_t Lx, const size_t Ly, 
-                     const size_t Lz, const size_t nb_ev, const size_t dilE,
-                     const OperatorLookup& operator_lookuptable,
-                     const std::string& handling_vdaggerv,
-                     const std::string& path_vdaggerv);
+  OperatorFactory(const size_t Lt,
+                  const size_t Lx,
+                  const size_t Ly,
+                  const size_t Lz,
+                  const size_t nb_ev,
+                  const size_t dilE,
+                  const OperatorLookup &operator_lookuptable,
+                  const std::string &handling_vdaggerv,
+                  const std::string &path_vdaggerv);
   /*! Standard Destructor
    *
    *  Everything should be handled by Eigen, std::vector, and boost::multi_array
    */
-  ~OperatorFactory () {};
+  ~OperatorFactory(){};
 
   /****************************************************************************/
   /**************** INTERFACE FOR BUILDING ALL OPERATORS **********************/
 
-  void create_operators(const std::string& filename,
-                        const RandomVector& rnd_vec, const int config);
+  void create_operators(const std::string &filename,
+                        const RandomVector &rnd_vec,
+                        const int config);
   /*! Free memory of vdaggerv */
   void free_memory_vdaggerv();
 
   /*! @todo check of vdaggerv is already build */
-  inline const Eigen::MatrixXcd& return_vdaggerv(const size_t index,
+  inline const Eigen::MatrixXcd &return_vdaggerv(const size_t index,
                                                  const size_t t) const {
     return vdaggerv[index][t];
   }
-
 };

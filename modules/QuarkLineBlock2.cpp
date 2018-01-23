@@ -82,9 +82,7 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
           {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
   }
-
 }
-
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

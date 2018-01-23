@@ -61,7 +61,8 @@ void write_homogenious(H5::DataSet &data_set, std::vector<Complex> const &payloa
 }
 
 template <>
-void write_homogenious(H5::DataSet &data_set, std::vector<ComplexProduct> const &payload) {
+void write_homogenious(H5::DataSet &data_set,
+                       std::vector<ComplexProduct> const &payload) {
   data_set.write(payload.data(), make_comp_type<ComplexProduct>());
 }
 

@@ -139,9 +139,9 @@ void C30V::contract_impl(std::vector<ComplexProduct> &c,
     assert(c_look.lookup[1] < q.trQ1.shape()[0]);
     assert(slice_pair.sink() < q.trQ1.shape()[1]);
 
-    c[i] +=
-        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                      q.trQ1[c_look.lookup[1]][slice_pair.sink()]);
+    c[i] += inner_product(
+        q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+        q.trQ1[c_look.lookup[1]][slice_pair.sink()]);
   }
 }
 
@@ -187,9 +187,9 @@ void C4cV::contract_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    c[i] +=
-        inner_product(q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                      q.trQ0Q2[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+    c[i] += inner_product(
+        q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+        q.trQ0Q2[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
   }
 }
 
@@ -203,9 +203,9 @@ void C40V::contract_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    c[i] +=
-        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                      q.trQ1Q1[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+    c[i] += inner_product(
+        q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+        q.trQ1Q1[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
   }
 }
 

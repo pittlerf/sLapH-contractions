@@ -96,7 +96,6 @@ void write_heterogenious(
   }
 }
 
-
 template <typename Numeric>
 H5::CompType comp_type_factory();
 
@@ -197,4 +196,3 @@ class WriteHDF5Correlator {
   H5::CompType comp_type;
 
 };  // end of class WriteHDF5Correlator
-
