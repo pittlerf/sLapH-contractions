@@ -91,7 +91,6 @@ void contract(const size_t Lt,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
-
 #pragma omp parallel
   {
     QuarkLineBlockCollection q(randomvectors,
@@ -127,7 +126,6 @@ void contract(const size_t Lt,
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-#pragma omp critical(corrC)
           build_corrC(q,
                       c_look,
                       slice_pair.source(),
@@ -147,7 +145,6 @@ void contract(const size_t Lt,
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-#pragma omp critical(corr0)
           build_corr0(q,
                       c_look,
                       slice_pair.source(),
