@@ -37,7 +37,9 @@ Correlators::Correlators(const size_t Lt,
 /*!
  *  @deprecated
  */
-void Correlators::build_part_trQ1(RandomVector const &randomvectors,
+void Correlators::build_part_trQ1(DilutedTraceCollection2<1> &corr_part_trQ1,
+                                  QuarkLineBlock2<QuarkLineType::Q1> &q1,
+                                  RandomVector const &randomvectors,
                                   OperatorsForMesons const &meson_operator,
                                   Perambulator const &perambulators,
                                   std::vector<CorrInfo> const &corr_lookup,
@@ -48,24 +50,19 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
   StopWatch swatch("tr(Q1)");
 
-  corr_part_trQ1_.resize(boost::extents[corr_lookup.size()][Lt_]);
-
   DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
 
 #pragma omp parallel
   {
     swatch.start();
 
-    QuarkLineBlock2<QuarkLineType::Q1> quarklines(
-        randomvectors, perambulators, meson_operator, dilT_, dilE_, nev_, dil_fac_lookup_.Q1);
-
 #pragma omp for schedule(dynamic)
     for (int t = 0; t < Lt_; ++t) {
       auto const b = dilution_scheme.time_to_block(t);
 
       for (const auto &c_look : corr_lookup) {
-        corr_part_trQ1_[c_look.id][t] =
-            factor_to_trace(quarklines[{t, b}].at({c_look.lookup[0]}));
+        corr_part_trQ1[c_look.id][t] =
+            factor_to_trace(q1[{t, b}].at({c_look.lookup[0]}));
       }
     }
 
@@ -76,7 +73,7 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
   // normalisation
   for (const auto &c_look : corr_lookup) {
-    for (auto &corr_t : corr_part_trQ1_[c_look.id]) {
+    for (auto &corr_t : corr_part_trQ1[c_look.id]) {
       for (auto &diluted_trace : corr_t) {
         // TODO: Hard Coded atm - Be carefull
         diluted_trace.data /= Lt_;
@@ -114,12 +111,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                            QuarklineLookup const &quark_lookup,
                            std::string const output_path,
                            std::string const output_filename) {
-  build_part_trQ1(randomvectors,
-                  meson_operator,
-                  perambulators,
-                  corr_lookup.trQ1,
-                  output_path,
-                  output_filename);
 
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
@@ -144,8 +135,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
 
   DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
 
-  corrC_.resize(boost::extents[corr_lookup.corrC.size()][Lt_][Lt_]);
-  corr0_.resize(boost::extents[corr_lookup.corr0.size()][Lt_][Lt_]);
 
 #pragma omp parallel
   {
@@ -155,10 +144,18 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                dilT_,
                                dilE_,
                                nev_,
+                               Lt_,
                                dil_fac_lookup_,
-                               corr0_,
-                               corrC_,
-                               corr_part_trQ1_);
+                               corr_lookup);
+
+    build_part_trQ1(q.corr_part_trQ1,
+                    q.q1,
+                    randomvectors,
+                    meson_operator,
+                    perambulators,
+                    corr_lookup.trQ1,
+                    output_path,
+                    output_filename);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -176,7 +173,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       // Build corrC.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.corrC) {
-          corrC_[c_look.id][slice_pair.source()][slice_pair.sink()] =
+          q.corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
               factor_to_trace(q.q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
                               q.q2v[{slice_pair.sink_block(),
                                      slice_pair.source(),
@@ -191,7 +188,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                        slice_pair.source_block()}]
                                     .at({c_look.lookup[0]}));
 #pragma omp critical(corrC)
-            corrC_[c_look.id][slice_pair.source()][slice_pair.source()] = result;
+            q.corrC[c_look.id][slice_pair.source()][slice_pair.source()] = result;
           }
         }
       }
@@ -199,7 +196,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       // Build corr0.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.corr0) {
-          corr0_[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
+          q.corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
               q.q1[{slice_pair.source(), slice_pair.sink_block()}].at({c_look.lookup[0]}),
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(
                   {c_look.lookup[1]}));
@@ -211,7 +208,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                 q.q1[{slice_pair.source(), slice_pair.source_block()}].at(
                                     {c_look.lookup[1]}));
 #pragma omp critical(corr0)
-            corr0_[c_look.id][slice_pair.source()][slice_pair.source()] = result;
+            q.corr0[c_look.id][slice_pair.source()][slice_pair.source()] = result;
           }
         }
       }

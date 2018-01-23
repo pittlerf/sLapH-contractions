@@ -12,10 +12,9 @@ struct QuarkLineBlockCollection {
                            size_t const dilT,
                            size_t const dilE,
                            size_t const nev,
+                           size_t const Lt,
                            DilutedFactorLookup const &dil_fac_lookup,
-                           DilutedTraceCollection<2> &corr0,
-                           DilutedTraceCollection<2> &corrC,
-                           DilutedTraceCollection2<1> &corr_part_trQ1)
+                           CorrelatorLookup const &corr_lookup)
       : q0(random_vector,
            perambulator,
            meson_operator,
@@ -43,10 +42,11 @@ struct QuarkLineBlockCollection {
             dilT,
             dilE,
             nev,
-            dil_fac_lookup.Q2V),
-        corr0(corr0),
-        corrC(corrC),
-        corr_part_trQ1(corr_part_trQ1) {}
+            dil_fac_lookup.Q2V) {
+    corrC.resize(boost::extents[corr_lookup.corrC.size()][Lt][Lt]);
+    corr0.resize(boost::extents[corr_lookup.corr0.size()][Lt][Lt]);
+    corr_part_trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
+  }
 
   void clear() {
     q0.clear();
@@ -60,9 +60,14 @@ struct QuarkLineBlockCollection {
   QuarkLineBlock2<QuarkLineType::Q2> q2l;
   QuarkLineBlock2<QuarkLineType::Q2> q2v;
 
-  DilutedTraceCollection<2> &corr0;
-  DilutedTraceCollection<2> &corrC;
-  DilutedTraceCollection2<1> &corr_part_trQ1;
+  //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
+  DilutedTraceCollection<2> corr0;
+
+  //< Temporal memory for tr(Q2V*rVdaggerVr)
+  DilutedTraceCollection<2> corrC;
+
+  //< Temporal memory for tr(Q1)
+  DilutedTraceCollection2<1> corr_part_trQ1;
 };
 
 class Diagram {

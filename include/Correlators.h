@@ -25,6 +25,7 @@
 #include "Perambulator.h"
 #include "typedefs.h"
 #include "DiagramForward.h"
+#include "QuarkLineBlock2.h"
 
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
@@ -90,19 +91,13 @@ private:
 
   DilutedFactorLookup const dil_fac_lookup_;
 
-  /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  DilutedTraceCollection<2> corr0_;
-
-  /*! Temporal memory for tr(Q2V*rVdaggerVr) */
-  DilutedTraceCollection<2> corrC_;
-
-  /*! Temporal memory for tr(Q1) */
-  DilutedTraceCollection2<1> corr_part_trQ1_;
   /*! Build 1pt loops */
-  void build_part_trQ1(RandomVector const &randomvectors,
-                   OperatorsForMesons const &meson_operator, 
-                Perambulator const &perambulators,
-                std::vector<CorrInfo> const &corr_lookup,
-                std::string const output_path,
-                std::string const output_filename);
+  void build_part_trQ1(DilutedTraceCollection2<1> &corr_part_trQ1,
+                       QuarkLineBlock2<QuarkLineType::Q1> &q1,
+                       RandomVector const &randomvectors,
+                       OperatorsForMesons const &meson_operator,
+                       Perambulator const &perambulators,
+                       std::vector<CorrInfo> const &corr_lookup,
+                       std::string const output_path,
+                       std::string const output_filename);
 };
