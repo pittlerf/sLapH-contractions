@@ -4,7 +4,7 @@
 /*                                    C2c                                    */
 /*****************************************************************************/
 
-void C2c::contract_impl(std::vector<Complex> &c,
+void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -20,7 +20,7 @@ void C2c::contract_impl(std::vector<Complex> &c,
 /*                                    C20                                    */
 /*****************************************************************************/
 
-void C20::contract_impl(std::vector<Complex> &c,
+void C20::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -36,7 +36,7 @@ void C20::contract_impl(std::vector<Complex> &c,
 /*                                    C20V                                   */
 /*****************************************************************************/
 
-void C20V::contract_impl(std::vector<ComplexProduct> &c,
+void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -65,7 +65,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C3c::contract_impl(std::vector<Complex> &c,
+void C3c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   DilutedFactors<2, 1> L1;
@@ -103,7 +103,7 @@ C30::C30(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C30::contract_impl(std::vector<Complex> &c,
+void C30::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   DilutedFactors<2, 1> L1;
@@ -126,7 +126,7 @@ void C30::contract_impl(std::vector<Complex> &c,
 /*                                   C30V                                    */
 /*****************************************************************************/
 
-void C30V::contract_impl(std::vector<ComplexProduct> &c,
+void C30V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -149,7 +149,7 @@ void C30V::contract_impl(std::vector<ComplexProduct> &c,
 /*                                   C4cD                                    */
 /*****************************************************************************/
 
-void C4cD::contract_impl(std::vector<ComplexProduct> &c,
+void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -165,7 +165,7 @@ void C4cD::contract_impl(std::vector<ComplexProduct> &c,
 /*                                   C40D                                    */
 /*****************************************************************************/
 
-void C40D::contract_impl(std::vector<ComplexProduct> &c,
+void C40D::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -181,7 +181,7 @@ void C40D::contract_impl(std::vector<ComplexProduct> &c,
 /*                                   C4cV                                    */
 /*****************************************************************************/
 
-void C4cV::contract_impl(std::vector<ComplexProduct> &c,
+void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -197,7 +197,7 @@ void C4cV::contract_impl(std::vector<ComplexProduct> &c,
 /*                                   C40V                                    */
 /*****************************************************************************/
 
-void C40V::contract_impl(std::vector<ComplexProduct> &c,
+void C40V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -227,7 +227,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C4cB::contract_impl(std::vector<Complex> &c,
+void C4cB::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   DilutedFactors<2, 1> L1;
@@ -270,7 +270,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C40B::contract_impl(std::vector<Complex> &c,
+void C40B::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   DilutedFactors<2, 1> L1;
@@ -311,7 +311,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C4cC::contract_impl(std::vector<Complex> &c,
+void C4cC::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   DilutedFactors<2, 1> L1;
@@ -353,7 +353,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C40C::contract_impl(std::vector<Complex> &c,
+void C40C::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   DilutedFactors<2, 1> L1;

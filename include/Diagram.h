@@ -80,7 +80,7 @@ class Diagram {
 
   std::vector<DiagramIndex> const &corr_lookup() const { return corr_lookup_; }
 
-  virtual void contract(int const t,
+  virtual void assemble(int const t,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) = 0;
 
@@ -110,9 +110,9 @@ class DiagramNumeric : public Diagram {
            std::vector<std::vector<Numeric>>(
                Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
 
-  void contract(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
+  void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
-    contract_impl(c_.at(tid).at(t), slice_pair, q);
+    assemble_impl(c_.at(tid).at(t), slice_pair, q);
   }
 
   void reduce() override {
@@ -145,7 +145,7 @@ class DiagramNumeric : public Diagram {
   }
 
  private:
-  virtual void contract_impl(std::vector<Numeric> &c,
+  virtual void assemble_impl(std::vector<Numeric> &c,
                              BlockIterator const &slice_pair,
                              DiagramParts &q) = 0;
 
@@ -175,7 +175,7 @@ class C2c : public DiagramNumeric<Complex> {
   char const *name() const override { return "C2+"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -193,7 +193,7 @@ class C20 : public DiagramNumeric<Complex> {
   char const *name() const override { return "C20"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -211,7 +211,7 @@ class C20V : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C20V"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -237,7 +237,7 @@ class C3c : public DiagramNumeric<Complex> {
   char const *name() const override { return "C3+"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -261,7 +261,7 @@ class C30 : public DiagramNumeric<Complex> {
   char const *name() const override { return "C30"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -275,7 +275,7 @@ class C30V : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C30V"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -299,7 +299,7 @@ class C4cD : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C4+D"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -319,7 +319,7 @@ class C40D : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C40D"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -339,7 +339,7 @@ class C4cV : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C4+V"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -359,7 +359,7 @@ class C40V : public DiagramNumeric<ComplexProduct> {
   char const *name() const override { return "C40V"; }
 
  private:
-  void contract_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -382,7 +382,7 @@ class C4cB : public DiagramNumeric<Complex> {
   char const *name() const override { return "C4+B"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -407,7 +407,7 @@ class C40B : public DiagramNumeric<Complex> {
   char const *name() const override { return "C40B"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -432,7 +432,7 @@ class C4cC : public DiagramNumeric<Complex> {
   char const *name() const override { return "C4+C"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -457,7 +457,7 @@ class C40C : public DiagramNumeric<Complex> {
   char const *name() const override { return "C40C"; }
 
  private:
-  void contract_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 

@@ -178,7 +178,7 @@ void contract(const size_t Lt,
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
-          diagram->contract(t, slice_pair, q);
+          diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.
       }    // End of diagram loop.
 
