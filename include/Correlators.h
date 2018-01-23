@@ -90,14 +90,4 @@ private:
   const size_t Lt_, dilT_, dilE_, nev_;
 
   DilutedFactorLookup const dil_fac_lookup_;
-
-  /*! Build 1pt loops */
-  void build_part_trQ1(DilutedTraceCollection2<1> &corr_part_trQ1,
-                       QuarkLineBlock2<QuarkLineType::Q1> &q1,
-                       RandomVector const &randomvectors,
-                       OperatorsForMesons const &meson_operator,
-                       Perambulator const &perambulators,
-                       std::vector<CorrInfo> const &corr_lookup,
-                       std::string const output_path,
-                       std::string const output_filename);
 };

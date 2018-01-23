@@ -54,59 +54,6 @@ Correlators::Correlators(const size_t Lt,
       dil_fac_lookup_(
           {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L}) {}
 
-/*!
- *  @deprecated
- */
-void Correlators::build_part_trQ1(DilutedTraceCollection2<1> &corr_part_trQ1,
-                                  QuarkLineBlock2<QuarkLineType::Q1> &q1,
-                                  RandomVector const &randomvectors,
-                                  OperatorsForMesons const &meson_operator,
-                                  Perambulator const &perambulators,
-                                  std::vector<CorrInfo> const &corr_lookup,
-                                  std::string const output_path,
-                                  std::string const output_filename) {
-  if (corr_lookup.empty())
-    return;
-
-  StopWatch swatch("tr(Q1)");
-
-  DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
-
-#pragma omp parallel
-  {
-    swatch.start();
-
-#pragma omp for schedule(dynamic)
-    for (int t = 0; t < Lt_; ++t) {
-      auto const b = dilution_scheme.time_to_block(t);
-
-      for (const auto &c_look : corr_lookup) {
-        corr_part_trQ1[c_look.id][t] =
-            factor_to_trace(q1[{t, b}].at({c_look.lookup[0]}));
-      }
-    }
-
-    swatch.stop();
-  }  // parallel part ends here
-
-  //HDF5Handle handle(output_path, "C1", output_filename);
-
-  // normalisation
-  for (const auto &c_look : corr_lookup) {
-    for (auto &corr_t : corr_part_trQ1[c_look.id]) {
-      for (auto &diluted_trace : corr_t) {
-        // TODO: Hard Coded atm - Be carefull
-        diluted_trace.data /= Lt_;
-      }
-    }
-
-    //auto group = handle.create_group(c_look.hdf5_dataset_name);
-    std::cout << "Going to write" << std::endl;
-    //write_heterogenious(group, corr_part_trQ1[c_look.id]);
-  }
-  swatch.print();
-}
-
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
