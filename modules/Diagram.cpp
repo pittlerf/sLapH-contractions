@@ -4,14 +4,14 @@
 /*                                    C2c                                    */
 /*****************************************************************************/
 
-void C2c::contract_impl(std::vector<cmplx> &c,
+void C2c::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     auto const &x = q.corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
-    c[i] += std::accumulate(std::begin(x), std::end(x), cmplx(0.0, 0.0)) /
+    c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
 }
@@ -20,14 +20,14 @@ void C2c::contract_impl(std::vector<cmplx> &c,
 /*                                    C20                                    */
 /*****************************************************************************/
 
-void C20::contract_impl(std::vector<cmplx> &c,
+void C20::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     auto const &x = q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
-    c[i] += std::accumulate(std::begin(x), std::end(x), cmplx(0.0, 0.0)) /
+    c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
 }
@@ -36,7 +36,7 @@ void C20::contract_impl(std::vector<cmplx> &c,
 /*                                    C20V                                   */
 /*****************************************************************************/
 
-void C20V::contract_impl(std::vector<compcomp_t> &c,
+void C20V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -55,7 +55,7 @@ C3c::C3c(std::vector<CorrInfo> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -65,7 +65,7 @@ C3c::C3c(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C3c::contract_impl(std::vector<cmplx> &c,
+void C3c::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
@@ -93,7 +93,7 @@ C30::C30(std::vector<CorrInfo> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -103,7 +103,7 @@ C30::C30(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C30::contract_impl(std::vector<cmplx> &c,
+void C30::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
@@ -126,7 +126,7 @@ void C30::contract_impl(std::vector<cmplx> &c,
 /*                                   C30V                                    */
 /*****************************************************************************/
 
-void C30V::contract_impl(std::vector<compcomp_t> &c,
+void C30V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -149,7 +149,7 @@ void C30V::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C4cD                                    */
 /*****************************************************************************/
 
-void C4cD::contract_impl(std::vector<compcomp_t> &c,
+void C4cD::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -165,7 +165,7 @@ void C4cD::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C40D                                    */
 /*****************************************************************************/
 
-void C40D::contract_impl(std::vector<compcomp_t> &c,
+void C40D::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -181,7 +181,7 @@ void C40D::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C4cV                                    */
 /*****************************************************************************/
 
-void C4cV::contract_impl(std::vector<compcomp_t> &c,
+void C4cV::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -197,7 +197,7 @@ void C4cV::contract_impl(std::vector<compcomp_t> &c,
 /*                                   C40V                                    */
 /*****************************************************************************/
 
-void C40V::contract_impl(std::vector<compcomp_t> &c,
+void C40V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
@@ -217,7 +217,7 @@ C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -227,7 +227,7 @@ C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C4cB::contract_impl(std::vector<cmplx> &c,
+void C4cB::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
@@ -260,7 +260,7 @@ C40B::C40B(std::vector<CorrInfo> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -270,7 +270,7 @@ C40B::C40B(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C40B::contract_impl(std::vector<cmplx> &c,
+void C40B::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
@@ -301,7 +301,7 @@ C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -311,7 +311,7 @@ C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C4cC::contract_impl(std::vector<cmplx> &c,
+void C4cC::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;
@@ -343,7 +343,7 @@ C40C::C40C(std::vector<CorrInfo> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<cmplx>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -353,7 +353,7 @@ C40C::C40C(std::vector<CorrInfo> const &corr_lookup,
   }
 }
 
-void C40C::contract_impl(std::vector<cmplx> &c,
+void C40C::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          QuarkLineBlockCollection &q) {
   OperatorToFactorMap<2, 1> L1;

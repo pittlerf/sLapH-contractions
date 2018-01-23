@@ -58,7 +58,7 @@ int main (int ac, char* av[]) {
   RandomVector randomvectors(global_data->get_rnd_vec_construct().nb_entities,
                              global_data->get_rnd_vec_construct().length);
 
-  OperatorsForMesons meson_operators(
+  OperatorFactory meson_operators(
                             global_data->get_Lt(), global_data->get_Lx(),
                             global_data->get_Ly(), global_data->get_Lz(),
                             global_data->get_number_of_eigen_vec(),

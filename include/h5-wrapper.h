@@ -55,7 +55,7 @@ void write_heterogenious(
     H5::Group &group,
     boost::detail::multi_array::sub_array<std::vector<DilutedTrace<rvecs>>, 1ul> const
         &payload) {
-  std::map<std::string, std::vector<cmplx>> data;
+  std::map<std::string, std::vector<Complex>> data;
 
   for (int t = 0; t < payload.size(); ++t) {
     PRINT(payload[t].size());
@@ -86,7 +86,7 @@ void write_heterogenious(
     }
   }
 
-  auto const &comp_type = make_comp_type<cmplx>();
+  auto const &comp_type = make_comp_type<Complex>();
 
   for (auto const &pair : data) {
     hsize_t dim(pair.second.size());

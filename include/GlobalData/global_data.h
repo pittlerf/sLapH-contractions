@@ -93,7 +93,7 @@ private:
 
   DilutedFactorIndicesCollection quarkline_lookuptable;
   OperatorLookup operator_lookuptable;
-  CorrelatorLookup correlator_lookuptable;
+  DiagramIndicesCollection correlator_lookuptable;
   /*! Creates the lookup tables for quarklines, operators and correlators */
   void init_lookup_tables();
 
@@ -238,7 +238,7 @@ public:
     return quarkline_lookuptable;
   }
   /*! Return vector of unique physical contents needed for correlators */
-  inline const CorrelatorLookup get_correlator_lookuptable(){
+  inline const DiagramIndicesCollection get_correlator_lookuptable(){
     return correlator_lookuptable;
   }
   

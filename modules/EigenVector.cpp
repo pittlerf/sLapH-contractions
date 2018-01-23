@@ -8,7 +8,7 @@ void EigenVector::read_eigen_vector(const std::string& filename,
                                           const size_t t, const size_t verbose){
 
   // buffer for read in
-  std::vector<cmplx> eigen_vec(V[t].rows());
+  std::vector<Complex> eigen_vec(V[t].rows());
   std::cout << "\tReading eigenvectors from files:" << filename << std::endl;
 
   // setting V[t] to zero
@@ -17,7 +17,7 @@ void EigenVector::read_eigen_vector(const std::string& filename,
   std::ifstream infile(filename, std::ifstream::binary); 
   if (infile) {
     for (size_t ncol = 0; ncol < V[t].cols(); ++ncol) {
-      std::fill(eigen_vec.begin(), eigen_vec.end(), cmplx(.0, .0));
+      std::fill(eigen_vec.begin(), eigen_vec.end(), Complex(.0, .0));
       infile.read( (char*) &(eigen_vec[0]), 2*V[t].rows()*sizeof(double));
       if(!infile){
         std::cout << "\n\nProblem while reading Eigenvectors\n" << std::endl;

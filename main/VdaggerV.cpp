@@ -81,7 +81,7 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
       }
     }
     file.write(reinterpret_cast<const char*>(&eigen_vec[0]), 
-               Vt.size()*sizeof(cmplx));
+               Vt.size()*sizeof(Complex));
     if(!file.good())
       std::cout << "Problems while write to " << (pathname+filename).c_str() 
                 << std::endl;

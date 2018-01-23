@@ -59,14 +59,14 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
     std::cout << "\twriting VdaggerV to file:" << pathname+filename 
               << std::endl;
     // buffer for writing
-    std::vector<cmplx> eigen_vec(Vt.size());
+    std::vector<Complex> eigen_vec(Vt.size());
     for (size_t ncol = 0; ncol < Vt.cols(); ncol++) {
       for(size_t nrow = 0; nrow < Vt.rows(); nrow++){
         eigen_vec.at(ncol*Vt.rows() + nrow) = (Vt)(nrow, ncol);
       }
     }
     file.write(reinterpret_cast<const char*>(&eigen_vec[0]), 
-               Vt.size()*sizeof(cmplx));
+               Vt.size()*sizeof(Complex));
     if(!file.good())
       std::cout << "Problems while write to " << (pathname+filename).c_str() 
                 << std::endl;
@@ -92,7 +92,7 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
  * is done in the member initializer list of the constructor. The allocation
  * of heap memory is delegated to boost::multi_array::resize
  */
-OperatorsForMesons::OperatorsForMesons
+OperatorFactory::OperatorFactory
                         (const size_t Lt, const size_t Lx, const size_t Ly, 
                          const size_t Lz, const size_t nb_ev, const size_t dilE,
                          const OperatorLookup& operator_lookuptable,
@@ -118,7 +118,7 @@ OperatorsForMesons::OperatorsForMesons
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void OperatorsForMesons::build_vdaggerv(const std::string& filename,
+void OperatorFactory::build_vdaggerv(const std::string& filename,
                                               const int config) {
 
   clock_t t2 = clock();
@@ -202,7 +202,7 @@ void OperatorsForMesons::build_vdaggerv(const std::string& filename,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void OperatorsForMesons::read_vdaggerv(const int config){
+void OperatorFactory::read_vdaggerv(const int config){
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
@@ -243,9 +243,9 @@ void OperatorsForMesons::read_vdaggerv(const int config){
           std::cout << "\treading VdaggerV from file:" << infile << std::endl;
 
           // buffer for reading
-          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
           file.read(reinterpret_cast<char*>(&eigen_vec[0]), 
-                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+                    vdaggerv[op.id][t].size()*sizeof(Complex));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
             for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
                (vdaggerv[op.id][t])(nrow, ncol) = 
@@ -277,7 +277,7 @@ void OperatorsForMesons::read_vdaggerv(const int config){
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void OperatorsForMesons::read_vdaggerv_liuming(const int config){
+void OperatorFactory::read_vdaggerv_liuming(const int config){
 
   clock_t t2 = clock();
   const size_t dim_row = 3*Lx*Ly*Lz;
@@ -325,9 +325,9 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
         std::cout << "\treading VdaggerV from file:" << infile1 << std::endl;
         for(size_t t = 0; t < Lt; ++t){
           // buffer for reading
-          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
           file1.read(reinterpret_cast<char*>(&eigen_vec[0]), 
-                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+                    vdaggerv[op.id][t].size()*sizeof(Complex));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
             for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
                (vdaggerv[op.id][t])(nrow, ncol) = 
@@ -346,9 +346,9 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
         std::cout << "\treading VdaggerV from file:" << infile2 << std::endl;
         for(size_t t = 0; t < Lt; ++t){
           // buffer for reading
-          std::vector<cmplx> eigen_vec(vdaggerv[op.id][t].size());
+          std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
           file2.read(reinterpret_cast<char*>(&eigen_vec[0]), 
-                    vdaggerv[op.id][t].size()*sizeof(cmplx));
+                    vdaggerv[op.id][t].size()*sizeof(Complex));
           for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
             for(size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++){
                (vdaggerv[op.id][t])(nrow, ncol) = 
@@ -400,7 +400,7 @@ void OperatorsForMesons::read_vdaggerv_liuming(const int config){
  *  - "write"            The operators are constructed and additionaly written 
  *                       out.
  */
-void OperatorsForMesons::create_operators(const std::string& filename, 
+void OperatorFactory::create_operators(const std::string& filename, 
                                             const RandomVector& rnd_vec,
                                             const int config) {
   is_vdaggerv_set = false;
@@ -425,7 +425,7 @@ void OperatorsForMesons::create_operators(const std::string& filename,
  *
  *  Resizes vdaggerv to 0
  */
-void OperatorsForMesons::free_memory_vdaggerv(){
+void OperatorFactory::free_memory_vdaggerv(){
   std::for_each(vdaggerv.origin(), vdaggerv.origin() + vdaggerv.num_elements(), 
                 [](Eigen::MatrixXcd m){m.resize(0, 0);});
 }

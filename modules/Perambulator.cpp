@@ -19,13 +19,13 @@ void Perambulator::read_perambulator(const size_t entity,
   std::cout << "\tReading perambulator from file:\n\t\t" << filename << "\n";
 
   // reading the data into temporary array
-  std::vector<cmplx> perambulator_read(peram[entity].size());
+  std::vector<Complex> perambulator_read(peram[entity].size());
   if((fp = fopen(filename.c_str(), "rb")) == NULL){
     std::cout << "failed to open file to read perambulator: " 
               << filename << "\n" << std::endl;
     exit(1);
   }
-  int check_read = fread(&(perambulator_read[0]), sizeof(cmplx),
+  int check_read = fread(&(perambulator_read[0]), sizeof(Complex),
                                                       peram[entity].size(), fp);
   fclose(fp);
   // check if all data were read in

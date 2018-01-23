@@ -8,13 +8,13 @@
 struct QuarkLineBlockCollection {
   QuarkLineBlockCollection(RandomVector const &random_vector,
                            Perambulator const &perambulator,
-                           OperatorsForMesons const &meson_operator,
+                           OperatorFactory const &meson_operator,
                            size_t const dilT,
                            size_t const dilE,
                            size_t const nev,
                            size_t const Lt,
                            DilutedFactorLookup const &dil_fac_lookup,
-                           CorrelatorLookup const &corr_lookup)
+                           DiagramIndicesCollection const &corr_lookup)
       : q0(random_vector,
            perambulator,
            meson_operator,
@@ -170,14 +170,14 @@ class DiagramNumeric : public Diagram {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C2c : public DiagramNumeric<cmplx> {
+class C2c : public DiagramNumeric<Complex> {
  public:
-  using DiagramNumeric<cmplx>::DiagramNumeric;
+  using DiagramNumeric<Complex>::DiagramNumeric;
 
   char const *name() const override { return "C2+"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -188,14 +188,14 @@ class C2c : public DiagramNumeric<cmplx> {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C20 : public DiagramNumeric<cmplx> {
+class C20 : public DiagramNumeric<Complex> {
  public:
-  using DiagramNumeric<cmplx>::DiagramNumeric;
+  using DiagramNumeric<Complex>::DiagramNumeric;
 
   char const *name() const override { return "C20"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -206,14 +206,14 @@ class C20 : public DiagramNumeric<cmplx> {
  *        \langle D_\mathtt{Q1}^{-1}(t'|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C20V : public DiagramNumeric<compcomp_t> {
+class C20V : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C20V"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -229,7 +229,7 @@ class C20V : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C3c : public DiagramNumeric<cmplx> {
+class C3c : public DiagramNumeric<Complex> {
  public:
   C3c(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
@@ -239,7 +239,7 @@ class C3c : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C3+"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 
@@ -253,7 +253,7 @@ class C3c : public DiagramNumeric<cmplx> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C30 : public DiagramNumeric<cmplx> {
+class C30 : public DiagramNumeric<Complex> {
  public:
   C30(std::vector<CorrInfo> const &corr_lookup,
       std::string const &output_path,
@@ -263,21 +263,21 @@ class C30 : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C30"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
 };
 
-class C30V : public DiagramNumeric<compcomp_t> {
+class C30V : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C30V"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -294,14 +294,14 @@ class C30V : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cD : public DiagramNumeric<compcomp_t> {
+class C4cD : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C4+D"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -314,14 +314,14 @@ class C4cD : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40D : public DiagramNumeric<compcomp_t> {
+class C40D : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C40D"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -334,14 +334,14 @@ class C40D : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cV : public DiagramNumeric<compcomp_t> {
+class C4cV : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C4+V"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -354,14 +354,14 @@ class C4cV : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40V : public DiagramNumeric<compcomp_t> {
+class C40V : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<compcomp_t>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C40V"; }
 
  private:
-  void contract_impl(std::vector<compcomp_t> &c,
+  void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 };
@@ -374,7 +374,7 @@ class C40V : public DiagramNumeric<compcomp_t> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cB : public DiagramNumeric<cmplx> {
+class C4cB : public DiagramNumeric<Complex> {
  public:
   C4cB(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
@@ -384,7 +384,7 @@ class C4cB : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C4+B"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 
@@ -399,7 +399,7 @@ class C4cB : public DiagramNumeric<cmplx> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40B : public DiagramNumeric<cmplx> {
+class C40B : public DiagramNumeric<Complex> {
  public:
   C40B(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
@@ -409,7 +409,7 @@ class C40B : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C40B"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 
@@ -424,7 +424,7 @@ class C40B : public DiagramNumeric<cmplx> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cC : public DiagramNumeric<cmplx> {
+class C4cC : public DiagramNumeric<Complex> {
  public:
   C4cC(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
@@ -434,7 +434,7 @@ class C4cC : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C4+C"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 
@@ -449,7 +449,7 @@ class C4cC : public DiagramNumeric<cmplx> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40C : public DiagramNumeric<cmplx> {
+class C40C : public DiagramNumeric<Complex> {
  public:
   C40C(std::vector<CorrInfo> const &corr_lookup,
        std::string const &output_path,
@@ -459,7 +459,7 @@ class C40C : public DiagramNumeric<cmplx> {
   char const *name() const override { return "C40C"; }
 
  private:
-  void contract_impl(std::vector<cmplx> &c,
+  void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      QuarkLineBlockCollection &q) override;
 

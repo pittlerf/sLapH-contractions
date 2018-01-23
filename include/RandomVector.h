@@ -22,7 +22,7 @@ class RandomVector {
 
 private:
   // the random vector
-  std::vector<cmplx> vec;
+  std::vector<Complex> vec;
   const size_t nb_entities;
   const size_t length;
 
@@ -36,7 +36,7 @@ public:
    *  @warning It is assumed that all random vector have the same length!
    */
   RandomVector(const size_t nb_entities, const size_t length) : 
-                                     vec(nb_entities*length, cmplx(0.0,0.0)), 
+                                     vec(nb_entities*length, Complex(0.0,0.0)), 
                                      nb_entities(nb_entities), length(length) {
     std::cout << "\tRandom vectors initialised" << std::endl;
   };
@@ -45,7 +45,7 @@ public:
   ~RandomVector() {};
 
   /*! Overloading () operator to directly access the elements of vec */
-  inline cmplx operator()(const size_t entity, const size_t entry) const {
+  inline Complex operator()(const size_t entity, const size_t entry) const {
     return vec.at(entity*length+entry);
   }
 

@@ -33,7 +33,7 @@ class DilutedFactorFactory {
 
   DilutedFactorFactory(RandomVector const &random_vector,
                   Perambulator const &perambulator,
-                  OperatorsForMesons const &_meson_operator,
+                  OperatorFactory const &_meson_operator,
                   size_t const dilT,
                   size_t const dilE,
                   size_t const nev,
@@ -57,7 +57,7 @@ class DilutedFactorFactory {
 
   RandomVector const &rnd_vec;
   Perambulator const &peram;
-  OperatorsForMesons const &meson_operator;
+  OperatorFactory const &meson_operator;
   const size_t dilT, dilE, nev;
   typename QuarkLineIndices<qlt>::type const &quarkline_indices;
 

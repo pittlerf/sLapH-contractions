@@ -104,12 +104,12 @@ std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
 }
 
 template <size_t rvecs>
-inline cmplx operator+(DilutedTrace<rvecs> const &df, cmplx const &c) {
+inline Complex operator+(DilutedTrace<rvecs> const &df, Complex const &c) {
   return c + df.data;
 }
 
 template <size_t rvecs>
-inline cmplx operator+(cmplx const &c, DilutedTrace<rvecs> const &df) {
+inline Complex operator+(Complex const &c, DilutedTrace<rvecs> const &df) {
   return df + c;
 }
 
@@ -142,12 +142,12 @@ void print(OperatorToFactorMap<n, rvecs> const &otfm) {
 }
 
 template <size_t rvecs1, size_t rvecs2>
-cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
+Complex trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
             std::vector<DilutedFactor<rvecs2>> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
-  cmplx result(0.0, 0.0);
+  Complex result(0.0, 0.0);
 
   int num_summands = 0;
 
@@ -299,17 +299,17 @@ std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
 }
 
 template <size_t rvecs1, size_t rvecs2>
-compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
+ComplexProduct inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
                          std::vector<DilutedTrace<rvecs2>> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
   int num_summands = 0;
 
-  compcomp_t result(0.0, 0.0, 0.0, 0.0);
+  ComplexProduct result(0.0, 0.0, 0.0, 0.0);
 
   for (auto const &left : left_vec) {
-    cmplx right_sum(0.0, 0.0);
+    Complex right_sum(0.0, 0.0);
 
     for (auto const &right : right_vec) {
       // We also need to be careful to not combine factors which have common used random
@@ -370,7 +370,7 @@ UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
 }
 
 template <size_t rvecs>
-std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
+std::map<UpTo, Complex> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
   // Extract the number of random vectors per quark flavor.
   auto const &quarks = GlobalData::Instance()->get_quarks();
   UpTo rnd_count;
@@ -386,7 +386,7 @@ std::map<UpTo, cmplx> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &tra
   std::partial_sum(
       std::begin(rnd_count), std::end(rnd_count), std::back_inserter(rnd_offset));
 
-  std::map<UpTo, cmplx> results;
+  std::map<UpTo, Complex> results;
 
   // We start with the case where in every flavor we only use 1 random vector.
   UpTo upto(quarks.size(), 1);

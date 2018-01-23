@@ -30,10 +30,10 @@
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup{
-  std::vector<QuarklineIndices> const Q0;  
-  std::vector<QuarklineIndices> const Q1;
-  std::vector<QuarklineIndices> const Q2V;
-  std::vector<QuarklineIndices> const Q2L;
+  std::vector<DilutedFactorIndex> const Q0;
+  std::vector<DilutedFactorIndex> const Q1;
+  std::vector<DilutedFactorIndex> const Q2V;
+  std::vector<DilutedFactorIndex> const Q2L;
 };
 
 /******************************************************************************/
@@ -68,11 +68,11 @@ void contract(const size_t Lt,
               const size_t dilT,
               const size_t dilE,
               const size_t nev,
-              OperatorsForMesons const &meson_operator,
+              OperatorFactory const &meson_operator,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,
               OperatorLookup const &operator_lookup,
-              CorrelatorLookup const &corr_lookup,
+              DiagramIndicesCollection const &corr_lookup,
               DilutedFactorIndicesCollection const &quark_lookup,
               std::string const output_path,
               std::string const output_filename);

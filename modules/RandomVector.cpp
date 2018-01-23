@@ -21,7 +21,7 @@ void RandomVector::set(const size_t entity, const int seed) {
       im = -sqrt2;
     else
       im = sqrt2;
-    vec[entity*length + i] = cmplx(re, im);
+    vec[entity*length + i] = Complex(re, im);
   }
 
 }
@@ -44,7 +44,7 @@ void RandomVector::write_random_vector(
               << filename << "\n" << std::endl;
     exit(0);
   }   
-  int check_read_in = fwrite(&(vec[0]), sizeof(cmplx), vec.size(), fp);
+  int check_read_in = fwrite(&(vec[0]), sizeof(Complex), vec.size(), fp);
   if(check_read_in !=  (int) vec.size())
     std::cout << "It seems that not all data were written to: "
               << filename.c_str() << "\n" << std::endl;
@@ -62,7 +62,7 @@ void RandomVector::write_random_vector(const size_t entity,
               << filename << "\n" << std::endl;
     exit(0);
   }   
-  int check_read_in = fwrite(&(vec[entity*length]), sizeof(cmplx), length, fp);
+  int check_read_in = fwrite(&(vec[entity*length]), sizeof(Complex), length, fp);
   if(check_read_in != length)
     std::cout << "It seems that not all data were written to: "
               << filename.c_str() << "\n" << std::endl;
@@ -81,9 +81,9 @@ void RandomVector::read_random_vector(const std::string& filename) {
     exit(0);
   }   
   // set random vector to zero
-  std::fill(vec.begin(), vec.end(), cmplx(.0, .0));
+  std::fill(vec.begin(), vec.end(), Complex(.0, .0));
   // reading data
-  int check_read_in = fread(&(vec[0]), sizeof(cmplx), vec.size(), fp);
+  int check_read_in = fread(&(vec[0]), sizeof(Complex), vec.size(), fp);
   if(check_read_in !=  (int) vec.size())
     std::cout << "It seems that not all data are written to: "
               << filename.c_str() << "\n" << std::endl;
@@ -104,7 +104,7 @@ void RandomVector::read_random_vector(const size_t entity,
     exit(0);
   }
   // reading data
-  int check_read_in = fread(&(vec[entity*length]), sizeof(cmplx), length, fp);
+  int check_read_in = fread(&(vec[entity*length]), sizeof(Complex), length, fp);
   if(check_read_in !=  length)
     std::cout << "It seems that not all data are read from: "
               << filename.c_str() << "\n" << std::endl;
@@ -121,7 +121,7 @@ void RandomVector::read_random_vectors_from_separate_files(
               << "vectors read is not the same as the expected one!" 
               << std::endl;
   // set random vector to zero
-  std::fill(vec.begin(), vec.end(), cmplx(.0, .0));
+  std::fill(vec.begin(), vec.end(), Complex(.0, .0));
   for(size_t i = 0; i < filename_list.size(); i++)
     read_random_vector(i, filename_list[i]);
 }

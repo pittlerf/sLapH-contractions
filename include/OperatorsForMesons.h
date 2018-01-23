@@ -36,7 +36,7 @@
  *  @note (MW 3.12.2017) rVdaggerVr moved to QuarkLineBlock
  *  @note (MW 21.12.2017) rVdaggerV moved to QuarkLineBlock
  */
-class OperatorsForMesons {
+class OperatorFactory {
 
 private:
 
@@ -66,7 +66,7 @@ private:
 
 public:
   /*! Constructor which allocates memory for all operators */
-  OperatorsForMesons(const size_t Lt, const size_t Lx, const size_t Ly, 
+  OperatorFactory(const size_t Lt, const size_t Lx, const size_t Ly, 
                      const size_t Lz, const size_t nb_ev, const size_t dilE,
                      const OperatorLookup& operator_lookuptable,
                      const std::string& handling_vdaggerv,
@@ -75,7 +75,7 @@ public:
    *
    *  Everything should be handled by Eigen, std::vector, and boost::multi_array
    */
-  ~OperatorsForMesons () {};
+  ~OperatorFactory () {};
 
   /****************************************************************************/
   /**************** INTERFACE FOR BUILDING ALL OPERATORS **********************/

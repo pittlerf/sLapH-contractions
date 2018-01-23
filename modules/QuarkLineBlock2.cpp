@@ -10,7 +10,7 @@ template <DilutedFactorType qlt>
 DilutedFactorFactory<qlt>::DilutedFactorFactory(
     RandomVector const &random_vector,
     Perambulator const &perambulator,
-    OperatorsForMesons const &_meson_operator,
+    OperatorFactory const &_meson_operator,
     size_t const dilT,
     size_t const dilE,
     size_t const nev,
@@ -65,7 +65,7 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
       for (size_t block = 0; block < 4; block++) {
-        const cmplx value = gamma_vec[gamma_id].value[block];
+        const Complex value = gamma_vec[gamma_id].value[block];
         const size_t gamma_index = gamma_vec[gamma_id].row[block];
         for (size_t vec_i = 0; vec_i < nev; vec_i++) {
           size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
@@ -180,7 +180,7 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
       const size_t gamma_id = op.gamma[0];
 
       for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
-        const cmplx value = gamma_vec[gamma_id].value[block_dil];
+        const Complex value = gamma_vec[gamma_id].value[block_dil];
         const size_t gamma_index = gamma_vec[gamma_id].row[block_dil];
         for (int row = 0; row < dilD; row++) {
           for (int col = 0; col < dilD; col++) {

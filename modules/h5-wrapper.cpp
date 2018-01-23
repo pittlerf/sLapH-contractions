@@ -22,7 +22,7 @@ struct Complex1Times {
 };
 
 template <>
-H5::CompType make_comp_type<cmplx>() {
+H5::CompType make_comp_type<Complex>() {
   H5::CompType cmplx_w(2 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
   cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
@@ -32,13 +32,13 @@ H5::CompType make_comp_type<cmplx>() {
 }
 
 template <>
-H5::CompType make_comp_type<compcomp_t>() {
+H5::CompType make_comp_type<ComplexProduct>() {
   H5::CompType cmplxcmplx_w(4 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
-  cmplxcmplx_w.insertMember("reim", HOFFSET(compcomp_t, reim), type);
-  cmplxcmplx_w.insertMember("imre", HOFFSET(compcomp_t, imre), type);
-  cmplxcmplx_w.insertMember("imim", HOFFSET(compcomp_t, imim), type);
+  cmplxcmplx_w.insertMember("rere", HOFFSET(ComplexProduct, rere), type);
+  cmplxcmplx_w.insertMember("reim", HOFFSET(ComplexProduct, reim), type);
+  cmplxcmplx_w.insertMember("imre", HOFFSET(ComplexProduct, imre), type);
+  cmplxcmplx_w.insertMember("imim", HOFFSET(ComplexProduct, imim), type);
 
   return cmplxcmplx_w;
 }
@@ -56,13 +56,13 @@ H5::CompType make_comp_type<Complex1Times>() {
 }
 
 template <>
-void write_homogenious(H5::DataSet &data_set, std::vector<cmplx> const &payload) {
-  data_set.write(payload.data(), make_comp_type<cmplx>());
+void write_homogenious(H5::DataSet &data_set, std::vector<Complex> const &payload) {
+  data_set.write(payload.data(), make_comp_type<Complex>());
 }
 
 template <>
-void write_homogenious(H5::DataSet &data_set, std::vector<compcomp_t> const &payload) {
-  data_set.write(payload.data(), make_comp_type<compcomp_t>());
+void write_homogenious(H5::DataSet &data_set, std::vector<ComplexProduct> const &payload) {
+  data_set.write(payload.data(), make_comp_type<ComplexProduct>());
 }
 
 /*! Creates compound datatype to write complex numbers from complex_t
@@ -71,7 +71,7 @@ void write_homogenious(H5::DataSet &data_set, std::vector<compcomp_t> const &pay
  *  @Returns cmplx_w   HDF5 compound datatype for complex numbers
  */
 template <>
-H5::CompType comp_type_factory<cmplx>() {
+H5::CompType comp_type_factory<Complex>() {
   H5::CompType cmplx_w(2 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
   cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
@@ -86,13 +86,13 @@ H5::CompType comp_type_factory<cmplx>() {
  *  @Returns cmplx_w   HDF5 compound datatype for structs of four doubles
  */
 template <>
-H5::CompType comp_type_factory<compcomp_t>() {
+H5::CompType comp_type_factory<ComplexProduct>() {
   H5::CompType cmplxcmplx_w(4 * sizeof(double));
   auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplxcmplx_w.insertMember("rere", HOFFSET(compcomp_t, rere), type);
-  cmplxcmplx_w.insertMember("reim", HOFFSET(compcomp_t, reim), type);
-  cmplxcmplx_w.insertMember("imre", HOFFSET(compcomp_t, imre), type);
-  cmplxcmplx_w.insertMember("imim", HOFFSET(compcomp_t, imim), type);
+  cmplxcmplx_w.insertMember("rere", HOFFSET(ComplexProduct, rere), type);
+  cmplxcmplx_w.insertMember("reim", HOFFSET(ComplexProduct, reim), type);
+  cmplxcmplx_w.insertMember("imre", HOFFSET(ComplexProduct, imre), type);
+  cmplxcmplx_w.insertMember("imim", HOFFSET(ComplexProduct, imim), type);
 
   return cmplxcmplx_w;
 }

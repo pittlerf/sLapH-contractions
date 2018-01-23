@@ -604,7 +604,7 @@ static void build_Quarkline_lookup(
     const std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
-    std::vector<QuarklineIndices> &Ql_lookup,
+    std::vector<DilutedFactorIndex> &Ql_lookup,
     std::vector<std::vector<size_t>> &Ql_lookup_ids) {
   for (size_t row = 0; row < quantum_numbers.size(); row++) {
     const auto qn = quantum_numbers[row][operator_id];
@@ -615,7 +615,7 @@ static void build_Quarkline_lookup(
     // If Ql_lookup already contains the particular row and physical content,
     // just set the index to the existing QuarklineIndices, otherwise generate
     // it and set the index to the new one.
-    QuarklineIndices const candidate{
+    DilutedFactorIndex const candidate{
         id_vdaggerv, need_vdaggerv_daggering, qn.gamma, rnd_vec_ids};
     auto it = std::find(Ql_lookup.begin(), Ql_lookup.end(), candidate);
 
@@ -633,7 +633,7 @@ static void build_Quarkline_lookup_one_qn(
     std::vector<QuantumNumbers> const &quantum_numbers,
     std::vector<std::pair<size_t, bool>> const &vdv_indices,
     std::vector<std::pair<size_t, size_t>> const &rnd_vec_ids,
-    std::vector<QuarklineIndices> &Ql_lookup,
+    std::vector<DilutedFactorIndex> &Ql_lookup,
     std::vector<size_t> &Ql_lookup_ids) {
   const auto qn = quantum_numbers[operator_id];
 
@@ -643,7 +643,7 @@ static void build_Quarkline_lookup_one_qn(
   // If Ql_lookup already contains the particular row and physical content,
   // just set the index to the existing QuarklineIndices, otherwise generate
   // it and set the index to the new one.
-  QuarklineIndices const candidate{
+  DilutedFactorIndex const candidate{
       id_vdaggerv, need_vdaggerv_daggering, qn.gamma, rnd_vec_ids};
   auto it = std::find(Ql_lookup.begin(), Ql_lookup.end(), candidate);
 
@@ -723,7 +723,7 @@ static void build_C1_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> Q1_indices(std::vector<size_t>(quantum_numbers[0].size()));
@@ -794,7 +794,7 @@ static void build_C20V_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(2);
@@ -869,8 +869,8 @@ static void build_C2c_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2V_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q2V_lookup,
     std::vector<CorrInfo> &trQ0Q2_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(2);
@@ -940,7 +940,7 @@ static void build_C20_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(2);
@@ -1013,7 +1013,7 @@ static void build_C30V_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1_lookup,
     std::vector<CorrInfo> &trQ1Q1_lookup,
     std::vector<CorrInfo> &c_look) {
@@ -1090,9 +1090,9 @@ static void build_C3c_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q1_lookup,
-    std::vector<QuarklineIndices> &Q2L_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q2L_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(3);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1157,7 +1157,7 @@ static void build_C30_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(3);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1232,8 +1232,8 @@ static void build_C4cD_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2V_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q2V_lookup,
     std::vector<CorrInfo> &trQ0Q2_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
@@ -1314,7 +1314,7 @@ static void build_C40D_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
@@ -1402,8 +1402,8 @@ static void build_C4cV_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2V_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q2V_lookup,
     std::vector<CorrInfo> &trQ0Q2_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
@@ -1484,7 +1484,7 @@ static void build_C40V_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &trQ1Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
@@ -1562,8 +1562,8 @@ static void build_C4cC_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2V_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q2V_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1631,7 +1631,7 @@ static void build_C40C_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1699,8 +1699,8 @@ static void build_C4cB_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q0_lookup,
-    std::vector<QuarklineIndices> &Q2L_lookup,
+    std::vector<DilutedFactorIndex> &Q0_lookup,
+    std::vector<DilutedFactorIndex> &Q2L_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
@@ -1768,7 +1768,7 @@ static void build_C40B_lookup(
     const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
-    std::vector<QuarklineIndices> &Q1_lookup,
+    std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<CorrInfo> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;

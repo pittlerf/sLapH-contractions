@@ -25,7 +25,7 @@ int constexpr max_rnd_ids = 10;
 
 using RndId = int8_t;
 
-typedef std::complex<double> cmplx;
+typedef std::complex<double> Complex;
 
 template <size_t rvecs>
 using SmallVectorRndId = boost::container::static_vector<RndId, rvecs>;
@@ -41,25 +41,25 @@ struct DilutedFactor {
 
 template <size_t rvecs>
 struct DilutedTrace {
-  using Data = cmplx;
+  using Data = Complex;
 
   Data data;
   boost::container::static_vector<RndId, rvecs> used_rnd_ids;
 };
 
 /*! Data type for momentum */
-typedef boost::multi_array<cmplx, 2> array_cd_d2;
-typedef boost::multi_array<cmplx, 3> array_cd_d3;
-typedef boost::multi_array<cmplx, 4> array_cd_d4;
-typedef boost::multi_array<cmplx, 5> array_cd_d5;
-typedef boost::multi_array<cmplx, 6> array_cd_d6;
-typedef boost::multi_array<cmplx, 7> array_cd_d7;
-typedef boost::multi_array<cmplx, 8> array_cd_d8;
-typedef boost::multi_array<cmplx, 9> array_cd_d9;
-typedef boost::multi_array<cmplx, 10> array_cd_d10;
+typedef boost::multi_array<Complex, 2> array_cd_d2;
+typedef boost::multi_array<Complex, 3> array_cd_d3;
+typedef boost::multi_array<Complex, 4> array_cd_d4;
+typedef boost::multi_array<Complex, 5> array_cd_d5;
+typedef boost::multi_array<Complex, 6> array_cd_d6;
+typedef boost::multi_array<Complex, 7> array_cd_d7;
+typedef boost::multi_array<Complex, 8> array_cd_d8;
+typedef boost::multi_array<Complex, 9> array_cd_d9;
+typedef boost::multi_array<Complex, 10> array_cd_d10;
 
 /*! Special type for Correlators */
-typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
+typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
 
 // TODO (Martin Ueding 2017-12-21): Rename this to DilutedTraceCollection3.
 template <size_t rvecs>
@@ -73,7 +73,7 @@ typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
 // typedef boost::multi_array<std::vector<std::vector<cmplx> >, 4> array_corr;
 /*! @TODO {Is that deprecated?} */
-typedef boost::multi_array<std::vector<cmplx>, 2> array_C1;
+typedef boost::multi_array<std::vector<Complex>, 2> array_C1;
 
 // Eigen typedefs
 typedef std::vector<Eigen::MatrixXcd> vec_Xcd_eigen;
@@ -101,18 +101,18 @@ typedef struct {
 } complex_t;
 
 // This is the datatype to write 4pt functions and that alike directly
-struct compcomp_t {
+struct ComplexProduct {
   double rere;
   double reim;
   double imre;
   double imim;
 
-  compcomp_t() : rere(0.0), reim(0.0), imre(0.0), imim(0.0) {}
+  ComplexProduct() : rere(0.0), reim(0.0), imre(0.0), imim(0.0) {}
 
-  compcomp_t(const double rere, const double reim, const double imre, const double imim)
+  ComplexProduct(const double rere, const double reim, const double imre, const double imim)
       : rere(rere), reim(reim), imre(imre), imim(imim) {}
 
-  compcomp_t &operator+=(compcomp_t const &other) {
+  ComplexProduct &operator+=(ComplexProduct const &other) {
     rere += other.rere;
     reim += other.reim;
     imre += other.imre;
@@ -121,7 +121,7 @@ struct compcomp_t {
     return *this;
   }
 
-  compcomp_t &operator/=(double const &right) {
+  ComplexProduct &operator/=(double const &right) {
     rere /= right;
     reim /= right;
     imre /= right;
@@ -130,7 +130,7 @@ struct compcomp_t {
     return *this;
   }
 
-  compcomp_t operator/(double const &right) const {
+  ComplexProduct operator/(double const &right) const {
     auto res = *this;
     res /= right;
     return res;
@@ -207,7 +207,7 @@ struct OperatorLookup {
  *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv *
  *          gamma * peram2
  */
-struct QuarklineIndices {
+struct DilutedFactorIndex {
   /*! Identifies physical content of @f$ V^dagger V @f$ */
   size_t id_vdaggerv;
   /*! Flag that indicates whether VdaggerV must be daggered (prior to
@@ -225,7 +225,7 @@ struct QuarklineIndices {
   std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
 };
 
-inline bool operator==(QuarklineIndices const &first, QuarklineIndices const second) {
+inline bool operator==(DilutedFactorIndex const &first, DilutedFactorIndex const second) {
   if ((first.id_vdaggerv == second.id_vdaggerv) &&
       (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
       (first.gamma == second.gamma) && (first.rnd_vec_ids == second.rnd_vec_ids))
@@ -241,10 +241,10 @@ inline bool operator==(QuarklineIndices const &first, QuarklineIndices const sec
  *              are built on the fly
  */
 struct DilutedFactorIndicesCollection {
-  std::vector<QuarklineIndices> Q0;
-  std::vector<QuarklineIndices> Q1;
-  std::vector<QuarklineIndices> Q2V;
-  std::vector<QuarklineIndices> Q2L;
+  std::vector<DilutedFactorIndex> Q0;
+  std::vector<DilutedFactorIndex> Q1;
+  std::vector<DilutedFactorIndex> Q2V;
+  std::vector<DilutedFactorIndex> Q2L;
 };
 
 // Q0 formerly called rVdaggerVr
@@ -288,7 +288,7 @@ inline bool operator==(CorrInfo const &first, CorrInfo const &second){
  *
  *  @todo modular programming looks different
  */
-struct CorrelatorLookup {
+struct DiagramIndicesCollection {
 
   std::vector<CorrInfo> trQ1;
   std::vector<CorrInfo> C1;
@@ -322,31 +322,31 @@ struct QuarkLineIndices {};
  */
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q0> {
-  typedef std::vector<QuarklineIndices> type;
+  typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 1;
 };
 
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q1> {
-  typedef std::vector<QuarklineIndices> type;
+  typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 2;
 };
 
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q2> {
-  typedef std::vector<QuarklineIndices> type;
+  typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q2L> {
-  typedef std::vector<QuarklineIndices> type;
+  typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q2V> {
-  typedef std::vector<QuarklineIndices> type;
+  typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
 
