@@ -155,8 +155,10 @@ void contract(const size_t Lt,
       }
 
       // Build tr(Q1).
-      for (int t = 0; t < Lt; ++t) {
-        auto const b = dilution_scheme.time_to_block(t);
+      for (auto const slice_pair : block_pair.one_sink_slice()) {
+        auto const t = slice_pair.source();
+        auto const b = slice_pair.source_block();
+
         for (const auto &c_look : corr_lookup.trQ1) {
           q.corr_part_trQ1[c_look.id][t] =
               factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
