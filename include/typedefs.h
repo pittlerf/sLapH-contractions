@@ -258,24 +258,24 @@ enum class DilutedFactorType { Q0, Q1, Q2, Q2L, Q2V };
  *  - Indices for the quarklines and gamma structure
  *  - Paths and information for IO
  */
-struct CorrInfo {
+struct DiagramIndex {
   size_t id;
   std::string hdf5_dataset_name;
   std::vector<size_t> lookup;
   std::vector<int> gamma;
   /*! Just a small constructor to ensure easy filling of its vector form */
-  CorrInfo(const size_t id,
+  DiagramIndex(const size_t id,
            const std::string &hdf5_dataset_name,
            const std::vector<size_t> &lookup,
            const std::vector<int> &gamma)
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
-  CorrInfo(const size_t id,
+  DiagramIndex(const size_t id,
            const std::string &hdf5_dataset_name,
            const std::vector<size_t> &lookup)
-      : CorrInfo(id, hdf5_dataset_name, lookup, std::vector<int>({})){};
+      : DiagramIndex(id, hdf5_dataset_name, lookup, std::vector<int>({})){};
 };
 
-inline bool operator==(CorrInfo const &first, CorrInfo const &second){
+inline bool operator==(DiagramIndex const &first, DiagramIndex const &second){
   if ((first.hdf5_dataset_name == second.hdf5_dataset_name) &&
       (first.lookup == second.lookup))
     return true;
@@ -290,35 +290,35 @@ inline bool operator==(CorrInfo const &first, CorrInfo const &second){
  */
 struct DiagramIndicesCollection {
 
-  std::vector<CorrInfo> trQ1;
-  std::vector<CorrInfo> C1;
-  std::vector<CorrInfo> C20V;
+  std::vector<DiagramIndex> trQ1;
+  std::vector<DiagramIndex> C1;
+  std::vector<DiagramIndex> C20V;
 
-  std::vector<CorrInfo> trQ1Q1;
-  std::vector<CorrInfo> C20;
-  std::vector<CorrInfo> C40D;
-  std::vector<CorrInfo> C40V;
+  std::vector<DiagramIndex> trQ1Q1;
+  std::vector<DiagramIndex> C20;
+  std::vector<DiagramIndex> C40D;
+  std::vector<DiagramIndex> C40V;
 
-  std::vector<CorrInfo> trQ0Q2;
-  std::vector<CorrInfo> C2c;
-  std::vector<CorrInfo> C4cD;
-  std::vector<CorrInfo> C4cV;
+  std::vector<DiagramIndex> trQ0Q2;
+  std::vector<DiagramIndex> C2c;
+  std::vector<DiagramIndex> C4cD;
+  std::vector<DiagramIndex> C4cV;
 
-  std::vector<CorrInfo> C30V;
-  std::vector<CorrInfo> C30;
-  std::vector<CorrInfo> C3c;
+  std::vector<DiagramIndex> C30V;
+  std::vector<DiagramIndex> C30;
+  std::vector<DiagramIndex> C3c;
 
-  std::vector<CorrInfo> C40C;
-  std::vector<CorrInfo> C4cC;
-  std::vector<CorrInfo> C40B;
-  std::vector<CorrInfo> C4cB;
+  std::vector<DiagramIndex> C40C;
+  std::vector<DiagramIndex> C4cC;
+  std::vector<DiagramIndex> C40B;
+  std::vector<DiagramIndex> C4cB;
 };
 
 template <DilutedFactorType qlt>
 struct QuarkLineIndices {};
 
 /*! @todo QuarkLineType is a bad name in this case. That's a proxy for
- *        CorrInfo.lookup
+ *        DiagramIndex.lookup
  */
 template <>
 struct QuarkLineIndices<DilutedFactorType::Q0> {

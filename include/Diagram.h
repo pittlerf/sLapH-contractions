@@ -72,13 +72,13 @@ struct DiagramParts {
 
 class Diagram {
  public:
-  Diagram(std::vector<CorrInfo> const &corr_lookup) : corr_lookup_(corr_lookup) {}
+  Diagram(std::vector<DiagramIndex> const &corr_lookup) : corr_lookup_(corr_lookup) {}
 
   virtual ~Diagram() {}
 
   virtual char const *name() const = 0;
 
-  std::vector<CorrInfo> const &corr_lookup() const { return corr_lookup_; }
+  std::vector<DiagramIndex> const &corr_lookup() const { return corr_lookup_; }
 
   virtual void contract(int const t,
                         BlockIterator const &slice_pair,
@@ -89,7 +89,7 @@ class Diagram {
   virtual void write() = 0;
 
  private:
-  std::vector<CorrInfo> const &corr_lookup_;
+  std::vector<DiagramIndex> const &corr_lookup_;
 };
 
 template <typename Numeric_>
@@ -97,7 +97,7 @@ class DiagramNumeric : public Diagram {
  public:
   using Numeric = Numeric_;
 
-  DiagramNumeric(std::vector<CorrInfo> const &_corr_lookup,
+  DiagramNumeric(std::vector<DiagramIndex> const &_corr_lookup,
                  std::string const &output_path,
                  std::string const &output_filename,
                  int const Lt)
@@ -231,7 +231,7 @@ class C20V : public DiagramNumeric<ComplexProduct> {
  */
 class C3c : public DiagramNumeric<Complex> {
  public:
-  C3c(std::vector<CorrInfo> const &corr_lookup,
+  C3c(std::vector<DiagramIndex> const &corr_lookup,
       std::string const &output_path,
       std::string const &output_filename,
       int const Lt);
@@ -255,7 +255,7 @@ class C3c : public DiagramNumeric<Complex> {
  */
 class C30 : public DiagramNumeric<Complex> {
  public:
-  C30(std::vector<CorrInfo> const &corr_lookup,
+  C30(std::vector<DiagramIndex> const &corr_lookup,
       std::string const &output_path,
       std::string const &output_filename,
       int const Lt);
@@ -376,7 +376,7 @@ class C40V : public DiagramNumeric<ComplexProduct> {
  */
 class C4cB : public DiagramNumeric<Complex> {
  public:
-  C4cB(std::vector<CorrInfo> const &corr_lookup,
+  C4cB(std::vector<DiagramIndex> const &corr_lookup,
        std::string const &output_path,
        std::string const &output_filename,
        int const Lt);
@@ -401,7 +401,7 @@ class C4cB : public DiagramNumeric<Complex> {
  */
 class C40B : public DiagramNumeric<Complex> {
  public:
-  C40B(std::vector<CorrInfo> const &corr_lookup,
+  C40B(std::vector<DiagramIndex> const &corr_lookup,
        std::string const &output_path,
        std::string const &output_filename,
        int const Lt);
@@ -426,7 +426,7 @@ class C40B : public DiagramNumeric<Complex> {
  */
 class C4cC : public DiagramNumeric<Complex> {
  public:
-  C4cC(std::vector<CorrInfo> const &corr_lookup,
+  C4cC(std::vector<DiagramIndex> const &corr_lookup,
        std::string const &output_path,
        std::string const &output_filename,
        int const Lt);
@@ -451,7 +451,7 @@ class C4cC : public DiagramNumeric<Complex> {
  */
 class C40C : public DiagramNumeric<Complex> {
  public:
-  C40C(std::vector<CorrInfo> const &corr_lookup,
+  C40C(std::vector<DiagramIndex> const &corr_lookup,
        std::string const &output_path,
        std::string const &output_filename,
        int const Lt);

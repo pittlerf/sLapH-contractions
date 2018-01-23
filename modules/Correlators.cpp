@@ -18,7 +18,7 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
 }
 
 void build_corrC(DiagramParts &q,
-                 CorrInfo const &c_look,
+                 DiagramIndex const &c_look,
                  int const t1,
                  int const t2,
                  int const b1,
@@ -28,7 +28,7 @@ void build_corrC(DiagramParts &q,
 }
 
 void build_corr0(DiagramParts &q,
-                 CorrInfo const &c_look,
+                 DiagramIndex const &c_look,
                  int const t1,
                  int const t2,
                  int const b1,

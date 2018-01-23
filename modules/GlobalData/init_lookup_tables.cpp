@@ -656,8 +656,8 @@ static void build_Quarkline_lookup_one_qn(
 }
 
 static size_t build_trQ1_lookup(std::vector<size_t> const ql_ids,
-                                std::vector<CorrInfo> &trQ1_lookup) {
-  CorrInfo candidate(trQ1_lookup.size(), "", ql_ids);
+                                std::vector<DiagramIndex> &trQ1_lookup) {
+  DiagramIndex candidate(trQ1_lookup.size(), "", ql_ids);
   auto it = std::find(trQ1_lookup.begin(), trQ1_lookup.end(), candidate);
   if (it == trQ1_lookup.end()) {
     trQ1_lookup.push_back(candidate);
@@ -670,8 +670,8 @@ static size_t build_trQ1_lookup(std::vector<size_t> const ql_ids,
  *       give the correct id.
  */
 static size_t build_corr0_lookup(std::vector<size_t> const ql_ids,
-                                 std::vector<CorrInfo> &trQ1Q1_lookup) {
-  CorrInfo candidate(trQ1Q1_lookup.size(), "", ql_ids);
+                                 std::vector<DiagramIndex> &trQ1Q1_lookup) {
+  DiagramIndex candidate(trQ1Q1_lookup.size(), "", ql_ids);
   auto it = std::find(trQ1Q1_lookup.begin(), trQ1Q1_lookup.end(), candidate);
   if (it == trQ1Q1_lookup.end()) {
     trQ1Q1_lookup.push_back(candidate);
@@ -681,8 +681,8 @@ static size_t build_corr0_lookup(std::vector<size_t> const ql_ids,
 }
 
 static size_t build_corrC_lookup(std::vector<size_t> const ql_ids,
-                                 std::vector<CorrInfo> &trQ0Q2_lookup) {
-  CorrInfo candidate(trQ0Q2_lookup.size(), "", ql_ids);
+                                 std::vector<DiagramIndex> &trQ0Q2_lookup) {
+  DiagramIndex candidate(trQ0Q2_lookup.size(), "", ql_ids);
   auto it = std::find(trQ0Q2_lookup.begin(), trQ0Q2_lookup.end(), candidate);
   if (it == trQ0Q2_lookup.end()) {
     trQ0Q2_lookup.push_back(candidate);
@@ -724,8 +724,8 @@ static void build_C1_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> Q1_indices(std::vector<size_t>(quantum_numbers[0].size()));
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -750,7 +750,7 @@ static void build_C1_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C1", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -795,8 +795,8 @@ static void build_C20V_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(2);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -822,7 +822,7 @@ static void build_C20V_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1, id2}};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1, id2}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -871,8 +871,8 @@ static void build_C2c_lookup(
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q2V_lookup,
-    std::vector<CorrInfo> &trQ0Q2_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ0Q2_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(2);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -897,7 +897,7 @@ static void build_C2c_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C2+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -941,8 +941,8 @@ static void build_C20_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1Q1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(2);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -967,7 +967,7 @@ static void build_C20_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1014,9 +1014,9 @@ static void build_C30V_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1_lookup,
-    std::vector<CorrInfo> &trQ1Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1_lookup,
+    std::vector<DiagramIndex> &trQ1Q1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(3);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1045,7 +1045,7 @@ static void build_C30V_lookup(
     std::string const hdf5_dataset_name = build_hdf5_dataset_name(
         "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo const candidate{
+    DiagramIndex const candidate{
         c_look.size(), hdf5_dataset_name, {id0, id1}, std::vector<int>{}};
 
     /*! XXX Better with std::set */
@@ -1093,7 +1093,7 @@ static void build_C3c_lookup(
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q1_lookup,
     std::vector<DilutedFactorIndex> &Q2L_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(3);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1116,7 +1116,7 @@ static void build_C3c_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C3+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1158,7 +1158,7 @@ static void build_C30_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(3);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1181,7 +1181,7 @@ static void build_C30_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C30", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1234,8 +1234,8 @@ static void build_C4cD_lookup(
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q2V_lookup,
-    std::vector<CorrInfo> &trQ0Q2_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ0Q2_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1267,7 +1267,7 @@ static void build_C4cD_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+D", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
+    DiagramIndex candidate{c_look.size(),
                        hdf5_dataset_name,
                        std::vector<size_t>({id1, id2}),
                        std::vector<int>({})};
@@ -1315,8 +1315,8 @@ static void build_C40D_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1Q1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1348,7 +1348,7 @@ static void build_C40D_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40D", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
+    DiagramIndex candidate{c_look.size(),
                        hdf5_dataset_name,
                        std::vector<size_t>({id1, id2}),
                        std::vector<int>({})};
@@ -1404,8 +1404,8 @@ static void build_C4cV_lookup(
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q2V_lookup,
-    std::vector<CorrInfo> &trQ0Q2_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ0Q2_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1437,7 +1437,7 @@ static void build_C4cV_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
+    DiagramIndex candidate{c_look.size(),
                        hdf5_dataset_name,
                        std::vector<size_t>({id1, id2}),
                        std::vector<int>({})};
@@ -1485,8 +1485,8 @@ static void build_C40V_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &trQ1Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &trQ1Q1_lookup,
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1518,7 +1518,7 @@ static void build_C40V_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(),
+    DiagramIndex candidate{c_look.size(),
                        hdf5_dataset_name,
                        std::vector<size_t>({id1, id2}),
                        std::vector<int>({})};
@@ -1564,7 +1564,7 @@ static void build_C4cC_lookup(
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q2V_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1590,7 +1590,7 @@ static void build_C4cC_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate(c_look.size(), hdf5_dataset_name, ql_ids);
+    DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1632,7 +1632,7 @@ static void build_C40C_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1658,7 +1658,7 @@ static void build_C40C_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1701,7 +1701,7 @@ static void build_C4cB_lookup(
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
     std::vector<DilutedFactorIndex> &Q2L_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1727,7 +1727,7 @@ static void build_C4cB_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4+B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate(c_look.size(), hdf5_dataset_name, ql_ids);
+    DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1769,7 +1769,7 @@ static void build_C40B_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
-    std::vector<CorrInfo> &c_look) {
+    std::vector<DiagramIndex> &c_look) {
   std::vector<size_t> ql_ids(4);
   std::vector<std::pair<size_t, size_t>> ric_ids;
 
@@ -1795,7 +1795,7 @@ static void build_C40B_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
 
-    CorrInfo candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);

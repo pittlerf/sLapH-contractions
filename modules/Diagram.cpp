@@ -51,7 +51,7 @@ void C20V::contract_impl(std::vector<ComplexProduct> &c,
 /*                                    C3c                                    */
 /*****************************************************************************/
 
-C3c::C3c(std::vector<CorrInfo> const &corr_lookup,
+C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
@@ -89,7 +89,7 @@ void C3c::contract_impl(std::vector<Complex> &c,
 /*                                    C30                                    */
 /*****************************************************************************/
 
-C30::C30(std::vector<CorrInfo> const &corr_lookup,
+C30::C30(std::vector<DiagramIndex> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
@@ -213,7 +213,7 @@ void C40V::contract_impl(std::vector<ComplexProduct> &c,
 /*                                   C4cB                                    */
 /*****************************************************************************/
 
-C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup,
+C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
@@ -256,7 +256,7 @@ void C4cB::contract_impl(std::vector<Complex> &c,
 /*                                   C40B                                    */
 /*****************************************************************************/
 
-C40B::C40B(std::vector<CorrInfo> const &corr_lookup,
+C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
@@ -297,7 +297,7 @@ void C40B::contract_impl(std::vector<Complex> &c,
 /*                                   C4cC                                    */
 /*****************************************************************************/
 
-C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup,
+C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
@@ -339,7 +339,7 @@ void C4cC::contract_impl(std::vector<Complex> &c,
 /*                                   C40C                                    */
 /*****************************************************************************/
 
-C40C::C40C(std::vector<CorrInfo> const &corr_lookup,
+C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)

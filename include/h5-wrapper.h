@@ -132,7 +132,7 @@ class WriteHDF5Correlator {
    *          overload
    */
   template <typename corr_datatype>
-  void write(const std::vector<corr_datatype> &corr, const CorrInfo &corr_info) {
+  void write(const std::vector<corr_datatype> &corr, const DiagramIndex &corr_info) {
     // Turn off the autoprinting when an exception occurs because fuck you
     // thats why
     H5::Exception::dontPrint();
