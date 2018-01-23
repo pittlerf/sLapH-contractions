@@ -163,10 +163,10 @@ void contract(const size_t Lt,
         auto const b = slice_pair.source_block();
 
         for (const auto &c_look : corr_lookup.trQ1) {
-          q.corr_part_trQ1[c_look.id][t] =
+          q.trQ1[c_look.id][t] =
               factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
 
-          for (auto &diluted_trace : q.corr_part_trQ1[c_look.id][t]) {
+          for (auto &diluted_trace : q.trQ1[c_look.id][t]) {
             diluted_trace.data /= Lt;
           }
         }

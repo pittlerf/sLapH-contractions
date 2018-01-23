@@ -45,7 +45,7 @@ struct DiagramParts {
             dil_fac_lookup.Q2V) {
     trQ0Q2.resize(boost::extents[corr_lookup.trQ0Q2.size()][Lt][Lt]);
     trQ1Q1.resize(boost::extents[corr_lookup.trQ1Q1.size()][Lt][Lt]);
-    corr_part_trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
+    trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
   }
 
   void clear() {
@@ -67,7 +67,7 @@ struct DiagramParts {
   DilutedTracesTwoTimes<2> trQ0Q2;
 
   //< Temporal memory for tr(Q1)
-  DilutedTraceOneTime<1> corr_part_trQ1;
+  DilutedTraceOneTime<1> trQ1;
 };
 
 class Diagram {
