@@ -25,13 +25,13 @@ void print(std::array<T, n> const &a) {
   std::cout << std::endl;
 }
 
-template <QuarkLineType qlt>
-class QuarkLineBlock2 {
+template <DilutedFactorType qlt>
+class DilutedFactorFactory {
  public:
   using Key = std::array<int, QuarkLineIndices<qlt>::num_times>;
   using Value = OperatorToFactorMap<1, 0>;
 
-  QuarkLineBlock2(RandomVector const &random_vector,
+  DilutedFactorFactory(RandomVector const &random_vector,
                   Perambulator const &perambulator,
                   OperatorsForMesons const &_meson_operator,
                   size_t const dilT,

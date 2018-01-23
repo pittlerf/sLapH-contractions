@@ -91,7 +91,7 @@ private:
                       const std::vector<std::string>& operator_list_configs,
                       const std::vector<std::string>& correlator_list_configs);
 
-  QuarklineLookup quarkline_lookuptable;
+  DilutedFactorIndicesCollection quarkline_lookuptable;
   OperatorLookup operator_lookuptable;
   CorrelatorLookup correlator_lookuptable;
   /*! Creates the lookup tables for quarklines, operators and correlators */
@@ -234,7 +234,7 @@ public:
     return operator_lookuptable;
   }
   /*! Return vector of unique physical contents needed for quarklines */
-  inline const QuarklineLookup get_quarkline_lookuptable(){
+  inline const DilutedFactorIndicesCollection get_quarkline_lookuptable(){
     return quarkline_lookuptable;
   }
   /*! Return vector of unique physical contents needed for correlators */

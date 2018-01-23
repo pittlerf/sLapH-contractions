@@ -6,8 +6,8 @@ namespace {
 std::complex<double> const I(0.0, 1.0);
 }
 
-template <QuarkLineType qlt>
-QuarkLineBlock2<qlt>::QuarkLineBlock2(
+template <DilutedFactorType qlt>
+DilutedFactorFactory<qlt>::DilutedFactorFactory(
     RandomVector const &random_vector,
     Perambulator const &perambulator,
     OperatorsForMesons const &_meson_operator,
@@ -28,7 +28,7 @@ QuarkLineBlock2<qlt>::QuarkLineBlock2(
 // rvdaggervr is calculated by multiplying vdaggerv with the same quantum
 // numbers with random vectors from right and left.
 template <>
-void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
+void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
   int const eigenspace_dirac_size = dilD * dilE;
 
   auto const t1 = time_key[0];
@@ -90,7 +90,7 @@ void QuarkLineBlock2<QuarkLineType::Q0>::build(Key const &time_key) {
 // -----------------------------------------------------------------------------
 
 template <>
-void QuarkLineBlock2<QuarkLineType::Q1>::build(Key const &time_key) {
+void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
   int const eigenspace_dirac_size = dilD * dilE;
 
   int const t1 = time_key[0];
@@ -138,7 +138,7 @@ void QuarkLineBlock2<QuarkLineType::Q1>::build(Key const &time_key) {
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <>
-void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
+void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
   int const eigenspace_dirac_size = dilD * dilE;
 
   auto const b1 = time_key[0];
@@ -201,6 +201,6 @@ void QuarkLineBlock2<QuarkLineType::Q2>::build(Key const &time_key) {
   }
 }
 
-template class QuarkLineBlock2<QuarkLineType::Q0>;
-template class QuarkLineBlock2<QuarkLineType::Q1>;
-template class QuarkLineBlock2<QuarkLineType::Q2>;
+template class DilutedFactorFactory<DilutedFactorType::Q0>;
+template class DilutedFactorFactory<DilutedFactorType::Q1>;
+template class DilutedFactorFactory<DilutedFactorType::Q2>;

@@ -55,19 +55,19 @@ struct QuarkLineBlockCollection {
     q2v.clear();
   }
 
-  QuarkLineBlock2<QuarkLineType::Q0> q0;
-  QuarkLineBlock2<QuarkLineType::Q1> q1;
-  QuarkLineBlock2<QuarkLineType::Q2> q2l;
-  QuarkLineBlock2<QuarkLineType::Q2> q2v;
+  DilutedFactorFactory<DilutedFactorType::Q0> q0;
+  DilutedFactorFactory<DilutedFactorType::Q1> q1;
+  DilutedFactorFactory<DilutedFactorType::Q2> q2l;
+  DilutedFactorFactory<DilutedFactorType::Q2> q2v;
 
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTraceCollection<2> corr0;
+  DilutedTracesTwoTimes<2> corr0;
 
   //< Temporal memory for tr(Q2V*rVdaggerVr)
-  DilutedTraceCollection<2> corrC;
+  DilutedTracesTwoTimes<2> corrC;
 
   //< Temporal memory for tr(Q1)
-  DilutedTraceCollection2<1> corr_part_trQ1;
+  DilutedTraceOneTime<1> corr_part_trQ1;
 };
 
 class Diagram {

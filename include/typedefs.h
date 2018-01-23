@@ -63,10 +63,10 @@ typedef boost::multi_array<std::vector<cmplx>, 3> array_corr;
 
 // TODO (Martin Ueding 2017-12-21): Rename this to DilutedTraceCollection3.
 template <size_t rvecs>
-using DilutedTraceCollection = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3>;
+using DilutedTracesTwoTimes = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3>;
 
 template <size_t rvecs>
-using DilutedTraceCollection2 = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2>;
+using DilutedTraceOneTime = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2>;
 
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
@@ -240,7 +240,7 @@ inline bool operator==(QuarklineIndices const &first, QuarklineIndices const sec
  *  @deprecated No longer necessary in memory_optimised branch as the quarklines
  *              are built on the fly
  */
-struct QuarklineLookup {
+struct DilutedFactorIndicesCollection {
   std::vector<QuarklineIndices> Q0;
   std::vector<QuarklineIndices> Q1;
   std::vector<QuarklineIndices> Q2V;
@@ -248,7 +248,7 @@ struct QuarklineLookup {
 };
 
 // Q0 formerly called rVdaggerVr
-enum class QuarkLineType { Q0, Q1, Q2, Q2L, Q2V };
+enum class DilutedFactorType { Q0, Q1, Q2, Q2L, Q2V };
 
 /******************************************************************************/
 /*! All information needed to build and write the correlator given the
@@ -314,38 +314,38 @@ struct CorrelatorLookup {
   std::vector<CorrInfo> C4cB;
 };
 
-template <QuarkLineType qlt>
+template <DilutedFactorType qlt>
 struct QuarkLineIndices {};
 
 /*! @todo QuarkLineType is a bad name in this case. That's a proxy for
  *        CorrInfo.lookup
  */
 template <>
-struct QuarkLineIndices<QuarkLineType::Q0> {
+struct QuarkLineIndices<DilutedFactorType::Q0> {
   typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 1;
 };
 
 template <>
-struct QuarkLineIndices<QuarkLineType::Q1> {
+struct QuarkLineIndices<DilutedFactorType::Q1> {
   typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 2;
 };
 
 template <>
-struct QuarkLineIndices<QuarkLineType::Q2> {
+struct QuarkLineIndices<DilutedFactorType::Q2> {
   typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
-struct QuarkLineIndices<QuarkLineType::Q2L> {
+struct QuarkLineIndices<DilutedFactorType::Q2L> {
   typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
-struct QuarkLineIndices<QuarkLineType::Q2V> {
+struct QuarkLineIndices<DilutedFactorType::Q2V> {
   typedef std::vector<QuarklineIndices> type;
   static size_t constexpr num_times = 3;
 };

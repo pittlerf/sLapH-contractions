@@ -62,7 +62,7 @@ void contract(const size_t Lt,
               Perambulator const &perambulators,
               OperatorLookup const &operator_lookup,
               CorrelatorLookup const &corr_lookup,
-              QuarklineLookup const &quark_lookup,
+              DilutedFactorIndicesCollection const &quark_lookup,
               std::string const output_path,
               std::string const output_filename) {
   DilutedFactorLookup const dil_fac_lookup(
