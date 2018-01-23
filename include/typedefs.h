@@ -294,12 +294,12 @@ struct DiagramIndicesCollection {
   std::vector<CorrInfo> C1;
   std::vector<CorrInfo> C20V;
 
-  std::vector<CorrInfo> corr0;
+  std::vector<CorrInfo> trQ1Q1;
   std::vector<CorrInfo> C20;
   std::vector<CorrInfo> C40D;
   std::vector<CorrInfo> C40V;
 
-  std::vector<CorrInfo> corrC;
+  std::vector<CorrInfo> trQ0Q2;
   std::vector<CorrInfo> C2c;
   std::vector<CorrInfo> C4cD;
   std::vector<CorrInfo> C4cV;

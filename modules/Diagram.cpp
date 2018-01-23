@@ -10,7 +10,7 @@ void C2c::contract_impl(std::vector<Complex> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+    auto const &x = q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -26,7 +26,7 @@ void C20::contract_impl(std::vector<Complex> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+    auto const &x = q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -132,15 +132,15 @@ void C30V::contract_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    assert(c_look.lookup[0] < q.corr0.shape()[0]);
-    assert(slice_pair.source() < q.corr0.shape()[1]);
-    assert(slice_pair.source() < q.corr0.shape()[2]);
+    assert(c_look.lookup[0] < q.trQ1Q1.shape()[0]);
+    assert(slice_pair.source() < q.trQ1Q1.shape()[1]);
+    assert(slice_pair.source() < q.trQ1Q1.shape()[2]);
 
     assert(c_look.lookup[1] < q.corr_part_trQ1.shape()[0]);
     assert(slice_pair.sink() < q.corr_part_trQ1.shape()[1]);
 
     c[i] +=
-        inner_product(q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
                       q.corr_part_trQ1[c_look.lookup[1]][slice_pair.sink()]);
   }
 }
@@ -156,8 +156,8 @@ void C4cD::contract_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-                      q.corrC[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
+        inner_product(q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+                      q.trQ0Q2[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
   }
 }
 
@@ -172,8 +172,8 @@ void C40D::contract_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-                      q.corr0[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
+        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
+                      q.trQ1Q1[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
   }
 }
 
@@ -188,8 +188,8 @@ void C4cV::contract_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.corrC[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                      q.corrC[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+        inner_product(q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+                      q.trQ0Q2[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
   }
 }
 
@@ -204,8 +204,8 @@ void C40V::contract_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-                      q.corr0[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
+                      q.trQ1Q1[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
   }
 }
 

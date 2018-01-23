@@ -43,8 +43,8 @@ struct DiagramParts {
             dilE,
             nev,
             dil_fac_lookup.Q2V) {
-    corrC.resize(boost::extents[corr_lookup.corrC.size()][Lt][Lt]);
-    corr0.resize(boost::extents[corr_lookup.corr0.size()][Lt][Lt]);
+    trQ0Q2.resize(boost::extents[corr_lookup.trQ0Q2.size()][Lt][Lt]);
+    trQ1Q1.resize(boost::extents[corr_lookup.trQ1Q1.size()][Lt][Lt]);
     corr_part_trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
   }
 
@@ -61,10 +61,10 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q2> q2v;
 
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTracesTwoTimes<2> corr0;
+  DilutedTracesTwoTimes<2> trQ1Q1;
 
   //< Temporal memory for tr(Q2V*rVdaggerVr)
-  DilutedTracesTwoTimes<2> corrC;
+  DilutedTracesTwoTimes<2> trQ0Q2;
 
   //< Temporal memory for tr(Q1)
   DilutedTraceOneTime<1> corr_part_trQ1;

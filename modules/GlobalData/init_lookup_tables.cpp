@@ -711,7 +711,7 @@ static size_t build_corrC_lookup(std::vector<size_t> const ql_ids,
  *                                Q1
  *  @param[out] trQ1_lookup       Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C20
  *
  */
@@ -742,7 +742,7 @@ static void build_C1_lookup(
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, Q1_indices);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0
      */
     auto id1 = build_trQ1_lookup({Q1_indices[0]}, trQ1_lookup);
@@ -780,7 +780,7 @@ static void build_C1_lookup(
  *                                Q1
  *  @param[out] trQ1_lookup       Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C20
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -813,7 +813,7 @@ static void build_C20V_lookup(
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1
      */
     auto id1 = build_trQ1_lookup({ql_ids[0]}, trQ1_lookup);
@@ -855,7 +855,7 @@ static void build_C20V_lookup(
  *                                Q2V
  *  @param[out] trQ0Q2_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q0Q2).
- *                                Also known as corrC
+ *                                Also known as trQ0Q2
  *  @param[out] c_look            Lookup table for C2c
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -889,7 +889,7 @@ static void build_C2c_lookup(
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1
      */
     auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
@@ -926,7 +926,7 @@ static void build_C2c_lookup(
  *                                Q1
  *  @param[out] trQ1Q1_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C20
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -959,7 +959,7 @@ static void build_C20_lookup(
     build_Quarkline_lookup_one_qn(
         1, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1
      */
     auto id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
@@ -999,7 +999,7 @@ static void build_C20_lookup(
  *                                parts tr(Q1).
  *  @param[out] trQ1Q1_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C30V
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -1194,7 +1194,7 @@ static void build_C30_lookup(
 
 /******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C4cD. Also sets
- *  corrC.
+ *  trQ0Q2.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
  *                                into quark struct
@@ -1215,11 +1215,11 @@ static void build_C30_lookup(
  *                                Q2V
  *  @param[out] trQ0Q2_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q0Q2).
- *                                Also known as corrC
+ *                                Also known as trQ0Q2
  *  @param[out] c_look            Lookup table for C4cD
  *
  *  C4cD like C4cC contains C2c. To reuse C2c, they all contain indices
- *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
+ *  of trQ0Q2 which in turn contains the indices for rVdaggerVr and Q2.
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
  *        also wrong in init_lookup_tables() (MW 27.3.17)
@@ -1258,7 +1258,7 @@ static void build_C4cD_lookup(
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1 / 2,3
      */
     auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
@@ -1300,7 +1300,7 @@ static void build_C4cD_lookup(
  *                                Q1
  *  @param[out] trQ1Q1_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C40D
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -1339,7 +1339,7 @@ static void build_C40D_lookup(
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1 / 2,3
      */
     auto id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
@@ -1364,7 +1364,7 @@ static void build_C40D_lookup(
 
 /******************************************************************************/
 /*! Create lookuptable where to find the quarklines to build C4cV. Also sets
- *  corrC.
+ *  trQ0Q2.
  *
  *  @param[in]  quarks            Quarks as read from the infile and processed
  *                                into quark struct
@@ -1385,11 +1385,11 @@ static void build_C40D_lookup(
  *                                Q2V
  *  @param[out] trQ0Q2_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q0Q2).
- *                                Also known as corrC
+ *                                Also known as trQ0Q2
  *  @param[out] c_look            Lookup table for C4cV
  *
  *  C4cV like C4cC contains C2c. To reuse C2c, they all contain indices
- *  of corrC which in turn contains the indices for rVdaggerVr and Q2.
+ *  of trQ0Q2 which in turn contains the indices for rVdaggerVr and Q2.
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
  *        also wrong in init_lookup_tables() (MW 27.3.17)
@@ -1428,7 +1428,7 @@ static void build_C4cV_lookup(
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1 / 2,3
      */
     auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
@@ -1470,7 +1470,7 @@ static void build_C4cV_lookup(
  *                                Q1
  *  @param[out] trQ1Q1_lookup     Lookuptable containign unique combinations of
  *                                parts tr(Q1Q1).
- *                                Also known as corr0
+ *                                Also known as trQ1Q1
  *  @param[out] c_look            Lookup table for C40V
  *
  *  @bug I am fairly certain that the quarks are mixed up. It is
@@ -1509,7 +1509,7 @@ static void build_C40V_lookup(
     build_Quarkline_lookup_one_qn(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
-    /*! @todo create hdf5_dataset name for corr0. Must restrict quantum
+    /*! @todo create hdf5_dataset name for trQ1Q1. Must restrict quantum
      *  numbers to 0,1 / 2,3
      */
     auto id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
@@ -1872,7 +1872,7 @@ void GlobalData::init_lookup_tables() {
                        vdv_indices,
                        quarkline_lookuptable.Q0,
                        quarkline_lookuptable.Q2V,
-                       correlator_lookuptable.corrC,
+                       correlator_lookuptable.trQ0Q2,
                        correlator_lookuptable.C2c);
     }
     /*! 6. Repeat steps 1.-5. for all correlators in correlator_list. Where
@@ -1901,7 +1901,7 @@ void GlobalData::init_lookup_tables() {
                         vdv_indices,
                         quarkline_lookuptable.Q0,
                         quarkline_lookuptable.Q2V,
-                        correlator_lookuptable.corrC,
+                        correlator_lookuptable.trQ0Q2,
                         correlator_lookuptable.C4cD);
     } else if (correlator.type == "C4+V") {
       build_C4cV_lookup(quarks,
@@ -1913,7 +1913,7 @@ void GlobalData::init_lookup_tables() {
                         vdv_indices,
                         quarkline_lookuptable.Q0,
                         quarkline_lookuptable.Q2V,
-                        correlator_lookuptable.corrC,
+                        correlator_lookuptable.trQ0Q2,
                         correlator_lookuptable.C4cV);
     } else if (correlator.type == "C4+C") {
       build_C4cC_lookup(quarks,
@@ -1957,7 +1957,7 @@ void GlobalData::init_lookup_tables() {
                        quantum_numbers,
                        vdv_indices,
                        quarkline_lookuptable.Q1,
-                       correlator_lookuptable.corr0,
+                       correlator_lookuptable.trQ1Q1,
                        correlator_lookuptable.C20);
     } else if (correlator.type == "C30V") {
       build_C30V_lookup(quarks,
@@ -1969,7 +1969,7 @@ void GlobalData::init_lookup_tables() {
                         vdv_indices,
                         quarkline_lookuptable.Q1,
                         correlator_lookuptable.trQ1,
-                        correlator_lookuptable.corr0,
+                        correlator_lookuptable.trQ1Q1,
                         correlator_lookuptable.C30V);
     } else if (correlator.type == "C30") {
       build_C30_lookup(quarks,
@@ -1990,7 +1990,7 @@ void GlobalData::init_lookup_tables() {
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
-                        correlator_lookuptable.corr0,
+                        correlator_lookuptable.trQ1Q1,
                         correlator_lookuptable.C40D);
     } else if (correlator.type == "C40V") {
       build_C40V_lookup(quarks,
@@ -2001,7 +2001,7 @@ void GlobalData::init_lookup_tables() {
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
-                        correlator_lookuptable.corr0,
+                        correlator_lookuptable.trQ1Q1,
                         correlator_lookuptable.C40V);
     } else if (correlator.type == "C40C") {
       build_C40C_lookup(quarks,

@@ -23,7 +23,7 @@ void build_corrC(DiagramParts &q,
                  int const t2,
                  int const b1,
                  int const b2) {
-  q.corrC[c_look.id][t1][t2] = factor_to_trace(
+  q.trQ0Q2[c_look.id][t1][t2] = factor_to_trace(
       q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
 }
 
@@ -33,7 +33,7 @@ void build_corr0(DiagramParts &q,
                  int const t2,
                  int const b1,
                  int const b2) {
-  q.corr0[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
+  q.trQ1Q1[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
                                                q.q1[{t2, b1}].at({c_look.lookup[1]}));
 }
 
@@ -119,9 +119,9 @@ void contract(const size_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
-      // Build corrC.
+      // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.corrC) {
+        for (const auto &c_look : corr_lookup.trQ0Q2) {
           build_corrC(q,
                       c_look,
                       slice_pair.source(),
@@ -138,9 +138,9 @@ void contract(const size_t Lt,
         }
       }
 
-      // Build corr0.
+      // Build trQ1Q1.
       for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.corr0) {
+        for (const auto &c_look : corr_lookup.trQ1Q1) {
           build_corr0(q,
                       c_look,
                       slice_pair.source(),
