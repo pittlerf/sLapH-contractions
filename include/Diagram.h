@@ -5,8 +5,8 @@
 #include "Reduction.h"
 #include "typedefs.h"
 
-struct QuarkLineBlockCollection {
-  QuarkLineBlockCollection(RandomVector const &random_vector,
+struct DiagramParts {
+  DiagramParts(RandomVector const &random_vector,
                            Perambulator const &perambulator,
                            OperatorFactory const &meson_operator,
                            size_t const dilT,
@@ -82,7 +82,7 @@ class Diagram {
 
   virtual void contract(int const t,
                         BlockIterator const &slice_pair,
-                        QuarkLineBlockCollection &q) = 0;
+                        DiagramParts &q) = 0;
 
   virtual void reduce() = 0;
 
@@ -112,7 +112,7 @@ class DiagramNumeric : public Diagram {
 
   void contract(int const t,
                 BlockIterator const &slice_pair,
-                QuarkLineBlockCollection &q) override {
+                DiagramParts &q) override {
     int const tid = omp_get_thread_num();
     contract_impl(c_.at(tid).at(t), slice_pair, q);
   }
@@ -149,7 +149,7 @@ class DiagramNumeric : public Diagram {
  private:
   virtual void contract_impl(std::vector<Numeric> &c,
                              BlockIterator const &slice_pair,
-                             QuarkLineBlockCollection &q) = 0;
+                             DiagramParts &q) = 0;
 
   std::string const &output_path_;
   std::string const &output_filename_;
@@ -179,7 +179,7 @@ class C2c : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build neutral 2pt correlation function
@@ -197,7 +197,7 @@ class C20 : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build neutral 2pt correlation function
@@ -215,7 +215,7 @@ class C20V : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*****************************************************************************/
@@ -241,7 +241,7 @@ class C3c : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
 };
@@ -265,7 +265,7 @@ class C30 : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
 };
@@ -279,7 +279,7 @@ class C30V : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*****************************************************************************/
@@ -303,7 +303,7 @@ class C4cD : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build neutral 4pt correlation function: Direct diagram
@@ -323,7 +323,7 @@ class C40D : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build charged 4pt correlation function: Vacuum diagram
@@ -343,7 +343,7 @@ class C4cV : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build neutral 4pt correlation function: Vacuum diagram
@@ -363,7 +363,7 @@ class C40V : public DiagramNumeric<ComplexProduct> {
  private:
   void contract_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 };
 
 /*! Build charged 4pt correlation function: Box diagram
@@ -386,7 +386,7 @@ class C4cB : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
@@ -411,7 +411,7 @@ class C40B : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
@@ -436,7 +436,7 @@ class C4cC : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };
@@ -461,7 +461,7 @@ class C40C : public DiagramNumeric<Complex> {
  private:
   void contract_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
-                     QuarkLineBlockCollection &q) override;
+                     DiagramParts &q) override;
 
   std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
 };

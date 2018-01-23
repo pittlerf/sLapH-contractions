@@ -6,7 +6,7 @@
 
 void C2c::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
-                        QuarkLineBlockCollection &q) {
+                        DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -22,7 +22,7 @@ void C2c::contract_impl(std::vector<Complex> &c,
 
 void C20::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
-                        QuarkLineBlockCollection &q) {
+                        DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -38,7 +38,7 @@ void C20::contract_impl(std::vector<Complex> &c,
 
 void C20V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -67,7 +67,7 @@ C3c::C3c(std::vector<CorrInfo> const &corr_lookup,
 
 void C3c::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
-                        QuarkLineBlockCollection &q) {
+                        DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
@@ -105,7 +105,7 @@ C30::C30(std::vector<CorrInfo> const &corr_lookup,
 
 void C30::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
-                        QuarkLineBlockCollection &q) {
+                        DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(L1,
@@ -128,7 +128,7 @@ void C30::contract_impl(std::vector<Complex> &c,
 
 void C30V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -151,7 +151,7 @@ void C30V::contract_impl(std::vector<ComplexProduct> &c,
 
 void C4cD::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -167,7 +167,7 @@ void C4cD::contract_impl(std::vector<ComplexProduct> &c,
 
 void C40D::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -183,7 +183,7 @@ void C40D::contract_impl(std::vector<ComplexProduct> &c,
 
 void C4cV::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -199,7 +199,7 @@ void C4cV::contract_impl(std::vector<ComplexProduct> &c,
 
 void C40V::contract_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
@@ -229,7 +229,7 @@ C4cB::C4cB(std::vector<CorrInfo> const &corr_lookup,
 
 void C4cB::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -272,7 +272,7 @@ C40B::C40B(std::vector<CorrInfo> const &corr_lookup,
 
 void C40B::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -313,7 +313,7 @@ C4cC::C4cC(std::vector<CorrInfo> const &corr_lookup,
 
 void C4cC::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -355,7 +355,7 @@ C40C::C40C(std::vector<CorrInfo> const &corr_lookup,
 
 void C40C::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
-                         QuarkLineBlockCollection &q) {
+                         DiagramParts &q) {
   OperatorToFactorMap<2, 1> L1;
   OperatorToFactorMap<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {

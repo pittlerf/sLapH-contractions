@@ -10,4 +10,4 @@ struct DiagramTraits {
   using Diagram = DiagramNumeric<Numeric>;
 };
 
-class QuarkLineBlockCollection;
+class DiagramParts;

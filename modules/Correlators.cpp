@@ -17,7 +17,7 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
-void build_corrC(QuarkLineBlockCollection &q,
+void build_corrC(DiagramParts &q,
                  CorrInfo const &c_look,
                  int const t1,
                  int const t2,
@@ -27,7 +27,7 @@ void build_corrC(QuarkLineBlockCollection &q,
       q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
 }
 
-void build_corr0(QuarkLineBlockCollection &q,
+void build_corr0(DiagramParts &q,
                  CorrInfo const &c_look,
                  int const t1,
                  int const t2,
@@ -97,7 +97,7 @@ void contract(const size_t Lt,
   {
     swatch.start();
 
-    QuarkLineBlockCollection q(randomvectors,
+    DiagramParts q(randomvectors,
                                perambulators,
                                meson_operator,
                                dilT,
