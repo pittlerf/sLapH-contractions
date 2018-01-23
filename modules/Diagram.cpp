@@ -68,7 +68,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
 void C3c::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
+  DilutedFactors<2, 1> L1;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
@@ -106,7 +106,7 @@ C30::C30(std::vector<DiagramIndex> const &corr_lookup,
 void C30::contract_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
+  DilutedFactors<2, 1> L1;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(L1,
                          std::get<0>(ids),
@@ -230,8 +230,8 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
 void C4cB::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
-  OperatorToFactorMap<2, 1> L2;
+  DilutedFactors<2, 1> L1;
+  DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
@@ -273,8 +273,8 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
 void C40B::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
-  OperatorToFactorMap<2, 1> L2;
+  DilutedFactors<2, 1> L1;
+  DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(L1,
                          ids[0],
@@ -314,8 +314,8 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
 void C4cC::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
-  OperatorToFactorMap<2, 1> L2;
+  DilutedFactors<2, 1> L1;
+  DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
@@ -356,8 +356,8 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
 void C40C::contract_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  OperatorToFactorMap<2, 1> L1;
-  OperatorToFactorMap<2, 1> L2;
+  DilutedFactors<2, 1> L1;
+  DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(L1,
                          ids[0],

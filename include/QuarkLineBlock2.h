@@ -29,7 +29,7 @@ template <DilutedFactorType qlt>
 class DilutedFactorFactory {
  public:
   using Key = std::array<int, DilutedFactorTypeTraits<qlt>::num_times>;
-  using Value = OperatorToFactorMap<1, 0>;
+  using Value = DilutedFactors<1, 0>;
 
   DilutedFactorFactory(RandomVector const &random_vector,
                   Perambulator const &perambulator,

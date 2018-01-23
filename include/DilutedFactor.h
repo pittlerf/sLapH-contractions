@@ -114,11 +114,11 @@ inline Complex operator+(Complex const &c, DilutedTrace<rvecs> const &df) {
 }
 
 template <int n, size_t rvecs>
-using OperatorToFactorMap =
+using DilutedFactors =
     std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
 template <size_t n, size_t rvecs>
-std::string to_string(typename OperatorToFactorMap<n, rvecs>::key_type const &array) {
+std::string to_string(typename DilutedFactors<n, rvecs>::key_type const &array) {
   std::ostringstream oss;
   oss << "{";
   for (int i = 0; i < n; ++i) {
@@ -133,8 +133,8 @@ std::string to_string(typename OperatorToFactorMap<n, rvecs>::key_type const &ar
 }
 
 template <size_t n, size_t rvecs>
-void print(OperatorToFactorMap<n, rvecs> const &otfm) {
-  std::cout << "OperatorToFactorMap, size = " << otfm.size() << "\n";
+void print(DilutedFactors<n, rvecs> const &otfm) {
+  std::cout << "DilutedFactors, size = " << otfm.size() << "\n";
   for (auto const &elem : otfm) {
     std::cout << "  " << to_string<n, rvecs>(elem.first) << " -> "
               << "std::vector(size = " << elem.second.size() << ")\n";
@@ -441,10 +441,10 @@ std::map<UpTo, Complex> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &t
 }
 
 template <int n1, int n2, size_t rvecs1, size_t rvecs2>
-void multiply(OperatorToFactorMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
+void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
               std::array<size_t, n1 + n2> const &key,
-              OperatorToFactorMap<n1, rvecs1> const &factor0,
-              OperatorToFactorMap<n2, rvecs2> const &factor1) {
+              DilutedFactors<n1, rvecs1> const &factor0,
+              DilutedFactors<n2, rvecs2> const &factor1) {
   if (L.count(key) == 0) {
     std::array<size_t, n1> key1;
     std::array<size_t, n2> key2;
