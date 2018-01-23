@@ -46,7 +46,7 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
   if (corr_lookup.empty())
     return;
 
-  StopWatch swatch("C1");
+  StopWatch swatch("tr(Q1)");
 
   corr_part_trQ1.resize(boost::extents[corr_lookup.size()][Lt]);
 
