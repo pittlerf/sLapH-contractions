@@ -66,10 +66,10 @@ class Correlators {
 
 public:
   // Constructor
- Correlators(const size_t Lt,
-             const size_t dilT,
-             const size_t dilE,
-             const size_t nev,
+ Correlators(const size_t Lt_,
+             const size_t dilT_,
+             const size_t dilE_,
+             const size_t nev_,
              const CorrelatorLookup &corr_lookup,
              OperatorLookup const &operator_lookup,
              QuarklineLookup const &quark_lookup);
@@ -86,18 +86,18 @@ public:
 
 private:
   /*! @todo that should not be here but taken from Globaldata */
-  const size_t Lt, dilT, dilE, nev;
+  const size_t Lt_, dilT_, dilE_, nev_;
 
-  DilutedFactorLookup const dil_fac_lookup;
+  DilutedFactorLookup const dil_fac_lookup_;
 
   /*! Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1) */
-  DilutedTraceCollection<2> corr0; 
+  DilutedTraceCollection<2> corr0_;
 
   /*! Temporal memory for tr(Q2V*rVdaggerVr) */
-  DilutedTraceCollection<2> corrC;
+  DilutedTraceCollection<2> corrC_;
 
   /*! Temporal memory for tr(Q1) */
-  DilutedTraceCollection2<1> corr_part_trQ1;
+  DilutedTraceCollection2<1> corr_part_trQ1_;
   /*! Build 1pt loops */
   void build_part_trQ1(RandomVector const &randomvectors,
                    OperatorsForMesons const &meson_operator, 

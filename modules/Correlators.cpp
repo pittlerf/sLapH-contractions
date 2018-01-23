@@ -27,11 +27,11 @@ Correlators::Correlators(const size_t Lt,
                          const CorrelatorLookup &corr_lookup,
                          OperatorLookup const &operator_lookup,
                          QuarklineLookup const &quark_lookup)
-    : Lt(Lt),
-      dilT(dilT),
-      dilE(dilE),
-      nev(nev),
-      dil_fac_lookup(
+    : Lt_(Lt),
+      dilT_(dilT),
+      dilE_(dilE),
+      nev_(nev),
+      dil_fac_lookup_(
           {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L}) {}
 
 /*!
@@ -48,23 +48,23 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
   StopWatch swatch("tr(Q1)");
 
-  corr_part_trQ1.resize(boost::extents[corr_lookup.size()][Lt]);
+  corr_part_trQ1_.resize(boost::extents[corr_lookup.size()][Lt_]);
 
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+  DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
 
 #pragma omp parallel
   {
     swatch.start();
 
     QuarkLineBlock2<QuarkLineType::Q1> quarklines(
-        randomvectors, perambulators, meson_operator, dilT, dilE, nev, dil_fac_lookup.Q1);
+        randomvectors, perambulators, meson_operator, dilT_, dilE_, nev_, dil_fac_lookup_.Q1);
 
 #pragma omp for schedule(dynamic)
-    for (int t = 0; t < Lt; ++t) {
+    for (int t = 0; t < Lt_; ++t) {
       auto const b = dilution_scheme.time_to_block(t);
 
       for (const auto &c_look : corr_lookup) {
-        corr_part_trQ1[c_look.id][t] =
+        corr_part_trQ1_[c_look.id][t] =
             factor_to_trace(quarklines[{t, b}].at({c_look.lookup[0]}));
       }
     }
@@ -76,10 +76,10 @@ void Correlators::build_part_trQ1(RandomVector const &randomvectors,
 
   // normalisation
   for (const auto &c_look : corr_lookup) {
-    for (auto &corr_t : corr_part_trQ1[c_look.id]) {
+    for (auto &corr_t : corr_part_trQ1_[c_look.id]) {
       for (auto &diluted_trace : corr_t) {
         // TODO: Hard Coded atm - Be carefull
-        diluted_trace.data /= Lt;
+        diluted_trace.data /= Lt_;
       }
     }
 
@@ -124,41 +124,41 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt_));
 
-  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt_));
 
-  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt_));
 
-  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt_));
 
-  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
+  DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
 
-  corrC.resize(boost::extents[corr_lookup.corrC.size()][Lt][Lt]);
-  corr0.resize(boost::extents[corr_lookup.corr0.size()][Lt][Lt]);
+  corrC_.resize(boost::extents[corr_lookup.corrC.size()][Lt_][Lt_]);
+  corr0_.resize(boost::extents[corr_lookup.corr0.size()][Lt_][Lt_]);
 
 #pragma omp parallel
   {
     QuarkLineBlockCollection q(randomvectors,
                                perambulators,
                                meson_operator,
-                               dilT,
-                               dilE,
-                               nev,
-                               dil_fac_lookup,
-                               corr0,
-                               corrC,
-                               corr_part_trQ1);
+                               dilT_,
+                               dilE_,
+                               nev_,
+                               dil_fac_lookup_,
+                               corr0_,
+                               corrC_,
+                               corr_part_trQ1_);
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
@@ -176,7 +176,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       // Build corrC.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.corrC) {
-          corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
+          corrC_[c_look.id][slice_pair.source()][slice_pair.sink()] =
               factor_to_trace(q.q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
                               q.q2v[{slice_pair.sink_block(),
                                      slice_pair.source(),
@@ -191,7 +191,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                        slice_pair.source_block()}]
                                     .at({c_look.lookup[0]}));
 #pragma omp critical(corrC)
-            corrC[c_look.id][slice_pair.source()][slice_pair.source()] = result;
+            corrC_[c_look.id][slice_pair.source()][slice_pair.source()] = result;
           }
         }
       }
@@ -199,7 +199,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       // Build corr0.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.corr0) {
-          corr0[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
+          corr0_[c_look.id][slice_pair.source()][slice_pair.sink()] = factor_to_trace(
               q.q1[{slice_pair.source(), slice_pair.sink_block()}].at({c_look.lookup[0]}),
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(
                   {c_look.lookup[1]}));
@@ -211,7 +211,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                 q.q1[{slice_pair.source(), slice_pair.source_block()}].at(
                                     {c_look.lookup[1]}));
 #pragma omp critical(corr0)
-            corr0[c_look.id][slice_pair.source()][slice_pair.source()] = result;
+            corr0_[c_look.id][slice_pair.source()][slice_pair.source()] = result;
           }
         }
       }
@@ -223,7 +223,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
         }
 
         for (auto const slice_pair : block_pair) {
-          int const t = get_time_delta(slice_pair, Lt);
+          int const t = get_time_delta(slice_pair, Lt_);
 
           diagram->contract(t, slice_pair, q);
         }  // End of slice pair loop.
