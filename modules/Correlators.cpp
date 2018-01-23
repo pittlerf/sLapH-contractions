@@ -91,8 +91,12 @@ void contract(const size_t Lt,
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
+  StopWatch swatch("All contractions");
+
 #pragma omp parallel
   {
+    swatch.start();
+
     QuarkLineBlockCollection q(randomvectors,
                                perambulators,
                                meson_operator,
@@ -187,9 +191,14 @@ void contract(const size_t Lt,
     for (auto &diagram : diagrams) {
       diagram->reduce();
     }
+
+    swatch.stop();
   }  // End of parallel section.
+
+  swatch.print();
 
   for (auto &diagram : diagrams) {
     diagram->write();
   }
+
 }
