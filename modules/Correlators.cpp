@@ -182,6 +182,13 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                      slice_pair.source(),
                                      slice_pair.sink_block()}]
                                   .at({c_look.lookup[0]}));
+
+          corrC[c_look.id][slice_pair.source()][slice_pair.source()] =
+              factor_to_trace(q.q0[{slice_pair.source()}].at({c_look.lookup[1]}),
+                              q.q2v[{slice_pair.source_block(),
+                                     slice_pair.source(),
+                                     slice_pair.source_block()}]
+                                  .at({c_look.lookup[0]}));
         }
       }
 
@@ -192,6 +199,12 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
               q.q1[{slice_pair.source(), slice_pair.sink_block()}].at({c_look.lookup[0]}),
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(
                   {c_look.lookup[1]}));
+
+          corr0[c_look.id][slice_pair.source()][slice_pair.source()] =
+              factor_to_trace(q.q1[{slice_pair.source(), slice_pair.source_block()}].at(
+                                  {c_look.lookup[0]}),
+                              q.q1[{slice_pair.source(), slice_pair.source_block()}].at(
+                                  {c_look.lookup[1]}));
         }
       }
 
