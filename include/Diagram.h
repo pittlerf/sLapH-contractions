@@ -2,8 +2,8 @@
 
 #include "Correlators.h"
 #include "QuarkLineBlock2.h"
-#include "Reduction.h"
 #include "typedefs.h"
+#include "h5-wrapper.h"
 
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,

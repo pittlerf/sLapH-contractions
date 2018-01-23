@@ -5,10 +5,8 @@
 #include "Diagram.h"
 #include "DilutedFactor.h"
 #include "QuarkLineBlock2.h"
-#include "Reduction.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
-#include "h5-wrapper.h"
 #include "typedefs.h"
 
 #include <iomanip>
