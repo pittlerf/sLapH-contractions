@@ -272,8 +272,7 @@ struct CorrInfo {
   CorrInfo(const size_t id,
            const std::string &hdf5_dataset_name,
            const std::vector<size_t> &lookup)
-      : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(std::vector<int>({})){};
-
+      : CorrInfo(id, hdf5_dataset_name, lookup, std::vector<int>({})){};
 };
 
 inline bool operator==(CorrInfo const &first, CorrInfo const &second){
