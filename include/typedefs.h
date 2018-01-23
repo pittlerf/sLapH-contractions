@@ -351,4 +351,4 @@ struct QuarkLineIndices<QuarkLineType::Q2V> {
   static size_t constexpr num_times = 3;
 };
 
-#define MU_DEBUG(x) std::cout << std::setw(20) << #x << ": " << (x) << std::endl;
+#define MU_DEBUG(x) std::cout << std::setw(30) << #x << ": " << (x) << std::endl;

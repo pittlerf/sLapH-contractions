@@ -91,6 +91,12 @@ std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
     }
   }
 
+  if (result_vec.size() == 0) {
+    throw std::runtime_error(
+        "vector<DilutedFactor> operator*(vector<DilutedFactor>, vector<DilutedFactor>) "
+        "has an empty result.");
+  }
+
   return result_vec;
 }
 
@@ -177,6 +183,12 @@ cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
     result += product.trace();
   }
 
+  if (num_summands == 0) {
+    throw std::runtime_error(
+        "cmplx trace(vector<DilutedFactor>, vector<DilutedFactor>) has used zero "
+        "summands.");
+  }
+
   return result / static_cast<double>(num_summands);
 }
 
@@ -232,6 +244,12 @@ std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
     }
   }
 
+  if (result_vec.size() == 0) {
+    throw std::runtime_error(
+        "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>, "
+        "vector<DilutedFactor>) has an empty result.");
+  }
+
   return result_vec;
 }
 
@@ -257,6 +275,12 @@ std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
     DilutedTrace<rvecs + 1> result = {elem.data.trace(), used};
 
     result_vec.push_back(result);
+  }
+
+  if (result_vec.size() == 0) {
+    throw std::runtime_error(
+        "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>) has an empty "
+        "result.");
   }
 
   return result_vec;
@@ -297,6 +321,12 @@ compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
     result.reim += left.data.real() * right_sum.imag();
     result.imre += left.data.imag() * right_sum.real();
     result.imim += left.data.imag() * right_sum.imag();
+  }
+
+  if (num_summands == 0) {
+    throw std::runtime_error(
+        "compcomp_t inner_product(vector<DilutedTrace>, "
+        "vector<DilutedTrace>) has an empty result.");
   }
 
   return result / num_summands;

@@ -132,6 +132,13 @@ void C30V::contract_impl(std::vector<compcomp_t> &c,
   for (int i = 0; i != corr_lookup().size(); ++i) {
     auto const &c_look = corr_lookup()[i];
 
+    assert(c_look.lookup[0] < q.corr0.shape()[0]);
+    assert(slice_pair.source() < q.corr0.shape()[1]);
+    assert(slice_pair.source() < q.corr0.shape()[2]);
+
+    assert(c_look.lookup[1] < q.corr_part_trQ1.shape()[0]);
+    assert(slice_pair.sink() < q.corr_part_trQ1.shape()[1]);
+
     c[i] +=
         inner_product(q.corr0[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
                       q.corr_part_trQ1[c_look.lookup[1]][slice_pair.sink()]);
