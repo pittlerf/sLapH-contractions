@@ -56,6 +56,9 @@ template <size_t rvecs1, size_t rvecs2>
 std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
     std::vector<DilutedFactor<rvecs1>> const &left_vec,
     std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  assert(left_vec.size() > 0);
+  assert(right_vec.size() > 0);
+
   int constexpr rvecs_total = rvecs1 + rvecs2 + 1;
   std::vector<DilutedFactor<rvecs_total>> result_vec;
 
@@ -141,6 +144,9 @@ void print(OperatorToFactorMap<n, rvecs> const &otfm) {
 template <size_t rvecs1, size_t rvecs2>
 cmplx trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
             std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  assert(left_vec.size() > 0);
+  assert(right_vec.size() > 0);
+
   cmplx result(0.0, 0.0);
 
   int num_summands = 0;
@@ -196,6 +202,9 @@ template <size_t rvecs1, size_t rvecs2>
 std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
     std::vector<DilutedFactor<rvecs1>> const &left_vec,
     std::vector<DilutedFactor<rvecs2>> const &right_vec) {
+  assert(left_vec.size() > 0);
+  assert(right_vec.size() > 0);
+
   int constexpr rvecs_result = rvecs1 + rvecs2 + 2;
   std::vector<DilutedTrace<rvecs_result>> result_vec;
 
@@ -256,6 +265,8 @@ std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
 template <size_t rvecs>
 std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
     std::vector<DilutedFactor<rvecs>> const &vec) {
+  assert(vec.size() > 0);
+
   std::vector<DilutedTrace<rvecs + 1>> result_vec;
 
   for (auto const &elem : vec) {
@@ -290,6 +301,9 @@ std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
 template <size_t rvecs1, size_t rvecs2>
 compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
                          std::vector<DilutedTrace<rvecs2>> const &right_vec) {
+  assert(left_vec.size() > 0);
+  assert(right_vec.size() > 0);
+
   int num_summands = 0;
 
   compcomp_t result(0.0, 0.0, 0.0, 0.0);
