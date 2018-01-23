@@ -290,9 +290,6 @@ std::vector<DilutedTrace<rvecs + 1>> factor_to_trace(
 template <size_t rvecs1, size_t rvecs2>
 compcomp_t inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
                          std::vector<DilutedTrace<rvecs2>> const &right_vec) {
-  //! @TODO Pull out this magic number.
-  auto constexpr rnd_vec_count = 5;
-
   int num_summands = 0;
 
   compcomp_t result(0.0, 0.0, 0.0, 0.0);
