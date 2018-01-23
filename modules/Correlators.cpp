@@ -17,6 +17,16 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
+void build_corrC(QuarkLineBlockCollection &q,
+                 CorrInfo const &c_look,
+                 int const t1,
+                 int const t2,
+                 int const b1,
+                 int const b2) {
+  q.corrC[c_look.id][t1][t2] = factor_to_trace(
+      q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
+}
+
 /******************************************************************************/
 /******************************************************************************/
 
@@ -173,23 +183,20 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       // Build corrC.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.corrC) {
-          q.corrC[c_look.id][slice_pair.source()][slice_pair.sink()] =
-              factor_to_trace(q.q0[{slice_pair.sink()}].at({c_look.lookup[1]}),
-                              q.q2v[{slice_pair.sink_block(),
-                                     slice_pair.source(),
-                                     slice_pair.sink_block()}]
-                                  .at({c_look.lookup[0]}));
+          build_corrC(q,
+                      c_look,
+                      slice_pair.source(),
+                      slice_pair.sink(),
+                      slice_pair.source_block(),
+                      slice_pair.sink_block());
 
-          {
-            auto const &result =
-                factor_to_trace(q.q0[{slice_pair.source()}].at({c_look.lookup[1]}),
-                                q.q2v[{slice_pair.source_block(),
-                                       slice_pair.source(),
-                                       slice_pair.source_block()}]
-                                    .at({c_look.lookup[0]}));
 #pragma omp critical(corrC)
-            q.corrC[c_look.id][slice_pair.source()][slice_pair.source()] = result;
-          }
+          build_corrC(q,
+                      c_look,
+                      slice_pair.source(),
+                      slice_pair.source(),
+                      slice_pair.source_block(),
+                      slice_pair.source_block());
         }
       }
 
