@@ -38,23 +38,6 @@ void build_corr0(QuarkLineBlockCollection &q,
 }
 
 /******************************************************************************/
-/******************************************************************************/
-
-Correlators::Correlators(const size_t Lt,
-                         const size_t dilT,
-                         const size_t dilE,
-                         const size_t nev,
-                         const CorrelatorLookup &corr_lookup,
-                         OperatorLookup const &operator_lookup,
-                         QuarklineLookup const &quark_lookup)
-    : Lt_(Lt),
-      dilT_(dilT),
-      dilE_(dilE),
-      nev_(nev),
-      dil_fac_lookup_(
-          {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L}) {}
-
-/******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
  *                          combinations of operators and perambulators
@@ -70,37 +53,43 @@ Correlators::Correlators(const size_t Lt,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
-void Correlators::contract(OperatorsForMesons const &meson_operator,
-                           RandomVector const &randomvectors,
-                           Perambulator const &perambulators,
-                           OperatorLookup const &operator_lookup,
-                           CorrelatorLookup const &corr_lookup,
-                           QuarklineLookup const &quark_lookup,
-                           std::string const output_path,
-                           std::string const output_filename) {
+void contract(const size_t Lt,
+              const size_t dilT,
+              const size_t dilE,
+              const size_t nev,
+              OperatorsForMesons const &meson_operator,
+              RandomVector const &randomvectors,
+              Perambulator const &perambulators,
+              OperatorLookup const &operator_lookup,
+              CorrelatorLookup const &corr_lookup,
+              QuarklineLookup const &quark_lookup,
+              std::string const output_path,
+              std::string const output_filename) {
+  DilutedFactorLookup const dil_fac_lookup(
+      {quark_lookup.Q0, quark_lookup.Q1, quark_lookup.Q2V, quark_lookup.Q2L});
 
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
 
-  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt_));
-  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt_));
+  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
+  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
-  DilutionScheme const dilution_scheme(Lt_, dilT_, DilutionType::block);
+  DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
 
 #pragma omp parallel
@@ -108,11 +97,11 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
     QuarkLineBlockCollection q(randomvectors,
                                perambulators,
                                meson_operator,
-                               dilT_,
-                               dilE_,
-                               nev_,
-                               Lt_,
-                               dil_fac_lookup_,
+                               dilT,
+                               dilE,
+                               nev,
+                               Lt,
+                               dil_fac_lookup,
                                corr_lookup);
 
 #pragma omp for schedule(dynamic)
@@ -169,14 +158,14 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
       }
 
       // Build tr(Q1).
-      for (int t = 0; t < Lt_; ++t) {
+      for (int t = 0; t < Lt; ++t) {
         auto const b = dilution_scheme.time_to_block(t);
         for (const auto &c_look : corr_lookup.trQ1) {
           q.corr_part_trQ1[c_look.id][t] =
               factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
 
           for (auto &diluted_trace : q.corr_part_trQ1[c_look.id][t]) {
-            diluted_trace.data /= Lt_;
+            diluted_trace.data /= Lt;
           }
         }
       }
@@ -188,7 +177,7 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
         }
 
         for (auto const slice_pair : block_pair) {
-          int const t = get_time_delta(slice_pair, Lt_);
+          int const t = get_time_delta(slice_pair, Lt);
 
           diagram->contract(t, slice_pair, q);
         }  // End of slice pair loop.

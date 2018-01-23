@@ -65,15 +65,7 @@ int main (int ac, char* av[]) {
                             (global_data->get_quarks())[0].number_of_dilution_E,
                             global_data->get_operator_lookuptable(),
                             global_data->get_handling_vdaggerv(),
-                            global_data->get_path_vdaggerv());  
-
-  Correlators correlators(global_data->get_Lt(), 
-                         (global_data->get_quarks())[0].number_of_dilution_T,
-                         (global_data->get_quarks())[0].number_of_dilution_E,
-                          global_data->get_number_of_eigen_vec(),
-                          global_data->get_correlator_lookuptable(),
-                          global_data->get_operator_lookuptable(),
-                          global_data->get_quarkline_lookuptable());
+                            global_data->get_path_vdaggerv());
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
@@ -100,14 +92,18 @@ int main (int ac, char* av[]) {
                                                        randomvectors, config_i);
 
     // doing all the contractions
-    correlators.contract(meson_operators, randomvectors, perambulators,
-                         global_data->get_operator_lookuptable(),
-                         global_data->get_correlator_lookuptable(),
-                         global_data->get_quarkline_lookuptable(),
-                         global_data->get_output_path(),
-                         global_data->get_filename_ending_correlators());
+    contract(global_data->get_Lt(),
+             (global_data->get_quarks())[0].number_of_dilution_T,
+             (global_data->get_quarks())[0].number_of_dilution_E,
+             global_data->get_number_of_eigen_vec(),
+             meson_operators,
+             randomvectors,
+             perambulators,
+             global_data->get_operator_lookuptable(),
+             global_data->get_correlator_lookuptable(),
+             global_data->get_quarkline_lookuptable(),
+             global_data->get_output_path(),
+             global_data->get_filename_ending_correlators());
   }
-  // That's all Folks!
-  return 0;
 }
 
