@@ -28,7 +28,7 @@ void print(std::array<T, n> const &a) {
 template <DilutedFactorType qlt>
 class DilutedFactorFactory {
  public:
-  using Key = std::array<int, QuarkLineIndices<qlt>::num_times>;
+  using Key = std::array<int, DilutedFactorTypeTraits<qlt>::num_times>;
   using Value = OperatorToFactorMap<1, 0>;
 
   DilutedFactorFactory(RandomVector const &random_vector,
@@ -37,7 +37,7 @@ class DilutedFactorFactory {
                   size_t const dilT,
                   size_t const dilE,
                   size_t const nev,
-                  typename QuarkLineIndices<qlt>::type const &quarkline_indices);
+                  typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices);
 
   Value const &operator[](Key const &key) {
     if (Ql.count(key) == 0) {
@@ -59,7 +59,7 @@ class DilutedFactorFactory {
   Perambulator const &peram;
   OperatorFactory const &meson_operator;
   const size_t dilT, dilE, nev;
-  typename QuarkLineIndices<qlt>::type const &quarkline_indices;
+  typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices;
 
   static int constexpr dilD = 4;
 };

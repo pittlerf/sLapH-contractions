@@ -14,7 +14,7 @@ DilutedFactorFactory<qlt>::DilutedFactorFactory(
     size_t const dilT,
     size_t const dilE,
     size_t const nev,
-    typename QuarkLineIndices<qlt>::type const &_quarkline_indices)
+    typename DilutedFactorTypeTraits<qlt>::type const &_quarkline_indices)
     : peram(perambulator),
       rnd_vec(random_vector),
       meson_operator(_meson_operator),

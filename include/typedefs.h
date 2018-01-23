@@ -315,37 +315,37 @@ struct DiagramIndicesCollection {
 };
 
 template <DilutedFactorType qlt>
-struct QuarkLineIndices {};
+struct DilutedFactorTypeTraits {};
 
 /*! @todo QuarkLineType is a bad name in this case. That's a proxy for
  *        DiagramIndex.lookup
  */
 template <>
-struct QuarkLineIndices<DilutedFactorType::Q0> {
+struct DilutedFactorTypeTraits<DilutedFactorType::Q0> {
   typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 1;
 };
 
 template <>
-struct QuarkLineIndices<DilutedFactorType::Q1> {
+struct DilutedFactorTypeTraits<DilutedFactorType::Q1> {
   typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 2;
 };
 
 template <>
-struct QuarkLineIndices<DilutedFactorType::Q2> {
+struct DilutedFactorTypeTraits<DilutedFactorType::Q2> {
   typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
-struct QuarkLineIndices<DilutedFactorType::Q2L> {
+struct DilutedFactorTypeTraits<DilutedFactorType::Q2L> {
   typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
 
 template <>
-struct QuarkLineIndices<DilutedFactorType::Q2V> {
+struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
   typedef std::vector<DilutedFactorIndex> type;
   static size_t constexpr num_times = 3;
 };
