@@ -168,15 +168,6 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                                dil_fac_lookup_,
                                corr_lookup);
 
-    build_part_trQ1(q.corr_part_trQ1,
-                    q.q1,
-                    randomvectors,
-                    meson_operator,
-                    perambulators,
-                    corr_lookup.trQ1,
-                    output_path,
-                    output_filename);
-
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
       #pragma omp critical(cout)
@@ -227,6 +218,19 @@ void Correlators::contract(OperatorsForMesons const &meson_operator,
                       slice_pair.source(),
                       slice_pair.source_block(),
                       slice_pair.source_block());
+        }
+      }
+
+      // Build tr(Q1).
+      for (int t = 0; t < Lt_; ++t) {
+        auto const b = dilution_scheme.time_to_block(t);
+        for (const auto &c_look : corr_lookup.trQ1) {
+          q.corr_part_trQ1[c_look.id][t] =
+              factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+
+          for (auto &diluted_trace : q.corr_part_trQ1[c_look.id][t]) {
+            diluted_trace.data /= Lt_;
+          }
         }
       }
 
