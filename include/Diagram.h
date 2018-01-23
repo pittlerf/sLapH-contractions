@@ -115,7 +115,7 @@ class DiagramNumeric : public Diagram {
   void reduce() override {
     int const tid = omp_get_thread_num();
 
-#pragma omp critical
+#pragma omp critical(Diagram_reduce)
     {
       for (int i = 0; i != correlator_.size(); ++i) {
         for (size_t t = 0; t < Lt_; t++) {
