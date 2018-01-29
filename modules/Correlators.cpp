@@ -15,7 +15,7 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
-void build_corrC(DiagramParts &q,
+void build_trQ0Q2(DiagramParts &q,
                  DiagramIndex const &c_look,
                  int const t1,
                  int const t2,
@@ -25,7 +25,7 @@ void build_corrC(DiagramParts &q,
       q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
 }
 
-void build_corr0(DiagramParts &q,
+void build_trQ1Q1(DiagramParts &q,
                  DiagramIndex const &c_look,
                  int const t1,
                  int const t2,
@@ -120,14 +120,14 @@ void contract(const size_t Lt,
       // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ0Q2) {
-          build_corrC(q,
+          build_trQ0Q2(q,
                       c_look,
                       slice_pair.source(),
                       slice_pair.sink(),
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-          build_corrC(q,
+          build_trQ0Q2(q,
                       c_look,
                       slice_pair.source(),
                       slice_pair.source(),
@@ -139,14 +139,14 @@ void contract(const size_t Lt,
       // Build trQ1Q1.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ1Q1) {
-          build_corr0(q,
+          build_trQ1Q1(q,
                       c_look,
                       slice_pair.source(),
                       slice_pair.sink(),
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-          build_corr0(q,
+          build_trQ1Q1(q,
                       c_look,
                       slice_pair.source(),
                       slice_pair.source(),
@@ -162,10 +162,6 @@ void contract(const size_t Lt,
 
         for (const auto &c_look : corr_lookup.trQ1) {
           q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
-
-          for (auto &diluted_trace : q.trQ1[c_look.id][t]) {
-            diluted_trace.data /= Lt;
-          }
         }
       }
 
