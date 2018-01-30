@@ -1,6 +1,6 @@
 find_package(GTest)
 
-if(GTEST_FOUND)
+if(${GTEST_FOUND})
   include_directories(${GTEST_INCLUDE_DIRS})
 
   add_executable(main
