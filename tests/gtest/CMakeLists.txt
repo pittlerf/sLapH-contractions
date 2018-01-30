@@ -12,4 +12,6 @@ if(GTEST_FOUND)
   enable_testing()
   add_test(NAME gtest
     COMMAND ./main)
+else()
+  message(STATUS "gtest was not found, building without this test.")
 endif()
