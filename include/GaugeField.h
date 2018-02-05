@@ -111,6 +111,15 @@ class GaugeField {
     Eigen::MatrixXcd disp(const Eigen::MatrixXcd& v, const size_t t,
                           const size_t dir, bool sym);
 
+    //! brief Returns displaced vector or matrix
+    //
+    //! v is the address of the Object to be displaced, t is the timeslice
+    //! index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively
+    //! The derivative is taken in one operator $\bar{\Psi_{f}}
+    //! \overleftrightarrow{D}\Psi_{f'}$.
+    Eigen::MatrixXcd symmetric_derivative(const Eigen::MatrixXcd& v,
+                                          const size_t t, const size_t dir)
+
     //! \brief Returns symmetric 2 times displaced vector or matrix
     //! 
     //! v is the address of the Object to be displaced, t is the timeslice

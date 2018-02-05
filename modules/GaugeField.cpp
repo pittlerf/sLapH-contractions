@@ -443,6 +443,12 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
   return out;
 }
 
+// Symmetric Derivative
+Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,       
+                                                  const size_t t,
+                                                  const size_t dir) {
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ///Liumings second derivative returning one Eigenvector/Eigensystem////////////
 ///////////////////////////////////////////////////////////////////////////////
