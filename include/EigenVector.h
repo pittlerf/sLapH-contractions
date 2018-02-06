@@ -46,4 +46,5 @@ class EigenVector {
   void read_eigen_vector(const std::string &filename,
                          const size_t t,
                          const size_t verbose);
+  void set_V(Eigen::MatrixXcd &v);
 };

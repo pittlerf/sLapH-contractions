@@ -842,4 +842,3 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
   }
 
 }
-

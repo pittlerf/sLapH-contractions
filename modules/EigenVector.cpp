@@ -49,3 +49,7 @@ void EigenVector::read_eigen_vector(const std::string &filename, const size_t ve
     read_eigen_vector(path, t, verbose);
   }
 }
+
+void set_V(Eigen::MatrixXcd &v) {
+  V = v;
+}
