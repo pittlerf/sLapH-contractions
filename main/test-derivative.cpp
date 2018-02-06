@@ -1,21 +1,40 @@
+#include <string>
+#include <boost/format.hpp>
+
 #include "GaugeField.h"
 #include "EigenVector.h"
 
 int main() {
+  std::string path_ev_in("/hiskp4/bartek/eigensystems/quenched/wilson_b5.85_L12T24/data");
+  std::string path_ev_out("/hiskp4/helmes/contractions/test/derivative_operators/covariant_shift");
+  std::string path_gauge_in = std::string("/hiskp4/gauges/quenched/wilson_b5.85_L12T24");
+  const size_t dim_row = 12*12*12*3;
+  EigenVector V_t(24,dim_row,48);
+  EigenVector UV(24,dim_row,48);
+  EigenVector UVshift(24,dim_row,48);
+  auto const path_in = (boost::format("%s/eigenvectors.0400.") %
+                          path_ev_in).str();
+  V_t.read_eigen_vector(path_in,0);
+  // Read in timeslice of gauge
+  GaugeField gauge = GaugeField(24,12,12,12, path_gauge_in,0,23,4);
+  gauge.read_gauge_field(400,0,23);
+  std::cout << V_t[1](0,0) << std::endl;
+  std::cout << V_t[1].col(0).segment(3*(5*12*12+4*12+3),3) <<std::endl;
   for (size_t t = 0; t < 24; ++t){
-    EigenVector V_t(1,dim_row,48);
-    V_t.read_eigen_vector("",0,0);
-    // Read in timeslice of gauge
-    GaugeField gauge = GaugeField(24,12,12,12,"",0,1,4);
-    gauge.read_gauge_field(400,t,t);
     // Calculate Umu_V
-    umu_v = gauge.Umu_times_V(v,t,0);
+    Eigen::MatrixXcd umu_v = gauge.Umu_times_V(V_t[t],t,0,1);
     // Calculate Umu_V_shifted
-    umu_vshift = gauge.Umu_times_V(v,t,0);
+    Eigen::MatrixXcd umu_vshift = gauge.Umu_times_shiftedV(V_t[t],t,0,1);
+
     // Write them to disk
-    EigenVector UV(1,dim_row,48);
-    UV.set_V(umu_v;)
-    EigenVector UVshift(1,dim_row,48);
-    UVshift.set_V(umu_vshift);
+    UV.set_V(umu_v,t);
+    UVshift.set_V(umu_vshift,t);
+    auto const path_uxvx= (boost::format("%s/%s/eigenvectors.0400.%03d") 
+                           % path_ev_out % "/UxVx" % t).str();
+    UV.write_eigen_vector(path_uxvx, t, 0);
+
+    auto const path_uxvxp1= (boost::format("%s/%s/eigenvectors.0400.%03d") 
+                           % path_ev_out % "/UxVxp1" % t).str();
+    UVshift.write_eigen_vector(path_uxvxp1, t, 0);
   }
 }

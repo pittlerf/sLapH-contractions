@@ -482,13 +482,20 @@ Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,
 
 Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
                                                   const size_t t,
-                                                  const size_t dir) {
+                                                  const size_t dir,
+                                                  const size_t verbose) {
   //Information on Matrix size
   const int dim_col = v.cols();
+  const int dim_row = v.rows();
   //Loop over all eigenvectors in 
-    //storing eigenvector
-    Eigen::VectorXcd in(dim_row);
-    Eigen::MatrixXcd out(dim_row, dim_col);
+  //storing eigenvector
+  Eigen::VectorXcd in(dim_row);
+  Eigen::MatrixXcd out(dim_row, dim_col);
+  if (verbose){
+    std::cout << t<< std::endl;
+    std::cout << in.rows() << std::endl;
+    std::cout << out.rows() << std::endl;
+  }
   for(int ev=0; ev < dim_col; ++ev){ 
     in = v.col(ev);
     //multiply eigenvector with according gauge matrix
@@ -502,13 +509,15 @@ Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
 
 Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
                                                   const size_t t,
-                                                  const size_t dir) {
+                                                  const size_t dir,
+                                                  const size_t verbose) {
   //Information on Matrix size
   const int dim_col = v.cols();
+  const int dim_row = v.rows();
   //Loop over all eigenvectors in 
-    //storing eigenvector
-    Eigen::VectorXcd in(dim_row);
-    Eigen::MatrixXcd out(dim_row, dim_col);
+  //storing eigenvector
+  Eigen::VectorXcd in(dim_row);
+  Eigen::MatrixXcd out(dim_row, dim_col);
   for(int ev=0; ev < dim_col; ++ev){ 
     in = v.col(ev);
     //multiply eigenvector with according gauge matrix

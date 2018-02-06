@@ -118,19 +118,21 @@ class GaugeField {
     //! The derivative is taken in one operator $\bar{\Psi_{f}}
     //! \overleftrightarrow{D}\Psi_{f'}$.
     Eigen::MatrixXcd symmetric_derivative(const Eigen::MatrixXcd& v,
-                                          const size_t t, const size_t dir)
+                                          const size_t t, const size_t dir);
     //! brief subfunction for symmetric_derivative
     //!
     //! calculates product U_\mu(x) * V(x)
-    Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
+    Eigen::MatrixXcd Umu_times_V(const Eigen::MatrixXcd& v,
                                                   const size_t t,
-                                                  const size_t dir);
+                                                  const size_t dir,
+                                                  const size_t verbose);
     //! brief subfunction for symmetric_derivative
     //!
     //! calculates product U_\mu(x) * V(x+\mu)
-    Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
+    Eigen::MatrixXcd Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
                                                   const size_t t,
-                                                  const size_t dir);
+                                                  const size_t dir,
+                                                  const size_t verbose);
 
     //! \brief Returns symmetric 2 times displaced vector or matrix
     //! 

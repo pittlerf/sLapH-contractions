@@ -58,7 +58,19 @@ include_directories(${Boost_INCLUDE_DIRS})
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   find_package(Eigen3 REQUIRED)
 endif()
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
+
+# Lime
+if(NOT DEFINED LIME_INCLUDE_DIRS)
+  message(FATAL_ERROR "Must specify -DLIME_INCLUDE_DIRS on the command line to CMake.")
+endif()
+include_directories(SYSTEM ${LIME_INCLUDE_DIRS})
+
+# Lime
+if(NOT DEFINED LIME_LIBRARIES)
+  message(FATAL_ERROR "Must specify -DLIME_LIBRARIES on the command line to CMake.")
+endif()
+
 
 # OpenMP
 find_package(OpenMP)
@@ -129,11 +141,8 @@ add_executable(contract
 target_link_libraries(contract 
   ${Boost_LIBRARIES}
   ${HDF5_LIBRARIES}
+  ${LIME_LIBRARIES}
   )
-
-if(cmake_build_type_lower STREQUAL "debug")
-  target_link_libraries(contract)
-endif()
 
 install(TARGETS contract DESTINATION bin)
 
@@ -142,6 +151,18 @@ install(TARGETS contract DESTINATION bin)
 add_executable(test-dilution-iterator
   main/test-iterator.cpp
   modules/dilution-iterator.cpp
+  )
+
+### test-derivative
+add_executable(test-derivative
+  main/test-derivative.cpp
+  modules/io_utils.cpp
+  modules/GaugeField.cpp
+  modules/EigenVector.cpp
+  )
+
+target_link_libraries(test-derivative
+  ${LIME_LIBRARIES}
   )
 
 ###############################################################################
