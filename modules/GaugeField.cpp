@@ -444,9 +444,83 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
 }
 
 // Symmetric Derivative
+// Constructs 0.5*( V^\dag(x)U_mu(x)V(x+\mu) 
+//                - V^\dag(x-mu)U^\dag_mu(x-\mu)V(x) ) 
 Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,       
                                                   const size_t t,
                                                   const size_t dir) {
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  //Loop over all eigenvectors in 
+    //storing eigenvector
+    Eigen::VectorXcd in(dim_row);
+    Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+
+    //Displace eigenvector
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      //std::cout << "x: " << spatial_ind << std::endl;
+      Eigen::Vector3cd tmp;
+      Eigen::Vector3cd quark_up;
+      Eigen::Vector3cd quark_down;
+
+      //determine needed indices from lookup tables;
+      int up_ind = iup[spatial_ind][dir];
+      int down_ind = idown[spatial_ind][dir];
+
+      quark_up = in.segment(3*up_ind,3);
+      quark_down = in.segment(3*down_ind,3);
+        tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
+            ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
+      (out.col(ev)).segment(3*spatial_ind,3) = tmp;
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
+
+}
+
+Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
+                                                  const size_t t,
+                                                  const size_t dir) {
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  //Loop over all eigenvectors in 
+    //storing eigenvector
+    Eigen::VectorXcd in(dim_row);
+    Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+    //multiply eigenvector with according gauge matrix
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[spatial_ind][dir]
+                                              *in.segment(3*spatial_ind,3);
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
+}
+
+Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
+                                                  const size_t t,
+                                                  const size_t dir) {
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  //Loop over all eigenvectors in 
+    //storing eigenvector
+    Eigen::VectorXcd in(dim_row);
+    Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+    //multiply eigenvector with according gauge matrix
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      Eigen::Vector3cd quark_up;
+      int up_ind = iup[spatial_ind][dir];
+      quark_up = in.segment(3*up_ind,3);
+      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[spatial_ind][dir]
+                                              *quark_up;
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
