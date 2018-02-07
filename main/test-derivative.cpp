@@ -19,7 +19,7 @@ int main() {
   GaugeField gauge = GaugeField(24,12,12,12, path_gauge_in,0,23,4);
   gauge.read_gauge_field(400,0,23);
   std::cout << V_t[1](0,0) << std::endl;
-  std::cout << V_t[1].col(0).segment(3*(5*12*12+4*12+3),3) <<std::endl;
+  std::cout << V_t[1].col(0).segment(3*(3*12*12+4*12+5),3) <<std::endl;
   for (size_t t = 0; t < 24; ++t){
     // Calculate Umu_V
     Eigen::MatrixXcd umu_v = gauge.Umu_times_V(V_t[t],t,0,1);
