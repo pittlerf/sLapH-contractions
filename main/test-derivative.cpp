@@ -12,6 +12,7 @@ int main() {
   EigenVector V_t(24,dim_row,48);
   EigenVector UV(24,dim_row,48);
   EigenVector UVshift(24,dim_row,48);
+  EigenVector derivative(24,dim_row,48);
   auto const path_in = (boost::format("%s/eigenvectors.0400.") %
                           path_ev_in).str();
   V_t.read_eigen_vector(path_in,0);
@@ -25,10 +26,16 @@ int main() {
     Eigen::MatrixXcd umu_v = gauge.Umu_times_V(V_t[t],t,0,1);
     // Calculate Umu_V_shifted
     Eigen::MatrixXcd umu_vshift = gauge.Umu_times_shiftedV(V_t[t],t,0,1);
+    // Calculate complete derivative
+    Eigen::MatrixXcd symmetric_derivative = gauge.symmetric_derivative(V_t[t],
+                                                                       t,0);
+    std::cout << "Timeslice: " << t 
+              << " tr(V^dagDV) = " << symmetric_derivative.trace() << std::endl;
 
     // Write them to disk
     UV.set_V(umu_v,t);
     UVshift.set_V(umu_vshift,t);
+    derivative.set_V(symmetric_derivative,t);
     auto const path_uxvx= (boost::format("%s/%s/eigenvectors.0400.%03d") 
                            % path_ev_out % "/UxVx" % t).str();
     UV.write_eigen_vector(path_uxvx, t, 0);
@@ -36,5 +43,9 @@ int main() {
     auto const path_uxvxp1= (boost::format("%s/%s/eigenvectors.0400.%03d") 
                            % path_ev_out % "/UxVxp1" % t).str();
     UVshift.write_eigen_vector(path_uxvxp1, t, 0);
+
+    //auto const path_derivative= (boost::format("%s/%s/eigenvectors.0400.%03d") 
+    //                       % path_ev_out % "/derivative" % t).str();
+    //derivative.write_eigen_vector(path_derivative, t, 0);
   }
 }

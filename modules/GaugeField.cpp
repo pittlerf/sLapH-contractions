@@ -443,43 +443,49 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
   return out;
 }
 
+Eigen::MatrixXcd GaugeField::shift(const Eigen::MatrixXcd& v,
+                                   const size_t step,
+                                   const size_t dir){
+  look lookuptable;
+  // +1 means we want to shift up
+  if(step == 1) lookuptable = iup;
+  // -1 means we want to shift down
+  if(step == -1) lookuptable = idown;
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  const int dim_row = v.rows();
+  Eigen::MatrixXcd out(dim_row,dim_col);
+  for(int ev=0; ev < dim_col; ++ev){
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      int lookup_ind = lookuptable[spatial_ind][dir];
+      (out.col(ev)).segment(3*spatial_ind,3) = (v.col(ev)).segment(3*lookup_ind,3);
+    }
+  }
+  return out;
+}
+
 // Symmetric Derivative
 // Constructs 0.5*( V^\dag(x)U_mu(x)V(x+\mu) 
 //                - V^\dag(x-mu)U^\dag_mu(x-\mu)V(x) ) 
-Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,       
+//
+Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v, 
                                                   const size_t t,
                                                   const size_t dir) {
   //Information on Matrix size
   const int dim_col = v.cols();
+  const int dim_row = v.rows();
   //Loop over all eigenvectors in 
-    //storing eigenvector
-    Eigen::VectorXcd in(dim_row);
-    Eigen::MatrixXcd out(dim_row, dim_col);
-  for(int ev=0; ev < dim_col; ++ev){ 
-    in = v.col(ev);
-
-    //Displace eigenvector
-    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
-      //std::cout << "x: " << spatial_ind << std::endl;
-      Eigen::Vector3cd tmp;
-      Eigen::Vector3cd quark_up;
-      Eigen::Vector3cd quark_down;
-
-      //determine needed indices from lookup tables;
-      int up_ind = iup[spatial_ind][dir];
-      int down_ind = idown[spatial_ind][dir];
-
-      quark_up = in.segment(3*up_ind,3);
-      quark_down = in.segment(3*down_ind,3);
-        tmp = 0.5 * ( ( (tslices.at(t))[spatial_ind][dir] * quark_up) - 
-            ( ( (tslices.at(t))[down_ind][dir].adjoint() ) * quark_down) ); 
-      (out.col(ev)).segment(3*spatial_ind,3) = tmp;
-    }//end spatial loop
-  }//end eigenvector loop
+  //storing eigenvector
+  Eigen::MatrixXcd out(dim_row, dim_col); 
+  // TODO: Should come out without that?
+  Eigen::MatrixXcd w_dagger(dim_col, dim_row); 
+  //Shift goes in negative direction -> step == -1
+  w_dagger = shift(Umu_times_V(v,t,dir,0),-1,dir).adjoint();
+  out = 0.5*(v.adjoint()*Umu_times_shiftedV(v,t,dir,0) - w_dagger*v);
   return out;
-
 }
 
+// Calculate U_mu(x)V(x)
 Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
                                                   const size_t t,
                                                   const size_t dir,
@@ -507,6 +513,7 @@ Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
   return out;
 }
 
+// Calculates U_mu(x)V(x+\hat{\mu})
 Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
                                                   const size_t t,
                                                   const size_t dir,

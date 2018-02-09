@@ -110,6 +110,13 @@ class GaugeField {
     //! sym inidcates whether a symmetrized derivative should be used.
     Eigen::MatrixXcd disp(const Eigen::MatrixXcd& v, const size_t t,
                           const size_t dir, bool sym);
+    //! brief Shift eigenvectors about one step up or down in one direction
+    //!
+    //! v is the address of the Object to be shifted (one timeslice of an
+    //! Eigensystem). step chooses if we want to shift up or down (+1 for up,-1
+    //! for down), dir chooses the x,y or z direction 0,1 or 2, respectively.
+    Eigen::MatrixXcd shift(const Eigen::MatrixXcd& v, const size_t step,
+                           const size_t dir);
 
     //! brief Returns displaced vector or matrix
     //
