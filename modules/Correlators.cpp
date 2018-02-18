@@ -35,6 +35,15 @@ void build_trQ1Q1(DiagramParts &q,
                                                 q.q1[{t2, b1}].at({c_look.lookup[1]}));
 }
 
+void build_trQ1(DiagramParts &q,
+                DiagramIndex const &c_look,
+                int const t,
+                int const b) {
+  q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+}
+
+
+
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -157,11 +166,11 @@ void contract(const size_t Lt,
 
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
-        auto const t = slice_pair.source();
-        auto const b = slice_pair.source_block();
-
         for (const auto &c_look : corr_lookup.trQ1) {
-          q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+          build_trQ1(q,
+                      c_look,
+                      slice_pair.source(),
+                      slice_pair.source_block());
         }
       }
 
