@@ -1,10 +1,17 @@
 #!/bin/bash
-# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 # Licensed under the MIT/Expat license.
 
 set -e
 set -u
 set -x
+
+sourcedir="$(pwd)"
+builddir=build-contraction
+
+###############################################################################
+#                              Install Packages                               #
+###############################################################################
 
 ubuntu_packages=(
     gcc-7 g++-7
@@ -20,22 +27,36 @@ sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install -y "${ubuntu_packages[@]}"
 
-sourcedir="$(pwd)"
-builddir=build-contraction
+###############################################################################
+#                              Fix Eigen Library                              #
+###############################################################################
 
 sudo updatedb
 locate FindEigen3.cmake
 
 cd ..
 
-
 mkdir cmake-module
 cp $(locate FindEigen3.cmake) cmake-module
 
+###############################################################################
+#                              Build Google Test                              #
+###############################################################################
+
+mkdir "gtest"
+pushd "gtest"
+cmake /usr/src/gtest
+make -j $(nproc)
+sudo make install
+popd
+
+###############################################################################
+#                          Build sLapH-contractions                           #
+###############################################################################
 
 rm -rf "$builddir"
 mkdir -p "$builddir"
-cd "$builddir"
+pushd "$builddir"
 
 CXX=$(which g++-7)
 
