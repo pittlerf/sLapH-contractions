@@ -47,7 +47,7 @@ mkdir "gtest"
 pushd "gtest"
 cmake /usr/src/gtest
 make -j $(nproc)
-sudo make install
+sudo cp *.a /usr/lib/
 popd
 
 ###############################################################################
