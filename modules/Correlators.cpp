@@ -170,7 +170,7 @@ void contract(const size_t Lt,
           build_trQ1(q,
                       c_look,
                       slice_pair.source(),
-                      slice_pair.source_block(),
+                      slice_pair.source_block());
         }
       }
 
