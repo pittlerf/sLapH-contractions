@@ -43,6 +43,8 @@ cp $(locate FindEigen3.cmake) cmake-module
 #                              Build Google Test                              #
 ###############################################################################
 
+# https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/
+
 mkdir "gtest"
 pushd "gtest"
 cmake /usr/src/gtest
