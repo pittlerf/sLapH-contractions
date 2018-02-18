@@ -44,10 +44,8 @@ CXX=$(which g++-7)
 pushd /usr/src/gtest
 sudo cmake CMakeLists.txt -DCMAKE_CXX_COMPILER="$CXX"
 sudo make -j $(nproc)
-popd
- 
-# copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
 sudo cp *.a /usr/lib
+popd
 
 cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
 make -j $(nproc)
