@@ -43,6 +43,7 @@
 #include "RandomVector.h"
 #include "typedefs.h"
 
+
 //! \typedef 2dim array for lookup tables
 typedef boost::multi_array<int, 2> look;
 //! \typedef 2dim array for gauge field matrices of one timeslice.
@@ -103,20 +104,58 @@ class GaugeField {
     int get_up(const int pos, const int dir);
     int get_dn(const int pos, const int dir);
 
+    //! Summ displacement vectors for phasefactor
+    //!
+    //!
+    Eigen::Vector3f summed_displacement(const eig_vec_disps);
+
+    //! \brief Forward displacement acting to the right once in direction dir
+    //! 
+    //! v is the eigensystem at timeslice t
+    //! t is the timeslice index
+    //! dir is the direction of the derivative
+    Eigen::MatrixXcd forward_uv(const Eigen::MatrixXcd& v, const size_t t,
+                                                  const char dir,
+                                                  const size_t verbose);
+
+    //! \brief Backward displacement acting to the right once in direction dir
+    //! 
+    //! v is the eigensystem at timeslice t
+    //! t is the timeslice index
+    //! dir is the direction of the derivative
+    Eigen::MatrixXcd backward_uv(const Eigen::MatrixXcd& v, const size_t t,
+                                                  const char dir,
+                                                  const size_t verbose);
+
+    //! \brief Displace Matrix of eigenvectors by looping over displacement
+    //! vectors
+    //!
+    //! v is the Eigensystem at a specific timeslice
+    //! t is the timeslice to take into account
+    //! disp is a vector of displacement pairs
+    //! verbose is an integer controlling the debug level
+    //! The eigenvectors of timeslice t are displaced using the vector of
+    //! displacement pairs. The First entry of each pair specifies the direction
+    //! of the right acting derivative, ">" meaning forward and "<" meaning backward
+    Eigen::MatrixXcd displace_eigenvectors(const Eigen::MatrixXcd& v,
+                                           const size_t t,
+                                           const eig_vec_disps disp,
+                                           const size_t verbose);
+  
     //! \brief Returns displaced vector or matrix
     //! 
     //! v is the address of the Object to be displaced, t is the timeslice
     //! index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively
     //! sym inidcates whether a symmetrized derivative should be used.
-    Eigen::MatrixXcd disp(const Eigen::MatrixXcd& v, const size_t t,
-                          const size_t dir, bool sym);
+    //Eigen::MatrixXcd disp(const Eigen::MatrixXcd& v, const size_t t,
+    //                      const size_t dir, bool sym);
     //! brief Shift eigenvectors about one step up or down in one direction
     //!
     //! v is the address of the Object to be shifted (one timeslice of an
     //! Eigensystem). step chooses if we want to shift up or down (+1 for up,-1
     //! for down), dir chooses the x,y or z direction 0,1 or 2, respectively.
-    Eigen::MatrixXcd shift(const Eigen::MatrixXcd& v, const size_t step,
-                           const size_t dir);
+    //Eigen::MatrixXcd shift(const Eigen::MatrixXcd& v, const size_t step,
+    //                       const size_t dir);
 
     //! brief Returns displaced vector or matrix
     //
@@ -124,29 +163,29 @@ class GaugeField {
     //! index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively
     //! The derivative is taken in one operator $\bar{\Psi_{f}}
     //! \overleftrightarrow{D}\Psi_{f'}$.
-    Eigen::MatrixXcd symmetric_derivative(const Eigen::MatrixXcd& v,
-                                          const size_t t, const size_t dir);
+    //Eigen::MatrixXcd symmetric_derivative(const Eigen::MatrixXcd& v,
+    //                                      const size_t t, const size_t dir);
     //! brief subfunction for symmetric_derivative
     //!
     //! calculates product U_\mu(x) * V(x)
-    Eigen::MatrixXcd Umu_times_V(const Eigen::MatrixXcd& v,
-                                                  const size_t t,
-                                                  const size_t dir,
-                                                  const size_t verbose);
+    //Eigen::MatrixXcd Umu_times_V(const Eigen::MatrixXcd& v,
+    //                                              const size_t t,
+    //                                              const size_t dir,
+    //                                              const size_t verbose);
     //! brief subfunction for symmetric_derivative
     //!
     //! calculates product U_\mu(x) * V(x+\mu)
-    Eigen::MatrixXcd Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
-                                                  const size_t t,
-                                                  const size_t dir,
-                                                  const size_t verbose);
+    //Eigen::MatrixXcd Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
+    //                                              const size_t t,
+    //                                              const size_t dir,
+    //                                              const size_t verbose);
 
     //! \brief Returns symmetric 2 times displaced vector or matrix
     //! 
     //! v is the address of the Object to be displaced, t is the timeslice
     //! index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively
-    Eigen::MatrixXcd disp_2(const Eigen::MatrixXcd& v, const size_t t,
-                          const size_t dir);
+    //Eigen::MatrixXcd disp_2(const Eigen::MatrixXcd& v, const size_t t,
+    //                      const size_t dir);
     //! \brief Gauge Transformation of timeslices
     //!
     //! For generating the transformation fields indices of the initial

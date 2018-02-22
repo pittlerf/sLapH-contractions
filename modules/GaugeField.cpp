@@ -400,6 +400,7 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
 ///Displacement routines, returning one Eigenvector/Eigensystem////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/*
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
                                      const size_t t, const size_t dir, bool forward ) {
@@ -484,7 +485,121 @@ Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,
   out = 0.5*(v.adjoint()*Umu_times_shiftedV(v,t,dir,0) - w_dagger*v);
   return out;
 }
+*/
 
+static size_t map_char_to_dir(const char dir){
+  size_t integer_dir;
+  if (dir == 'x') integer_dir = 0; 
+  if (dir == 'y') integer_dir = 1; 
+  if (dir == 'z') integer_dir = 2; 
+  return integer_dir; 
+}
+
+static Eigen::Vector3f cartesian_vector(const char dim){
+  Eigen::Vector3f cart(0,0,0);
+  switch (dim){
+    case 'x':
+      cart = Eigen::Vector3f::UnitX();
+      break;
+    case 'y':
+      cart = Eigen::Vector3f::UnitY();
+      break;
+    case 'z': 
+      cart = Eigen::Vector3f::UnitZ();
+      break;
+    throw std::runtime_error("Dimension unknown");
+  }
+  return cart;
+}
+
+Eigen::Vector3f GaugeField::summed_displacement(const eig_vec_disps displacement){
+  Eigen::Vector3f k;
+  k = Eigen::Vector3f::Zero();
+  for(const auto& d : displacement){
+    // TODO: Think that this does not work, d.second is of type char
+    d.first == '>' ? k+=cartesian_vector(d.second) 
+                   : k-=cartesian_vector(d.second);
+  }
+  return k;
+}
+
+// Calculates U_mu(x)V(x+\hat{\mu})
+Eigen::MatrixXcd GaugeField::forward_uv(const Eigen::MatrixXcd& v,       
+                                                  const size_t t,
+                                                  const char dir,
+                                                  const size_t verbose) {
+  // Map direction character to size_t
+  const size_t integer_dir = map_char_to_dir(dir);
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  const int dim_row = v.rows();
+  //Loop over all eigenvectors in 
+  //storing eigenvector
+  Eigen::VectorXcd in(dim_row);
+  Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+    //multiply eigenvector with according gauge matrix
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      Eigen::Vector3cd quark_up;
+      int up_ind = iup[spatial_ind][integer_dir];
+      quark_up = in.segment(3*up_ind,3);
+      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[spatial_ind][integer_dir]
+                                              *quark_up;
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
+
+}
+
+// Calculates U_mu^dagger(x-\hat{mu})V(x-\hat{\mu})
+Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::MatrixXcd& v,       
+                                                  const size_t t,
+                                                  const char dir,
+                                                  const size_t verbose) {
+  // Map direction character to size_t
+  const size_t integer_dir = map_char_to_dir(dir);
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  const int dim_row = v.rows();
+  //Loop over all eigenvectors in 
+  //storing eigenvector
+  Eigen::VectorXcd in(dim_row);
+  Eigen::MatrixXcd out(dim_row, dim_col);
+  for(int ev=0; ev < dim_col; ++ev){ 
+    in = v.col(ev);
+    //multiply eigenvector with according gauge matrix
+    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
+      Eigen::Vector3cd quark_down;
+      int down_ind = idown[spatial_ind][integer_dir];
+      quark_down = in.segment(3*down_ind,3);
+      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[down_ind][integer_dir].adjoint()
+                                              *quark_down;
+    }//end spatial loop
+  }//end eigenvector loop
+  return out;
+
+}
+
+// Generalized Displacements for several displacements in a row
+Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
+                                                   const size_t t,
+                                                   const eig_vec_disps disp,
+                                                   const size_t verbose){
+  //Information on Matrix size
+  const int dim_col = v.cols();
+  const int dim_row = v.rows();
+
+  Eigen::MatrixXcd out=v;
+  // iterate over displacement vector
+  for (const auto& d : disp){
+    d.first == '>' ?  out = forward_uv(out,t,d.second,verbose) 
+                   :  out = backward_uv(out,t,d.second,verbose);
+  }
+  return out;
+}
+
+/*
 // Calculate U_mu(x)V(x)
 Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
                                                   const size_t t,
@@ -584,7 +699,7 @@ Eigen::MatrixXcd GaugeField::disp_2(const Eigen::MatrixXcd& v,
   }//end eigenvector loop
   return out;
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////
 ///Gaugefield transformations//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

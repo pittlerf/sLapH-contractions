@@ -228,6 +228,16 @@ struct DilutedFactorIndex {
   std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
 };
 
+/*! Vector for displacing eigenvectors
+ * the entries are pairs of the form (">";"x") where the first entry specifies
+ * the directions forward (">") ore backward ("<") of the derivative the second
+ * entry of each pair specifies the spatial direction of the derivative. One can
+ * displace in "x", "y" or "z" direction.
+ *
+ * Example: {(>;x),(<;y),(<;x),...,(>;z)}
+ */
+typedef std::vector<std::pair<char,char>> eig_vec_disps;
+
 inline bool operator==(DilutedFactorIndex const &first, DilutedFactorIndex const second) {
   if ((first.id_vdaggerv == second.id_vdaggerv) &&
       (first.need_vdaggerv_daggering == second.need_vdaggerv_daggering) &&
