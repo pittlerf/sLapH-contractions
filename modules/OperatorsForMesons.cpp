@@ -101,7 +101,8 @@ OperatorFactory::OperatorFactory(const size_t Lt,
                                  const size_t dilE,
                                  const OperatorLookup &operator_lookuptable,
                                  const std::string &handling_vdaggerv,
-                                 const std::string &path_vdaggerv)
+                                 const std::string &path_vdaggerv,
+                                 const std::string &path_config)
     : vdaggerv(),
       momentum(),
       operator_lookuptable(operator_lookuptable),
@@ -112,7 +113,9 @@ OperatorFactory::OperatorFactory(const size_t Lt,
       nb_ev(nb_ev),
       dilE(dilE),
       handling_vdaggerv(handling_vdaggerv),
-      path_vdaggerv(path_vdaggerv) {
+      path_vdaggerv(path_vdaggerv),
+      path_config(path_config) {
+
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[operator_lookuptable.vdaggerv_lookup.size()][Lt]);
 

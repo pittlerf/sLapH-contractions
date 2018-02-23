@@ -29,8 +29,8 @@ int main() {
   //                             std::pair<char,char> ('<','z')};
   eig_vec_disps displacements {std::pair<char,char> ('>','x'),
                                std::pair<char,char> ('>','y'),
-                               std::pair<char,char> ('<','y'),
-                               std::pair<char,char> ('<','x')
+                               std::pair<char,char> ('<','x'),
+                               std::pair<char,char> ('<','y')
                                };
   for (auto& d : displacements) std::cout<<d.first<<' '<<d.second<<std::endl;
   Eigen::Vector3f displacement_phase_vector = gauge.summed_displacement(displacements);
