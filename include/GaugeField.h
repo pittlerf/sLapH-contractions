@@ -107,7 +107,7 @@ class GaugeField {
     //! Summ displacement vectors for phasefactor
     //!
     //!
-    Eigen::Vector3f summed_displacement(const eig_vec_disps);
+    Eigen::Vector3f summed_displacement(const DisplacementDirection);
 
     //! \brief Forward displacement acting to the right once in direction dir
     //! 
@@ -139,7 +139,7 @@ class GaugeField {
     //! of the right acting derivative, ">" meaning forward and "<" meaning backward
     Eigen::MatrixXcd displace_eigenvectors(const Eigen::MatrixXcd& v,
                                            const size_t t,
-                                           const eig_vec_disps disp,
+                                           const DisplacementDirection disp,
                                            const size_t verbose);
   
     //! \brief Returns displaced vector or matrix

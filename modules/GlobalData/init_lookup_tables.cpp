@@ -464,7 +464,7 @@ void build_VdaggerV_lookup(
           vdaggerv_lookup.begin(),
           vdaggerv_lookup.end(),
           [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
-            auto c1 = (Vector(vdv_qn.displacement.data()) == qn.displacement);
+            auto c1 = (vdv_qn.displacement == qn.displacement);
             auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
             // also negative momentum is checked
             auto c3 = (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
@@ -473,7 +473,7 @@ void build_VdaggerV_lookup(
             if (c1 and c2) {
               dagger = false;
               return true;
-            } else if ((c1 and c3) and (qn.displacement == zero)) {
+            } else if ((c1 and c3) and (qn.displacement.empty() )) {
               dagger = true;
               return true;
             } else
@@ -487,7 +487,7 @@ void build_VdaggerV_lookup(
         vdaggerv_lookup.emplace_back(VdaggerVQuantumNumbers(
             vdaggerv_lookup.size(),
             {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
-            {qn.displacement[0], qn.displacement[1], qn.displacement[2]}));
+            qn.displacement));
         vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
       }
     }
@@ -2039,7 +2039,7 @@ void GlobalData::init_lookup_tables() {
   std::array<int, 3> const zero{0, 0, 0};
   bool found = false;
   for (const auto &op_vdv : operator_lookuptable.vdaggerv_lookup)
-    if ((op_vdv.momentum == zero) && (op_vdv.displacement == zero)) {
+    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty() )) {
       operator_lookuptable.index_of_unity = op_vdv.id;
       found = true;
     }

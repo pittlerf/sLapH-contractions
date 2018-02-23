@@ -24,10 +24,10 @@ int main() {
   std::cout << V_t[1].col(0).segment(3*(3*12*12+4*12+5),3) <<std::endl;
 
   //Test the displacement phase
-  //eig_vec_disps displacements {std::pair<char,char> ('>','x'),
+  //DisplacementDirection displacements {std::pair<char,char> ('>','x'),
   //                             std::pair<char,char> ('>','y'),
   //                             std::pair<char,char> ('<','z')};
-  eig_vec_disps displacements {std::pair<char,char> ('>','x'),
+  DisplacementDirection displacements {std::pair<char,char> ('>','x'),
                                std::pair<char,char> ('>','y'),
                                std::pair<char,char> ('<','x'),
                                std::pair<char,char> ('<','y')

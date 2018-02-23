@@ -512,7 +512,7 @@ static Eigen::Vector3f cartesian_vector(const char dim){
   return cart;
 }
 
-Eigen::Vector3f GaugeField::summed_displacement(const eig_vec_disps displacement){
+Eigen::Vector3f GaugeField::summed_displacement(const DisplacementDirection displacement){
   Eigen::Vector3f k;
   k = Eigen::Vector3f::Zero();
   for(const auto& d : displacement){
@@ -584,7 +584,7 @@ Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::MatrixXcd& v,
 // Generalized Displacements for several displacements in a row
 Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
                                                    const size_t t,
-                                                   const eig_vec_disps disp,
+                                                   const DisplacementDirection disp,
                                                    const size_t verbose){
   //Information on Matrix size
   const int dim_col = v.cols();

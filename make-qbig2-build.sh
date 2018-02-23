@@ -22,7 +22,9 @@ for buildtype in release debug; do
     cmake \
         "$sourcedir" \
         -DCMAKE_MODULE_PATH=/usr/share/cmake-3.0/Modules/ \
-        -DCMAKE_BUILD_TYPE=$buildtype
+        -DCMAKE_BUILD_TYPE=$buildtype \
+        -DLIME_INCLUDE_DIRS='/hadron/helmes/libraries/lime-1.3.2/include' \
+        -DLIME_LIBRARIES='-L /hadron/helmes/libraries/lime-1.3.2/lib -llime' 
 
     make -j $(nproc)
     popd
