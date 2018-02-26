@@ -123,12 +123,14 @@ add_executable(contract
   modules/dilution-iterator.cpp
   modules/EigenVector.cpp
   modules/Gamma.cpp
+  modules/GaugeField.cpp
   modules/GlobalData/global_data.cpp
   modules/GlobalData/global_data_build_IO_names.cpp
   modules/GlobalData/global_data_input_handling.cpp
   modules/GlobalData/global_data_input_handling_utils.cpp
   modules/GlobalData/init_lookup_tables.cpp
   modules/h5-wrapper.cpp
+  modules/io_utils.cpp
   modules/OperatorsForMesons.cpp
   modules/Perambulator.cpp
   modules/QuarkLineBlock2.cpp

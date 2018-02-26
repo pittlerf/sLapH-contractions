@@ -162,6 +162,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     //gauge.read_gauge_field(CONFIG,0,Lt-1);
     Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
     Eigen::VectorXcd dis = Eigen::VectorXcd::Zero(dim_row);
+    // Check if gauges are needed
+    bool need_gauge = false;
+    for (auto const& op : operator_lookuptable.vdaggerv_lookup)
+        if(!op.displacement.empty()) need_gauge=true;
+    GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, path_config,0,Lt-1,4);
+    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1); 
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
 #pragma omp for schedule(dynamic)
     for (size_t t = 0; t < Lt; ++t) {
@@ -182,18 +188,20 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
         // the calculation is not performed
         if (op.id != id_unity) {
           // Forward derivative
-          //Eigen::MatrixXcd W_t = gauge.displace_eigenvectors(V_t[0],t,DISPLACEMENT);
-          //phase = for (size_t x = 0; x < dim_row; ++x){
-            // TODO: still needs to be implemented, perhaps compine with momenta 
-            //dis(x) = gauge.phase(x,DISPLACEMENT);
-          //} 
-          //vdaggerv[op.id][t] = phase.asDiagonal() * V_t[0].adjoint() * W_t;
+          Eigen::MatrixXcd W_t;
+          if (!op.displacement.empty()){
+            W_t = gauge.displace_eigenvectors(V_t[0],t,op.displacement,1);
+            vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+          }
+          else {
+            W_t = V_t[0];
+          }
           // momentum vector contains exp(-i p x). Divisor 3 for colour index.
           // All three colours on same lattice site get the same momentum.
-          //for (size_t x = 0; x < dim_row; ++x) {
-          //  mom(x) = momentum[op.id][x / 3];
-          //}
-          //vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * V_t[0];
+          for (size_t x = 0; x < dim_row; ++x) {
+            mom(x) = momentum[op.id][x / 3];
+          }
+          vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
             char dummy2[200];
