@@ -48,6 +48,7 @@ pushd c-lime
 ./autogen.sh
 ./configure
 make -j $(nproc)
+sudo make install
 popd
 
 ###############################################################################
