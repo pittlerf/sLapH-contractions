@@ -9,6 +9,8 @@ set -x
 sourcedir="$(pwd)"
 builddir=build-contraction
 
+cd ..
+
 ###############################################################################
 #                              Install Packages                               #
 ###############################################################################
@@ -34,10 +36,19 @@ sudo apt-get install -y "${ubuntu_packages[@]}"
 sudo updatedb
 locate FindEigen3.cmake
 
-cd ..
-
 mkdir cmake-module
 cp $(locate FindEigen3.cmake) cmake-module
+
+###############################################################################
+#                               Install C-LIME                                #
+###############################################################################
+
+git clone https://github.com/usqcd-software/c-lime.git
+pushd c-lime
+./autogen.sh
+./configure
+make -j $(nproc)
+popd
 
 ###############################################################################
 #                              Build Google Test                              #
