@@ -78,7 +78,7 @@ CXX=$(which g++-7)
 # Compile gtest
 # Modified from https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/
 pushd /usr/src/gtest
-sudo cmake CMakeLists.txt -DCMAKE_CXX_COMPILER="$CXX" -D
+sudo cmake CMakeLists.txt -DCMAKE_CXX_COMPILER="$CXX"
 sudo make -j $(nproc)
 sudo cp *.a /usr/lib
 popd
