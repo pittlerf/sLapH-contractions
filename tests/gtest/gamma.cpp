@@ -12,10 +12,10 @@ Eigen::Matrix4cd sparse_to_eigen_dense(const gamma_lookup sparse){
 }
 
 TEST(gamma,checkBasis){
-  Eigen::Matrix4cd tmlqcd_gamma1;
-  tmlqcd_gamma1 << 0, 0, 1, 0,
+  Eigen::Matrix4cd tmlqcd_gamma0;
+  tmlqcd_gamma0 << 0, 0, 1, 0,
                     0, 0, 0, 1,
                     1, 0, 0, 0,
                     0, 1, 0, 0;
-  EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[1]),tmlqcd_gamma1);
+  EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[0]),tmlqcd_gamma0);
 }

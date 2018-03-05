@@ -1,4 +1,10 @@
-find_package(GTest)
+# Gtest
+if(NOT DEFINED GTEST_INCLUDE_DIRS)
+  find_package(GTest)
+else()
+  set(GTEST_FOUND true)
+endif()
+
 
 if(${GTEST_FOUND})
   include_directories(${GTEST_INCLUDE_DIRS})
@@ -6,6 +12,7 @@ if(${GTEST_FOUND})
   add_executable(main
     main.cpp
     gamma.cpp
+    ../../modules/Gamma.cpp
     )
 
   target_link_libraries(main ${GTEST_LIBRARIES})
