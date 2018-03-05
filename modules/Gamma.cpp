@@ -14,6 +14,10 @@ std::vector<gamma_lookup> make_gamma() {
   std::vector<gamma_lookup> gamma(16);
 
   // gamma_0
+  // 0  0  1  0
+  // 0  0  0  1
+  // 1  0  0  0
+  // 0  1  0  0
   gamma[0].row[0] = 2;
   gamma[0].value[0] = 1;
   gamma[0].row[1] = 3;
@@ -24,6 +28,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[0].value[3] = 1;
 
   // gamma_1
+  // 0  0  0  i
+  // 0  0  i  0
+  // 0 -i  0  0
+  //-i  0  0  0
   gamma[1].row[0] = 3;
   gamma[1].value[0] = -I;
   gamma[1].row[1] = 2;
@@ -34,16 +42,24 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[1].value[3] = I;
 
   // gamma_2
+  // 0  0  0  1
+  // 0  0 -1  0
+  // 0 -1  0  0
+  // 1  0  0  0
   gamma[2].row[0] = 3;
-  gamma[2].value[0] = -1;
+  gamma[2].value[0] = 1;
   gamma[2].row[1] = 2;
-  gamma[2].value[1] = 1;
+  gamma[2].value[1] = -1;
   gamma[2].row[2] = 1;
-  gamma[2].value[2] = 1;
+  gamma[2].value[2] = -1;
   gamma[2].row[3] = 0;
-  gamma[2].value[3] = -1;
+  gamma[2].value[3] = 1;
 
   // gamma_3
+  // 0  0  i  0
+  // 0  0  0 -i
+  //-i  0  0  0
+  // 0  i  0  0
   gamma[3].row[0] = 2;
   gamma[3].value[0] = -I;
   gamma[3].row[1] = 3;
@@ -54,6 +70,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[3].value[3] = -I;
 
   // unity
+  // 1  0  0  0
+  // 0  1  0  0
+  // 0  0  1  0
+  // 0  0  0  1
   gamma[4].row[0] = 0;
   gamma[4].value[0] = 1;
   gamma[4].row[1] = 1;
@@ -64,6 +84,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[4].value[3] = 1;
 
   // gamma_5
+  // 1  0  0  0
+  // 0  1  0  0
+  // 0  0 -1  0
+  // 0  0  0 -1
   gamma[5].row[0] = 0;
   gamma[5].value[0] = 1;
   gamma[5].row[1] = 1;
@@ -74,6 +98,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[5].value[3] = -1;
 
   // gamma_0 * gamma_5
+  // 0  0 -1  0
+  // 0  0  0 -1
+  // 1  0  0  0
+  // 0  1  0  0
   gamma[6].row[0] = 2;
   gamma[6].value[0] = -1;
   gamma[6].row[1] = 3;
@@ -84,6 +112,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[6].value[3] = 1;
 
   // gamma_1 * gamma_5
+  // 0  0  0  i
+  // 0  0  i  0
+  // 0  i  0  0
+  // i  0  0  0
   gamma[7].row[0] = 3;
   gamma[7].value[0] = I;
   gamma[7].row[1] = 2;
@@ -94,6 +126,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[7].value[3] = I;
 
   // gamma_2 * gamma_5
+  // 0  0  0  1
+  // 0  0 -1  0
+  // 0  1  0  0
+  //-1  0  0  0
   gamma[8].row[0] = 3;
   gamma[8].value[0] = 1;
   gamma[8].row[1] = 2;
@@ -104,6 +140,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[8].value[3] = -1;
 
   // gamma_3 * gamma_5
+  // 0  0  i  0
+  // 0  0  0 -i
+  // i  0  0  0
+  // 0 -i  0  0
   gamma[9].row[0] = 2;
   gamma[9].value[0] = I;
   gamma[9].row[1] = 3;
@@ -114,6 +154,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[9].value[3] = -I;
 
   // gamma_0 * gamma_1
+  // 0  i  0  0
+  // i  0  0  0
+  // 0  0  0 -i
+  // 0  0 -i  0
   gamma[10].row[0] = 1;
   gamma[10].value[0] = I;
   gamma[10].row[1] = 0;
@@ -124,6 +168,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[10].value[3] = -I;
 
   // gamma_0 * gamma_2
+  // 0  1  0  0
+  //-1  0  0  0
+  // 0  0  0 -1
+  // 0  0  1  0
   gamma[11].row[0] = 1;
   gamma[11].value[0] = 1;
   gamma[11].row[1] = 0;
@@ -134,6 +182,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[11].value[3] = 1;
 
   // gamma_0 * gamma_3
+  // i  0  0  0
+  // 0 -i  0  0
+  // 0  0 -i  0
+  // 0  0  0  i
   gamma[12].row[0] = 0;
   gamma[12].value[0] = I;
   gamma[12].row[1] = 1;
@@ -144,6 +196,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[12].value[3] = I;
 
   // gamma_0 * gamma_1 * gamma_5
+  // 0  i  0  0
+  // i  0  0  0
+  // 0  0  0  i
+  // 0  0  i  0
   gamma[13].row[0] = 1;
   gamma[13].value[0] = I;
   gamma[13].row[1] = 0;
@@ -154,6 +210,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[13].value[3] = I;
 
   // gamma_0 * gamma_2 * gamma_5
+  // 0  1  0  0
+  //-1  0  0  0
+  // 0  0  0  1
+  // 0  0 -1  0
   gamma[14].row[0] = 1;
   gamma[14].value[0] = 1;
   gamma[14].row[1] = 0;
@@ -164,6 +224,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[14].value[3] = -1;
 
   // gamma_0 * gamma_3 * gamma_5
+  // i  0  0  0
+  // 0 -i  0  0
+  // 0  0  i  0
+  // 0  0  0 -i
   gamma[15].row[0] = 0;
   gamma[15].value[0] = I;
   gamma[15].row[1] = 1;
