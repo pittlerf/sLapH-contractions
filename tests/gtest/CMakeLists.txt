@@ -5,6 +5,7 @@ if(${GTEST_FOUND})
 
   add_executable(main
     main.cpp
+    gamma.cpp
     )
 
   target_link_libraries(main ${GTEST_LIBRARIES})
