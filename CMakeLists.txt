@@ -59,6 +59,7 @@ if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   find_package(Eigen3 REQUIRED)
 endif()
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+message(STATUS "Eigen found at ${EIGEN3_INCLUDE_DIR}")
 
 # OpenMP
 find_package(OpenMP)
