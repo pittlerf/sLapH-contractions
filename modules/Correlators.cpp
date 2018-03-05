@@ -35,6 +35,15 @@ void build_trQ1Q1(DiagramParts &q,
                                                 q.q1[{t2, b1}].at({c_look.lookup[1]}));
 }
 
+void build_trQ1(DiagramParts &q,
+                DiagramIndex const &c_look,
+                int const t,
+                int const b) {
+  q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+}
+
+
+
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -69,23 +78,37 @@ void contract(const size_t Lt,
   // XXX If we had C++14, we could do `make_unique`.
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt));
-
-  diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt));
-
-  diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
-
-  diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
-  diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
+  if (!corr_lookup.C2c.empty())
+    diagrams.emplace_back(new C2c(corr_lookup.C2c, output_path, output_filename, Lt));
+  if (!corr_lookup.C20.empty())
+    diagrams.emplace_back(new C20(corr_lookup.C20, output_path, output_filename, Lt));
+  if (!corr_lookup.C20V.empty())
+    diagrams.emplace_back(new C20V(corr_lookup.C20V, output_path, output_filename, Lt));
+  
+  if (!corr_lookup.C3c.empty())
+    diagrams.emplace_back(new C3c(corr_lookup.C3c, output_path, output_filename, Lt));
+  if (!corr_lookup.C30.empty())
+    diagrams.emplace_back(new C30(corr_lookup.C30, output_path, output_filename, Lt));
+  if (!corr_lookup.C30V.empty())
+    diagrams.emplace_back(new C30V(corr_lookup.C30V, output_path, output_filename, Lt));
+  
+  if (!corr_lookup.C4cB.empty())
+    diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
+  if (!corr_lookup.C40B.empty())
+    diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
+  if (!corr_lookup.C4cC.empty())
+    diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
+  if (!corr_lookup.C40C.empty())
+    diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
+  
+  if (!corr_lookup.C4cD.empty())
+    diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
+  if (!corr_lookup.C40D.empty())
+    diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
+  if (!corr_lookup.C4cV.empty())
+    diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
+  if (!corr_lookup.C40V.empty())
+    diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 
@@ -157,11 +180,11 @@ void contract(const size_t Lt,
 
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
-        auto const t = slice_pair.source();
-        auto const b = slice_pair.source_block();
-
         for (const auto &c_look : corr_lookup.trQ1) {
-          q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+          build_trQ1(q,
+                      c_look,
+                      slice_pair.source(),
+                      slice_pair.source_block());
         }
       }
 
