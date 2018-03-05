@@ -98,10 +98,10 @@ std::vector<gamma_lookup> make_gamma() {
   gamma[5].value[3] = -1;
 
   // gamma_0 * gamma_5
-  // 0  0 -1  0
-  // 0  0  0 -1
-  // 1  0  0  0
-  // 0  1  0  0
+  // 0  0  1  0
+  // 0  0  0  1
+  //-1  0  0  0
+  // 0 -1  0  0
   gamma[6].row[0] = 2;
   gamma[6].value[0] = -1;
   gamma[6].row[1] = 3;
