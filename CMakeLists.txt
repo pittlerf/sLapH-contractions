@@ -65,6 +65,8 @@ find_package(OpenMP)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
+include_directories(${LIME_INCLUDE_DIRS})
+
 ###############################################################################
 #                                 Build Flags                                 #
 ###############################################################################
@@ -129,6 +131,7 @@ add_executable(contract
 target_link_libraries(contract 
   ${Boost_LIBRARIES}
   ${HDF5_LIBRARIES}
+  ${LIME_LIBRARIES}
   )
 
 if(cmake_build_type_lower STREQUAL "debug")
