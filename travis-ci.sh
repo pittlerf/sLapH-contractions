@@ -49,6 +49,7 @@ pushd c-lime
 ./configure
 make -j $(nproc)
 sudo make install
+limedir=$(pwd)
 popd
 
 ###############################################################################
@@ -82,7 +83,8 @@ sudo make -j $(nproc)
 sudo cp *.a /usr/lib
 popd
 
-cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX"
+cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX" \
+  -DLIME_INCLUDE_DIRS="$limedir/include" -DLIME_LIBRARIES="-L$limedir/libs -llime"
 make -j $(nproc)
 
 ctest --output-on-failure
