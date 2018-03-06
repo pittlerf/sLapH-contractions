@@ -73,72 +73,42 @@ TEST(gamma,checkProducts){
   //Check linear combinations
   // gamma_0 * gamma_5
   Eigen::Matrix4cd gamma05 = tmlqcd_gamma[0] * test_gamma5;
-  std::cout << "\nGamma_0 * Gamma_5"<< std::endl;
-  std::cout << gamma05 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[6]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[6]),gamma05);
 
   // gamma_1 * gamma_5
   Eigen::Matrix4cd gamma15 = tmlqcd_gamma[1] * test_gamma5;
-  std::cout << "\nGamma_1 * Gamma_5"<< std::endl;
-  std::cout << gamma15 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[7]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[7]),gamma15);
 
   // gamma_2 * gamma_5
   Eigen::Matrix4cd gamma25 = tmlqcd_gamma[2] * test_gamma5;
-  std::cout << "\nGamma_2 * Gamma_5"<< std::endl;
-  std::cout << gamma25 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[8]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[8]),gamma25);
 
   // gamma_3 * gamma_5
   Eigen::Matrix4cd gamma35 = tmlqcd_gamma[3] * test_gamma5;
-  std::cout << "\nGamma_3 * Gamma_5"<< std::endl;
-  std::cout << gamma35 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[9]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[9]),gamma35);
 
   // gamma_0 * gamma_1
   Eigen::Matrix4cd gamma01 = tmlqcd_gamma[0] * tmlqcd_gamma[1];
-  std::cout << "\nGamma_0 * Gamma_1:"<< std::endl;
-  std::cout << gamma01 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[10]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[10]),gamma01);
 
   // gamma_0 * gamma_2
   Eigen::Matrix4cd gamma02 = tmlqcd_gamma[0] * tmlqcd_gamma[2];
-  std::cout << "\nGamma_0 * Gamma_2:"<< std::endl;
-  std::cout << gamma02 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[11]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[11]),gamma02);
 
   // gamma_0 * gamma_3
   Eigen::Matrix4cd gamma03 = tmlqcd_gamma[0] * tmlqcd_gamma[3];
-  std::cout << "\nGamma_0 * Gamma_3:"<< std::endl;
-  std::cout << gamma03 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[12]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[12]),gamma03);
 
   // gamma_0 * gamma_1 * gamma_5
   Eigen::Matrix4cd gamma015 = tmlqcd_gamma[0] * tmlqcd_gamma[1] * test_gamma5;
-  std::cout << "\nGamma_0 * Gamma_1 * Gamma_5:"<< std::endl;
-  std::cout << gamma015 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[13]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[13]),gamma015);
 
   // gamma_0 * gamma_2 * gamma_5
   Eigen::Matrix4cd gamma025 = tmlqcd_gamma[0] * tmlqcd_gamma[2] * test_gamma5;
-  std::cout << "\nGamma_0 * Gamma_2 * Gamma_5:"<< std::endl;
-  std::cout << gamma025 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[14]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[14]),gamma025);
 
   // gamma_0 * gamma_3 * gamma_5
   Eigen::Matrix4cd gamma035 = tmlqcd_gamma[0] * tmlqcd_gamma[3] * test_gamma5;
-  std::cout << "\nGamma_0 * Gamma_3 * Gamma_5:"<< std::endl;
-  std::cout << gamma035 << "\n" << std::endl;
-  std::cout << sparse_to_eigen_dense(gamma_vec[15]) << std::endl;
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[15]),gamma035);
 
 }
