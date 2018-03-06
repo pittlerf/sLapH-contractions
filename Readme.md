@@ -3,6 +3,11 @@
 This is the new version of the contraction code. 
 
 
+[GitHub Page](https://github.com/maowerner/sLapH-contractions)
+
+[Doxygen Documentation](https://maowerner.github.io/sLapH-contractions)
+
+
 A Wick contraction in this context means the analytic result obtained when
 "integrating out" fermionic degrees of freedom from the path integral in 
 lattice QCD. Therefor it builds the bridge between the results of the numerical 
