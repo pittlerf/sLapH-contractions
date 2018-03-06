@@ -12,8 +12,8 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <Eigen/Dense>
 
-#include "Eigen/Dense"
 #include "boost/filesystem.hpp"
 #include "boost/multi_array.hpp"
 

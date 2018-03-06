@@ -367,4 +367,5 @@ Correlators_2 make_correlator(const std::string &correlator_string) {
   return {type, quark_number, operator_number, GEVP, tot_mom};
 }
 
+
 }  // end of namespace global_data_utils
