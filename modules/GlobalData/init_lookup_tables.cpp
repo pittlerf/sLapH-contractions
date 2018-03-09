@@ -380,6 +380,7 @@ void build_quantum_numbers_from_correlator_list(
 /*! Makes a string object of a displacement vector */
 static std::string vector_to_string(const std::vector< std::pair<char,char> > &in){
   std::string out;
+  if (in.empty()) out = "000";
   for (auto const& dis : in){ 
     out.push_back(dis.first);
     out.push_back(dis.second);
