@@ -132,25 +132,30 @@ class WriteHDF5Correlator {
    */
   template <typename corr_datatype>
   void write(const std::vector<corr_datatype> &corr, const DiagramIndex &corr_info) {
-    // Turn off the autoprinting when an exception occurs because fuck you
-    // thats why
+    // Exceptions are automatically printed, we do not need this feature.
     H5::Exception::dontPrint();
-    // That's right bitches!
 
-    // create the dataset to write data ----------------------------------------
+    // Create a data set object.
     H5::Group group;
-    H5::DataSet dset;
     H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
+
     hsize_t dim(corr.size());
     H5::DataSpace dspace(1, &dim);
 
-    // actual write
+    // We try to open the data set in the file. If it exists, we do not need to do
+    // anything because we do not overwrite existing data.
     try {
-      dset = file.createDataSet(dataset_name, comp_type, dspace);
+      file.openDataSet(dataset_name);
+      std::cout << "Not writing " << corr_info.hdf5_dataset_name << " because it exists."
+                << std::endl;
+      return;
+    } catch (H5::Exception &) {
+    }
+
+    // Actual write.
+    try {
+      auto dset = file.createDataSet(dataset_name, comp_type, dspace);
       dset.write(&corr[0], comp_type);
-
-      // closing of dset is delegated to destructor ~DataSet
-
     } catch (H5::Exception &e) {
       e.printError();
     }

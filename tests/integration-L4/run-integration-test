@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 
 # This integration test computes a large number of contractions on a 4^4 test
 # lattice and compares the data to some reference result.
