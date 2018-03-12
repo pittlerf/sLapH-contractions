@@ -16,6 +16,7 @@
  */
 
 #include "global_data.h"
+//TODO: Need this header? no function from it called here!
 #include "global_data_utils.h"
 
 namespace {
@@ -375,6 +376,17 @@ void build_quantum_numbers_from_correlator_list(
   }
 }
 
+//TODO: Not the right place, not sure where to place it otherwise
+/*! Makes a string object of a displacement vector */
+static std::string vector_to_string(const std::vector< std::pair<char,char> > &in){
+  std::string out;
+  if (in.empty()) out = "000";
+  for (auto const& dis : in){ 
+    out.push_back(dis.first);
+    out.push_back(dis.second);
+  }
+  return out;
+}
 /******************************************************************************/
 /*! Create the names for output files and hdf5 datasets.
  *
@@ -408,7 +420,7 @@ static void build_correlator_names(
     size_t id = 0;
     for (const auto &qn : qn_row) {  // adding quantum numbers
       filename += std::string("_p") + to_string(qn.momentum);
-      filename += std::string(".d") + to_string(qn.displacement);
+      filename += std::string(".d") + vector_to_string(qn.displacement);
       filename += std::string(".g") + to_string(qn.gamma);
     }
     hdf5_dataset_name.emplace_back(filename);
@@ -427,7 +439,7 @@ static std::string const build_hdf5_dataset_name(
   size_t id = 0;
   for (const auto &op : qn) {  // adding quantum numbers
     filename += std::string("_p") + to_string(op.momentum);
-    filename += std::string(".d") + to_string(op.displacement);
+    filename += std::string(".d") + vector_to_string(op.displacement);
     filename += std::string(".g") + to_string(op.gamma);
   }
   return filename;
@@ -461,7 +473,7 @@ void build_VdaggerV_lookup(
           vdaggerv_lookup.begin(),
           vdaggerv_lookup.end(),
           [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
-            auto c1 = (Vector(vdv_qn.displacement.data()) == qn.displacement);
+            auto c1 = (vdv_qn.displacement == qn.displacement);
             auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
             // also negative momentum is checked
             auto c3 = (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
@@ -470,7 +482,7 @@ void build_VdaggerV_lookup(
             if (c1 and c2) {
               dagger = false;
               return true;
-            } else if ((c1 and c3) and (qn.displacement == zero)) {
+            } else if ((c1 and c3) and (qn.displacement.empty() )) {
               dagger = true;
               return true;
             } else
@@ -484,7 +496,7 @@ void build_VdaggerV_lookup(
         vdaggerv_lookup.emplace_back(VdaggerVQuantumNumbers(
             vdaggerv_lookup.size(),
             {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
-            {qn.displacement[0], qn.displacement[1], qn.displacement[2]}));
+            qn.displacement));
         vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
       }
     }
@@ -1990,7 +2002,7 @@ void GlobalData::init_lookup_tables() {
   std::array<int, 3> const zero{0, 0, 0};
   bool found = false;
   for (const auto &op_vdv : operator_lookuptable.vdaggerv_lookup)
-    if ((op_vdv.momentum == zero) && (op_vdv.displacement == zero)) {
+    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty() )) {
       operator_lookuptable.index_of_unity = op_vdv.id;
       found = true;
     }

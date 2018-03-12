@@ -33,7 +33,8 @@ class EigenVector {
   // writing the eigen vector to some file
   // input: filename -> the filename
   // TODO: NOT IMPLEMENTED YET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  void write_eigen_vector(const std::string &filename) const;
+  void write_eigen_vector(const std::string &filename, const size_t,
+                          const size_t verbose);
   // reading the eigen vectors from some file
   // input: filename -> the filename which must contain the path and the
   //                    filename WITHOUT the timeslice (do not forget the dot :)
@@ -46,4 +47,5 @@ class EigenVector {
   void read_eigen_vector(const std::string &filename,
                          const size_t t,
                          const size_t verbose);
+  void set_V(Eigen::MatrixXcd &v, const size_t t);
 };

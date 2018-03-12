@@ -6,7 +6,7 @@ set -u
 
 tmp="$(mktemp)"
 
-for path in correlators-20180223/*.h5; do
+for path in correlators-20180312/*.h5; do
     basename="${path##*/}"
 
     echo "$basename"

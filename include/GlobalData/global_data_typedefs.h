@@ -88,7 +88,7 @@ struct QuantumNumbers {
   //  using VectorData = std::array<int, 3>;
 
   std::vector<int> gamma;
-  VectorData displacement;
+  DisplacementDirection displacement;
   VectorData momentum;
 };
 
@@ -108,13 +108,23 @@ inline std::string to_string(Eigen::Vector3i const &vec) {
   return result;
 }
 
+inline std::string to_string(DisplacementDirection const &vec) {
+  std::string result("");
+  for (auto const &dir : vec) {
+    result += std::string(dir.first,dir.second);
+  }
+  return result;
+}
 inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn) {
   os << "\tmomentum: " << qn.momentum[0] << qn.momentum[1] << qn.momentum[2]
-     << "\n\tdisplacement: " << qn.displacement[0] << qn.displacement[1]
-     << qn.displacement[2] << "\n\tgamma struct: ";
+     << "\n\tdisplacement: ";
+  for (auto const& dir : qn.displacement){
+    os << dir.first << dir.second;
+  }
+  os << "\n\tgamma struct: ";
   for (const auto &g : qn.gamma)
-    std::cout << g;
-  std::cout << "\n" << std::endl;
+    os << g;
+  os << "\n" << std::endl;
 
   return os;
 }

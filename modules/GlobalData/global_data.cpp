@@ -83,10 +83,10 @@ void GlobalData::read_parameters(int ac, char *av[]) {
       po::value<std::string>(&path_output)->default_value("../../contractions"),
       "path for output")(
       "path_config",
-      po::value<std::string>(&path_config)->default_value("../../configs"),
-      "path for configurations")(
+      po::value<std::string>(&path_config),
+      "path for gauge configurations")(
       "lattice",
-      po::value<std::string>(&name_lattice)->default_value("lattice"),
+      po::value<std::string>(&name_lattice),
       "Codename of the lattice")(
       "Lt", po::value<int>(&Lt)->default_value(0), "Lt: temporal lattice extend")(
       "Lx", po::value<int>(&Lx)->default_value(0), "Lx: lattice extend in x direction")(

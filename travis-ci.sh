@@ -85,6 +85,6 @@ popd
 
 cmake "$sourcedir" -DCMAKE_MODULE_PATH=../cmake-module -DCMAKE_CXX_COMPILER="$CXX" \
   -DLIME_INCLUDE_DIRS="$limedir/include" -DLIME_LIBRARIES="-L$limedir/libs -llime"
-make -j $(nproc)
+make -j $(nproc) || make VERBOSE=1
 
 ctest --output-on-failure

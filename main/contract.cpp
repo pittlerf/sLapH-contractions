@@ -65,7 +65,8 @@ int main (int ac, char* av[]) {
                             (global_data->get_quarks())[0].number_of_dilution_E,
                             global_data->get_operator_lookuptable(),
                             global_data->get_handling_vdaggerv(),
-                            global_data->get_path_vdaggerv());
+                            global_data->get_path_vdaggerv(),
+                            global_data->get_path_config());
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
