@@ -113,7 +113,7 @@ class WriteHDF5Correlator {
       : comp_type(_comp_type) {
     create_folder_for_hdf5_file(output_path.c_str());
 
-    const H5std_string file_name((output_path + "/" + diagram + output_filename).c_str());
+    std::string const file_name(output_path + "/" + diagram + output_filename);
     open_or_create_hdf5_file(file_name);
   }
 
@@ -172,18 +172,18 @@ class WriteHDF5Correlator {
     }
   }
 
-  /*! Opens output file in Truncation mode by default
+  /*! Opens correlator file, preserving existing data.
    *
-   *  @param[in]  name String containing path+filename of the desired file
-   *  @param[out] file File pointer to hdf5 file
-   *
-   *  @todo If overwrite=no flag is set, rather than H5F_ACC_TRUNC should be
-   *        replaced by H5F_ACC_EXCL
-   *
-   *  @throws H5::exception if something goes wrong
+   *  @param[in] name String containing path+filename of the desired file
    */
-  void open_or_create_hdf5_file(const H5std_string &name) {
-    file = H5::H5File(name, H5F_ACC_TRUNC);
+  void open_or_create_hdf5_file(std::string const &name) {
+    const H5std_string file_name(name.c_str());
+
+    if (boost::filesystem::exists(name)) {
+      file = H5::H5File(name, H5F_ACC_RDWR);
+    } else{
+      file = H5::H5File(name, H5F_ACC_TRUNC);
+    }
   }
 
   /*! The hdf5 file pointer */
