@@ -117,7 +117,7 @@ class GlobalData {
   inline std::string get_filename_ending_correlators() {
     return filename_ending_correlators;
   }
-  inline std::string get_config_path() { return path_config; }
+  inline std::string get_path_config() { return path_config; }
   inline size_t get_nb_omp_threads() { return nb_omp_threads; }
   inline size_t get_nb_eigen_threads() { return nb_eigen_threads; }
   inline int get_Lx() { return Lx; }

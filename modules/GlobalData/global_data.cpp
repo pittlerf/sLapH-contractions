@@ -80,15 +80,15 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   // lattice options
   config.add_options()(
       "output_path",
-      po::value<std::string>(&path_output)->default_value("../../contractions"),
+      po::value<std::string>(&path_output),
       "path for output")("overwrite_old",
                          po::value<std::string>(&overwrite)->default_value("no"),
                          "shall old correlator files be overwritten, yes or no")(
       "path_config",
-      po::value<std::string>(&path_config)->default_value("../../configs"),
-      "path for configurations")(
+      po::value<std::string>(&path_config),
+      "path for gauge configurations")(
       "lattice",
-      po::value<std::string>(&name_lattice)->default_value("lattice"),
+      po::value<std::string>(&name_lattice),
       "Codename of the lattice")(
       "Lt", po::value<int>(&Lt)->default_value(0), "Lt: temporal lattice extend")(
       "Lx", po::value<int>(&Lx)->default_value(0), "Lx: lattice extend in x direction")(

@@ -90,6 +90,16 @@ typedef boost::multi_array<Eigen::MatrixXcd, 8> array_Xcd_d8_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 9> array_Xcd_d9_eigen;
 typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
+/*! Vector for displacing eigenvectors
+ * the entries are pairs of the form (">";"x") where the first entry specifies
+ * the directions forward (">") ore backward ("<") of the derivative the second
+ * entry of each pair specifies the spatial direction of the derivative. One can
+ * displace in "x", "y" or "z" direction.
+ *
+ * Example: {(>;x),(<;y),(<;x),...,(>;z)}
+ */
+using DisplacementDirection = std::vector<std::pair<char,char>>;
+
 /******************************************************************************/
 /*! This is just a workaround for complex numbers to get it running for hdf5
  *
@@ -152,12 +162,12 @@ struct ComplexProduct {
 struct VdaggerVQuantumNumbers {
   size_t id;
   std::array<int, 3> momentum;     /*!< The -momentum as 3-vector */
-  std::array<int, 3> displacement; /*!< The displacement as 3-vector */
+  DisplacementDirection displacement; /*!< The displacement as 3-vector */
 
   /*! Constructor */
   VdaggerVQuantumNumbers(const size_t id,
-                         const std::array<int, 3> &momentum,
-                         const std::array<int, 3> &displacement)
+                         std::array<int, 3> const &momentum,
+                         DisplacementDirection const &displacement)
       : id(id), momentum(momentum), displacement(displacement){};
 };
 

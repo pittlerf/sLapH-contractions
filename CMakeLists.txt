@@ -60,6 +60,19 @@ if(NOT DEFINED EIGEN3_INCLUDE_DIR)
 endif()
 include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
+# Lime
+if(NOT DEFINED LIME_INCLUDE_DIRS)
+  message(FATAL_ERROR "Must specify -DLIME_INCLUDE_DIRS on the command line to CMake.")
+endif()
+include_directories(SYSTEM ${LIME_INCLUDE_DIRS})
+
+# Lime
+if(NOT DEFINED LIME_LIBRARIES)
+  message(FATAL_ERROR "Must specify -DLIME_LIBRARIES on the command line to CMake.")
+endif()
+
+
+
 # OpenMP
 find_package(OpenMP)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -113,12 +126,14 @@ add_executable(contract
   modules/dilution-iterator.cpp
   modules/EigenVector.cpp
   modules/Gamma.cpp
+  modules/GaugeField.cpp
   modules/GlobalData/global_data.cpp
   modules/GlobalData/global_data_build_IO_names.cpp
   modules/GlobalData/global_data_input_handling.cpp
   modules/GlobalData/global_data_input_handling_utils.cpp
   modules/GlobalData/init_lookup_tables.cpp
   modules/h5-wrapper.cpp
+  modules/io_utils.cpp
   modules/OperatorsForMesons.cpp
   modules/Perambulator.cpp
   modules/QuarkLineBlock2.cpp
@@ -134,10 +149,6 @@ target_link_libraries(contract
   ${LIME_LIBRARIES}
   )
 
-if(cmake_build_type_lower STREQUAL "debug")
-  target_link_libraries(contract)
-endif()
-
 install(TARGETS contract DESTINATION bin)
 
 ### test-iterator
@@ -145,6 +156,18 @@ install(TARGETS contract DESTINATION bin)
 add_executable(test-dilution-iterator
   main/test-iterator.cpp
   modules/dilution-iterator.cpp
+  )
+
+### test-derivative
+add_executable(test-derivative
+  main/test-derivative.cpp
+  modules/io_utils.cpp
+  modules/GaugeField.cpp
+  modules/EigenVector.cpp
+  )
+
+target_link_libraries(test-derivative
+  ${LIME_LIBRARIES}
   )
 
 ###############################################################################

@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "Eigen/Dense"
+#include <Eigen/Dense>
 #include "boost/multi_array.hpp"
 
 #include "DiagramForward.h"
