@@ -1,10 +1,11 @@
 var searchData=
 [
+  ['omega',['omega',['../class_gauge_field.html#abc1f43532f306a23e31d4fbec8a6b47b',1,'GaugeField']]],
   ['one_5fsink_5fslice',['one_sink_slice',['../class_dilution_iterator.html#aaa348b8c8c5d8937cdcc35d7b7cf3edd',1,'DilutionIterator']]],
   ['one_5fsink_5fslice_5f',['one_sink_slice_',['../class_block_iterator.html#ab3e29dbcd469b310dfd356a37abcbed7',1,'BlockIterator::one_sink_slice_()'],['../class_dilution_iterator.html#a773ea22e7f8311a44967ca4ac31ad498',1,'DilutionIterator::one_sink_slice_()']]],
   ['open_5for_5fcreate_5fhdf5_5ffile',['open_or_create_hdf5_file',['../class_write_h_d_f5_correlator.html#a49356eb2d3149f43649476bd1d7b93b1',1,'WriteHDF5Correlator']]],
   ['operator_21_3d',['operator!=',['../class_block_iterator.html#a7b132b9b7066eac12cea3a775d03d9f1',1,'BlockIterator::operator!=()'],['../class_dilution_iterator.html#a9d4bf44571009b4d58dbda82b3653d28',1,'DilutionIterator::operator!=()']]],
-  ['operator_28_29',['operator()',['../class_random_vector.html#ae2020c0747ccfc7bd044b3da871ff488',1,'RandomVector']]],
+  ['operator_28_29',['operator()',['../class_gauge_field.html#a9cea9c5561df71026fd3829e368b5d7e',1,'GaugeField::operator()()'],['../class_random_vector.html#ae2020c0747ccfc7bd044b3da871ff488',1,'RandomVector::operator()()']]],
   ['operator_2a',['operator*',['../class_block_iterator.html#af139fc91337dbcf80ea7fb24d097d956',1,'BlockIterator::operator*()'],['../class_dilution_iterator.html#abdc938887b7fae4518c37267746372f3',1,'DilutionIterator::operator*()'],['../_diluted_factor_8h.html#a9cb86ea353e8412b24fa4840012c0095',1,'operator*():&#160;DilutedFactor.h']]],
   ['operator_2b',['operator+',['../_diluted_factor_8h.html#aca12172f16762e3ae1709a3d510cc836',1,'operator+(DilutedTrace&lt; rvecs &gt; const &amp;df, Complex const &amp;c):&#160;DilutedFactor.h'],['../_diluted_factor_8h.html#a97fbf89303c5509c5c86f9200bf2ee8a',1,'operator+(Complex const &amp;c, DilutedTrace&lt; rvecs &gt; const &amp;df):&#160;DilutedFactor.h']]],
   ['operator_2b_2b',['operator++',['../class_block_iterator.html#a4ab4050313d566b2a48d96a251b4fbdc',1,'BlockIterator::operator++()'],['../class_dilution_iterator.html#a201f0bf4373a4b169b6492d2840340c9',1,'DilutionIterator::operator++()']]],
@@ -17,7 +18,7 @@ var searchData=
   ['operator_5flist',['operator_list',['../class_global_data.html#a607b6302cff003af341750bb8121b0e6',1,'GlobalData::operator_list()'],['../global__data__typedefs_8h.html#a9ae4c7631935c325a96ea3d507d1e10c',1,'Operator_list():&#160;global_data_typedefs.h']]],
   ['operator_5flookuptable',['operator_lookuptable',['../class_global_data.html#a71d8bb7d17965e73be34a49dde9bb219',1,'GlobalData::operator_lookuptable()'],['../class_operator_factory.html#a771d3ef10b0b523d78cb2c83db2df4da',1,'OperatorFactory::operator_lookuptable()']]],
   ['operator_5fnumbers',['operator_numbers',['../struct_correlators__2.html#aecd6fa3075daf25f62ab853f5e5571ce',1,'Correlators_2']]],
-  ['operatorfactory',['OperatorFactory',['../class_operator_factory.html',1,'OperatorFactory'],['../class_operator_factory.html#ab3dd787a5c18297d563d3a76f82decbc',1,'OperatorFactory::OperatorFactory()']]],
+  ['operatorfactory',['OperatorFactory',['../class_operator_factory.html',1,'OperatorFactory'],['../class_operator_factory.html#ad350492be4f9243d1b12b853d98c7862',1,'OperatorFactory::OperatorFactory()']]],
   ['operatorlookup',['OperatorLookup',['../struct_operator_lookup.html',1,'']]],
   ['operators',['Operators',['../global__data__typedefs_8h.html#a88a7903c1520c127ed4d810ef2c9c17d',1,'global_data_typedefs.h']]],
   ['operatorsformesons_2ecpp',['OperatorsForMesons.cpp',['../_operators_for_mesons_8cpp.html',1,'']]],

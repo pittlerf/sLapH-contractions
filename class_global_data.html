@@ -90,8 +90,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab1aa49c8f3876db2bcf4d262d77ddb32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac647d933fd96dae5fbcc47aac5532a82"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_global_data.html#ac647d933fd96dae5fbcc47aac5532a82">get_filename_ending_correlators</a> ()</td></tr>
 <tr class="separator:ac647d933fd96dae5fbcc47aac5532a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fa08d6be142e7805cfab24615fe346b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_global_data.html#a1fa08d6be142e7805cfab24615fe346b">get_config_path</a> ()</td></tr>
-<tr class="separator:a1fa08d6be142e7805cfab24615fe346b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53f63415860682b5495335cfe1fb8b78"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_global_data.html#a53f63415860682b5495335cfe1fb8b78">get_path_config</a> ()</td></tr>
+<tr class="separator:a53f63415860682b5495335cfe1fb8b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a727200ff93babecba54cfbaccc07e127"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_global_data.html#a727200ff93babecba54cfbaccc07e127">get_nb_omp_threads</a> ()</td></tr>
 <tr class="separator:a727200ff93babecba54cfbaccc07e127"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a2126297fa1fe520ffc37c3cdb014c1"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_global_data.html#a4a2126297fa1fe520ffc37c3cdb014c1">get_nb_eigen_threads</a> ()</td></tr>
@@ -258,33 +258,6 @@ Static Private Attributes</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="global__data__build___i_o__names_8cpp_source.html#l00084">84</a> of file <a class="el" href="global__data__build___i_o__names_8cpp_source.html">global_data_build_IO_names.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a1fa08d6be142e7805cfab24615fe346b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fa08d6be142e7805cfab24615fe346b">&#9670;&nbsp;</a></span>get_config_path()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string GlobalData::get_config_path </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="global__data_8h_source.html#l00120">120</a> of file <a class="el" href="global__data_8h_source.html">global_data.h</a>.</p>
 
 </div>
 </div>
@@ -917,6 +890,33 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a53f63415860682b5495335cfe1fb8b78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53f63415860682b5495335cfe1fb8b78">&#9670;&nbsp;</a></span>get_path_config()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GlobalData::get_path_config </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="global__data_8h_source.html#l00120">120</a> of file <a class="el" href="global__data_8h_source.html">global_data.h</a>.</p>
+
+</div>
+</div>
 <a id="a10baf4263592b2da716939584c8ab51f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a10baf4263592b2da716939584c8ab51f">&#9670;&nbsp;</a></span>get_path_eigenvectors()</h2>
 
@@ -1254,7 +1254,7 @@ Static Private Attributes</h2></td></tr>
 </ol>
 <p>Sets index_of_unity to the index of operator_lookuptable.vdaggerv_lookup where momentum and displacement are both zero, or to -1 if no such entry is found.</p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l01820">1820</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l01832">1832</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>

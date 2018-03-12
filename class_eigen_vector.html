@@ -85,12 +85,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a05c81df28ea666aeab185be3ddb757ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08be4f611d80c0ca5c18fda33f55acc3"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXcd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#a08be4f611d80c0ca5c18fda33f55acc3">operator[]</a> (size_t t) const</td></tr>
 <tr class="separator:a08be4f611d80c0ca5c18fda33f55acc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c2da4ac24736dbc28a63323f888250e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#a6c2da4ac24736dbc28a63323f888250e">write_eigen_vector</a> (const std::string &amp;filename) const</td></tr>
-<tr class="separator:a6c2da4ac24736dbc28a63323f888250e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60a1c1d9e49edc8774c1ab8b642bf2e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#a60a1c1d9e49edc8774c1ab8b642bf2e6">write_eigen_vector</a> (const std::string &amp;filename, const size_t, const size_t verbose)</td></tr>
+<tr class="separator:a60a1c1d9e49edc8774c1ab8b642bf2e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfeb68d36fb44f0f366ac6ad14e84d26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#abfeb68d36fb44f0f366ac6ad14e84d26">read_eigen_vector</a> (const std::string &amp;filename, const size_t verbose)</td></tr>
 <tr class="separator:abfeb68d36fb44f0f366ac6ad14e84d26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d6805d234daad421f8962de58eb8bbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#a2d6805d234daad421f8962de58eb8bbd">read_eigen_vector</a> (const std::string &amp;filename, const size_t t, const size_t verbose)</td></tr>
 <tr class="separator:a2d6805d234daad421f8962de58eb8bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a754568809581b2ba6010559790aa600e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_eigen_vector.html#a754568809581b2ba6010559790aa600e">set_V</a> (Eigen::MatrixXcd &amp;v, const size_t t)</td></tr>
+<tr class="separator:a754568809581b2ba6010559790aa600e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -254,7 +256,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00046">46</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00075">75</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
 
 </div>
 </div>
@@ -290,12 +292,42 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00007">7</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00036">36</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a6c2da4ac24736dbc28a63323f888250e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c2da4ac24736dbc28a63323f888250e">&#9670;&nbsp;</a></span>write_eigen_vector()</h2>
+<a id="a754568809581b2ba6010559790aa600e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a754568809581b2ba6010559790aa600e">&#9670;&nbsp;</a></span>set_V()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EigenVector::set_V </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::MatrixXcd &amp;&#160;</td>
+          <td class="paramname"><em>v</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>t</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00082">82</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a60a1c1d9e49edc8774c1ab8b642bf2e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60a1c1d9e49edc8774c1ab8b642bf2e6">&#9670;&nbsp;</a></span>write_eigen_vector()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -304,11 +336,29 @@ Private Attributes</h2></td></tr>
           <td class="memname">void EigenVector::write_eigen_vector </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>filename</em></td><td>)</td>
-          <td> const</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>verbose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_eigen_vector_8cpp_source.html#l00003">3</a> of file <a class="el" href="_eigen_vector_8cpp_source.html">EigenVector.cpp</a>.</p>
 
 </div>
 </div>

@@ -8,5 +8,6 @@ var searchData=
   ['dilution_5fe',['dilution_E',['../structquark.html#aad6fad91d807d547491eeb7061949386',1,'quark']]],
   ['dilution_5fnames',['dilution_names',['../dilution-iterator_8h.html#a72e7424e156c66c6281d663265ef653c',1,'dilution-iterator.h']]],
   ['dilution_5ft',['dilution_T',['../structquark.html#a4a9a6a39e9c1ec523cf407c226554895',1,'quark']]],
-  ['displacement',['displacement',['../struct_quantum_numbers.html#aab8b9a9de9ef625496ab1168a3c0a41e',1,'QuantumNumbers::displacement()'],['../struct_vdagger_v_quantum_numbers.html#abc1535f8cc1222cd2624ef3cf40d5e89',1,'VdaggerVQuantumNumbers::displacement()']]]
+  ['dim_5frow',['dim_row',['../class_gauge_field.html#a8ade925869f9d37a6d09401a11a1b679',1,'GaugeField']]],
+  ['displacement',['displacement',['../struct_quantum_numbers.html#a51f8f0a32881e21e8c1309ab2143bf1f',1,'QuantumNumbers::displacement()'],['../struct_vdagger_v_quantum_numbers.html#a163f6d6dfc0d3ac050c16b2f44268756',1,'VdaggerVQuantumNumbers::displacement()']]]
 ];

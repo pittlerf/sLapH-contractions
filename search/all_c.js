@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['main',['main',['../4pt___d__all_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;4pt_D_all.cpp'],['../contract_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;contract.cpp'],['../test-iterator_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'main():&#160;test-iterator.cpp'],['../_vdagger_v_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;VdaggerV.cpp'],['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp']]],
+  ['main',['main',['../4pt___d__all_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;4pt_D_all.cpp'],['../contract_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;contract.cpp'],['../test-derivative_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'main():&#160;test-derivative.cpp'],['../test-iterator_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'main():&#160;test-iterator.cpp'],['../_vdagger_v_8cpp.html#adacbe0175a79dff748855d8c9839f82b',1,'main(int ac, char *av[]):&#160;VdaggerV.cpp'],['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp']]],
   ['main_2ecpp',['main.cpp',['../main_8cpp.html',1,'']]],
   ['make_5fcomp_5ftype',['make_comp_type',['../h5-wrapper_8h.html#a6fed255a2e33eff975184bc158a63a9b',1,'h5-wrapper.h']]],
   ['make_5fcomp_5ftype_3c_20complex_20_3e',['make_comp_type&lt; Complex &gt;',['../h5-wrapper_8cpp.html#a61a66506af132edd5c8dec880df5dd52',1,'h5-wrapper.cpp']]],
@@ -8,10 +8,11 @@ var searchData=
   ['make_5fcomp_5ftype_3c_20complexproduct_20_3e',['make_comp_type&lt; ComplexProduct &gt;',['../h5-wrapper_8cpp.html#a341e2348c08d4987f7049b2f88f31353',1,'h5-wrapper.cpp']]],
   ['make_5fcorrelator',['make_correlator',['../namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93',1,'global_data_utils']]],
   ['make_5ffull_5fdilution',['make_full_dilution',['../class_dilution_scheme.html#a4e74f0400dd8bd81fe8e4aab1d1e8f14',1,'DilutionScheme']]],
-  ['make_5fgamma',['make_gamma',['../_gamma_8h.html#ae12a232ef98a27cd6ba3aebd246bfeba',1,'make_gamma():&#160;Gamma.cpp'],['../_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba',1,'make_gamma():&#160;Gamma.cpp']]],
+  ['make_5fgamma',['make_gamma',['../_gamma_8h.html#ae12a232ef98a27cd6ba3aebd246bfeba',1,'make_gamma():&#160;Gamma.cpp'],['../modules_2_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba',1,'make_gamma():&#160;Gamma.cpp']]],
   ['make_5foperator_5flist',['make_operator_list',['../namespaceglobal__data__utils.html#a74db6e64b4f53a343b57c322312303d9',1,'global_data_utils']]],
   ['make_5fquark',['make_quark',['../namespaceglobal__data__utils.html#ad10f4ab91b50f20fb2163866d538b5ef',1,'global_data_utils']]],
   ['make_5fvalue',['make_value',['../global__data_8cpp.html#a765662c5195d54811069be8d4ef83243',1,'global_data.cpp']]],
+  ['map_5ftimeslice_5fto_5feigen',['map_timeslice_to_eigen',['../class_gauge_field.html#a15ef086e80eb4fe75e0a0bfefe98d194',1,'GaugeField']]],
   ['mask',['MASK',['../ranlxs_8cpp.html#ae7520c5477c11965aabeedc033c9862b',1,'ranlxs.cpp']]],
   ['max_5fflavor',['max_flavor',['../_diluted_factor_8h.html#a342debbe1e7ed3081e3087206f3af73f',1,'DilutedFactor.h']]],
   ['max_5frnd_5fids',['max_rnd_ids',['../typedefs_8h.html#a174efa48ee34667a95f93d1c17cd5c79',1,'typedefs.h']]],

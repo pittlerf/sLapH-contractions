@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['get_5fconfig_5fpath',['get_config_path',['../class_global_data.html#a1fa08d6be142e7805cfab24615fe346b',1,'GlobalData']]],
+  ['gaugefield',['GaugeField',['../class_gauge_field.html#ab3d0f461b049d7b05a3f450051e15cca',1,'GaugeField']]],
   ['get_5fcorrelator_5flist',['get_correlator_list',['../class_global_data.html#af20b46e67b775f670b73028298c3517c',1,'GlobalData']]],
   ['get_5fcorrelator_5flookuptable',['get_correlator_lookuptable',['../class_global_data.html#ae23d06612ae7fa6d569db73066e38c5e',1,'GlobalData']]],
   ['get_5fdelta_5fconfig',['get_delta_config',['../class_global_data.html#a66146481a54d813d1be386103e5f38d3',1,'GlobalData']]],
   ['get_5fdim_5frow',['get_dim_row',['../class_global_data.html#ac931c9302a0b017ebac272785906abd1',1,'GlobalData']]],
+  ['get_5fdirs',['get_dirs',['../_gauge_field_8cpp.html#a74c7bef9f8f00f80067ae852734d738f',1,'GaugeField.cpp']]],
+  ['get_5fdn',['get_dn',['../class_gauge_field.html#acf9ce57c694feb2f5120d6ab44de9e03',1,'GaugeField']]],
   ['get_5fend_5fconfig',['get_end_config',['../class_global_data.html#a416ef90d70be05c4ee63ce48285b98b0',1,'GlobalData']]],
   ['get_5ffilename_5feigenvectors',['get_filename_eigenvectors',['../class_global_data.html#a8a81f8f47e0275581a35aa6633c7e158',1,'GlobalData']]],
   ['get_5ffilename_5fending_5fcorrelators',['get_filename_ending_correlators',['../class_global_data.html#ac647d933fd96dae5fbcc47aac5532a82',1,'GlobalData']]],
@@ -25,6 +27,7 @@ var searchData=
   ['get_5foperator_5flist',['get_operator_list',['../class_global_data.html#a4bf246fc68d8f33ff8c8bfa2108d430c',1,'GlobalData']]],
   ['get_5foperator_5flookuptable',['get_operator_lookuptable',['../class_global_data.html#a6d434a06c2824efcb657f8fbd18c7eb5',1,'GlobalData']]],
   ['get_5foutput_5fpath',['get_output_path',['../class_global_data.html#ab1aa49c8f3876db2bcf4d262d77ddb32',1,'GlobalData']]],
+  ['get_5fpath_5fconfig',['get_path_config',['../class_global_data.html#a53f63415860682b5495335cfe1fb8b78',1,'GlobalData']]],
   ['get_5fpath_5feigenvectors',['get_path_eigenvectors',['../class_global_data.html#a10baf4263592b2da716939584c8ab51f',1,'GlobalData']]],
   ['get_5fpath_5fperambulators',['get_path_perambulators',['../class_global_data.html#ae1f67b89ad2ebcc4fba7d9d88d55d4ec',1,'GlobalData']]],
   ['get_5fpath_5fvdaggerv',['get_path_vdaggerv',['../class_global_data.html#a7674128f2d51fa6df9a063e97a312db8',1,'GlobalData']]],
@@ -34,6 +37,7 @@ var searchData=
   ['get_5frnd_5fvec_5fconstruct',['get_rnd_vec_construct',['../class_global_data.html#a2381e5a5d0426b9759f8b3596aad1e98',1,'GlobalData']]],
   ['get_5fstart_5fconfig',['get_start_config',['../class_global_data.html#a14095d7ef338bd10ac30518bff5b2640',1,'GlobalData']]],
   ['get_5ftime_5fdelta',['get_time_delta',['../_correlators_8cpp.html#a80f102b736e7b783e4cd24479f1590f1',1,'Correlators.cpp']]],
+  ['get_5fup',['get_up',['../class_gauge_field.html#a11e22e0742545e3ed700f78562698803',1,'GaugeField']]],
   ['get_5fv_5ffor_5flime',['get_V_for_lime',['../class_global_data.html#ab937700a27675bb921665104f79f240e',1,'GlobalData']]],
   ['get_5fv_5fts',['get_V_TS',['../class_global_data.html#a4df6d81e3265ed73192d37cd4e36b7e0',1,'GlobalData']]],
   ['get_5fverbose',['get_verbose',['../class_global_data.html#a2a2b440684854669addec11cbd3e3fec',1,'GlobalData']]]

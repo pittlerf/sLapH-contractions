@@ -106,10 +106,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Look-up table for gamma matrices.</p>
-<p>For every Gamma structure (currently 0-15) the four non-zero values are specified.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>Refactor that into physical quantum number class along with momentum </dd></dl>
+<p>For every Gamma structure (currently 0-15) the four non-zero values are specified. The index i in row[i] specifies the column of the gamma matrix, the value of row[i] is the row number with a non zero value. Thus gamma[j].row[k] = l means that in the j-th matrix there is a non-zero value at column k and row l. the next line specifies the value of the column -&gt; gamma[j].value[k] = n with n  {-1;1;-i;i}. </p><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>Refactor that into physical quantum number class along with momentum </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_gamma_8cpp_source.html#l00013">13</a> of file <a class="el" href="_gamma_8cpp_source.html">Gamma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="modules_2_gamma_8cpp_source.html#l00013">13</a> of file <a class="el" href="modules_2_gamma_8cpp_source.html">Gamma.cpp</a>.</p>
 
 </div>
 </div>

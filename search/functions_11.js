@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vdaggervquantumnumbers',['VdaggerVQuantumNumbers',['../struct_vdagger_v_quantum_numbers.html#a853193a0c9189a4a8b693fd1997d62d5',1,'VdaggerVQuantumNumbers']]]
+  ['vdaggervquantumnumbers',['VdaggerVQuantumNumbers',['../struct_vdagger_v_quantum_numbers.html#a181dbe2052d3954530348e91cacf257c',1,'VdaggerVQuantumNumbers']]]
 ];

@@ -3,6 +3,8 @@ var searchData=
   ['randomvector',['RandomVector',['../class_random_vector.html#a83cfcf965e5aa959ca710910fbabc117',1,'RandomVector']]],
   ['ranlxs',['ranlxs',['../ranlxs_8h.html#a9bf7b8d33c3b62e9ca3172f8821c30ca',1,'ranlxs(float r[], int n):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#a9bf7b8d33c3b62e9ca3172f8821c30ca',1,'ranlxs(float r[], int n):&#160;ranlxs.cpp']]],
   ['read_5feigen_5fvector',['read_eigen_vector',['../class_eigen_vector.html#abfeb68d36fb44f0f366ac6ad14e84d26',1,'EigenVector::read_eigen_vector(const std::string &amp;filename, const size_t verbose)'],['../class_eigen_vector.html#a2d6805d234daad421f8962de58eb8bbd',1,'EigenVector::read_eigen_vector(const std::string &amp;filename, const size_t t, const size_t verbose)'],['../_vdagger_v_8cpp.html#abe365d6ba01be3ede04660d821a74de3',1,'read_eigen_vector():&#160;VdaggerV.cpp']]],
+  ['read_5fgauge_5ffield',['read_gauge_field',['../class_gauge_field.html#af98db24bb3a64225b2d1044c1a830c0c',1,'GaugeField']]],
+  ['read_5flime_5fgauge_5ffield_5fdoubleprec_5ftimeslices',['read_lime_gauge_field_doubleprec_timeslices',['../class_gauge_field.html#a1091a86eef49f95ece4ed2d7bcffb39e',1,'GaugeField']]],
   ['read_5fparameters',['read_parameters',['../class_global_data.html#a954ea16d03db909b5808aba5048750ac',1,'GlobalData']]],
   ['read_5fperambulator',['read_perambulator',['../class_perambulator.html#a4478b8af8697265bd1b2d930045f5628',1,'Perambulator']]],
   ['read_5fperambulators_5ffrom_5fseparate_5ffiles',['read_perambulators_from_separate_files',['../class_perambulator.html#ac9989aa543453ae650452bd5f3837a2c',1,'Perambulator']]],

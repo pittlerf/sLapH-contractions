@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['omega',['omega',['../class_gauge_field.html#abc1f43532f306a23e31d4fbec8a6b47b',1,'GaugeField']]],
   ['one_5fsink_5fslice_5f',['one_sink_slice_',['../class_block_iterator.html#ab3e29dbcd469b310dfd356a37abcbed7',1,'BlockIterator::one_sink_slice_()'],['../class_dilution_iterator.html#a773ea22e7f8311a44967ca4ac31ad498',1,'DilutionIterator::one_sink_slice_()']]],
   ['operator_5flist',['operator_list',['../class_global_data.html#a607b6302cff003af341750bb8121b0e6',1,'GlobalData']]],
   ['operator_5flookuptable',['operator_lookuptable',['../class_global_data.html#a71d8bb7d17965e73be34a49dde9bb219',1,'GlobalData::operator_lookuptable()'],['../class_operator_factory.html#a771d3ef10b0b523d78cb2c83db2df4da',1,'OperatorFactory::operator_lookuptable()']]],
