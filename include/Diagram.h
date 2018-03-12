@@ -108,9 +108,21 @@ class DiagramNumeric : public Diagram {
         correlator_(corr_lookup().size(), std::vector<Numeric>(Lt, Numeric{})),
         c_(omp_get_max_threads(),
            std::vector<std::vector<Numeric>>(
-               Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
+               Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))),
+        needs_computing_(corr_lookup().size(), true) {
+    assert(output_path_ != "");
+    assert(output_filename_ != "");
+  }
+
+
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
+    WriteHDF5Correlator filehandle(
+        output_path_, name(), output_filename_, comp_type_factory<Numeric>());
+    for (int i = 0; i != correlator_.size(); ++i) {
+      needs_computing_[i] = !filehandle.has_dataset(corr_lookup()[i]);
+    }
+
     int const tid = omp_get_thread_num();
     assemble_impl(c_.at(tid).at(t), slice_pair, q);
   }
@@ -129,9 +141,6 @@ class DiagramNumeric : public Diagram {
   }
 
   void write() override {
-    assert(output_path_ != "");
-    assert(output_filename_ != "");
-
     WriteHDF5Correlator filehandle(
         output_path_, name(), output_filename_, comp_type_factory<Numeric>());
 
@@ -156,6 +165,8 @@ class DiagramNumeric : public Diagram {
 
   std::vector<std::vector<Numeric>> correlator_;
   std::vector<std::vector<std::vector<Numeric>>> c_;
+
+  std::vector<bool> needs_computing_;
 };
 
 /*****************************************************************************/

@@ -117,6 +117,26 @@ class WriteHDF5Correlator {
     open_or_create_hdf5_file(file_name);
   }
 
+  /*! Tests for data set. */
+  bool has_dataset(DiagramIndex const &corr_info) {
+    // Exceptions are automatically printed, we do not need this feature.
+    H5::Exception::dontPrint();
+
+    // Create a data set object.
+    H5::Group group;
+    H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
+
+    // We try to open the data set in the file. If it exists, we do not need to do
+    // anything because we do not overwrite existing data.
+    try {
+      file.openDataSet(dataset_name);
+      return true;
+    } catch (H5::Exception &) {
+    }
+
+    return false;
+  }
+
   /*! Writes data to file
    *
    *  @Param corr       The data to write
