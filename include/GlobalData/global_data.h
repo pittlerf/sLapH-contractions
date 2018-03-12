@@ -69,7 +69,6 @@ class GlobalData {
   std::string name_lattice;
   std::string filename_ending_correlators;
   std::string path_output;
-  std::string overwrite;
   std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;

@@ -81,9 +81,7 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   config.add_options()(
       "output_path",
       po::value<std::string>(&path_output)->default_value("../../contractions"),
-      "path for output")("overwrite_old",
-                         po::value<std::string>(&overwrite)->default_value("no"),
-                         "shall old correlator files be overwritten, yes or no")(
+      "path for output")(
       "path_config",
       po::value<std::string>(&path_config)->default_value("../../configs"),
       "path for configurations")(

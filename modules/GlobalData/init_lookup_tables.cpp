@@ -382,7 +382,6 @@ void build_quantum_numbers_from_correlator_list(
  *                         C40V,C40C,C40B} :
  *  @param[in]  cnfg :            Number of first gauge configuration
  *  @param[in]  outpath           Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quark_types       Flavor of the quarks
  *  @param[in]  quantum_numbers   Physical quantum numbers
  *  @param[out] hdf5_dataset_name Names for the datasets in one-to-one
@@ -399,7 +398,6 @@ static void build_correlator_names(
     const std::string &corr_type,
     int cnfg,
     const std::string &outpath,
-    const std::string &overwrite,
     const std::vector<std::string> &quark_types,
     const std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
     std::vector<std::string> &hdf5_dataset_name) {
@@ -421,7 +419,6 @@ static std::string const build_hdf5_dataset_name(
     const std::string &corr_type,
     int cnfg,
     const std::string &outpath,
-    const std::string &overwrite,
     const std::vector<std::string> &quark_types,
     const std::vector<QuantumNumbers> &qn) {
   std::string filename = corr_type + "_";
@@ -699,7 +696,6 @@ static size_t build_corrC_lookup(std::vector<size_t> const ql_ids,
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -719,7 +715,6 @@ static void build_C1_lookup(
     std::vector<int> const &quark_numbers,
     int const start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -747,7 +742,7 @@ static void build_C1_lookup(
     auto id1 = build_trQ1_lookup({Q1_indices[0]}, trQ1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C1", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C1", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
@@ -768,7 +763,6 @@ static void build_C1_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -790,7 +784,6 @@ static void build_C20V_lookup(
     std::vector<int> const &quark_numbers,
     int const start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -819,7 +812,7 @@ static void build_C20V_lookup(
     auto id2 = build_trQ1_lookup({ql_ids[1]}, trQ1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C20V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C20V", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1, id2}};
 
@@ -840,7 +833,6 @@ static void build_C20V_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -865,7 +857,6 @@ static void build_C2c_lookup(
     std::vector<int> const &quark_numbers,
     int const start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -894,7 +885,7 @@ static void build_C2c_lookup(
     auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C2+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C2+", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
@@ -914,7 +905,6 @@ static void build_C2c_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -936,7 +926,6 @@ static void build_C20_lookup(
     std::vector<int> const &quark_numbers,
     int const start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -964,7 +953,7 @@ static void build_C20_lookup(
     auto id1 = build_corr0_lookup({ql_ids[0], ql_ids[1]}, trQ1Q1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C20", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C20", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
@@ -985,7 +974,6 @@ static void build_C20_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1009,7 +997,6 @@ static void build_C30V_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1042,7 +1029,7 @@ static void build_C30V_lookup(
     auto const id1 = build_trQ1_lookup({ql_ids[2]}, trQ1_lookup);
 
     std::string const hdf5_dataset_name = build_hdf5_dataset_name(
-        "C30V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C30V", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex const candidate{
         c_look.size(), hdf5_dataset_name, {id0, id1}, std::vector<int>{}};
@@ -1064,7 +1051,6 @@ static void build_C30V_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1086,7 +1072,6 @@ static void build_C3c_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -1113,7 +1098,7 @@ static void build_C3c_lookup(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C3+", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C3+", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
         c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
@@ -1135,7 +1120,6 @@ static void build_C3c_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1154,7 +1138,6 @@ static void build_C30_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1179,7 +1162,7 @@ static void build_C30_lookup(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C30", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C30", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
         c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
@@ -1202,7 +1185,6 @@ static void build_C30_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1230,7 +1212,6 @@ static void build_C4cD_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -1266,7 +1247,7 @@ static void build_C4cD_lookup(
     auto id2 = build_corrC_lookup({ql_ids[2], ql_ids[3]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+D", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C4+D", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1290,7 +1271,6 @@ static void build_C4cD_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1312,7 +1292,6 @@ static void build_C40D_lookup(
     std::vector<int> const &quark_numbers,
     int const start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1347,7 +1326,7 @@ static void build_C40D_lookup(
     auto id2 = build_corr0_lookup({ql_ids[2], ql_ids[3]}, trQ1Q1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C40D", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C40D", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1372,7 +1351,6 @@ static void build_C40D_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1400,7 +1378,6 @@ static void build_C4cV_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -1436,7 +1413,7 @@ static void build_C4cV_lookup(
     auto id2 = build_corrC_lookup({ql_ids[2], ql_ids[3]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C4+V", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1460,7 +1437,6 @@ static void build_C4cV_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1482,7 +1458,6 @@ static void build_C40V_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1517,7 +1492,7 @@ static void build_C40V_lookup(
     auto id2 = build_corr0_lookup({ql_ids[2], ql_ids[3]}, trQ1Q1_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C40V", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C40V", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1541,7 +1516,6 @@ static void build_C40V_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1560,7 +1534,6 @@ static void build_C4cC_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -1589,7 +1562,7 @@ static void build_C4cC_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C4+C", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
@@ -1610,7 +1583,6 @@ static void build_C4cC_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1629,7 +1601,6 @@ static void build_C40C_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1657,7 +1628,7 @@ static void build_C40C_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C40C", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C40C", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
         c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
@@ -1679,7 +1650,6 @@ static void build_C40C_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1698,7 +1668,6 @@ static void build_C4cB_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q0_lookup,
@@ -1727,7 +1696,7 @@ static void build_C4cB_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C4+B", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
@@ -1748,7 +1717,6 @@ static void build_C4cB_lookup(
  *  @param[in]  quark_numbers     List which quarks are specified in the infile
  *  @param[in]  start_config      Number of first gauge configuration
  *  @param[in]  path_output       Output path from the infile.
- *  @param[in]  overwrite {yes,no} : deprecated
  *  @param[in]  quantum_numbers   A list of all physical quantum numbers
  *                                quantum field operators for all correlators
  *                                with Dirac structure factored out that are
@@ -1767,7 +1735,6 @@ static void build_C40B_lookup(
     std::vector<int> const &quark_numbers,
     int start_config,
     const std::string &path_output,
-    const std::string &overwrite,
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<size_t, bool>>> const &vdv_indices,
     std::vector<DilutedFactorIndex> &Q1_lookup,
@@ -1795,7 +1762,7 @@ static void build_C40B_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C40B", start_config, path_output, overwrite, quark_types, quantum_numbers[d]);
+        "C40B", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
         c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
@@ -1834,7 +1801,6 @@ void GlobalData::init_lookup_tables() {
     build_correlator_names(correlator.type,
                            start_config,
                            path_output,
-                           overwrite,
                            quark_types,
                            quantum_numbers,
                            hdf5_dataset_name);
@@ -1853,7 +1819,6 @@ void GlobalData::init_lookup_tables() {
                       correlator.quark_numbers,
                       start_config,
                       path_output,
-                      overwrite,
                       quantum_numbers,
                       vdv_indices,
                       quarkline_lookuptable.Q1,
@@ -1870,7 +1835,6 @@ void GlobalData::init_lookup_tables() {
                        correlator.quark_numbers,
                        start_config,
                        path_output,
-                       overwrite,
                        quantum_numbers,
                        vdv_indices,
                        quarkline_lookuptable.Q0,
@@ -1887,7 +1851,6 @@ void GlobalData::init_lookup_tables() {
                        correlator.quark_numbers,
                        start_config,
                        path_output,
-                       overwrite,
                        quantum_numbers,
                        vdv_indices,
                        quarkline_lookuptable.Q0,
@@ -1899,7 +1862,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
@@ -1911,7 +1873,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
@@ -1923,7 +1884,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
@@ -1934,7 +1894,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q0,
@@ -1945,7 +1904,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
@@ -1956,7 +1914,6 @@ void GlobalData::init_lookup_tables() {
                        correlator.quark_numbers,
                        start_config,
                        path_output,
-                       overwrite,
                        quantum_numbers,
                        vdv_indices,
                        quarkline_lookuptable.Q1,
@@ -1967,7 +1924,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
@@ -1979,7 +1935,6 @@ void GlobalData::init_lookup_tables() {
                        correlator.quark_numbers,
                        start_config,
                        path_output,
-                       overwrite,
                        quantum_numbers,
                        vdv_indices,
                        quarkline_lookuptable.Q1,
@@ -1989,7 +1944,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
@@ -2000,7 +1954,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
@@ -2011,7 +1964,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
@@ -2021,7 +1973,6 @@ void GlobalData::init_lookup_tables() {
                         correlator.quark_numbers,
                         start_config,
                         path_output,
-                        overwrite,
                         quantum_numbers,
                         vdv_indices,
                         quarkline_lookuptable.Q1,
