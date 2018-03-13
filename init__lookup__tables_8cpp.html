@@ -93,7 +93,7 @@ Functions</h2></td></tr>
 Markus Werner</dd></dl>
 <p>The lookup tables only contain unique quantum number combinations and from the lists and latter are replaced by indexlists referring to those lookup tables.</p>
 <p>This automatically avoids recalculation of operators or even complete correlators</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000027">Todo:</a></b></dt><dd>Why are most functions static and not simply in an unnamed namespace? </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000026">Todo:</a></b></dt><dd>Why are most functions static and not simply in an unnamed namespace? </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
@@ -139,14 +139,14 @@ Markus Werner</dd></dl>
 </dl>
 <p><em>correlator</em> contains multiple operator_numbers. From combinatorics a large number of combinations arise. In general only a subset of them are physically allowed or necessary to calculate. In this function momentum conservation is enforced and multiple cutoffs introduced. </p>
 <p>Restriction to what shall actually be computed is done in if statements for each diagram because it depends on the number of quarks.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000028">Todo:</a></b></dt><dd>Think about a way to avoid these if conditions. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000027">Todo:</a></b></dt><dd>Think about a way to avoid these if conditions. </dd></dl>
 <p>initialized with zero</p>
 <p>initialized with zero</p>
 <p>initialized with zero</p>
 <p>initialized with zero</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000029">Todo:</a></b></dt><dd>Check whether that is identical to C4+D </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000028">Todo:</a></b></dt><dd>Check whether that is identical to <a class="el" href="class_c4c_d.html">C4cD</a> </dd></dl>
 <p>initialized with zero</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000030">Todo:</a></b></dt><dd>: For <a class="el" href="class_c40_d.html">C40D</a>, <a class="el" href="class_c40_b.html">C40B</a>, <a class="el" href="class_c40_v.html">C40V</a>, <a class="el" href="class_c40_c.html">C40C</a>, C4+V, C4+C still all combinations are built. This must be changed later if GEVP should be used!!!!!!!!!!!!!!! </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000029">Todo:</a></b></dt><dd>: For <a class="el" href="class_c40_d.html">C40D</a>, <a class="el" href="class_c40_b.html">C40B</a>, <a class="el" href="class_c40_v.html">C40V</a>, <a class="el" href="class_c40_c.html">C40C</a>, <a class="el" href="class_c4c_v.html">C4cV</a>, <a class="el" href="class_c4c_c.html">C4cC</a> still all combinations are built. This must be changed later if GEVP should be used!!!!!!!!!!!!!!! </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00111">111</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
@@ -194,7 +194,7 @@ Markus Werner</dd></dl>
 </dl>
 <p>: Think about the daggering!! </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00465">465</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00462">462</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>

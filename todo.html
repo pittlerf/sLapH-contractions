@@ -69,12 +69,12 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000028"></a>Member <a class="el" href="init__lookup__tables_8cpp.html#a25dbb07005ba94f9b9749f0f245b43ff">build_quantum_numbers_from_correlator_list</a>  (const <a class="el" href="struct_correlators__2.html">Correlators_2</a> &amp;correlator, const Operator_list &amp;operator_list, std::vector&lt; std::vector&lt; QuantumNumbers &gt;&gt; &amp;quantum_numbers)</dt>
+<dt><a class="anchor" id="_todo000027"></a>Member <a class="el" href="init__lookup__tables_8cpp.html#a25dbb07005ba94f9b9749f0f245b43ff">build_quantum_numbers_from_correlator_list</a>  (const <a class="el" href="struct_correlators__2.html">Correlators_2</a> &amp;correlator, const Operator_list &amp;operator_list, std::vector&lt; std::vector&lt; QuantumNumbers &gt;&gt; &amp;quantum_numbers)</dt>
 <dd><p class="startdd">Think about a way to avoid these if conditions. </p>
-<p>Check whether that is identical to C4+D </p>
-<p class="enddd">: For <a class="el" href="class_c40_d.html">C40D</a>, <a class="el" href="class_c40_b.html">C40B</a>, <a class="el" href="class_c40_v.html">C40V</a>, <a class="el" href="class_c40_c.html">C40C</a>, C4+V, C4+C still all combinations are built. This must be changed later if GEVP should be used!!!!!!!!!!!!!!!  </p>
+<p>Check whether that is identical to <a class="el" href="class_c4c_d.html">C4cD</a> </p>
+<p class="enddd">: For <a class="el" href="class_c40_d.html">C40D</a>, <a class="el" href="class_c40_b.html">C40B</a>, <a class="el" href="class_c40_v.html">C40V</a>, <a class="el" href="class_c40_c.html">C40C</a>, <a class="el" href="class_c4c_v.html">C4cV</a>, <a class="el" href="class_c4c_c.html">C4cC</a> still all combinations are built. This must be changed later if GEVP should be used!!!!!!!!!!!!!!!  </p>
 </dd>
-<dt><a class="anchor" id="_todo000010"></a>Class <a class="el" href="structcomplex__t.html">complex_t</a>  </dt>
+<dt><a class="anchor" id="_todo000009"></a>Class <a class="el" href="structcomplex__t.html">complex_t</a>  </dt>
 <dd>Change namespace into something more specific  </dd>
 <dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="_correlators_8h.html#a650264731a908133aed49c2b5b668281">contract</a>  (const size_t Lt, const size_t dilT, const size_t dilE, const size_t nev, <a class="el" href="class_operator_factory.html">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</dt>
 <dd><p class="startdd">check whether other correlators are still functional </p>
@@ -82,11 +82,11 @@ $(function() {
 </dd>
 <dt><a class="anchor" id="_todo000006"></a>Class <a class="el" href="struct_correlators__2.html">Correlators_2</a>  </dt>
 <dd>Are GEVP and tot_mom used at the moment? They should support building off-diagonal elements as well or resticting to a certain CMS momentum  </dd>
-<dt><a class="anchor" id="_todo000013"></a>Class <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a>  </dt>
+<dt><a class="anchor" id="_todo000012"></a>Class <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a>  </dt>
 <dd>modular programming looks different  </dd>
-<dt><a class="anchor" id="_todo000014"></a>Class <a class="el" href="struct_diluted_factor_type_traits_3_01_diluted_factor_type_1_1_q0_01_4.html">DilutedFactorTypeTraits&lt; DilutedFactorType::Q0 &gt;</a>  </dt>
+<dt><a class="anchor" id="_todo000013"></a>Class <a class="el" href="struct_diluted_factor_type_traits_3_01_diluted_factor_type_1_1_q0_01_4.html">DilutedFactorTypeTraits&lt; DilutedFactorType::Q0 &gt;</a>  </dt>
 <dd>QuarkLineType is a bad name in this case. That's a proxy for <a class="el" href="struct_diagram_index.html#ae1e988dd46fc60da07f6d94269ec0a4c">DiagramIndex.lookup</a>  </dd>
-<dt><a class="anchor" id="_todo000025"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93">global_data_utils::make_correlator</a>  (const std::string &amp;correlator_string)</dt>
+<dt><a class="anchor" id="_todo000024"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93">global_data_utils::make_correlator</a>  (const std::string &amp;correlator_string)</dt>
 <dd><p class="startdd">is that even supported?</p><ul>
 <li><em>P</em> </li>
 </ul>
@@ -96,7 +96,7 @@ $(function() {
 <p>Write check for correctness of correlator_string </p>
 <p class="enddd">Write check for correctness of correlator_string  </p>
 </dd>
-<dt><a class="anchor" id="_todo000024"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4">global_data_utils::quark_check</a>  (quark quarks)</dt>
+<dt><a class="anchor" id="_todo000023"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4">global_data_utils::quark_check</a>  (quark quarks)</dt>
 <dd>Check that the number of random vectors is greater than the largest required diagram  </dd>
 <dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="class_global_data.html#af20b46e67b775f670b73028298c3517c">GlobalData::get_correlator_list</a>  ()</dt>
 <dd>make that private and delete get function  </dd>
@@ -104,30 +104,28 @@ $(function() {
 <dd>make that private and delete get function  </dd>
 <dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="class_global_data.html#aafee6794c4196e31660ed0cbe3f899a6">GlobalData::get_quarks</a>  ()</dt>
 <dd>make that private and delete get function  </dd>
-<dt><a class="anchor" id="_todo000017"></a>Member <a class="el" href="class_global_data.html#a767206dba6d6bad62604ac2b2dcb019f">GlobalData::input_handling</a>  (const std::vector&lt; std::string &gt; &amp;quark_configs, const std::vector&lt; std::string &gt; &amp;operator_list_configs, const std::vector&lt; std::string &gt; &amp;correlator_list_configs)</dt>
+<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="class_global_data.html#a767206dba6d6bad62604ac2b2dcb019f">GlobalData::input_handling</a>  (const std::vector&lt; std::string &gt; &amp;quark_configs, const std::vector&lt; std::string &gt; &amp;operator_list_configs, const std::vector&lt; std::string &gt; &amp;correlator_list_configs)</dt>
 <dd>Split that into multiple functions for checks, output and munging to improve readability  </dd>
-<dt><a class="anchor" id="_todo000016"></a>Member <a class="el" href="class_global_data.html#a954ea16d03db909b5808aba5048750ac">GlobalData::read_parameters</a>  (int ac, char *av[])</dt>
+<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="class_global_data.html#a954ea16d03db909b5808aba5048750ac">GlobalData::read_parameters</a>  (int ac, char *av[])</dt>
 <dd>: setting the sizes and numbers of rnd_vecs and perams should be put in a separate function  </dd>
-<dt><a class="anchor" id="_todo000027"></a>File <a class="el" href="init__lookup__tables_8cpp.html">init_lookup_tables.cpp</a>  </dt>
+<dt><a class="anchor" id="_todo000026"></a>File <a class="el" href="init__lookup__tables_8cpp.html">init_lookup_tables.cpp</a>  </dt>
 <dd>Why are most functions static and not simply in an unnamed namespace?  </dd>
-<dt><a class="anchor" id="_todo000041"></a>page <a class="el" href="index.html">Main Page</a>  </dt>
+<dt><a class="anchor" id="_todo000040"></a>page <a class="el" href="index.html">Main Page</a>  </dt>
 <dd><p class="startdd">generalalize that for s and c quarks</p>
 <p class="enddd">link to OperatorsForMesons here. Due to the blockdiagonal form of \( \mathbf{B} \) multiplication with a gamma-matrix is equivalent to reordering columns in dirac-space. Details on this reordering as well as an example are presented in appendix sec:gamma. The u-quark term is additionaly multiplied with \( P^{(b)} \rho \). The reason is, that in the end the trace of the whole product has to be taken for which only the diagonal elements need to be calculated. For general gamma structure the random vectors complicate that slightly. Rather than \( 4 N_t N_{\nu} \times 4 N_{\nu} \) the dimension of the matrices becomes \( 4 N_t N_{\nu} \times 4 N_{\nu}^{dil} \) Thus, the trace can be taken with a factor \( \frac{N_{\nu}}{N_{\nu}^{dil}} \) less floating point operations at the cost of an additional factor of  </p>
 </dd>
-<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="modules_2_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba">make_gamma</a>  ()</dt>
+<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="modules_2_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba">make_gamma</a>  ()</dt>
 <dd>Refactor that into physical quantum number class along with momentum  </dd>
-<dt><a class="anchor" id="_todo000009"></a>Member <a class="el" href="class_operator_factory.html#a2ab73034ee73be523369432883387f14">OperatorFactory::return_vdaggerv</a>  (const size_t index, const size_t t) const</dt>
+<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="class_operator_factory.html#a2ab73034ee73be523369432883387f14">OperatorFactory::return_vdaggerv</a>  (const size_t index, const size_t t) const</dt>
 <dd>check of vdaggerv is already build  </dd>
-<dt><a class="anchor" id="_todo000012"></a>Class <a class="el" href="struct_operator_lookup.html">OperatorLookup</a>  </dt>
+<dt><a class="anchor" id="_todo000011"></a>Class <a class="el" href="struct_operator_lookup.html">OperatorLookup</a>  </dt>
 <dd><p class="startdd">confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable contain indices of vdaggerv_lookup and ric_lookup. Multiple hierarchy levels in a single struct </p>
 <p class="enddd">confusing because either Q1 and rvdaggerv OR Q2 and rvdaggervr are used, but in both cases half the members are spurious  </p>
 </dd>
 <dt><a class="anchor" id="_todo000005"></a>Class <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a>  </dt>
 <dd>rewrite the momenta with eigen or at least overload +, - and abs for them  </dd>
-<dt><a class="anchor" id="_todo000011"></a>Class <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a>  </dt>
+<dt><a class="anchor" id="_todo000010"></a>Class <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a>  </dt>
 <dd>check the expression for displacement  </dd>
-<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="class_write_h_d_f5_correlator.html#a49356eb2d3149f43649476bd1d7b93b1">WriteHDF5Correlator::open_or_create_hdf5_file</a>  (const H5std_string &amp;name)</dt>
-<dd>If overwrite=no flag is set, rather than H5F_ACC_TRUNC should be replaced by H5F_ACC_EXCL </dd>
 <dt><a class="anchor" id="_todo000007"></a>Member <a class="el" href="class_write_h_d_f5_correlator.html#a232206829dc040c5be353c3f9cf2a826">WriteHDF5Correlator::write</a>  (const std::vector&lt; corr_datatype &gt; &amp;corr, const <a class="el" href="struct_diagram_index.html">DiagramIndex</a> &amp;corr_info)</dt>
 <dd><p class="startdd">It is sufficient to pass the hdf5_dataset_name </p>
 <p class="enddd">corr_datatype would be better as class template typename</p>
