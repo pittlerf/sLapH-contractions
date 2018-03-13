@@ -114,14 +114,12 @@ class DiagramNumeric : public Diagram {
     assert(output_filename_ != "");
   }
 
+  /*! Assembles diagram parts for given time slice.
 
-
+    To be called in a a OpenMP parallel section.
+    */
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
-    WriteHDF5Correlator filehandle(
-        output_path_, name(), output_filename_, comp_type_factory<Numeric>());
-    for (int i = 0; i != correlator_.size(); ++i) {
-      needs_computing_[i] = !filehandle.has_dataset(corr_lookup()[i]);
-    }
+    check_need();
 
     int const tid = omp_get_thread_num();
     assemble_impl(c_.at(tid).at(t), slice_pair, q);
@@ -158,6 +156,27 @@ class DiagramNumeric : public Diagram {
                              BlockIterator const &slice_pair,
                              DiagramParts &q) = 0;
 
+  void check_need() {
+    if (need_is_checked_) {
+      return;
+    }
+
+#pragma omp barrier
+
+#pragma omp master
+    {
+      WriteHDF5Correlator filehandle(
+          output_path_, name(), output_filename_, comp_type_factory<Numeric>());
+      for (int i = 0; i != correlator_.size(); ++i) {
+        needs_computing_[i] = !filehandle.has_dataset(corr_lookup()[i]);
+      }
+
+      need_is_checked_ = true;
+    }
+
+#pragma omp barrier
+  }
+
   std::string const &output_path_;
   std::string const &output_filename_;
 
@@ -167,6 +186,7 @@ class DiagramNumeric : public Diagram {
   std::vector<std::vector<std::vector<Numeric>>> c_;
 
   std::vector<bool> needs_computing_;
+  bool need_is_checked_ = false;
 };
 
 /*****************************************************************************/

@@ -119,6 +119,10 @@ class WriteHDF5Correlator {
 
   /*! Tests for data set. */
   bool has_dataset(DiagramIndex const &corr_info) {
+    if (fresh_file_) {
+      return true;
+    }
+
     // Exceptions are automatically printed, we do not need this feature.
     H5::Exception::dontPrint();
 
@@ -208,6 +212,7 @@ class WriteHDF5Correlator {
       file = H5::H5File(name, H5F_ACC_RDWR);
     } else{
       file = H5::H5File(name, H5F_ACC_TRUNC);
+      fresh_file_ = true;
     }
   }
 
@@ -219,5 +224,7 @@ class WriteHDF5Correlator {
    *  @see  H5::CompType comp_type_factory<compcomp_t>()
    */
   H5::CompType comp_type;
+
+  bool fresh_file_ = false;
 
 };  // end of class WriteHDF5Correlator
