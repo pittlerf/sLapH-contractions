@@ -13,7 +13,7 @@ set -x
 
 sourcedir=$(pwd)
 
-for buildtype in release; do
+for buildtype in release debug; do
     builddir=../sLapH-contractions-$buildtype
     rm -rf "$builddir"
     mkdir "$builddir"
@@ -21,11 +21,10 @@ for buildtype in release; do
 
     cmake \
         "$sourcedir" \
-        -DEIGEN3_INCLUDE_DIR='/hiskp2/werner/libraries/eigen-3.2.7' \
-        -DHDF5_INCLUDE_DIRS=/hiskp2/knippsch/hdf5-1.8.17/include \
-        -DHDF5_LIBRARIES='-L/hiskp2/knippsch/hdf5-1.8.17/lib -lhdf5_cpp -lhdf5 -lsz -lz' \
-        -DCMAKE_CXX_COMPILER=g++-4.7 \
-        -DCMAKE_BUILD_TYPE=$buildtype
+        -DCMAKE_MODULE_PATH=/usr/share/cmake-3.0/Modules/ \
+        -DCMAKE_BUILD_TYPE=$buildtype \
+        -DLIME_INCLUDE_DIRS='/hadron/helmes/libraries/lime-1.3.2/include' \
+        -DLIME_LIBRARIES='-L /hadron/helmes/libraries/lime-1.3.2/lib -llime' 
 
     make -j $(nproc)
     popd
