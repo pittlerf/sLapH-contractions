@@ -15,6 +15,8 @@ set -x
 module load CMake
 # Load standard compiler
 module load defaults
+# Load Intel compiler
+module load Intel
 module load HDF5
 module load Boost
 module load Eigen
@@ -29,9 +31,11 @@ for buildtype in release; do
 
     cmake \
         "$sourcedir" \
-         -DEIGEN3_INCLUDE_DIR='${EBROOTEIGEN}/include/' \
-        -DCMAKE_C_COMPILER=mpicc \
-        -DCMAKE_CXX_COMPILER=mpicxx \
+        -DEIGEN3_INCLUDE_DIR='${EBROOTEIGEN}/include/' \
+        -DCMAKE_C_COMPILER=icc \
+        -DCMAKE_CXX_COMPILER=icpc \
+        -DLIME_INCLUDE_DIRS='/homec/hbn28/hbn287/.local/include' \
+        -DLIME_LIBRARIES='-L/homec/hbn28/hbn287/.local/lib -llime' \
         -DCMAKE_BUILD_TYPE=$buildtype
 
     make -j $(nproc)
