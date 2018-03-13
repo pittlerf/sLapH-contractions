@@ -7,6 +7,9 @@ This is the new version of the contraction code.
 
 [Doxygen Documentation](https://maowerner.github.io/sLapH-contractions)
 
+[![Build
+Status](https://travis-ci.org/maowerner/sLapH-contractions.svg?branch=master)](https://travis-ci.org/maowerner/sLapH-contractions)
+
 
 A Wick contraction in this context means the analytic result obtained when
 "integrating out" fermionic degrees of freedom from the path integral in 
