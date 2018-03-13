@@ -35,6 +35,18 @@ def handle_h5(path):
     shutil.move(path, path_new)
 
 
+def handle_ini(path):
+    with open(path, 'r') as f:
+        lines = list(f)
+
+    for i, line in enumerate(lines):
+        if line.startswith('correlator_list'):
+            lines[i] = line.replace('+', 'c')
+
+    with open(path, 'w') as f:
+        f.write(''.join(lines))
+
+
 def main():
     options = _parse_args()
 
