@@ -172,7 +172,7 @@ class C2c : public DiagramNumeric<Complex> {
  public:
   using DiagramNumeric<Complex>::DiagramNumeric;
 
-  char const *name() const override { return "C2+"; }
+  char const *name() const override { return "C2c"; }
 
  private:
   void assemble_impl(std::vector<Complex> &c,
@@ -234,7 +234,7 @@ class C3c : public DiagramNumeric<Complex> {
       std::string const &output_filename,
       int const Lt);
 
-  char const *name() const override { return "C3+"; }
+  char const *name() const override { return "C3c"; }
 
  private:
   void assemble_impl(std::vector<Complex> &c,
@@ -296,7 +296,7 @@ class C4cD : public DiagramNumeric<ComplexProduct> {
  public:
   using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
-  char const *name() const override { return "C4+D"; }
+  char const *name() const override { return "C4cD"; }
 
  private:
   void assemble_impl(std::vector<ComplexProduct> &c,
@@ -336,7 +336,7 @@ class C4cV : public DiagramNumeric<ComplexProduct> {
  public:
   using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
-  char const *name() const override { return "C4+V"; }
+  char const *name() const override { return "C4cV"; }
 
  private:
   void assemble_impl(std::vector<ComplexProduct> &c,
@@ -379,7 +379,7 @@ class C4cB : public DiagramNumeric<Complex> {
        std::string const &output_filename,
        int const Lt);
 
-  char const *name() const override { return "C4+B"; }
+  char const *name() const override { return "C4cB"; }
 
  private:
   void assemble_impl(std::vector<Complex> &c,
@@ -429,7 +429,7 @@ class C4cC : public DiagramNumeric<Complex> {
        std::string const &output_filename,
        int const Lt);
 
-  char const *name() const override { return "C4+C"; }
+  char const *name() const override { return "C4cC"; }
 
  private:
   void assemble_impl(std::vector<Complex> &c,

@@ -49,7 +49,7 @@ operator_list = g5.d0.p0,1
     
 # all correlation functions which will be computed                              
 [correlator_lists]
-correlator_list = C2+:Q0:Op10:Q0:Op10 #pion
+correlator_list = C2c:Q0:Op10:Q0:Op10 #pion
 #correlator_list = C4+D:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
 ##correlator_list = C4+V:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
 #correlator_list = C4+B:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9
