@@ -8,8 +8,13 @@ set -e
 set -u
 set -x
 
-# delete old local data. Ignore errors if none are there
+# Delete the old files. In case they care not there, the glob is not matched and that file
+# cannot be found. Ignore that error/
 rm correlators/*.h5 || true
+
+# Copy incomplete correlators to the output directoru. The code should now just append to
+# the existing file.
+cp correlators-20180312-incomplete/*.h5 correlators/
 
 "$1/contract" -i test_all.ini
 
