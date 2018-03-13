@@ -12,10 +12,6 @@ set -x
 # cannot be found. Ignore that error/
 rm correlators/*.h5 || true
 
-# Copy incomplete correlators to the output directoru. The code should now just append to
-# the existing file.
-cp correlators-20180312-incomplete/*.h5 correlators/
-
 "$1/contract" -i test_all.ini
 
 ./compare

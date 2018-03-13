@@ -125,7 +125,7 @@ void build_quantum_numbers_from_correlator_list(
   if (correlator.type == "C1") {
     for (const auto &op0 : qn_op[0])
       quantum_numbers.emplace_back(std::vector<QuantumNumbers>({op0}));
-  } else if (correlator.type == "C2+" || correlator.type == "C20" ||
+  } else if (correlator.type == "C2c" || correlator.type == "C20" ||
              correlator.type == "C20V" || correlator.type == "Check") {
     // Build all combinations of operators and impose momentum conservation
     // and cutoffs
@@ -146,7 +146,7 @@ void build_quantum_numbers_from_correlator_list(
     }
   }
 
-  else if (correlator.type == "C3+" || correlator.type == "C30") {
+  else if (correlator.type == "C3c" || correlator.type == "C30") {
     std::cout << "Constructing momentum combinations for C3" << std::endl;
 
     std::map<int, int> counter; /*! initialized with zero */
@@ -220,8 +220,8 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  else if (correlator.type == "C4+D") {
-    std::cout << "Constructing momentum combinations for C4+D" << std::endl;
+  else if (correlator.type == "C4cD") {
+    std::cout << "Constructing momentum combinations for C4cD" << std::endl;
 
     std::map<int, int> counter; /*! initialized with zero */
 
@@ -265,8 +265,8 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  else if (correlator.type == "C4+B") {
-    std::cout << "Constructing momentum combinations for C4+B" << std::endl;
+  else if (correlator.type == "C4cB") {
+    std::cout << "Constructing momentum combinations for C4cB" << std::endl;
 
     std::map<int, int> counter; /*! initialized with zero */
 
@@ -311,9 +311,9 @@ void build_quantum_numbers_from_correlator_list(
 
   }
 
-  /*! @todo Check whether that is identical to C4+D */
-  else if (correlator.type == "C4+C") {
-    std::cout << "Constructing momentum combinations for C4+C" << std::endl;
+  /*! @todo Check whether that is identical to C4cD */
+  else if (correlator.type == "C4cC") {
+    std::cout << "Constructing momentum combinations for C4cC" << std::endl;
 
     std::map<int, int> counter; /*! initialized with zero */
 
@@ -357,13 +357,13 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  /*! @todo: For C40D, C40B, C40V, C40C, C4+V, C4+C still all combinations
+  /*! @todo: For C40D, C40B, C40V, C40C, C4cV, C4cC still all combinations
    *         are built.
    *         This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
    */
   else if (correlator.type == "C40D" || correlator.type == "C40V" ||
            correlator.type == "C40B" || correlator.type == "C40C" ||
-           correlator.type == "C4+V") {
+           correlator.type == "C4cV") {
     for (const auto &op0 : qn_op[0]) {
       for (const auto &op1 : qn_op[1]) {
         for (const auto &op2 : qn_op[2]) {
@@ -390,7 +390,7 @@ static std::string vector_to_string(const std::vector< std::pair<char,char> > &i
 /******************************************************************************/
 /*! Create the names for output files and hdf5 datasets.
  *
- *  @param[in]  corr_type {C1,C2+,C20,C20V,C3+,C30,C4+D,C4+V,C4+C,C4+B,C40D,
+ *  @param[in]  corr_type {C1,C2c,C20,C20V,C3+,C30,C4cD,C4cV,C4cC,C4cB,C40D,
  *                         C40V,C40C,C40B} :
  *  @param[in]  cnfg :            Number of first gauge configuration
  *  @param[in]  outpath           Output path from the infile.
@@ -897,7 +897,7 @@ static void build_C2c_lookup(
     auto id1 = build_corrC_lookup({ql_ids[0], ql_ids[1]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C2+", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C2c", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
 
@@ -1259,7 +1259,7 @@ static void build_C4cD_lookup(
     auto id2 = build_corrC_lookup({ql_ids[2], ql_ids[3]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+D", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C4cD", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1425,7 +1425,7 @@ static void build_C4cV_lookup(
     auto id2 = build_corrC_lookup({ql_ids[2], ql_ids[3]}, trQ0Q2_lookup);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+V", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C4cV", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{c_look.size(),
                            hdf5_dataset_name,
@@ -1574,7 +1574,7 @@ static void build_C4cC_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+C", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C4cC", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
@@ -1708,7 +1708,7 @@ static void build_C4cB_lookup(
         3, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C4+B", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C4cB", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
 
@@ -1836,7 +1836,7 @@ void GlobalData::init_lookup_tables() {
                       quarkline_lookuptable.Q1,
                       correlator_lookuptable.trQ1,
                       correlator_lookuptable.C1);
-    } else if (correlator.type == "C2+" || correlator.type == "Check") {
+    } else if (correlator.type == "C2c" || correlator.type == "Check") {
       /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
        *  4. Build the lookuptable for Q2 and return an array of indices
@@ -1858,7 +1858,7 @@ void GlobalData::init_lookup_tables() {
      *      applicable rVdaggerVr must be replaced by rVdaggerV in step 3. and
      *      Q2 by Q1 in step 4.
      */
-    else if (correlator.type == "C3+") {
+    else if (correlator.type == "C3c") {
       build_C3c_lookup(quarks,
                        correlator.quark_numbers,
                        start_config,
@@ -1869,7 +1869,7 @@ void GlobalData::init_lookup_tables() {
                        quarkline_lookuptable.Q1,
                        quarkline_lookuptable.Q2L,
                        correlator_lookuptable.C3c);
-    } else if (correlator.type == "C4+D") {
+    } else if (correlator.type == "C4cD") {
       build_C4cD_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
@@ -1880,7 +1880,7 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q2V,
                         correlator_lookuptable.trQ0Q2,
                         correlator_lookuptable.C4cD);
-    } else if (correlator.type == "C4+V") {
+    } else if (correlator.type == "C4cV") {
       build_C4cV_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
@@ -1891,7 +1891,7 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q2V,
                         correlator_lookuptable.trQ0Q2,
                         correlator_lookuptable.C4cV);
-    } else if (correlator.type == "C4+C") {
+    } else if (correlator.type == "C4cC") {
       build_C4cC_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
@@ -1901,7 +1901,7 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q0,
                         quarkline_lookuptable.Q2V,
                         correlator_lookuptable.C4cC);
-    } else if (correlator.type == "C4+B") {
+    } else if (correlator.type == "C4cB") {
       build_C4cB_lookup(quarks,
                         correlator.quark_numbers,
                         start_config,
@@ -1990,7 +1990,7 @@ void GlobalData::init_lookup_tables() {
                         quarkline_lookuptable.Q1,
                         correlator_lookuptable.C40B);
     } else {
-      std::cout << "Correlator type not known!" << std::endl;
+      std::cout << "Correlator type " << correlator.type << " not known!" << std::endl;
       exit(0);
     }
   }
