@@ -45,7 +45,7 @@ operator_list = g1.d0.p0,1,2,3
 #correlator_list = C4+V:Q0:Op0:Q0:Op0:Q0:Op0:Q0:Op0
 #correlator_list = C20:Q0:Op1:Q0:Op1
 #correlator_list = C3+:Q0:Op0:Q0:Op1:Q0:Op0
-correlator_list = C4+B:Q0:Op0:Q0:Op0:Q0:Op0:Q0:Op0
+correlator_list = C4cB:Q0:Op0:Q0:Op0:Q0:Op0:Q0:Op0
 
 
 

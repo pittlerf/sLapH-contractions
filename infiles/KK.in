@@ -40,9 +40,9 @@ operator_list = g5.d0.p0
 
 # all correlation functions which will be computed
 [correlator_lists]
-correlator_list = C2+:Q0:Op5:Q1:Op5 
-correlator_list = C4+D:Q0:Op5:Q1:Op5:Q0:Op5:Q1:Op5
-correlator_list = C4+C:Q0:Op5:Q1:Op5:Q0:Op5:Q1:Op5
+correlator_list = C2c:Q0:Op5:Q1:Op5 
+correlator_list = C4cD:Q0:Op5:Q1:Op5:Q0:Op5:Q1:Op5
+correlator_list = C4cC:Q0:Op5:Q1:Op5:Q0:Op5:Q1:Op5
 correlator_list = C20:Q0:Op4:Q1:Op4 
 correlator_list = C40D:Q0:Op4:Q1:Op4:Q0:Op4:Q1:Op4
 correlator_list = C40V:Q0:Op4:Q1:Op4:Q0:Op4:Q1:Op4

@@ -48,7 +48,7 @@ operator_list = g5.d0.p0,1,2,3,4
 [correlator_lists]
 
 # pion
-correlator_list = C2+:Q0:Op9:Q0:Op9:P0,1,2,3,4
+correlator_list = C2c:Q0:Op9:Q0:Op9:P0,1,2,3,4
 
 # rho
 correlator_list = C20:Q0:Op0:Q0:Op0:P0,1,2,3,4 
@@ -134,17 +134,17 @@ correlator_list = C20:Q0:Op8:Q0:Op7:P0,1,2,3,4
 correlator_list = C20:Q0:Op8:Q0:Op8:P0,1,2,3,4
 
 # pion pion - rho offdiagonal element
-correlator_list = C3+:Q0:Op9:Q0:Op0:Q0:Op9:P0,1,2,3,4 
-correlator_list = C3+:Q0:Op9:Q0:Op1:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op2:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op3:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op4:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op5:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op6:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op7:Q0:Op9:P0,1,2,3,4
-correlator_list = C3+:Q0:Op9:Q0:Op8:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op0:Q0:Op9:P0,1,2,3,4 
+correlator_list = C3c:Q0:Op9:Q0:Op1:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op2:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op3:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op4:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op5:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op6:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op7:Q0:Op9:P0,1,2,3,4
+correlator_list = C3c:Q0:Op9:Q0:Op8:Q0:Op9:P0,1,2,3,4
 
 # pion pion
-correlator_list = C4+D:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9:P0,1,2,3,4
-correlator_list = C4+B:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9:P0,1,2,3,4
+correlator_list = C4cD:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9:P0,1,2,3,4
+correlator_list = C4cB:Q0:Op9:Q0:Op9:Q0:Op9:Q0:Op9:P0,1,2,3,4
 

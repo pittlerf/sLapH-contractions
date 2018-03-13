@@ -35,7 +35,7 @@ def handle_h5(path):
     shutil.move(path, path_new)
 
 
-def handle_ini(path):
+def handle_conf(path):
     with open(path, 'r') as f:
         lines = list(f)
 
@@ -58,7 +58,7 @@ def main():
         
         if ext == '.h5':
             handle_h5(path)
-        elif ext == '.ini':
+        elif ext == '.ini' or ext == '.in':
             handle_conf(path)
         else:
             print('File extension of {} not supported.'.format(path))

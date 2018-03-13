@@ -41,6 +41,6 @@ operator_list = g3.d0.p0,1
 
 # all correlation functions which will be computed
 [correlator_lists]
-correlator_list = C3+:Q0:Op0:Q0:Op1:Q0:Op0
-correlator_list = C3+:Q0:Op0:Q0:Op2:Q0:Op0
-correlator_list = C3+:Q0:Op0:Q0:Op3:Q0:Op0
+correlator_list = C3c:Q0:Op0:Q0:Op1:Q0:Op0
+correlator_list = C3c:Q0:Op0:Q0:Op2:Q0:Op0
+correlator_list = C3c:Q0:Op0:Q0:Op3:Q0:Op0
