@@ -127,6 +127,8 @@ OperatorFactory::OperatorFactory(const size_t Lt,
 
   std::cout << "\tMeson operators initialised" << std::endl;
 }
+
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::build_vdaggerv(const std::string &filename, const int config) {
@@ -204,13 +206,20 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
-            char dummy2[200];
-            sprintf(dummy2, "operators.%04d.p_", config);
-            std::string dummy = std::string(dummy2) + std::to_string(op.momentum[0]) +
+            //char dummy2[200];
+            //sprintf(dummy2, "operators.%04d.p_", config);
+            //std::string dummy = std::string(dummy2) + std::to_string(op.momentum[0]) +
+            //                    std::to_string(op.momentum[1]) +
+            //                    std::to_string(op.momentum[2]);
+            //char outfile[200];
+            //sprintf(outfile, "%s_.t_%03d", dummy.c_str(), (int)t);
+            std::string momentum_string = std::to_string(op.momentum[0]) +
                                 std::to_string(op.momentum[1]) +
                                 std::to_string(op.momentum[2]);
-            char outfile[200];
-            sprintf(outfile, "%s_.t_%03d", dummy.c_str(), (int)t);
+            std::string displacement_string = to_string(op.displacement);
+            std::string outfile = (boost::format("operators.%04d.p_%s.d_%s.t_%03d" )%
+                       config % momentum_string % displacement_string %
+                       (int)t ).str();
             write_vdaggerv(full_path, std::string(outfile), vdaggerv[op.id][t]);
           }
         } else  // zero momentum

@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 
 #include "boost/filesystem.hpp"
+#include "boost/format.hpp"
 #include "boost/multi_array.hpp"
 
 #include "EigenVector.h"

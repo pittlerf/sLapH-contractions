@@ -376,17 +376,7 @@ void build_quantum_numbers_from_correlator_list(
   }
 }
 
-//TODO: Not the right place, not sure where to place it otherwise
-/*! Makes a string object of a displacement vector */
-static std::string vector_to_string(const std::vector< std::pair<char,char> > &in){
-  std::string out;
-  if (in.empty()) out = "000";
-  for (auto const& dis : in){ 
-    out.push_back(dis.first);
-    out.push_back(dis.second);
-  }
-  return out;
-}
+
 /******************************************************************************/
 /*! Create the names for output files and hdf5 datasets.
  *
@@ -422,7 +412,7 @@ static void build_correlator_names(
     size_t id = 0;
     for (const auto &qn : qn_row) {  // adding quantum numbers
       filename += std::string("_p") + to_string(qn.momentum);
-      filename += std::string(".d") + vector_to_string(qn.displacement);
+      filename += std::string(".d") + to_string(qn.displacement);
       filename += std::string(".g") + to_string(qn.gamma);
     }
     hdf5_dataset_name.emplace_back(filename);
@@ -442,7 +432,7 @@ static std::string const build_hdf5_dataset_name(
   size_t id = 0;
   for (const auto &op : qn) {  // adding quantum numbers
     filename += std::string("_p") + to_string(op.momentum);
-    filename += std::string(".d") + vector_to_string(op.displacement);
+    filename += std::string(".d") + to_string(op.displacement);
     filename += std::string(".g") + to_string(op.gamma);
   }
   return filename;
