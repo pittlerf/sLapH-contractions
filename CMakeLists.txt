@@ -58,7 +58,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   find_package(Eigen3 REQUIRED)
 endif()
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIRS})
+include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
 
 # Lime
 if(NOT DEFINED LIME_INCLUDE_DIRS)
