@@ -18,7 +18,9 @@
 #include "boost/format.hpp"
 #include "boost/multi_array.hpp"
 
+
 #include "EigenVector.h"
+#include "global_data_typedefs.h"
 #include "GaugeField.h"
 #include "RandomVector.h"
 #include "typedefs.h"
