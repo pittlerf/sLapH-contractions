@@ -66,7 +66,8 @@ int main (int ac, char* av[]) {
                             global_data->get_operator_lookuptable(),
                             global_data->get_handling_vdaggerv(),
                             global_data->get_path_vdaggerv(),
-                            global_data->get_path_config());
+                            global_data->get_path_config(),
+                            global_data->get_hyp_parameters());
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------

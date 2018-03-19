@@ -87,6 +87,15 @@ void GlobalData::read_parameters(int ac, char *av[]) {
       "path_config",
       po::value<std::string>(&path_config),
       "path for gauge configurations")(
+      "alpha1",
+      po::value<double>(&alpha1)->default_value(0),
+      "alpha1: Inner level strength of Hyp-smearing")(
+      "alpha2",
+      po::value<double>(&alpha2)->default_value(0),
+      "alpha2: Outer level strength of Hyp-smearing")(
+      "iterations",
+      po::value<size_t>(&iterations)->default_value(0),
+      "iterations: Number of Hyp-smearing applications")(
       "lattice",
       po::value<std::string>(&name_lattice),
       "Codename of the lattice")(

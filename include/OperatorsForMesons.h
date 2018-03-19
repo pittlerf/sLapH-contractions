@@ -52,7 +52,8 @@ class OperatorFactory {
                   const OperatorLookup &operator_lookuptable,
                   const std::string &handling_vdaggerv,
                   const std::string &path_vdaggerv,
-                  const std::string &path_config);
+                  const std::string &path_config,
+                  const hyp_pars &hyp_parameters);
   /*! Standard Destructor
    *
    *  Everything should be handled by Eigen, std::vector, and boost::multi_array
@@ -92,6 +93,8 @@ private:
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
   std::string path_config;
+  hyp_pars hyp_parameters;
+  
 
   // Internal functions to build individual operators --> The interface to these
   // functions is 'create_Operators'

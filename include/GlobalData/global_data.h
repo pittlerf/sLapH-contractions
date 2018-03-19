@@ -71,6 +71,9 @@ class GlobalData {
   std::string path_output;
   std::string overwrite;
   std::string path_config;
+  double alpha1;
+  double alpha2;
+  size_t iterations;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
   //! @endcond
@@ -118,6 +121,10 @@ class GlobalData {
     return filename_ending_correlators;
   }
   inline std::string get_path_config() { return path_config; }
+  inline hyp_pars get_hyp_parameters() {
+    hyp_pars hyp_parameters(alpha1,alpha2,iterations);
+    return hyp_parameters; 
+  }
   inline size_t get_nb_omp_threads() { return nb_omp_threads; }
   inline size_t get_nb_eigen_threads() { return nb_eigen_threads; }
   inline int get_Lx() { return Lx; }

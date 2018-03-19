@@ -102,7 +102,8 @@ OperatorFactory::OperatorFactory(const size_t Lt,
                                  const OperatorLookup &operator_lookuptable,
                                  const std::string &handling_vdaggerv,
                                  const std::string &path_vdaggerv,
-                                 const std::string &path_config)
+                                 const std::string &path_config,
+                                 const hyp_pars &hyp_parameters)
     : vdaggerv(),
       momentum(),
       operator_lookuptable(operator_lookuptable),
@@ -114,7 +115,8 @@ OperatorFactory::OperatorFactory(const size_t Lt,
       dilE(dilE),
       handling_vdaggerv(handling_vdaggerv),
       path_vdaggerv(path_vdaggerv),
-      path_config(path_config) {
+      path_config(path_config),
+      hyp_parameters(hyp_parameters){
 
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[operator_lookuptable.vdaggerv_lookup.size()][Lt]);
@@ -159,17 +161,16 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
 #pragma omp parallel
   {
-    // Read in gauge field from lime configuration, need all directions
-    //GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, PATH_GAUGE_IN, 0, Lt-1, 4);
-    //gauge.read_gauge_field(CONFIG,0,Lt-1);
     Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
     Eigen::VectorXcd dis = Eigen::VectorXcd::Zero(dim_row);
     // Check if gauges are needed
     bool need_gauge = false;
+    bool need_smearing = false;
     for (auto const& op : operator_lookuptable.vdaggerv_lookup)
         if(!op.displacement.empty()) need_gauge=true;
+    // If parameters for smearing are set, smear operator
     GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, path_config,0,Lt-1,4);
-    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1); 
+    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1);
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
 #pragma omp for schedule(dynamic)
     for (size_t t = 0; t < Lt; ++t) {
@@ -192,6 +193,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           // Forward derivative
           Eigen::MatrixXcd W_t;
           if (!op.displacement.empty()){
+            if(std::get<2>(hyp_parameters) > 0){
+              const double alpha1 = std::get<0>(hyp_parameters);
+              const double alpha2 = std::get<1>(hyp_parameters); 
+              const size_t iter = std::get<2>(hyp_parameters); 
+              gauge.smearing_hyp(t,alpha1,alpha2,iter);
+            }
             W_t = gauge.displace_eigenvectors(V_t[0],t,op.displacement,1);
             vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
           }

@@ -155,3 +155,7 @@ struct Correlators_2 {
 typedef std::vector<QuantumNumbers> Operators;
 typedef std::vector<Operators> Operator_list;
 typedef std::vector<Correlators_2> Correlator_list;
+
+//Typedef for hypercubic blocking of gauge links, takes alpha1, alpha2 and
+//number of iterations
+typedef std::tuple<double, double, size_t> hyp_pars;
