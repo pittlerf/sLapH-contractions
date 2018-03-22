@@ -5,6 +5,8 @@
 #include "h5-wrapper.h"
 #include "typedefs.h"
 
+#include <mutex>
+
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
                Perambulator const &perambulator,
@@ -104,8 +106,8 @@ class DiagramNumeric : public Diagram {
         output_filename_(output_filename),
         Lt_(Lt),
         correlator_(corr_lookup().size(), std::vector<Numeric>(Lt, Numeric{})),
-        c_(omp_get_max_threads(), std::vector<Numeric>(corr_lookup().size(), Numeric{})) {
-  }
+        c_(omp_get_max_threads(), std::vector<Numeric>(corr_lookup().size(), Numeric{})),
+        mutexes_(Lt) {}
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
@@ -116,8 +118,9 @@ class DiagramNumeric : public Diagram {
 
     assemble_impl(c_.at(tid), slice_pair, q);
 
-#pragma omp critical(Diagram_reduce)
     {
+      std::lock_guard<std::mutex> lock(mutexes_[t]);
+
       for (int i = 0; i != correlator_.size(); ++i) {
         correlator_[i][t] += c_[tid][i];
       }
@@ -155,6 +158,8 @@ class DiagramNumeric : public Diagram {
 
   /*! OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
   std::vector<std::vector<Numeric>> c_;
+
+  std::vector<std::mutex> mutexes_;
 };
 
 /*****************************************************************************/
