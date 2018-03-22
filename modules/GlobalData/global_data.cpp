@@ -7,6 +7,8 @@
  *
  *  @date Mar 28, 2013
  */
+#include <cmath>
+#include <iomanip>
 
 #include "global_data.h"
 
@@ -211,4 +213,86 @@ void GlobalData::read_parameters(int ac, char *av[]) {
                                           q.number_of_dilution_D);
     }
   }
+
+  // printing information about memory consumption of all relevant parts that are cached
+  std::cout << "Memory consumption:" << std::endl;
+
+  std::cout << "\tOperatorFactory:\t" << std::fixed << std::setprecision(2) << 
+    operator_lookuptable.size() * Lt * number_of_eigen_vec * number_of_eigen_vec * 
+    sizeof(Complex) / std::pow(2, 30) << " Gb" << std::endl;
+
+  std::cout << "\tRandomVector:\t" << std::fixed << std::setprecision(2) << 
+    rnd_vec_construct.nb_entities * rnd_vec_construct.length * 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int peram_matrix_size_sum = 0;
+  for(auto i = 0; i < peram_construct.size_rows.size(); ++i){
+    peram_matrix_size_sum += peram_construct.size_rows[i] * peram_construct.size_cols[i];
+  }
+  std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2) << 
+    peram_construct.nb_entities * peram_matrix_size_sum * 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  std::cout << "\tDiagramParts:" << std::endl;
+
+  int total_number_of_random_combinations_in_Q0 = 0;
+  for(auto const &q : quarkline_lookuptable.Q0){
+    total_number_of_random_combinations_in_Q0 += q.rnd_vec_ids.size();
+  }
+  int Q0_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ0:\t" << std::fixed << std::setprecision(2) << 
+    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    total_number_of_random_combinations_in_Q0 * Q0_matrix_size* 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_Q1 = 0;
+  for(auto const &q : quarkline_lookuptable.Q1){
+    total_number_of_random_combinations_in_Q1 += q.rnd_vec_ids.size();
+  }
+  int Q1_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ1:\t" << std::fixed << std::setprecision(2) << 
+    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    total_number_of_random_combinations_in_Q1 * Q1_matrix_size* 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_Q2L = 0;
+  for(auto const &q : quarkline_lookuptable.Q2L){
+    total_number_of_random_combinations_in_Q2L += q.rnd_vec_ids.size();
+  }
+  int Q2L_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ2L:\t" << std::fixed << std::setprecision(2) << 
+    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    total_number_of_random_combinations_in_Q2L * Q2L_matrix_size* 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_Q2V = 0;
+  for(auto const &q : quarkline_lookuptable.Q2V){
+    total_number_of_random_combinations_in_Q2V += q.rnd_vec_ids.size();
+  }
+  int Q2V_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ2V:\t" << std::fixed << std::setprecision(2) << 
+    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    total_number_of_random_combinations_in_Q2V * Q2V_matrix_size* 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  
+  int total_number_of_random_combinations_in_trQ1Q1 = number_of_rnd_vec * (number_of_rnd_vec - 1);
+  std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2) << 
+    correlator_lookuptable.trQ1Q1.size() * Lt * Lt * 
+    total_number_of_random_combinations_in_trQ1Q1 * 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_trQ0Q2 = number_of_rnd_vec * (number_of_rnd_vec - 1);
+  std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2) << 
+    correlator_lookuptable.trQ0Q2.size() * Lt * Lt * 
+    total_number_of_random_combinations_in_trQ0Q2 * 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_trQ1 = number_of_rnd_vec;
+  std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2) << 
+    correlator_lookuptable.trQ1.size() * Lt * 
+    total_number_of_random_combinations_in_trQ1 * 
+    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+
+  std::cout << "\tDiagrams:" << std::endl;
+
 }
