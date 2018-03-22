@@ -84,8 +84,6 @@ class Diagram {
                         BlockIterator const &slice_pair,
                         DiagramParts &q) = 0;
 
-  virtual void reduce() = 0;
-
   virtual void write() = 0;
 
  private:
@@ -106,24 +104,17 @@ class DiagramNumeric : public Diagram {
         output_filename_(output_filename),
         Lt_(Lt),
         correlator_(corr_lookup().size(), std::vector<Numeric>(Lt, Numeric{})),
-        c_(omp_get_max_threads(),
-           std::vector<std::vector<Numeric>>(
-               Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
+        c_(omp_get_max_threads(), std::vector<Numeric>(corr_lookup().size(), Numeric{})) {
+  }
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
-    assemble_impl(c_.at(tid).at(t), slice_pair, q);
-  }
-
-  void reduce() override {
-    int const tid = omp_get_thread_num();
+    assemble_impl(c_.at(tid), slice_pair, q);
 
 #pragma omp critical(Diagram_reduce)
     {
       for (int i = 0; i != correlator_.size(); ++i) {
-        for (size_t t = 0; t < Lt_; t++) {
-          correlator_[i][t] += c_[tid][t][i];
-        }
+        correlator_[i][t] += c_[tid][i];
       }
     }
   }
@@ -154,8 +145,11 @@ class DiagramNumeric : public Diagram {
 
   int const Lt_;
 
+  /*! OpenMP-shared correlators, indices are (1) correlator id and (2) time. */
   std::vector<std::vector<Numeric>> correlator_;
-  std::vector<std::vector<std::vector<Numeric>>> c_;
+
+  /*! OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
+  std::vector<std::vector<Numeric>> c_;
 };
 
 /*****************************************************************************/
