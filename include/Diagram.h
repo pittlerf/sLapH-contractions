@@ -109,6 +109,11 @@ class DiagramNumeric : public Diagram {
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
+
+    for (int i = 0; i != correlator_.size(); ++i) {
+      c_[tid][i] = Numeric{};
+    }
+
     assemble_impl(c_.at(tid), slice_pair, q);
 
 #pragma omp critical(Diagram_reduce)
