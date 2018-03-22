@@ -97,8 +97,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afddaf39e528ededaef00af2ffaa2ab22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe63d2704d5bba060a474e58a15d66fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#abe63d2704d5bba060a474e58a15d66fb">assemble</a> (int const t, <a class="el" href="class_block_iterator.html">BlockIterator</a> const &amp;slice_pair, <a class="el" href="struct_diagram_parts.html">DiagramParts</a> &amp;q) override</td></tr>
 <tr class="separator:abe63d2704d5bba060a474e58a15d66fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8a52431a3c01a9dbcd38cccd3634489"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#ae8a52431a3c01a9dbcd38cccd3634489">reduce</a> () override</td></tr>
-<tr class="separator:ae8a52431a3c01a9dbcd38cccd3634489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3beb0f65e8e248002117b434ee4fa15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#ac3beb0f65e8e248002117b434ee4fa15">write</a> () override</td></tr>
 <tr class="separator:ac3beb0f65e8e248002117b434ee4fa15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_diagram"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_diagram')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_diagram.html">Diagram</a></td></tr>
@@ -126,8 +124,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ad8e26fa73ed77d0f8ccc9a631ea51963"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add832211a5c1db997bf16dcfadb836d2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="class_diagram_numeric.html#adeabc70cc275ea6162c6ae7b327f7f6f">Numeric</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#add832211a5c1db997bf16dcfadb836d2">correlator_</a></td></tr>
 <tr class="separator:add832211a5c1db997bf16dcfadb836d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbb86e778cf8c1ab2a975c4405441f00"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; std::vector&lt; <a class="el" href="class_diagram_numeric.html#adeabc70cc275ea6162c6ae7b327f7f6f">Numeric</a> &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#acbb86e778cf8c1ab2a975c4405441f00">c_</a></td></tr>
-<tr class="separator:acbb86e778cf8c1ab2a975c4405441f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23d59e3c842449a6342f600b9bb999e5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="class_diagram_numeric.html#adeabc70cc275ea6162c6ae7b327f7f6f">Numeric</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#a23d59e3c842449a6342f600b9bb999e5">c_</a></td></tr>
+<tr class="separator:a23d59e3c842449a6342f600b9bb999e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf0bea72d4bceccc2fbaaf48298c78f2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::mutex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_diagram_numeric.html#acf0bea72d4bceccc2fbaaf48298c78f2">mutexes_</a></td></tr>
+<tr class="separator:acf0bea72d4bceccc2fbaaf48298c78f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Numeric_&gt;<br />
@@ -252,7 +252,7 @@ template&lt;typename Numeric_&gt; </div>
 
 <p>Implements <a class="el" href="class_diagram.html#a46bc82c48d29a077a4c01a573a2bd6a1">Diagram</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00113">113</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00112">112</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
@@ -302,37 +302,6 @@ template&lt;typename Numeric_&gt; </div>
 
 </div>
 </div>
-<a id="ae8a52431a3c01a9dbcd38cccd3634489"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8a52431a3c01a9dbcd38cccd3634489">&#9670;&nbsp;</a></span>reduce()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Numeric_&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="class_diagram_numeric.html">DiagramNumeric</a>&lt; Numeric_ &gt;::reduce </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implements <a class="el" href="class_diagram.html#a1db374852ca4d17458b7858706208c06">Diagram</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00118">118</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
-
-</div>
-</div>
 <a id="ac3beb0f65e8e248002117b434ee4fa15"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac3beb0f65e8e248002117b434ee4fa15">&#9670;&nbsp;</a></span>write()</h2>
 
@@ -360,13 +329,13 @@ template&lt;typename Numeric_&gt; </div>
 
 <p>Implements <a class="el" href="class_diagram.html#aad74189354f5b10d8de0cbc2090c83c9">Diagram</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00131">131</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00130">130</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="acbb86e778cf8c1ab2a975c4405441f00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbb86e778cf8c1ab2a975c4405441f00">&#9670;&nbsp;</a></span>c_</h2>
+<a id="a23d59e3c842449a6342f600b9bb999e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23d59e3c842449a6342f600b9bb999e5">&#9670;&nbsp;</a></span>c_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -377,7 +346,7 @@ template&lt;typename Numeric_&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::vector&lt;std::vector&lt;<a class="el" href="class_diagram_numeric.html#adeabc70cc275ea6162c6ae7b327f7f6f">Numeric</a>&gt; &gt; &gt; <a class="el" href="class_diagram_numeric.html">DiagramNumeric</a>&lt; Numeric_ &gt;::c_</td>
+          <td class="memname">std::vector&lt;std::vector&lt;<a class="el" href="class_diagram_numeric.html#adeabc70cc275ea6162c6ae7b327f7f6f">Numeric</a>&gt; &gt; <a class="el" href="class_diagram_numeric.html">DiagramNumeric</a>&lt; Numeric_ &gt;::c_</td>
         </tr>
       </table>
   </td>
@@ -386,8 +355,9 @@ template&lt;typename Numeric_&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. </p>
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00158">158</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00162">162</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
@@ -412,8 +382,9 @@ template&lt;typename Numeric_&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>OpenMP-shared correlators, indices are (1) time and (2) correlator id. </p>
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00157">157</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00159">159</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
@@ -439,7 +410,33 @@ template&lt;typename Numeric_&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00155">155</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00156">156</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+
+</div>
+</div>
+<a id="acf0bea72d4bceccc2fbaaf48298c78f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf0bea72d4bceccc2fbaaf48298c78f2">&#9670;&nbsp;</a></span>mutexes_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Numeric_&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::mutex&gt; <a class="el" href="class_diagram_numeric.html">DiagramNumeric</a>&lt; Numeric_ &gt;::mutexes_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00164">164</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
@@ -465,7 +462,7 @@ template&lt;typename Numeric_&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00153">153</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00154">154</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>
@@ -491,7 +488,7 @@ template&lt;typename Numeric_&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00152">152</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_diagram_8h_source.html#l00153">153</a> of file <a class="el" href="_diagram_8h_source.html">Diagram.h</a>.</p>
 
 </div>
 </div>

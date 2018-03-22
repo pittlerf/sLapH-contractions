@@ -6,7 +6,7 @@ var searchData=
   ['single2double_5fcm',['single2double_cm',['../io__utils_8h.html#a7ccca1debcdc539524a43845f0746df9',1,'io_utils.h']]],
   ['sink',['sink',['../struct_dilution_iterator_1_1_element.html#adf0b277e4816e337bcbaffde7db72882',1,'DilutionIterator::Element::sink()'],['../class_block_iterator.html#ae394e7e320d240f4dec35a0ab0cfb719',1,'BlockIterator::sink()'],['../class_dilution_iterator.html#a3c7d906c2092e6ee23634f2f7a8d12e7',1,'DilutionIterator::sink()']]],
   ['sink_5fblock',['sink_block',['../class_block_iterator.html#a83b36fe64646d84df68f13070be40277',1,'BlockIterator']]],
-  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme']]],
+  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a865b63ed0e3ff2785e97e8f50483655e',1,'OperatorLookup::size()']]],
   ['size_5fcols',['size_cols',['../struct_perambulator_construction.html#a553369e4ba3b857785c614eccb1ace4f',1,'PerambulatorConstruction']]],
   ['size_5frows',['size_rows',['../struct_perambulator_construction.html#a25e44462aa44cf7a4fd889514818ec94',1,'PerambulatorConstruction']]],
   ['slice_5fsink_5f',['slice_sink_',['../class_block_iterator.html#a5277f72a888528d9edf6c58bffdebdaa',1,'BlockIterator']]],

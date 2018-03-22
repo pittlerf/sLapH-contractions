@@ -6,7 +6,7 @@ var searchData=
   ['single2double_5fcm',['single2double_cm',['../io__utils_8h.html#a7ccca1debcdc539524a43845f0746df9',1,'io_utils.h']]],
   ['sink',['sink',['../class_block_iterator.html#ae394e7e320d240f4dec35a0ab0cfb719',1,'BlockIterator::sink()'],['../class_dilution_iterator.html#a3c7d906c2092e6ee23634f2f7a8d12e7',1,'DilutionIterator::sink()']]],
   ['sink_5fblock',['sink_block',['../class_block_iterator.html#a83b36fe64646d84df68f13070be40277',1,'BlockIterator']]],
-  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme']]],
+  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a865b63ed0e3ff2785e97e8f50483655e',1,'OperatorLookup::size()']]],
   ['smearing_5fape',['smearing_ape',['../class_gauge_field.html#a79a8fd7337853ec142d8f3c499cb2d40',1,'GaugeField']]],
   ['smearing_5fhyp',['smearing_hyp',['../class_gauge_field.html#a22ba50cbeaa707ae57acea18c2a207fe',1,'GaugeField']]],
   ['smearing_5fstout',['smearing_stout',['../class_gauge_field.html#ae441b366224eed197873bf98a9472883',1,'GaugeField']]],

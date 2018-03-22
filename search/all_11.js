@@ -20,7 +20,6 @@ var searchData=
   ['read_5fvdaggerv',['read_vdaggerv',['../class_operator_factory.html#a8d677491e1743c2282ca0afab6ef8a56',1,'OperatorFactory']]],
   ['read_5fvdaggerv_5fliuming',['read_vdaggerv_liuming',['../class_operator_factory.html#a44e00b5989905a59f11392d3c7bb1a20',1,'OperatorFactory']]],
   ['readme_2emd',['Readme.md',['../_readme_8md.html',1,'']]],
-  ['reduce',['reduce',['../class_diagram.html#a1db374852ca4d17458b7858706208c06',1,'Diagram::reduce()'],['../class_diagram_numeric.html#ae8a52431a3c01a9dbcd38cccd3634489',1,'DiagramNumeric::reduce()']]],
   ['reim',['reim',['../struct_complex_product.html#a06c0d9f2f4f1caf2fc4e07cec9cf1af3',1,'ComplexProduct']]],
   ['rere',['rere',['../struct_complex_product.html#a0860dfec28fbfab0166f44db6ace1034',1,'ComplexProduct']]],
   ['return_5fvdaggerv',['return_vdaggerv',['../class_operator_factory.html#a2ab73034ee73be523369432883387f14',1,'OperatorFactory']]],

@@ -12,7 +12,6 @@ var searchData=
   ['read_5frandom_5fvectors_5ffrom_5fseparate_5ffiles',['read_random_vectors_from_separate_files',['../class_random_vector.html#ac3f27c993401473aa79a5bce6af73a50',1,'RandomVector']]],
   ['read_5fvdaggerv',['read_vdaggerv',['../class_operator_factory.html#a8d677491e1743c2282ca0afab6ef8a56',1,'OperatorFactory']]],
   ['read_5fvdaggerv_5fliuming',['read_vdaggerv_liuming',['../class_operator_factory.html#a44e00b5989905a59f11392d3c7bb1a20',1,'OperatorFactory']]],
-  ['reduce',['reduce',['../class_diagram.html#a1db374852ca4d17458b7858706208c06',1,'Diagram::reduce()'],['../class_diagram_numeric.html#ae8a52431a3c01a9dbcd38cccd3634489',1,'DiagramNumeric::reduce()']]],
   ['return_5fvdaggerv',['return_vdaggerv',['../class_operator_factory.html#a2ab73034ee73be523369432883387f14',1,'OperatorFactory']]],
   ['rlxs_5fget',['rlxs_get',['../ranlxs_8h.html#aa92499cfd188372e9b55d4509f94d003',1,'rlxs_get(int state[]):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#aa92499cfd188372e9b55d4509f94d003',1,'rlxs_get(int state[]):&#160;ranlxs.cpp']]],
   ['rlxs_5finit',['rlxs_init',['../ranlxs_8h.html#aa924f8edb5c17eb7ebd7c2fc0eb90245',1,'rlxs_init(int level, int seed):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#aa924f8edb5c17eb7ebd7c2fc0eb90245',1,'rlxs_init(int level, int seed):&#160;ranlxs.cpp']]],
