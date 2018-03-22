@@ -5,6 +5,8 @@
 #include "h5-wrapper.h"
 #include "typedefs.h"
 
+#include <mutex>
+
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
                Perambulator const &perambulator,
@@ -84,8 +86,6 @@ class Diagram {
                         BlockIterator const &slice_pair,
                         DiagramParts &q) = 0;
 
-  virtual void reduce() = 0;
-
   virtual void write() = 0;
 
  private:
@@ -105,25 +105,24 @@ class DiagramNumeric : public Diagram {
         output_path_(output_path),
         output_filename_(output_filename),
         Lt_(Lt),
-        correlator_(corr_lookup().size(), std::vector<Numeric>(Lt, Numeric{})),
-        c_(omp_get_max_threads(),
-           std::vector<std::vector<Numeric>>(
-               Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{}))) {}
+        correlator_(Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{})),
+        c_(omp_get_max_threads(), std::vector<Numeric>(corr_lookup().size(), Numeric{})),
+        mutexes_(Lt) {}
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
-    assemble_impl(c_.at(tid).at(t), slice_pair, q);
-  }
 
-  void reduce() override {
-    int const tid = omp_get_thread_num();
+    for (int i = 0; i != corr_lookup().size(); ++i) {
+      c_[tid][i] = Numeric{};
+    }
 
-#pragma omp critical(Diagram_reduce)
+    assemble_impl(c_.at(tid), slice_pair, q);
+
     {
-      for (int i = 0; i != correlator_.size(); ++i) {
-        for (size_t t = 0; t < Lt_; t++) {
-          correlator_[i][t] += c_[tid][t][i];
-        }
+      std::lock_guard<std::mutex> lock(mutexes_[t]);
+
+      for (int i = 0; i != corr_lookup().size(); ++i) {
+        correlator_[t][i] += c_[tid][i];
       }
     }
   }
@@ -135,12 +134,14 @@ class DiagramNumeric : public Diagram {
     WriteHDF5Correlator filehandle(
         output_path_, name(), output_filename_, comp_type_factory<Numeric>());
 
-    for (int i = 0; i != correlator_.size(); ++i) {
-      for (auto &corr : correlator_[i]) {
-        corr /= Lt_;
+    std::vector<Numeric> one_corr(Lt_);
+
+    for (int i = 0; i != corr_lookup().size(); ++i) {
+      for (int t = 0; t < Lt_; ++t) {
+        one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
       }
-      // write data to file
-      filehandle.write(correlator_[i], corr_lookup()[i]);
+      // Write data to file.
+      filehandle.write(one_corr, corr_lookup()[i]);
     }
   }
 
@@ -154,8 +155,13 @@ class DiagramNumeric : public Diagram {
 
   int const Lt_;
 
+  /*! OpenMP-shared correlators, indices are (1) time and (2) correlator id. */
   std::vector<std::vector<Numeric>> correlator_;
-  std::vector<std::vector<std::vector<Numeric>>> c_;
+
+  /*! OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
+  std::vector<std::vector<Numeric>> c_;
+
+  std::vector<std::mutex> mutexes_;
 };
 
 /*****************************************************************************/

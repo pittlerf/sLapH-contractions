@@ -204,10 +204,6 @@ void contract(const size_t Lt,
       q.clear();
     }  // End of block pair loop.
 
-    for (auto &diagram : diagrams) {
-      diagram->reduce();
-    }
-
     swatch.stop();
   }  // End of parallel section.
 
