@@ -120,7 +120,7 @@ def main():
                 config_step=1,
                 ev_count=options.ev_count,
                 ev_path=options.ev_path,
-                vdv_hanling=options.vdv_handling,
+                vdv_handling=options.vdv_handling,
                 vdv_path=options.vdv_path,
                 quarks=options.quarks,
                 correlator_list=correlator_list,

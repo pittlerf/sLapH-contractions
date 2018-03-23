@@ -372,9 +372,9 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
                     eigen_vec.at(nrow * vdaggerv[op.id][t].cols() + ncol);
               }
             }
-            // @todo Check whether that must be adjoint before file 1 is closed
-            // (master branch)
-            vdaggerv[op.id][t].adjointInPlace();
+//            // @todo Check whether that must be adjoint before file 1 is closed
+//            // (master branch)
+//            vdaggerv[op.id][t].adjointInPlace();
             if (!file2.good()) {
               std::cout << "Problems while reading from " << infile2 << std::endl;
               exit(0);

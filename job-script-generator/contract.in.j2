@@ -23,7 +23,7 @@ name_eigenvectors = eigenvectors
 path_eigenvectors = {{ ev_path }}
 {%- endif -%}
 {% if vdv_path != None %}
-handling_vdaggerv = liuming
+handling_vdaggerv = {{ vdv_handling }}
 {%- endif -%}
 {% if vdv_path != '' %}
 path_vdaggerv = {{ vdv_path }}
