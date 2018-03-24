@@ -11,13 +11,13 @@
  *  @copyright Copies are prohibited so far
  */ 
 
-#include <iostream>
-
-#include "omp.h"
-
-#include "Correlators.h" // contains all other headers
-#include "global_data.h"
+#include "Correlators.h"
+#include "OperatorsForMesons.h"
+#include "Perambulator.h"
+#include "RandomVector.h"
 #include "git.h"
+#include "global_data.h"
+#include "omp.h"
 
 
 /*! Read parameters from infile and perform the specified contractions

@@ -1,15 +1,16 @@
 #pragma once
 
-#include "typedefs.h"
-
-#include "H5Cpp.h"
-
 #include <boost/filesystem.hpp>
-
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <H5Cpp.h>
+#include <unistd.h>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
+
+#include "typedefs.h"
 
 #define PRINT(x) std::cout << #x << ": " << (x) << std::endl;
 

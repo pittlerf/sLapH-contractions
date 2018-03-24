@@ -1,5 +1,10 @@
 #include "RandomVector.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "ranlxs.h"
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void RandomVector::set(const size_t entity, const int seed) {

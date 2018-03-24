@@ -1,5 +1,11 @@
-#include "EigenVector.h"
+
 #include <boost/format.hpp>
+#include <stdlib.h>
+#include <fstream>
+#include <iostream>
+
+#include "EigenVector.h"
+
 void EigenVector::write_eigen_vector(const std::string &filename,
                                      const size_t t,
                                      const size_t verbose){

@@ -3,13 +3,15 @@
 #ifndef _IO_UTILS_H
 #define _IO_UTILS_H
 
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-#include <ctime>
+#include <lime_writer.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
 extern "C" {
 #include "lime.h"
 }

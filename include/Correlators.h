@@ -9,23 +9,28 @@
 
 #pragma once
 
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <Eigen/Dense>
 #include <complex>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#include <Eigen/Dense>
-#include "boost/multi_array.hpp"
-
 #include "DiagramForward.h"
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "QuarkLineBlock2.h"
+#include "boost/multi_array.hpp"
 #include "typedefs.h"
+
+class OperatorFactory;
+class Perambulator;
+class RandomVector;
+struct DiagramIndicesCollection;
+struct DilutedFactorIndicesCollection;
+struct OperatorLookup;
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
 struct DilutedFactorLookup {

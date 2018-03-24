@@ -1,5 +1,13 @@
 #include "Perambulator.h"
 
+#include <bits/types/clock_t.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <ctime>
+
+struct quark;
+
 /******************************************************************************/
 /*!
  *  @param entity       The entry where this peram will be stored

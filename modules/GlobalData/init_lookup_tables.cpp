@@ -15,9 +15,9 @@
  *  @todo Why are most functions static and not simply in an unnamed namespace?
  */
 
+#include <string>
+
 #include "global_data.h"
-//TODO: Need this header? no function from it called here!
-#include "global_data_utils.h"
 
 namespace {
 

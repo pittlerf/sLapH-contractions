@@ -9,6 +9,10 @@
  *  @date Mar 28, 2013
  */
 
+#include <bits/exception.h>
+#include <stdlib.h>
+#include <string>
+
 #include "global_data.h"
 #include "global_data_utils.h"
 

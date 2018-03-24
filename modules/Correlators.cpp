@@ -1,15 +1,21 @@
 #include "Correlators.h"
 
+#include <math.h>
+#include <stdlib.h>
+
 //#define DILUTION_ITERATOR_PRINT
 
 #include "Diagram.h"
-#include "DilutedFactor.h"
-#include "QuarkLineBlock2.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
-#include "typedefs.h"
 
-#include <iomanip>
+class OperatorFactory;
+class Perambulator;
+class RandomVector;
+struct DiagramIndex;
+struct DiagramIndicesCollection;
+struct DilutedFactorIndicesCollection;
+struct OperatorLookup;
 
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);

@@ -1,6 +1,7 @@
-#include "global_data.h"
-
 #include <boost/format.hpp>
+#include <string>
+
+#include "global_data.h"
 
 namespace {
 
