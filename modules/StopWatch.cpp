@@ -1,10 +1,11 @@
-#include <algorithm>
-#include <cassert>
-#include <iostream>
-#include <iomanip>
+#include <StopWatch.h>
+
 #include <omp.h>
 
-#include "StopWatch.h"
+#include <algorithm>
+#include <cassert>
+#include <iomanip>
+#include <iostream>
 
 StopWatch::StopWatch(char const *const message, int const threads)
     : starts_(threads == -1 ? omp_get_max_threads() : threads, 0.0),

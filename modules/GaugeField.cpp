@@ -1,16 +1,5 @@
 #include "GaugeField.h"
 
-#include <bits/exception.h>
-#include <lime_defs.h>
-#include <lime_fixed_types.h>
-#include <lime_reader.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctime>
-#include <stdexcept>
-
-#include "io_utils.h"
-
 // member initializer is executed from left to right. Is used to set constant members
 GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _Lz, 
                        const std::string _config_path, const size_t t0, const size_t tf,

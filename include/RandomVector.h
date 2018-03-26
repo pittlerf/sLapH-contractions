@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "typedefs.h"
+
 #include <complex>
 #include <fstream>
 #include <iostream>
@@ -14,7 +16,6 @@
 #include <vector>
 
 #include "ranlxs.h"
-#include "typedefs.h"
 
 /*! Memory allocation and IO routines for random vectors */
 class RandomVector {

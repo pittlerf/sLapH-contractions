@@ -1,18 +1,11 @@
 #pragma once
 
-#include <assert.h>
-#include <mutex>
-#include <string>
-
 #include "Correlators.h"
 #include "QuarkLineBlock2.h"
 #include "h5-wrapper.h"
 #include "typedefs.h"
 
-class BlockIterator;
-class OperatorFactory;
-class Perambulator;
-class RandomVector;
+#include <mutex>
 
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,

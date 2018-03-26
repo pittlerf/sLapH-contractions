@@ -1,21 +1,5 @@
-
-#include <bits/exception.h>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/program_options/errors.hpp>
-#include <boost/type_traits/is_base_of.hpp>
-#include <stdlib.h>
-#include <iosfwd>
-#include <iostream>
-#include <string>
-
-#include "global_data_typedefs.h"
-
-namespace boost {
-namespace program_options {
-class validation_error;
-}  // namespace program_options
-}  // namespace boost
+#include "global_data.h"
+#include "global_data_utils.h"
 
 namespace {
 

@@ -7,14 +7,8 @@
  *
  *  @date Mar 28, 2013
  */
-#include <boost/program_options/errors.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/positional_options.hpp>
-#include <boost/program_options/value_semantic.hpp>
-#include <boost/program_options/variables_map.hpp>
-#include <stdlib.h>
-#include <iosfwd>
-#include <string>
+#include <cmath>
+#include <iomanip>
 
 #include "global_data.h"
 

@@ -1,8 +1,6 @@
 #include "QuarkLineBlock2.h"
 
-class OperatorFactory;
-class Perambulator;
-class RandomVector;
+#include <utility>
 
 namespace {
 std::complex<double> const I(0.0, 1.0);

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <array>
-#include <vector>
-
 #include "typedefs.h"
+
+#include <vector>
 
 struct gamma_lookup {
   std::array<int, 4> row;

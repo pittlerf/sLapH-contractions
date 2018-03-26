@@ -1,5 +1,9 @@
 #include "h5-wrapper.h"
 
+#include "DilutedFactor.h"
+
+#include "boost/filesystem.hpp"
+
 void create_folder(std::string const &path) {
   if (access(path.c_str(), 0) != 0) {
     std::cout << "\tdirectory " << path << " does not exist and will be created";

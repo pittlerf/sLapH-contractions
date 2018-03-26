@@ -1,9 +1,10 @@
 #pragma once
 
-#include <Eigen/Dense>
 #include <fstream>
 #include <iostream>
 #include <string>
+
+#include <Eigen/Dense>
 
 #include "typedefs.h"
 

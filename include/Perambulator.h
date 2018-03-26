@@ -11,14 +11,12 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "Eigen/Dense"
+
 #include "global_data_typedefs.h"
 #include "typedefs.h"
-
-struct quark;
 
 /*! Memory allocation and reading routines for perambulators */
 class Perambulator {

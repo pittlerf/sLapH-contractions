@@ -78,8 +78,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 # include-what-you-use
-if(INCLUDE_WHAT_YOU_USE)
-  find_program(iwyu_path NAMES include-what-you-use iwyu)
+find_program(iwyu_path NAMES include-what-you-use iwyu)
+if(NOT iwyu_path)
+  message(FATAL_ERROR "Could not find the program include-what-you-use")
 endif()
 
 ###############################################################################
@@ -153,9 +154,7 @@ target_link_libraries(contract
 
 install(TARGETS contract DESTINATION bin)
 
-if(INCLUDE_WHAT_YOU_USE)
-  set_target_properties(contract PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-endif()
+set_target_properties(contract PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 ### test-iterator
 

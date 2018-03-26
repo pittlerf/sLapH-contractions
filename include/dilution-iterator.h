@@ -14,8 +14,8 @@ enum class DilutionType { block, interlace };
 std::map<DilutionType const, std::string const> const dilution_names = {
     {DilutionType::block, "B"}, {DilutionType::interlace, "I"}};
 
-class BlockIterator;
 class DilutionIterator;
+class BlockIterator;
 
 std::ostream &operator<<(std::ostream &os, DilutionIterator const &di);
 std::ostream &operator<<(std::ostream &os, BlockIterator const &bi);
