@@ -390,7 +390,7 @@ static std::string vector_to_string(const std::vector< std::pair<char,char> > &i
 /******************************************************************************/
 /*! Create the names for output files and hdf5 datasets.
  *
- *  @param[in]  corr_type {C1,C2c,C20,C20V,C3+,C30,C4cD,C4cV,C4cC,C4cB,C40D,
+ *  @param[in]  corr_type {C1,C2c,C20,C20V,C3c,C30,C4cD,C4cV,C4cC,C4cB,C40D,
  *                         C40V,C40C,C40B} :
  *  @param[in]  cnfg :            Number of first gauge configuration
  *  @param[in]  outpath           Output path from the infile.
@@ -1110,7 +1110,7 @@ static void build_C3c_lookup(
         2, quantum_numbers[d], vdv_indices[d], ric_ids, Q0_lookup, ql_ids);
 
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
-        "C3+", start_config, path_output, quark_types, quantum_numbers[d]);
+        "C3c", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
         c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
