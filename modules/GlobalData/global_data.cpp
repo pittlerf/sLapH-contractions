@@ -230,7 +230,7 @@ void GlobalData::read_parameters(int ac, char *av[]) {
     peram_matrix_size_sum += peram_construct.size_rows[i] * peram_construct.size_cols[i];
   }
   std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2) << 
-    peram_construct.nb_entities * peram_matrix_size_sum * 
+    peram_matrix_size_sum * 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   std::cout << "\tDiagramParts:" << std::endl;
