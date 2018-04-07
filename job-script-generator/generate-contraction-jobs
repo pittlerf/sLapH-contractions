@@ -186,7 +186,7 @@ def _parse_args():
     group_ev.add_argument('--ev-path', default='', help='Path to eigenvectors. These are only required when looking at moving frames.')
 
     group_vdv = parser.add_argument_group('Eigenvector', 'Information about the eigenvectors.')
-    group_vdv.add_argument('--vdv-handling', choices=['read', 'liuming', 'build', 'write'], help='Which convention shall be used for the VdaggerV objects.')
+    group_vdv.add_argument('--vdv-handling', default='build', choices=['read', 'liuming', 'build', 'write'], help='Which convention shall be used for the VdaggerV objects.')
     group_vdv.add_argument('--vdv-path', default='', help='Path to VdaggerV objects. These are only required when looking at moving frames.')
 
 
