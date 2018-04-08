@@ -15,6 +15,7 @@ void Perambulator::read_perambulator(const size_t entity,
                                      const quark &quark,
                                      const std::string &filename) {
   StopWatch swatch("Perambulator I/O");
+  swatch.start();
   FILE *fp = NULL;
 
   std::cout << "\tReading perambulator from file:\n\t\t" << filename << "\n";
@@ -59,7 +60,7 @@ void Perambulator::read_perambulator(const size_t entity,
                             nb_dil_E * nb_dil_D * t2 + nb_dil_E * dirac2 + ev2) =
                   perambulator_read[row_i * nb_inversions + col_i];
             }
-
+  swatch.stop();
   swatch.print();
 }
 
