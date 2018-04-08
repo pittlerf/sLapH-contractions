@@ -1,4 +1,5 @@
 #include "Perambulator.h"
+#include "StopWatch.h"
 
 /******************************************************************************/
 /*!
@@ -13,7 +14,7 @@ void Perambulator::read_perambulator(const size_t entity,
                                      const size_t nb_eigen_vec,
                                      const quark &quark,
                                      const std::string &filename) {
-  clock_t t = clock();
+  StopWatch swatch("Perambulator I/O");
   FILE *fp = NULL;
 
   std::cout << "\tReading perambulator from file:\n\t\t" << filename << "\n";
@@ -59,10 +60,7 @@ void Perambulator::read_perambulator(const size_t entity,
                   perambulator_read[row_i * nb_inversions + col_i];
             }
 
-  // writing out how long it took to read the file
-  t = clock() - t;
-  std::cout << "\n\t\tin: " << std::fixed << std::setprecision(1)
-            << ((float)t) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
 }
 
 /******************************************************************************/

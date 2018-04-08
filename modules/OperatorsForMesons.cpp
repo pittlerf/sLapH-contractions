@@ -8,6 +8,7 @@
 #include <iomanip>
 
 #include "OperatorsForMesons.h"
+#include "StopWatch.h"
 
 namespace {
 
@@ -130,7 +131,6 @@ OperatorFactory::OperatorFactory(const size_t Lt,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::build_vdaggerv(const std::string &filename, const int config) {
-  clock_t t2 = clock();
   const size_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
@@ -148,7 +148,8 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     else
       std::cout << "\tFailure" << std::endl;
   }
-
+  
+  StopWatch swatch("Eigenvector and Gauge I/O");
   // resizing each matrix in vdaggerv
   // TODO: check if it is better to use for_each and resize instead of std::fill
   std::fill(vdaggerv.origin(),
@@ -157,6 +158,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
 #pragma omp parallel
   {
+    swatch.start();
     // Read in gauge field from lime configuration, need all directions
     //GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, PATH_GAUGE_IN, 0, Lt-1, 4);
     //gauge.read_gauge_field(CONFIG,0,Lt-1);
@@ -217,18 +219,16 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
       }
     }  // loop over time
+    swatch.stop();
   }    // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv(const int config) {
-  clock_t t2 = clock();
   const size_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
@@ -242,9 +242,11 @@ void OperatorFactory::read_vdaggerv(const int config) {
   std::fill(vdaggerv.origin(),
             vdaggerv.origin() + vdaggerv.num_elements(),
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
+  StopWatch swatch("VdaggerV I/O");
 
 #pragma omp parallel
   {
+    swatch.start();
 #pragma omp for schedule(dynamic)
     for (size_t t = 0; t < Lt; ++t) {
       for (const auto &op : operator_lookuptable.vdaggerv_lookup) {
@@ -288,18 +290,16 @@ void OperatorFactory::read_vdaggerv(const int config) {
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
       }
     }  // loop over time
+    swatch.stop();
   }    // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv_liuming(const int config) {
-  clock_t t2 = clock();
   const size_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
@@ -313,8 +313,10 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
             vdaggerv.origin() + vdaggerv.num_elements(),
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 
+  StopWatch swatch("Liuming VdaggerV I/O");
 #pragma omp parallel
   {
+    swatch.start();
   //  #pragma omp for schedule(dynamic)
   //    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
 #pragma omp for schedule(dynamic)
@@ -389,11 +391,10 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
         for (size_t t = 0; t < Lt; ++t)
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
     }
+    swatch.stop();
   }  // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
