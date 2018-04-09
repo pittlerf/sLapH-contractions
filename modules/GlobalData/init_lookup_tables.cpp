@@ -117,6 +117,9 @@ void build_quantum_numbers_from_correlator_list(
     qn_op.emplace_back(operator_list[op_number]);
   }
 
+  std::cout << "Constructing momentum combinations for " <<
+    correlator.type << std::endl;
+
   /*! Restriction to what shall actually be computed is done in if statements
    *  for each diagram because it depends on the number of quarks.
    *
@@ -147,8 +150,6 @@ void build_quantum_numbers_from_correlator_list(
   }
 
   else if (correlator.type == "C3c" || correlator.type == "C30") {
-    std::cout << "Constructing momentum combinations for C3" << std::endl;
-
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -183,8 +184,6 @@ void build_quantum_numbers_from_correlator_list(
     std::cout << "\tTest finished - Combinations: " << total_number_of_combinations
               << std::endl;
   } else if (correlator.type == "C30V") {
-    std::cout << "Constructing momentum combinations for C3" << std::endl;
-
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -220,9 +219,7 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  else if (correlator.type == "C4cD") {
-    std::cout << "Constructing momentum combinations for C4cD" << std::endl;
-
+  else if (correlator.type == "C4cD" || correlator.type == "C40D") {
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -265,9 +262,7 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  else if (correlator.type == "C4cB") {
-    std::cout << "Constructing momentum combinations for C4cB" << std::endl;
-
+  else if (correlator.type == "C4cB" || correlator.type == "C40B") {
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -308,13 +303,10 @@ void build_quantum_numbers_from_correlator_list(
     }
     std::cout << "\tTest finished - Combinations: " << total_number_of_combinations
               << std::endl;
-
   }
 
   /*! @todo Check whether that is identical to C4cD */
-  else if (correlator.type == "C4cC") {
-    std::cout << "Constructing momentum combinations for C4cC" << std::endl;
-
+  else if (correlator.type == "C4cC" || correlator.type == "C40C") {
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -357,13 +349,9 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  /*! @todo: For C40D, C40B, C40V, C40C, C4cV, C4cC still all combinations
-   *         are built.
-   *         This must be changed later if GEVP should be used!!!!!!!!!!!!!!!
+  /*! @todo: For C40V, C4cV still all combinations are built.
    */
-  else if (correlator.type == "C40D" || correlator.type == "C40V" ||
-           correlator.type == "C40B" || correlator.type == "C40C" ||
-           correlator.type == "C4cV") {
+  else if (correlator.type == "C40V" || correlator.type == "C4cV") {
     for (const auto &op0 : qn_op[0]) {
       for (const auto &op1 : qn_op[1]) {
         for (const auto &op2 : qn_op[2]) {
