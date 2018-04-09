@@ -94,19 +94,19 @@ void contract(const size_t Lt,
   
   if (!corr_lookup.C4cB.empty())
     diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
-  if (!corr_lookup.C40B.empty())
-    diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
   if (!corr_lookup.C4cC.empty())
     diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
+  if (!corr_lookup.C40B.empty())
+    diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
   if (!corr_lookup.C40C.empty())
     diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
   
   if (!corr_lookup.C4cD.empty())
     diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
-  if (!corr_lookup.C40D.empty())
-    diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
   if (!corr_lookup.C4cV.empty())
     diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
+  if (!corr_lookup.C40D.empty())
+    diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
   if (!corr_lookup.C40V.empty())
     diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
@@ -117,6 +117,8 @@ void contract(const size_t Lt,
 #pragma omp parallel
   {
     swatch.start();
+
+    double local_timer;
 
     DiagramParts q(randomvectors,
                    perambulators,
@@ -140,6 +142,7 @@ void contract(const size_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
+      local_timer = omp_get_wtime();
       // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ0Q2) {
@@ -158,7 +161,11 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "Thread " << omp_get_thread_num() << " build_trQ0Q2 " <<
+        std::setprecision(3) << local_timer << " seconds" << std::endl;
 
+      local_timer = omp_get_wtime();
       // Build trQ1Q1.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ1Q1) {
@@ -177,7 +184,11 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
+        std::setprecision(3) << local_timer << " seconds" << std::endl;
 
+      local_timer = omp_get_wtime();
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
         for (const auto &c_look : corr_lookup.trQ1) {
@@ -187,18 +198,27 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
+        std::setprecision(3) << local_timer << " seconds" << std::endl;
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
         if (diagram->corr_lookup().empty()) {
           continue;
         }
+        local_timer = omp_get_wtime();
 
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
           diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.
+        local_timer = omp_get_wtime() - local_timer;
+        std::cout << "Thread " << omp_get_thread_num() << " diagram " <<
+          diagram->name() << " " <<
+          std::setprecision(3) << local_timer << " seconds" << std::endl;
+
       }    // End of diagram loop.
 
       q.clear();
