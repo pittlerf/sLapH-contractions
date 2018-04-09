@@ -219,7 +219,8 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  else if (correlator.type == "C4cD" || correlator.type == "C40D") {
+  else if (correlator.type == "C4cD" || correlator.type == "C40D" ||
+           correlator.type == "C4cC" || correlator.type == "C40C") {
     std::map<int, int> counter; /*! initialized with zero */
 
     for (const auto &op0 : qn_op[0]) {
@@ -305,41 +306,33 @@ void build_quantum_numbers_from_correlator_list(
               << std::endl;
   }
 
-  /*! @todo Check whether that is identical to C4cD */
-  else if (correlator.type == "C4cC" || correlator.type == "C40C") {
+  else if (correlator.type == "C40V" || correlator.type == "C4cV") {
     std::map<int, int> counter; /*! initialized with zero */
-
     for (const auto &op0 : qn_op[0]) {
-      for (const auto &op2 : qn_op[2]) {
+      for (const auto &op1 : qn_op[1]) {
         Vector p_so_1 = op0.momentum;
-        Vector p_so_2 = op2.momentum;
+        Vector p_so_2 = op1.momentum;
         Vector p_so = p_so_1 + p_so_2;
-
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
             momenta_below_cutoff(p_so_1, p_so_2)) {
-          for (const auto &op1 : qn_op[1]) {
-            for (const auto &op3 : qn_op[3]) {
-              Vector p_si_1 = op1.momentum;
+          for (const auto &op2 : qn_op[2]) {
+            for (const auto &op3 : qn_op[3]) {  // all combinations of operators
+              Vector p_si_1 = op2.momentum;
               Vector p_si_2 = op3.momentum;
               Vector p_si = p_si_1 + p_si_2;
+              if (p_so == -p_si) {
+                const int p_tot = p_si.squaredNorm();
+                counter[p_tot]++;
 
-              if (desired_total_momentum(p_si, correlator.tot_mom) &&
-                  momenta_below_cutoff(p_si_1, p_si_2)) {
-                if (p_so == -p_si) {
-                  const int p_tot = p_si.squaredNorm();
-                  counter[p_tot]++;
-
-                  // create combinations
-                  quantum_numbers.emplace_back(
-                      std::vector<QuantumNumbers>{op0, op1, op2, op3});
-                }
+                // create combinations
+                quantum_numbers.emplace_back(
+                    std::vector<QuantumNumbers>{op0, op1, op2, op3});
               }
             }
           }
         }
       }
     }
-
     int total_number_of_combinations = 0;
     for (const auto c : counter) {
       std::cout << "\tCombinations for P = " << c.first << ": " << c.second << std::endl;
@@ -347,20 +340,6 @@ void build_quantum_numbers_from_correlator_list(
     }
     std::cout << "\tTest finished - Combinations: " << total_number_of_combinations
               << std::endl;
-  }
-
-  /*! @todo: For C40V, C4cV still all combinations are built.
-   */
-  else if (correlator.type == "C40V" || correlator.type == "C4cV") {
-    for (const auto &op0 : qn_op[0]) {
-      for (const auto &op1 : qn_op[1]) {
-        for (const auto &op2 : qn_op[2]) {
-          for (const auto &op3 : qn_op[3]) {  // all combinations of operators
-            quantum_numbers.emplace_back(std::vector<QuantumNumbers>{op0, op1, op2, op3});
-          }
-        }
-      }
-    }
   }
 }
 
