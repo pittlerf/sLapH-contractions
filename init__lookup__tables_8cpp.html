@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cntr.v0.1: modules/GlobalData/init_lookup_tables.cpp File Reference</title>
+<title>sLapH-contractions: modules/GlobalData/init_lookup_tables.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -17,7 +17,7 @@
     extensions: ["tex2jax.js", "simplewick.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
-</script><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -27,7 +27,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">cntr.v0.1
+   <div id="projectname">sLapH-contractions
    </div>
   </td>
  </tr>
@@ -83,8 +83,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a25dbb07005ba94f9b9749f0f245b43ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a25dbb07005ba94f9b9749f0f245b43ff">build_quantum_numbers_from_correlator_list</a> (const <a class="el" href="struct_correlators__2.html">Correlators_2</a> &amp;correlator, const <a class="el" href="global__data__typedefs_8h.html#a9ae4c7631935c325a96ea3d507d1e10c">Operator_list</a> &amp;operator_list, std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers)</td></tr>
 <tr class="separator:a25dbb07005ba94f9b9749f0f245b43ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2adadaf3e88c9b7dc7756014cd56247d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a2adadaf3e88c9b7dc7756014cd56247d">build_VdaggerV_lookup</a> (const std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; &amp;vdaggerv_lookup, std::vector&lt; std::vector&lt; std::pair&lt; size_t, bool &gt;&gt;&gt; &amp;vdv_indices)</td></tr>
-<tr class="separator:a2adadaf3e88c9b7dc7756014cd56247d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae352407d8aa4f1624581d896f708058b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ae352407d8aa4f1624581d896f708058b">build_VdaggerV_lookup</a> (const std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; &amp;vdaggerv_lookup, std::vector&lt; std::vector&lt; std::pair&lt; ssize_t, bool &gt;&gt;&gt; &amp;vdv_indices)</td></tr>
+<tr class="separator:ae352407d8aa4f1624581d896f708058b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions translating lists build from the infile into lookup_tables.</p>
@@ -152,8 +152,8 @@ Markus Werner</dd></dl>
 
 </div>
 </div>
-<a id="a2adadaf3e88c9b7dc7756014cd56247d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2adadaf3e88c9b7dc7756014cd56247d">&#9670;&nbsp;</a></span>build_VdaggerV_lookup()</h2>
+<a id="ae352407d8aa4f1624581d896f708058b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae352407d8aa4f1624581d896f708058b">&#9670;&nbsp;</a></span>build_VdaggerV_lookup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,7 +173,7 @@ Markus Werner</dd></dl>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::vector&lt; std::vector&lt; std::pair&lt; size_t, bool &gt;&gt;&gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; std::pair&lt; ssize_t, bool &gt;&gt;&gt; &amp;&#160;</td>
           <td class="paramname"><em>vdv_indices</em>&#160;</td>
         </tr>
         <tr>
@@ -194,7 +194,7 @@ Markus Werner</dd></dl>
 </dl>
 <p>: Think about the daggering!! </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00462">462</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00460">460</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>

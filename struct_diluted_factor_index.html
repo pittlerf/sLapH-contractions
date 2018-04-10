@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cntr.v0.1: DilutedFactorIndex Struct Reference</title>
+<title>sLapH-contractions: DilutedFactorIndex Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -17,7 +17,7 @@
     extensions: ["tex2jax.js", "simplewick.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
-</script><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -27,7 +27,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">cntr.v0.1
+   <div id="projectname">sLapH-contractions
    </div>
   </td>
  </tr>
@@ -76,14 +76,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a3a4e8035564cd815819a6e33986b55e9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#a3a4e8035564cd815819a6e33986b55e9">id_vdaggerv</a></td></tr>
-<tr class="separator:a3a4e8035564cd815819a6e33986b55e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b136b8569b5f5c8d9925fd2fd0a0fe8"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#a5b136b8569b5f5c8d9925fd2fd0a0fe8">id_vdaggerv</a></td></tr>
+<tr class="separator:a5b136b8569b5f5c8d9925fd2fd0a0fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaef476730f786f664b56bf1426517f37"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#aaef476730f786f664b56bf1426517f37">need_vdaggerv_daggering</a></td></tr>
 <tr class="separator:aaef476730f786f664b56bf1426517f37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfb4f4cc79af99467333846c41783dab"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#adfb4f4cc79af99467333846c41783dab">gamma</a></td></tr>
 <tr class="separator:adfb4f4cc79af99467333846c41783dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac921ca941c5c87665e92e6df04f8bf9d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; size_t, size_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#ac921ca941c5c87665e92e6df04f8bf9d">rnd_vec_ids</a></td></tr>
-<tr class="separator:ac921ca941c5c87665e92e6df04f8bf9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a663fbf4028798d5e38973d5aa3672fdd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; ssize_t, ssize_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html#a663fbf4028798d5e38973d5aa3672fdd">rnd_vec_ids</a></td></tr>
+<tr class="separator:a663fbf4028798d5e38973d5aa3672fdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Struct that holds all information on which VdaggerV must be diluted with which random vector.</p>
@@ -115,14 +115,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3a4e8035564cd815819a6e33986b55e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a4e8035564cd815819a6e33986b55e9">&#9670;&nbsp;</a></span>id_vdaggerv</h2>
+<a id="a5b136b8569b5f5c8d9925fd2fd0a0fe8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b136b8569b5f5c8d9925fd2fd0a0fe8">&#9670;&nbsp;</a></span>id_vdaggerv</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t DilutedFactorIndex::id_vdaggerv</td>
+          <td class="memname">ssize_t DilutedFactorIndex::id_vdaggerv</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -149,14 +149,14 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac921ca941c5c87665e92e6df04f8bf9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac921ca941c5c87665e92e6df04f8bf9d">&#9670;&nbsp;</a></span>rnd_vec_ids</h2>
+<a id="a663fbf4028798d5e38973d5aa3672fdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a663fbf4028798d5e38973d5aa3672fdd">&#9670;&nbsp;</a></span>rnd_vec_ids</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::pair&lt;size_t, size_t&gt; &gt; DilutedFactorIndex::rnd_vec_ids</td>
+          <td class="memname">std::vector&lt;std::pair&lt;ssize_t, ssize_t&gt; &gt; DilutedFactorIndex::rnd_vec_ids</td>
         </tr>
       </table>
 </div><div class="memdoc">

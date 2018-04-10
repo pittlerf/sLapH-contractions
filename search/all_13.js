@@ -10,7 +10,7 @@ var searchData=
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
   ['tot_5fmom',['tot_mom',['../struct_correlators__2.html#a8dd5d93bab25bd82cc7b53b0ec1a4c28',1,'Correlators_2']]],
   ['trace',['trace',['../_diluted_factor_8h.html#a086a0cdd2b40ca683df07f19fec42337',1,'DilutedFactor.h']]],
-  ['trafo',['trafo',['../class_gauge_field.html#afed1794b0aad6ab179e89a76326f83b9',1,'GaugeField']]],
+  ['trafo',['trafo',['../class_gauge_field.html#a91e42dc5390fd17be1d15ec3e4a79b7b',1,'GaugeField']]],
   ['trafo_5fev',['trafo_ev',['../class_gauge_field.html#a8238b8b87ead46470e0bab3a83d35865',1,'GaugeField']]],
   ['trq0q2',['trQ0Q2',['../struct_diagram_parts.html#a544b3d5e667473a699de5f4e91616ba6',1,'DiagramParts::trQ0Q2()'],['../struct_diagram_indices_collection.html#a8eb2f2614730e24bcd3292e874e4381d',1,'DiagramIndicesCollection::trQ0Q2()']]],
   ['trq1',['trQ1',['../struct_diagram_parts.html#aa98b7228736f4c02b4552c801dd14b50',1,'DiagramParts::trQ1()'],['../struct_diagram_indices_collection.html#a8ae563afb597770ec09b0829c54d6c7c',1,'DiagramIndicesCollection::trQ1()']]],

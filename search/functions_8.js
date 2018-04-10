@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['init',['init',['../class_gauge_field.html#af39833914fe3606e23aee81752d26636',1,'GaugeField']]],
+  ['init',['init',['../class_gauge_field.html#a60bd307243cbe2e6d81179ff8bbf2bda',1,'GaugeField']]],
   ['init_5flookup_5ftables',['init_lookup_tables',['../class_global_data.html#a0619d922b10b61980fc6dce2ec581107',1,'GlobalData']]],
   ['inner_5fproduct',['inner_product',['../_diluted_factor_8h.html#a3ff4bdf61f0a2827386149884604eda8',1,'DilutedFactor.h']]],
   ['input_5fhandling',['input_handling',['../class_global_data.html#a767206dba6d6bad62604ac2b2dcb019f',1,'GlobalData']]],

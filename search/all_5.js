@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['eigenvector',['EigenVector',['../class_eigen_vector.html',1,'EigenVector'],['../class_eigen_vector.html#ac6517ee52877fd9f972803b229f6034a',1,'EigenVector::EigenVector()'],['../class_eigen_vector.html#abed341bc8511db53e67df69ac6684c8e',1,'EigenVector::EigenVector(const size_t length, const size_t row_size, const size_t col_size)']]],
+  ['eigenvector',['EigenVector',['../class_eigen_vector.html',1,'EigenVector'],['../class_eigen_vector.html#ac6517ee52877fd9f972803b229f6034a',1,'EigenVector::EigenVector()'],['../class_eigen_vector.html#a55495d6569f37b484e0e24e9bd49502a',1,'EigenVector::EigenVector(const ssize_t length, const ssize_t row_size, const ssize_t col_size)']]],
   ['eigenvector_2ecpp',['EigenVector.cpp',['../_eigen_vector_8cpp.html',1,'']]],
   ['eigenvector_2eh',['EigenVector.h',['../_eigen_vector_8h.html',1,'']]],
   ['element',['Element',['../struct_dilution_iterator_1_1_element.html',1,'DilutionIterator']]],

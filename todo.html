@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cntr.v0.1: Todo List</title>
+<title>sLapH-contractions: Todo List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -17,7 +17,7 @@
     extensions: ["tex2jax.js", "simplewick.js"],
     jax: ["input/TeX","output/HTML-CSS"],
 });
-</script><script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -27,7 +27,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">cntr.v0.1
+   <div id="projectname">sLapH-contractions
    </div>
   </td>
  </tr>
@@ -76,7 +76,7 @@ $(function() {
 </dd>
 <dt><a class="anchor" id="_todo000009"></a>Class <a class="el" href="structcomplex__t.html">complex_t</a>  </dt>
 <dd>Change namespace into something more specific  </dd>
-<dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="_correlators_8h.html#a650264731a908133aed49c2b5b668281">contract</a>  (const size_t Lt, const size_t dilT, const size_t dilE, const size_t nev, <a class="el" href="class_operator_factory.html">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</dt>
+<dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="_correlators_8h.html#a29e2c0c23694d1f8776258f7ed4bd673">contract</a>  (const ssize_t Lt, const ssize_t dilT, const ssize_t dilE, const ssize_t nev, <a class="el" href="class_operator_factory.html">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</dt>
 <dd><p class="startdd">check whether other correlators are still functional </p>
 <p class="enddd">make other correlators call one_t quarklines as well </p>
 </dd>
@@ -85,7 +85,7 @@ $(function() {
 <dt><a class="anchor" id="_todo000012"></a>Class <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a>  </dt>
 <dd>modular programming looks different  </dd>
 <dt><a class="anchor" id="_todo000013"></a>Class <a class="el" href="struct_diluted_factor_type_traits_3_01_diluted_factor_type_1_1_q0_01_4.html">DilutedFactorTypeTraits&lt; DilutedFactorType::Q0 &gt;</a>  </dt>
-<dd>QuarkLineType is a bad name in this case. That's a proxy for <a class="el" href="struct_diagram_index.html#ae1e988dd46fc60da07f6d94269ec0a4c">DiagramIndex.lookup</a>  </dd>
+<dd>QuarkLineType is a bad name in this case. That's a proxy for <a class="el" href="struct_diagram_index.html#ac9ee125fca6f588258dcc28d0347664a">DiagramIndex.lookup</a>  </dd>
 <dt><a class="anchor" id="_todo000024"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93">global_data_utils::make_correlator</a>  (const std::string &amp;correlator_string)</dt>
 <dd><p class="startdd">is that even supported?</p><ul>
 <li><em>P</em> </li>
@@ -116,7 +116,7 @@ $(function() {
 </dd>
 <dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="modules_2_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba">make_gamma</a>  ()</dt>
 <dd>Refactor that into physical quantum number class along with momentum  </dd>
-<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="class_operator_factory.html#a2ab73034ee73be523369432883387f14">OperatorFactory::return_vdaggerv</a>  (const size_t index, const size_t t) const</dt>
+<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="class_operator_factory.html#a28a080bf13e9818b0095da996dc51ed5">OperatorFactory::return_vdaggerv</a>  (const ssize_t index, const ssize_t t) const</dt>
 <dd>check of vdaggerv is already build  </dd>
 <dt><a class="anchor" id="_todo000011"></a>Class <a class="el" href="struct_operator_lookup.html">OperatorLookup</a>  </dt>
 <dd><p class="startdd">confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable contain indices of vdaggerv_lookup and ric_lookup. Multiple hierarchy levels in a single struct </p>
