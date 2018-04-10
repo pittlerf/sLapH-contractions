@@ -5,9 +5,11 @@
  *  @author Markus Werner
  */
 
-#include <iomanip>
-
 #include "OperatorsForMesons.h"
+
+#include <boost/format.hpp>
+
+#include <iomanip>
 
 namespace {
 
@@ -135,9 +137,9 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for writing
-  char dummy_path[200];
-  sprintf(dummy_path, "/%s/cnfg%04d/", path_vdaggerv.c_str(), config);
-  const std::string full_path(dummy_path);
+  std::string const full_path =
+      (boost::format("/%s/cnfg%04d/") % path_vdaggerv % config).str();
+
   // check if directory exists
   if (handling_vdaggerv == "write" && access(full_path.c_str(), 0) != 0) {
     std::cout << "\tdirectory " << full_path.c_str()
@@ -170,13 +172,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     if(need_gauge) gauge.read_gauge_field(config,0,Lt-1); 
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
 #pragma omp for schedule(dynamic)
-    for (size_t t = 0; t < Lt; ++t) {
+    for (ssize_t t = 0; t < Lt; ++t) {
       // creating full filename for eigenvectors and reading them in
       if (!(operator_lookuptable.vdaggerv_lookup.size() == 1 &&
             operator_lookuptable.vdaggerv_lookup[0].id == id_unity)) {
-        char inter_name[200];
-        sprintf(inter_name, "%s%03d", filename.c_str(), (int)t);
-        V_t.read_eigen_vector(inter_name, 0, 0);  // reading eigenvectors
+        auto const inter_name = (boost::format("%s%03d") % filename % t).str();
+        V_t.read_eigen_vector(inter_name.c_str(), 0, 0);  // reading eigenvectors
       }
 
       // VdaggerV is independent of the gamma structure and momenta connected by
@@ -204,14 +205,13 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
-            char dummy2[200];
-            sprintf(dummy2, "operators.%04d.p_", config);
-            std::string dummy = std::string(dummy2) + std::to_string(op.momentum[0]) +
+            auto const dummy2 = (boost::format("operators.%04d.p_") % config).str();
+            std::string dummy = dummy2 + std::to_string(op.momentum[0]) +
                                 std::to_string(op.momentum[1]) +
                                 std::to_string(op.momentum[2]);
-            char outfile[200];
-            sprintf(outfile, "%s_.t_%03d", dummy.c_str(), (int)t);
-            write_vdaggerv(full_path, std::string(outfile), vdaggerv[op.id][t]);
+
+            auto const outfile = (boost::format("%s_.t_%03d") % dummy % t).str();
+            write_vdaggerv(full_path, outfile, vdaggerv[op.id][t]);
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
@@ -233,10 +233,9 @@ void OperatorFactory::read_vdaggerv(const int config) {
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
-  char dummy_path[200];
-  sprintf(
-      dummy_path, "/%s/cnfg%04d/operators.%04d", path_vdaggerv.c_str(), config, config);
-  std::string full_path(dummy_path);
+  auto const full_path =
+      (boost::format("/%s/cnfg%04d/operators.%04d") % path_vdaggerv % config % config)
+          .str();
 
   // resizing each matrix in vdaggerv
   std::fill(vdaggerv.origin(),
@@ -246,7 +245,7 @@ void OperatorFactory::read_vdaggerv(const int config) {
 #pragma omp parallel
   {
 #pragma omp for schedule(dynamic)
-    for (size_t t = 0; t < Lt; ++t) {
+    for (ssize_t t = 0; t < Lt; ++t) {
       for (const auto &op : operator_lookuptable.vdaggerv_lookup) {
         // For zero momentum and displacement VdaggerV is the unit matrix, thus
         // the calculation is not performed
@@ -256,8 +255,7 @@ void OperatorFactory::read_vdaggerv(const int config) {
                               std::to_string(op.momentum[1]) +
                               std::to_string(op.momentum[2]);
 
-          char infile[200];
-          sprintf(infile, "%s_.t_%03d", dummy.c_str(), (int)t);
+          auto const infile = (boost::format("%s_.t_%03d") % dummy % t).str();
 
           // writing the data
           std::ifstream file(infile, std::ifstream::binary);
@@ -304,9 +302,7 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
-  char dummy_path[200];
-  sprintf(dummy_path, "/%s/VdaggerV.", path_vdaggerv.c_str());
-  std::string full_path(dummy_path);
+  auto const full_path = (boost::format("/%s/VdaggerV.") % path_vdaggerv).str();
 
   // resizing each matrix in vdaggerv
   std::fill(vdaggerv.origin(),
@@ -328,15 +324,14 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
         std::string dummy1 = full_path + "p" + std::to_string(-op.momentum[0]) + "p" +
                              std::to_string(-op.momentum[1]) + "p" +
                              std::to_string(-op.momentum[2]) + ".conf";
-        char infile1[200];
-        sprintf(infile1, "%s%04d", dummy1.c_str(), config);
+        auto const infile1 = (boost::format("%s%04d") % dummy1 % config).str();
         std::ifstream file1(infile1, std::ifstream::binary);
+
         // second possibility for a name
         std::string dummy2 = full_path + "p" + std::to_string(op.momentum[0]) + "p" +
                              std::to_string(op.momentum[1]) + "p" +
                              std::to_string(op.momentum[2]) + ".conf";
-        char infile2[200];
-        sprintf(infile2, "%s%04d", dummy2.c_str(), config);
+        auto const infile2 = (boost::format("%s%04d") % dummy2 % config).str();
         std::ifstream file2(infile2, std::ifstream::binary);
 
         if (file1.is_open()) {
