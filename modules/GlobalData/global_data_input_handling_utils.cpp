@@ -68,7 +68,7 @@ inline void create_mom_array_from_string(std::string in,
   std::vector<std::string> tokens;
   boost::split(tokens, in, boost::is_any_of(","));
   int p;
-  size_t counter = 0;
+  ssize_t counter = 0;
   out.resize(tokens.size());
   for (const auto &t : tokens) {
     p = boost::lexical_cast<int>(t);
@@ -95,7 +95,7 @@ inline void create_displacement_direction_from_string(std::string in,
   boost::split(tokens, in, boost::is_any_of(","));
   int d;
   out.resize(tokens.size());
-  for (size_t counter = 0; counter < tokens.size(); ++counter){
+  for (ssize_t counter = 0; counter < tokens.size(); ++counter){
     std::vector<std::string> t;
     boost::split(t, tokens[counter], boost::is_any_of("|"));
     out[counter] = make_displacement_direction(t);

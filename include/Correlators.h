@@ -63,10 +63,10 @@ struct DilutedFactorLookup {
  *
  */
 
-void contract(const size_t Lt,
-              const size_t dilT,
-              const size_t dilE,
-              const size_t nev,
+void contract(const ssize_t Lt,
+              const ssize_t dilT,
+              const ssize_t dilE,
+              const ssize_t nev,
               OperatorFactory const &meson_operator,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,

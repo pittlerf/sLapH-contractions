@@ -1,8 +1,8 @@
 #include "EigenVector.h"
 #include <boost/format.hpp>
 void EigenVector::write_eigen_vector(const std::string &filename,
-                                     const size_t t,
-                                     const size_t verbose){
+                                     const ssize_t t,
+                                     const ssize_t verbose){
   // setting up file
   std::ofstream outfile(filename, std::ofstream::binary);
   if (outfile) {
@@ -34,8 +34,8 @@ void EigenVector::write_eigen_vector(const std::string &filename,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void EigenVector::read_eigen_vector(const std::string &filename,
-                                    const size_t t,
-                                    const size_t verbose) {
+                                    const ssize_t t,
+                                    const ssize_t verbose) {
   // buffer for read in
   std::vector<Complex> eigen_vec(V[t].rows());
   std::cout << "\tReading eigenvectors from files:" << filename << std::endl;
@@ -45,14 +45,14 @@ void EigenVector::read_eigen_vector(const std::string &filename,
   // setting up file
   std::ifstream infile(filename, std::ifstream::binary);
   if (infile) {
-    for (size_t ncol = 0; ncol < V[t].cols(); ++ncol) {
+    for (ssize_t ncol = 0; ncol < V[t].cols(); ++ncol) {
       std::fill(eigen_vec.begin(), eigen_vec.end(), Complex(.0, .0));
       infile.read((char *)&(eigen_vec[0]), 2 * V[t].rows() * sizeof(double));
       if (!infile) {
         std::cout << "\n\nProblem while reading Eigenvectors\n" << std::endl;
         exit(0);
       }
-      for (size_t nrow = 0; nrow < V[t].rows(); ++nrow) {
+      for (ssize_t nrow = 0; nrow < V[t].rows(); ++nrow) {
         (V[t])(nrow, ncol) = eigen_vec[nrow];
       }
     }
@@ -72,13 +72,13 @@ void EigenVector::read_eigen_vector(const std::string &filename,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void EigenVector::read_eigen_vector(const std::string &filename, const size_t verbose) {
+void EigenVector::read_eigen_vector(const std::string &filename, const ssize_t verbose) {
   for (int t = 0; t < V.size(); t++) {
     std::string path = (boost::format("%s%03d") % filename % t).str();
     read_eigen_vector(path, t, verbose);
   }
 }
 
-void EigenVector::set_V(Eigen::MatrixXcd &v, const size_t t) {
+void EigenVector::set_V(Eigen::MatrixXcd &v, const ssize_t t) {
   V[t] = v;
 }

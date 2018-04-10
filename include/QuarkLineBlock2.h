@@ -17,7 +17,7 @@
 #include <iostream>
 #include <string>
 
-template <typename T, size_t n>
+template <typename T, ssize_t n>
 void print(std::array<T, n> const &a) {
   for (auto const &elem : a) {
     std::cout << elem << "\t";
@@ -35,9 +35,9 @@ class DilutedFactorFactory {
       RandomVector const &random_vector,
       Perambulator const &perambulator,
       OperatorFactory const &_meson_operator,
-      size_t const dilT,
-      size_t const dilE,
-      size_t const nev,
+      ssize_t const dilT,
+      ssize_t const dilE,
+      ssize_t const nev,
       typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices);
 
   Value const &operator[](Key const &key) {
@@ -58,7 +58,7 @@ class DilutedFactorFactory {
   RandomVector const &rnd_vec;
   Perambulator const &peram;
   OperatorFactory const &meson_operator;
-  const size_t dilT, dilE, nev;
+  const ssize_t dilT, dilE, nev;
   typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices;
 
   static int constexpr dilD = 4;

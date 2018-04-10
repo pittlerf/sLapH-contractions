@@ -9,7 +9,7 @@ int main() {
   std::string path_ev_in("/hiskp4/bartek/eigensystems/quenched/wilson_b5.85_L12T24/data");
   std::string path_ev_out("/hiskp4/helmes/contractions/test/derivative_operators/covariant_shift");
   std::string path_gauge_in = std::string("/hiskp4/gauges/quenched/wilson_b5.85_L12T24");
-  const size_t dim_row = 12*12*12*3;
+  const ssize_t dim_row = 12*12*12*3;
   EigenVector V_t(24,dim_row,48);
   EigenVector UV(24,dim_row,48);
   EigenVector UVshift(24,dim_row,48);
@@ -37,7 +37,7 @@ int main() {
   std::cout<< displacement_phase_vector<< std::endl;
 
   //Displace something
-  for (size_t t = 0; t < 24; ++t){
+  for (ssize_t t = 0; t < 24; ++t){
     Eigen::MatrixXcd df_eigvecs = gauge.forward_uv(V_t[t],t,'x',1);
     Eigen::MatrixXcd db_eigvecs = gauge.backward_uv(V_t[t],t,'x',1);
     Eigen::MatrixXcd disp_eigvecs = gauge.displace_eigenvectors(V_t[t],t,displacements,1);

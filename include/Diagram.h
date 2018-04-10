@@ -11,10 +11,10 @@ struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
                Perambulator const &perambulator,
                OperatorFactory const &meson_operator,
-               size_t const dilT,
-               size_t const dilE,
-               size_t const nev,
-               size_t const Lt,
+               ssize_t const dilT,
+               ssize_t const dilE,
+               ssize_t const nev,
+               ssize_t const Lt,
                DilutedFactorLookup const &dil_fac_lookup,
                DiagramIndicesCollection const &corr_lookup)
       : q0(random_vector,
@@ -247,7 +247,7 @@ class C3c : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
+  std::vector<std::tuple<std::array<ssize_t, 2>, std::array<ssize_t, 1>>> quantum_num_ids_;
 };
 
 /*! Build neutral 3pt correlation function
@@ -271,7 +271,7 @@ class C30 : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::tuple<std::array<size_t, 2>, std::array<size_t, 1>>> quantum_num_ids_;
+  std::vector<std::tuple<std::array<ssize_t, 2>, std::array<ssize_t, 1>>> quantum_num_ids_;
 };
 
 class C30V : public DiagramNumeric<ComplexProduct> {
@@ -392,7 +392,7 @@ class C4cB : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
 /*! Build neutral 4pt correlation function: Box diagram
@@ -417,7 +417,7 @@ class C40B : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
 /*! Build charged 4pt correlation function: Cross diagram
@@ -442,7 +442,7 @@ class C4cC : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
 /*! Build neutral 4pt correlation function: Cross diagram
@@ -467,5 +467,5 @@ class C40C : public DiagramNumeric<Complex> {
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
-  std::vector<std::array<std::array<size_t, 2>, 2>> quantum_num_ids_;
+  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };

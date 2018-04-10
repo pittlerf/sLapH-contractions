@@ -73,10 +73,10 @@ void GlobalData::read_parameters(int ac, char *av[]) {
 
   // parallelisation options
   config.add_options()("nb_omp_threads",
-                       po::value<size_t>(&nb_omp_threads)->default_value(1),
+                       po::value<ssize_t>(&nb_omp_threads)->default_value(1),
                        "nb_omp_threads: number of openMP threads")(
       "nb_eigen_threads",
-      po::value<size_t>(&nb_eigen_threads)->default_value(1),
+      po::value<ssize_t>(&nb_eigen_threads)->default_value(1),
       "nb_eigen_threads: number of threads Eigen uses internally");
 
   // lattice options
@@ -206,7 +206,7 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   rnd_vec_construct.length = Lt * 4 * number_of_eigen_vec;
   peram_construct.nb_entities = rnd_vec_construct.nb_entities;
   for (const auto &q : quarks) {
-    for (size_t r = 0; r < q.number_of_rnd_vec; r++) {
+    for (ssize_t r = 0; r < q.number_of_rnd_vec; r++) {
       peram_construct.size_rows.push_back(rnd_vec_construct.length);
       peram_construct.size_cols.push_back((Lt / q.number_of_dilution_T) *
                                           q.number_of_dilution_E *

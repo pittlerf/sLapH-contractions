@@ -160,12 +160,12 @@ struct ComplexProduct {
  *  @deprecated only displacement 0 is implement atm (26.3.17)
  */
 struct VdaggerVQuantumNumbers {
-  size_t id;
+  ssize_t id;
   std::array<int, 3> momentum;     /*!< The -momentum as 3-vector */
   DisplacementDirection displacement; /*!< The displacement as 3-vector */
 
   /*! Constructor */
-  VdaggerVQuantumNumbers(const size_t id,
+  VdaggerVQuantumNumbers(const ssize_t id,
                          std::array<int, 3> const &momentum,
                          DisplacementDirection const &displacement)
       : id(id), momentum(momentum), displacement(displacement){};
@@ -193,7 +193,7 @@ struct OperatorLookup {
    */
   int index_of_unity;
 
-  inline size_t size(){ return vdaggerv_lookup.size(); }
+  inline ssize_t size(){ return vdaggerv_lookup.size(); }
 };
 
 /******************************************************************************/
@@ -224,7 +224,7 @@ struct OperatorLookup {
  */
 struct DilutedFactorIndex {
   /*! Identifies physical content of @f$ V^dagger V @f$ */
-  size_t id_vdaggerv;
+  ssize_t id_vdaggerv;
   /*! Flag that indicates whether VdaggerV must be daggered (prior to
    *  multiplication with random vectors) to get the correct quantum numbers
    */
@@ -237,7 +237,7 @@ struct DilutedFactorIndex {
    *  List of all possible combinations of random vector indices for quarks
    *  specified by @em id_q1 and @em id_q2
    */
-  std::vector<std::pair<size_t, size_t>> rnd_vec_ids;
+  std::vector<std::pair<ssize_t, ssize_t>> rnd_vec_ids;
 };
 
 inline bool operator==(DilutedFactorIndex const &first, DilutedFactorIndex const second) {
@@ -274,19 +274,19 @@ enum class DilutedFactorType { Q0, Q1, Q2, Q2L, Q2V };
  *  - Paths and information for IO
  */
 struct DiagramIndex {
-  size_t id;
+  ssize_t id;
   std::string hdf5_dataset_name;
-  std::vector<size_t> lookup;
+  std::vector<ssize_t> lookup;
   std::vector<int> gamma;
   /*! Just a small constructor to ensure easy filling of its vector form */
-  DiagramIndex(const size_t id,
+  DiagramIndex(const ssize_t id,
                const std::string &hdf5_dataset_name,
-               const std::vector<size_t> &lookup,
+               const std::vector<ssize_t> &lookup,
                const std::vector<int> &gamma)
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
-  DiagramIndex(const size_t id,
+  DiagramIndex(const ssize_t id,
                const std::string &hdf5_dataset_name,
-               const std::vector<size_t> &lookup)
+               const std::vector<ssize_t> &lookup)
       : DiagramIndex(id, hdf5_dataset_name, lookup, std::vector<int>({})){};
 };
 
@@ -337,31 +337,31 @@ struct DilutedFactorTypeTraits {};
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q0> {
   typedef std::vector<DilutedFactorIndex> type;
-  static size_t constexpr num_times = 1;
+  static ssize_t constexpr num_times = 1;
 };
 
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q1> {
   typedef std::vector<DilutedFactorIndex> type;
-  static size_t constexpr num_times = 2;
+  static ssize_t constexpr num_times = 2;
 };
 
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q2> {
   typedef std::vector<DilutedFactorIndex> type;
-  static size_t constexpr num_times = 3;
+  static ssize_t constexpr num_times = 3;
 };
 
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q2L> {
   typedef std::vector<DilutedFactorIndex> type;
-  static size_t constexpr num_times = 3;
+  static ssize_t constexpr num_times = 3;
 };
 
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
   typedef std::vector<DilutedFactorIndex> type;
-  static size_t constexpr num_times = 3;
+  static ssize_t constexpr num_times = 3;
 };
 
 #define MU_DEBUG(x) std::cout << std::setw(30) << #x << ": " << (x) << std::endl;

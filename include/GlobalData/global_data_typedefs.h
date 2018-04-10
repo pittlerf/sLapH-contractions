@@ -16,7 +16,7 @@
  *  How many are needed, their length, and what the input paths are.
  */
 struct RandomVectorConstruction {
-  size_t nb_entities, length;
+  ssize_t nb_entities, length;
   std::vector<std::string> filename_list;
 };
 
@@ -26,9 +26,9 @@ struct RandomVectorConstruction {
  *  How many are needed, their size, and what the input paths are.
  */
 struct PerambulatorConstruction {
-  size_t nb_entities;
-  std::vector<size_t> size_rows;
-  std::vector<size_t> size_cols;
+  ssize_t nb_entities;
+  std::vector<ssize_t> size_rows;
+  std::vector<ssize_t> size_cols;
   std::vector<std::string> filename_list;
 };
 
@@ -49,7 +49,7 @@ struct quark {
   std::string dilution_D;
   int number_of_dilution_D;
 
-  size_t id;
+  ssize_t id;
   std::string path;
 
   /*! Constructor */

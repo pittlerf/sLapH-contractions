@@ -60,8 +60,8 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-                   std::array<size_t, 1>{c_look.lookup[1]}));
+        make_tuple(std::array<ssize_t, 2>{c_look.lookup[2], c_look.lookup[0]},
+                   std::array<ssize_t, 1>{c_look.lookup[1]}));
   }
 }
 
@@ -98,8 +98,8 @@ C30::C30(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        make_tuple(std::array<size_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-                   std::array<size_t, 1>{c_look.lookup[1]}));
+        make_tuple(std::array<ssize_t, 2>{c_look.lookup[2], c_look.lookup[0]},
+                   std::array<ssize_t, 1>{c_look.lookup[1]}));
   }
 }
 
@@ -222,8 +222,8 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
   }
 }
 
@@ -265,8 +265,8 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
   }
 }
 
@@ -306,8 +306,8 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
   }
 }
 
@@ -348,8 +348,8 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
 
   for (const auto &c_look : corr_lookup) {
     quantum_num_ids_.push_back(
-        {std::array<size_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<size_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
+        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
+         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
   }
 }
 

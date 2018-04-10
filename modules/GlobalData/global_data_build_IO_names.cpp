@@ -59,7 +59,7 @@ static std::vector<std::string> create_perambulator_file_names(
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::string create_eigenvector_file_name(const size_t config,
+static std::string create_eigenvector_file_name(const ssize_t config,
                                                 const std::string &path_eigenvectors,
                                                 const std::string &name_eigenvectors) {
   return (boost::format("%s/%s.%04d.") % path_eigenvectors % name_eigenvectors %
@@ -69,7 +69,7 @@ static std::string create_eigenvector_file_name(const size_t config,
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-static std::string create_correlator_file_name(const size_t config) {
+static std::string create_correlator_file_name(const ssize_t config) {
   return (boost::format("_cnfg%04d.h5") % static_cast<int>(config)).str();
 }
 
@@ -81,7 +81,7 @@ static std::string create_correlator_file_name(const size_t config) {
  * @param config Configuration number for which paths and file names shall be
  *               constructed
  */
-void GlobalData::build_IO_names(const size_t config) {
+void GlobalData::build_IO_names(const ssize_t config) {
   rnd_vec_construct.filename_list =
       create_rnd_vector_file_names(config, number_of_eigen_vec, quarks);
   peram_construct.filename_list =
