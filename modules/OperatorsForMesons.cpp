@@ -229,7 +229,6 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv(const int config) {
   clock_t t2 = clock();
-  const ssize_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
@@ -298,7 +297,6 @@ void OperatorFactory::read_vdaggerv(const int config) {
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv_liuming(const int config) {
   clock_t t2 = clock();
-  const ssize_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
@@ -314,7 +312,7 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
   //  #pragma omp for schedule(dynamic)
   //    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
 #pragma omp for schedule(dynamic)
-    for (ssize_t i = 0; i < operator_lookuptable.vdaggerv_lookup.size(); ++i) {
+    for (ssize_t i = 0; i < ssize(operator_lookuptable.vdaggerv_lookup); ++i) {
       const auto op = (operator_lookuptable.vdaggerv_lookup[i]);
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed

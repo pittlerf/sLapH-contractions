@@ -7,7 +7,7 @@
 void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     auto const &x = q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
@@ -23,7 +23,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
 void C20::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     auto const &x = q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
@@ -39,7 +39,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
 void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(q.trQ1[c_look.lookup[0]][slice_pair.source()],
@@ -77,7 +77,7 @@ void C3c::assemble_impl(std::vector<Complex> &c,
         q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
         trace(L1[std::get<0>(ids)],
@@ -114,7 +114,7 @@ void C30::assemble_impl(std::vector<Complex> &c,
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
         trace(L1[std::get<0>(ids)],
@@ -129,7 +129,7 @@ void C30::assemble_impl(std::vector<Complex> &c,
 void C30V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     assert(c_look.lookup[0] < q.trQ1Q1.shape()[0]);
@@ -152,7 +152,7 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
 void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
@@ -168,7 +168,7 @@ void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
 void C40D::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
@@ -184,7 +184,7 @@ void C40D::assemble_impl(std::vector<ComplexProduct> &c,
 void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
@@ -200,7 +200,7 @@ void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
 void C40V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != corr_lookup().size(); ++i) {
+  for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
@@ -246,7 +246,7 @@ void C4cB::assemble_impl(std::vector<Complex> &c,
         q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
@@ -287,7 +287,7 @@ void C40B::assemble_impl(std::vector<Complex> &c,
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
@@ -329,7 +329,7 @@ void C4cC::assemble_impl(std::vector<Complex> &c,
         q.q2v[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
@@ -370,7 +370,7 @@ void C40C::assemble_impl(std::vector<Complex> &c,
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
   }
 
-  for (int i = 0; i != quantum_num_ids_.size(); ++i) {
+  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }

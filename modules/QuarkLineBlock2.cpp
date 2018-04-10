@@ -33,7 +33,7 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
 
   auto const t1 = time_key[0];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     const ssize_t gamma_id = op.gamma[0];
     Eigen::MatrixXcd vdv;
@@ -94,7 +94,7 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
   int const t1 = time_key[0];
   int const b2 = time_key[1];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const gamma_id = op.gamma[0];
@@ -143,7 +143,7 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
   auto const t1 = time_key[1];
   auto const b2 = time_key[2];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     ssize_t rnd_counter = 0;
     int check = -1;

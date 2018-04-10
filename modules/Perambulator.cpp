@@ -84,7 +84,7 @@ void Perambulator::read_perambulators_from_separate_files(
     std::cout << "Problem when reading perambulators: The number of "
               << "perambulators read is not the same as the expected one!" << std::endl;
   ssize_t j = 0;  // TODO: Not beautiful but practical - Think about change
-  for (ssize_t i = 0; i < quark.size(); i++) {
+  for (ssize_t i = 0; i < ssize(quark); i++) {
     for (ssize_t r = 0; r < quark[i].number_of_rnd_vec; r++) {
       read_perambulator(j, Lt, nb_eigen_vec, quark[i], filename_list[j]);
       j++;

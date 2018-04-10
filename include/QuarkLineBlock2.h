@@ -55,8 +55,8 @@ class DilutedFactorFactory {
  private:
   std::map<Key, Value> Ql;
 
-  RandomVector const &rnd_vec;
   Perambulator const &peram;
+  RandomVector const &rnd_vec;
   OperatorFactory const &meson_operator;
   const ssize_t dilT, dilE, nev;
   typename DilutedFactorTypeTraits<qlt>::type const &quarkline_indices;

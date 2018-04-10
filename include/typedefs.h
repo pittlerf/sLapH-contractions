@@ -365,3 +365,8 @@ struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
 };
 
 #define MU_DEBUG(x) std::cout << std::setw(30) << #x << ": " << (x) << std::endl;
+
+template <typename T>
+ssize_t ssize(std::vector<T> const &vec) {
+  return static_cast<ssize_t>(vec.size());
+}

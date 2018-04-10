@@ -73,7 +73,7 @@ void EigenVector::read_eigen_vector(const std::string &filename,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void EigenVector::read_eigen_vector(const std::string &filename, const ssize_t verbose) {
-  for (int t = 0; t < V.size(); t++) {
+  for (int t = 0; t < ssize(V); t++) {
     std::string path = (boost::format("%s%03d") % filename % t).str();
     read_eigen_vector(path, t, verbose);
   }

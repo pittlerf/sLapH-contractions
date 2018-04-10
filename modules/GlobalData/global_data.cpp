@@ -226,7 +226,7 @@ void GlobalData::read_parameters(int ac, char *av[]) {
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   int peram_matrix_size_sum = 0;
-  for(auto i = 0; i < peram_construct.size_rows.size(); ++i){
+  for(auto i = 0; i < ssize(peram_construct.size_rows); ++i){
     peram_matrix_size_sum += peram_construct.size_rows[i] * peram_construct.size_cols[i];
   }
   std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2) << 

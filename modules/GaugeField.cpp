@@ -590,9 +590,6 @@ Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
                                                    const ssize_t t,
                                                    const DisplacementDirection disp,
                                                    const ssize_t verbose){
-  //Information on Matrix size
-  const int dim_col = v.cols();
-  const int dim_row = v.rows();
 
   Eigen::MatrixXcd out=v;
   // iterate over displacement vector

@@ -417,7 +417,6 @@ static void build_correlator_names(
     std::string filename = corr_type + "_";
     for (const auto &qt : quark_types)  // adding quark content
       filename += qt;
-    ssize_t id = 0;
     for (const auto &qn : qn_row) {  // adding quantum numbers
       filename += std::string("_p") + to_string(qn.momentum);
       filename += std::string(".d") + vector_to_string(qn.displacement);
@@ -436,7 +435,6 @@ static std::string const build_hdf5_dataset_name(
   std::string filename = corr_type + "_";
   for (const auto &qt : quark_types)  // adding quark content
     filename += qt;
-  ssize_t id = 0;
   for (const auto &op : qn) {  // adding quantum numbers
     filename += std::string("_p") + to_string(op.momentum);
     filename += std::string(".d") + vector_to_string(op.displacement);
@@ -494,7 +492,7 @@ void build_VdaggerV_lookup(
         vdv_indices_row.emplace_back((*it).id, dagger);
       } else {
         vdaggerv_lookup.emplace_back(VdaggerVQuantumNumbers(
-            vdaggerv_lookup.size(),
+            ssize(vdaggerv_lookup),
             {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
             qn.displacement));
         vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
@@ -558,7 +556,6 @@ static std::vector<std::pair<ssize_t, ssize_t>> create_rnd_vec_id(
   }
 
   // finally filling the array
-  std::pair<ssize_t, ssize_t> offset = std::make_pair(rndq1_start, rndq2_start);
   std::vector<std::pair<ssize_t, ssize_t>> rnd_vec_comb;
   if (!C1) {
     for (ssize_t i = rndq1_start; i < rndq1_end; ++i)
@@ -575,65 +572,6 @@ static std::vector<std::pair<ssize_t, ssize_t>> create_rnd_vec_id(
   }
 
   return rnd_vec_comb;
-}
-
-/******************************************************************************/
-/*! Create lookuptable where to find the perambulators, randomvectors and
- *  VdaggerV-operators necessary to build a Quarkline
- *
- *  @param[in]  operator_id     Identifies physical quantum numbers entering
- *  				Quarkline
- *  @param[in]  quantum_numbers Physical quantum field operators for all
- *  				correlators with Dirac structure factored out
- *  @param[in]  vdv_indices     Indices identifying VdaggerV operators
- *  @param[out] Ql_lookup       Lookuptable containing unique combinations of
- *                              peram-, vdv-, and ric-indices needed to built Q1
- *  @param[out] Q1_lookup_ids	List of indices refering to @em Q1. Entries'
- *                              outer vector corresponds to entries of
- *                              @em quantum_numbers, the inner is specified by
- *                              @em operator_id
- *
- *  The Quarkline with one quark is given by
- *
- *    Q1 =  rvdaggerv * gamma * peram
- *
- *  The Quarkline with two quarks is given by
- *
- *    Q2 = @f$ \gamma_5 @f$ peram1@f$ ^\dagger \gamma_5 @f$ * vdaggerv *
- *          gamma * peram2
- *
- *  This function creates a Lookup table of all unique index combination the
- *  Quarkline is needed for and a list referring to the lookup table which gives
- *  relates the entries of the lookup table to each correlator specified in the
- *  infile
- */
-static void build_Quarkline_lookup(
-    const ssize_t operator_id,
-    const std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
-    std::vector<std::vector<std::pair<ssize_t, bool>>> const &vdv_indices,
-    std::vector<std::pair<ssize_t, ssize_t>> const &rnd_vec_ids,
-    std::vector<DilutedFactorIndex> &Ql_lookup,
-    std::vector<std::vector<ssize_t>> &Ql_lookup_ids) {
-  for (ssize_t row = 0; row < quantum_numbers.size(); row++) {
-    const auto qn = quantum_numbers[row][operator_id];
-
-    const auto id_vdaggerv = vdv_indices[row][operator_id].first;
-    const auto need_vdaggerv_daggering = vdv_indices[row][operator_id].second;
-
-    // If Ql_lookup already contains the particular row and physical content,
-    // just set the index to the existing QuarklineIndices, otherwise generate
-    // it and set the index to the new one.
-    DilutedFactorIndex const candidate{
-        id_vdaggerv, need_vdaggerv_daggering, qn.gamma, rnd_vec_ids};
-    auto it = std::find(Ql_lookup.begin(), Ql_lookup.end(), candidate);
-
-    if (it != Ql_lookup.end()) {
-      Ql_lookup_ids[row][operator_id] = it - Ql_lookup.begin();
-    } else {
-      Ql_lookup_ids[row][operator_id] = Ql_lookup.size();
-      Ql_lookup.emplace_back(candidate);
-    }
-  }
 }
 
 static void build_Quarkline_lookup_one_qn(
@@ -665,7 +603,7 @@ static void build_Quarkline_lookup_one_qn(
 
 static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
                                 std::vector<DiagramIndex> &trQ1_lookup) {
-  DiagramIndex candidate(trQ1_lookup.size(), "", ql_ids);
+  DiagramIndex candidate(ssize(trQ1_lookup), "", ql_ids);
   auto it = std::find(trQ1_lookup.begin(), trQ1_lookup.end(), candidate);
   if (it == trQ1_lookup.end()) {
     trQ1_lookup.push_back(candidate);
@@ -679,7 +617,7 @@ static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
  */
 static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
                                  std::vector<DiagramIndex> &trQ1Q1_lookup) {
-  DiagramIndex candidate(trQ1Q1_lookup.size(), "", ql_ids);
+  DiagramIndex candidate(ssize(trQ1Q1_lookup), "", ql_ids);
   auto it = std::find(trQ1Q1_lookup.begin(), trQ1Q1_lookup.end(), candidate);
   if (it == trQ1Q1_lookup.end()) {
     trQ1Q1_lookup.push_back(candidate);
@@ -690,7 +628,7 @@ static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
 
 static ssize_t build_corrC_lookup(std::vector<ssize_t> const ql_ids,
                                  std::vector<DiagramIndex> &trQ0Q2_lookup) {
-  DiagramIndex candidate(trQ0Q2_lookup.size(), "", ql_ids);
+  DiagramIndex candidate(ssize(trQ0Q2_lookup), "", ql_ids);
   auto it = std::find(trQ0Q2_lookup.begin(), trQ0Q2_lookup.end(), candidate);
   if (it == trQ0Q2_lookup.end()) {
     trQ0Q2_lookup.push_back(candidate);
@@ -740,7 +678,7 @@ static void build_C1_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     /*! Here the outgoing and incoming quarkline are identical. Thus ric_ids
      *  must get true
      */
@@ -756,7 +694,7 @@ static void build_C1_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C1", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{ssize(c_look), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -809,7 +747,7 @@ static void build_C20V_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[0], quark_numbers[0], true);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -826,7 +764,7 @@ static void build_C20V_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20V", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1, id2}};
+    DiagramIndex candidate{ssize(c_look), hdf5_dataset_name, {id1, id2}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -883,7 +821,7 @@ static void build_C2c_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
@@ -899,7 +837,7 @@ static void build_C2c_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C2c", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{ssize(c_look), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -951,7 +889,7 @@ static void build_C20_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -967,7 +905,7 @@ static void build_C20_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C20", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(), hdf5_dataset_name, {id1}};
+    DiagramIndex candidate{ssize(c_look), hdf5_dataset_name, {id1}};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1024,7 +962,7 @@ static void build_C30V_lookup(
     quark_types.emplace_back(quarks[id].type);
   }
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1044,7 +982,7 @@ static void build_C30V_lookup(
         "C30V", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex const candidate{
-        c_look.size(), hdf5_dataset_name, {id0, id1}, std::vector<int>{}};
+        ssize(c_look), hdf5_dataset_name, {id0, id1}, std::vector<int>{}};
 
     /*! XXX Better with std::set */
     auto const it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1098,7 +1036,7 @@ static void build_C3c_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
@@ -1113,7 +1051,7 @@ static void build_C3c_lookup(
         "C3c", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+        ssize(c_look), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1162,7 +1100,7 @@ static void build_C30_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[2], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1177,7 +1115,7 @@ static void build_C30_lookup(
         "C30", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+        ssize(c_look), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1238,7 +1176,7 @@ static void build_C4cD_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
@@ -1261,7 +1199,7 @@ static void build_C4cD_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4cD", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(),
+    DiagramIndex candidate{ssize(c_look),
                            hdf5_dataset_name,
                            std::vector<ssize_t>({id1, id2}),
                            std::vector<int>({})};
@@ -1317,7 +1255,7 @@ static void build_C40D_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1340,7 +1278,7 @@ static void build_C40D_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40D", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(),
+    DiagramIndex candidate{ssize(c_look),
                            hdf5_dataset_name,
                            std::vector<ssize_t>({id1, id2}),
                            std::vector<int>({})};
@@ -1404,7 +1342,7 @@ static void build_C4cV_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
@@ -1427,7 +1365,7 @@ static void build_C4cV_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4cV", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(),
+    DiagramIndex candidate{ssize(c_look),
                            hdf5_dataset_name,
                            std::vector<ssize_t>({id1, id2}),
                            std::vector<int>({})};
@@ -1483,7 +1421,7 @@ static void build_C40V_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[1], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1506,7 +1444,7 @@ static void build_C40V_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C40V", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate{c_look.size(),
+    DiagramIndex candidate{ssize(c_look),
                            hdf5_dataset_name,
                            std::vector<ssize_t>({id1, id2}),
                            std::vector<int>({})};
@@ -1559,7 +1497,7 @@ static void build_C4cC_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2V_lookup, ql_ids);
@@ -1576,7 +1514,7 @@ static void build_C4cC_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4cC", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
+    DiagramIndex candidate(ssize(c_look), hdf5_dataset_name, ql_ids);
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1625,7 +1563,7 @@ static void build_C40C_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1643,7 +1581,7 @@ static void build_C40C_lookup(
         "C40C", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+        ssize(c_look), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1693,7 +1631,7 @@ static void build_C4cB_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q2L_lookup, ql_ids);
@@ -1710,7 +1648,7 @@ static void build_C4cB_lookup(
     std::string hdf5_dataset_name = build_hdf5_dataset_name(
         "C4cB", start_config, path_output, quark_types, quantum_numbers[d]);
 
-    DiagramIndex candidate(c_look.size(), hdf5_dataset_name, ql_ids);
+    DiagramIndex candidate(ssize(c_look), hdf5_dataset_name, ql_ids);
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);
@@ -1759,7 +1697,7 @@ static void build_C40B_lookup(
   for (const auto &id : quark_numbers)
     quark_types.emplace_back(quarks[id].type);
 
-  for (ssize_t d = 0; d < quantum_numbers.size(); ++d) {
+  for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
     ric_ids = create_rnd_vec_id(quarks, quark_numbers[3], quark_numbers[0], false);
     build_Quarkline_lookup_one_qn(
         0, quantum_numbers[d], vdv_indices[d], ric_ids, Q1_lookup, ql_ids);
@@ -1777,7 +1715,7 @@ static void build_C40B_lookup(
         "C40B", start_config, path_output, quark_types, quantum_numbers[d]);
 
     DiagramIndex candidate{
-        c_look.size(), hdf5_dataset_name, ql_ids, std::vector<int>({})};
+        ssize(c_look), hdf5_dataset_name, ql_ids, std::vector<int>({})};
 
     /*! XXX Better with std::set */
     auto it = std::find(c_look.begin(), c_look.end(), candidate);

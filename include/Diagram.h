@@ -112,7 +112,7 @@ class DiagramNumeric : public Diagram {
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
     int const tid = omp_get_thread_num();
 
-    for (int i = 0; i != corr_lookup().size(); ++i) {
+    for (int i = 0; i != ssize(corr_lookup()); ++i) {
       c_[tid][i] = Numeric{};
     }
 
@@ -121,7 +121,7 @@ class DiagramNumeric : public Diagram {
     {
       std::lock_guard<std::mutex> lock(mutexes_[t]);
 
-      for (int i = 0; i != corr_lookup().size(); ++i) {
+      for (int i = 0; i != ssize(corr_lookup()); ++i) {
         correlator_[t][i] += c_[tid][i];
       }
     }
@@ -136,7 +136,7 @@ class DiagramNumeric : public Diagram {
 
     std::vector<Numeric> one_corr(Lt_);
 
-    for (int i = 0; i != corr_lookup().size(); ++i) {
+    for (int i = 0; i != ssize(corr_lookup()); ++i) {
       for (int t = 0; t < Lt_; ++t) {
         one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
       }
