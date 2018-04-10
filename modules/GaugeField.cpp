@@ -2,6 +2,8 @@
 
 #include <boost/format.hpp>
 
+#include <vector>
+
 // member initializer is executed from left to right. Is used to set constant members
 GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _Lz, 
                        const std::string _config_path, const size_t t0, const size_t tf,
@@ -803,25 +805,22 @@ double GaugeField::plaque_ts(const size_t t){
   return (plaquette/cnt);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-///Data IO from and to files///////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-//Read in gauge field to vector of timeslices
-void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
-                                  const size_t slice_f){
-
-  const std::string name = config_path+"/conf";
+/*! Read in gauge field to vector of timeslices */
+void GaugeField::read_gauge_field(const size_t config_i,
+                                  const size_t slice_i,
+                                  const size_t slice_f) {
+  const std::string name = config_path + "/conf";
   const auto filename = (boost::format("%s.%04lu") % name % config_i).str();
 
-  double* configuration = new double[V_for_lime];
-  read_lime_gauge_field_doubleprec_timeslices(configuration, filename.c_str(),
-                                              slice_i, slice_f);
+  std::vector<double> configuration(V_for_lime);
+
+  read_lime_gauge_field_doubleprec_timeslices(
+      configuration.data(), filename.c_str(), slice_i, slice_f);
   for (auto t = slice_i; t <= slice_f; ++t) {
-    double* timeslice = configuration + V_TS*t;
+    double *const timeslice = &configuration[V_TS * t];
     map_timeslice_to_eigen(t, timeslice);
-  }   
-  delete[] configuration;
-  std::cout << slice_f+1-slice_i << " timeslice(s) read in from config " << config_i 
+  }
+  std::cout << slice_f + 1 - slice_i << " timeslice(s) read in from config " << config_i
             << std::endl;
 }
 
