@@ -163,7 +163,7 @@ void quark_input_data_handling(const std::vector<std::string> quark_configs,
                    std::back_inserter(quarks),
                    make_quark);
     // setting id's in quarks
-    size_t quark_counter = 0;
+    ssize_t quark_counter = 0;
     for (auto &q : quarks) {
       q.id = quark_counter;
       quark_counter++;

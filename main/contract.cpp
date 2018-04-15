@@ -70,7 +70,7 @@ int main (int ac, char* av[]) {
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
-  for(size_t config_i  = global_data->get_start_config(); 
+  for(ssize_t config_i  = global_data->get_start_config(); 
              config_i <= global_data->get_end_config(); 
              config_i += global_data->get_delta_config()){
 

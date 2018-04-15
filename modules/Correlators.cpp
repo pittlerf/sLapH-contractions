@@ -60,10 +60,10 @@ void build_trQ1(DiagramParts &q,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
-void contract(const size_t Lt,
-              const size_t dilT,
-              const size_t dilE,
-              const size_t nev,
+void contract(const ssize_t Lt,
+              const ssize_t dilT,
+              const ssize_t dilE,
+              const ssize_t nev,
               OperatorFactory const &meson_operator,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,

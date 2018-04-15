@@ -114,7 +114,7 @@ inline Complex operator+(Complex const &c, DilutedTrace<rvecs> const &df) {
 }
 
 template <int n, size_t rvecs>
-using DilutedFactors = std::map<std::array<size_t, n>, std::vector<DilutedFactor<rvecs>>>;
+using DilutedFactors = std::map<std::array<ssize_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
 template <size_t n, size_t rvecs>
 std::string to_string(typename DilutedFactors<n, rvecs>::key_type const &array) {
@@ -440,12 +440,12 @@ std::map<UpTo, Complex> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &t
 
 template <int n1, int n2, size_t rvecs1, size_t rvecs2>
 void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
-              std::array<size_t, n1 + n2> const &key,
+              std::array<ssize_t, n1 + n2> const &key,
               DilutedFactors<n1, rvecs1> const &factor0,
               DilutedFactors<n2, rvecs2> const &factor1) {
   if (L.count(key) == 0) {
-    std::array<size_t, n1> key1;
-    std::array<size_t, n2> key2;
+    std::array<ssize_t, n1> key1;
+    std::array<ssize_t, n2> key2;
 
     std::copy_n(std::begin(key) + 0, n1, std::begin(key1));
     std::copy_n(std::begin(key) + n1, n2, std::begin(key2));

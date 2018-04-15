@@ -6,7 +6,7 @@ namespace{
 
 Eigen::Matrix4cd sparse_to_eigen_dense(const gamma_lookup sparse){
   Eigen::Matrix4cd dense;
-  for (size_t col = 0; col < 4; ++col){
+  for (ssize_t col = 0; col < 4; ++col){
     dense(sparse.row[col],col) = sparse.value[col];
   }
   return dense;

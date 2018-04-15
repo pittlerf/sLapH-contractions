@@ -82,7 +82,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 # We want warnings, but not all of them.
 add_definitions(-Wall -pedantic --std=c++11)
-add_definitions(-Wno-unused-variable -Wno-unused-local-typedefs)
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fdiagnostics-color has_diagnostics_color)

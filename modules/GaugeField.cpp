@@ -1,9 +1,13 @@
 #include "GaugeField.h"
 
+#include <boost/format.hpp>
+
+#include <vector>
+
 // member initializer is executed from left to right. Is used to set constant members
 GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _Lz, 
-                       const std::string _config_path, const size_t t0, const size_t tf,
-                       const size_t ndir) : Lt(_Lt), Lx(_Lx), Ly(_Ly), Lz(_Lz), 
+                       const std::string _config_path, const ssize_t t0, const ssize_t tf,
+                       const ssize_t ndir) : Lt(_Lt), Lx(_Lx), Ly(_Ly), Lz(_Lz), 
                         V3(Lx * Ly * Lz), dim_row(V3 * 3), 
                         V_TS(dim_row * 4 * 3 * 2), V_for_lime(V_TS * Lt), 
                         config_path( _config_path), tslices(), iup(), idown(){
@@ -19,7 +23,7 @@ GaugeField::GaugeField(const int _Lt, const int _Lx, const int _Ly, const int _L
 //Initialize the lookup tables/////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void GaugeField::init(const size_t L1, const size_t L2, const size_t L3){
+void GaugeField::init(const ssize_t L1, const ssize_t L2, const ssize_t L3){
   int* x0_h = new int[3];
   int* x1_h = new int[3];
   int* x2_h = new int[3];
@@ -84,7 +88,7 @@ int GaugeField::get_dn(const int pos, const int dir){
 ///////////////////////////////////////////////////////////////////////////////
 
 //mapping from gauge config to Eigen 3x3 complex matrix arrays
-void GaugeField::map_timeslice_to_eigen(const size_t t, const double* timeslice) {
+void GaugeField::map_timeslice_to_eigen(const ssize_t t, const double* timeslice) {
  
   //Number of directions
   const int NDIR = 4;
@@ -206,7 +210,7 @@ static Eigen::Matrix3cd construct_random_su3() {
 ///////////////////////////////////////////////////////////////////////////////
 
 //Stout-Smearing
-void GaugeField::smearing_stout(const size_t t, const double rho, const size_t iter) {
+void GaugeField::smearing_stout(const ssize_t t, const double rho, const ssize_t iter) {
 
   std::complex<double> im_half(0,0.5);
   array_3cd_d2_eigen eigen_timeslice_ts(boost::extents[V3][3]);
@@ -214,13 +218,13 @@ void GaugeField::smearing_stout(const size_t t, const double rho, const size_t i
  // for ( auto i = 0; i < V3; ++i ) {
  //   eigen_timeslice_ts[i] = new Eigen::Matrix3cd[3];
  // }
-  for (size_t j = 0; j < iter; ++j) {
-    for (size_t i = 0; i < V3; ++i) {
-      for (size_t dir = 0; dir < 3; ++dir) {
+  for (ssize_t j = 0; j < iter; ++j) {
+    for (ssize_t i = 0; i < V3; ++i) {
+      for (ssize_t dir = 0; dir < 3; ++dir) {
         Eigen::Matrix3cd staple = Eigen::Matrix3cd::Zero(); //Holding all smearing matrices for one link
         //filling each element of smearer using 3 links
         //For each link calculate staples summing them up
-        for (size_t not_dir = 0; not_dir < 3; ++not_dir) {
+        for (ssize_t not_dir = 0; not_dir < 3; ++not_dir) {
           if (dir != not_dir) {
             int mu = iup[i][not_dir];
             int nu = iup[mu][dir];
@@ -246,8 +250,8 @@ void GaugeField::smearing_stout(const size_t t, const double rho, const size_t i
                                      (tslices.at(t))[i][dir];
       }
     }
-    for ( size_t i = 0; i < V3; ++i ) {
-      for ( size_t mu = 0; mu < 3; ++mu) {
+    for ( ssize_t i = 0; i < V3; ++i ) {
+      for ( ssize_t mu = 0; mu < 3; ++mu) {
         tslices.at(t)[i][mu] = eigen_timeslice_ts[i][mu];
       }
     }
@@ -255,7 +259,7 @@ void GaugeField::smearing_stout(const size_t t, const double rho, const size_t i
 }
 
 //APE-Smearing
-void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t iter){
+void GaugeField::smearing_ape(const ssize_t t, const double alpha_1, const ssize_t iter){
 
   //Eigen::Matrix3cd **eigen_timeslice_ts = new Eigen::Matrix3cd *[V3]; 
   //for ( auto i = 0; i < V3; ++i ) {
@@ -263,13 +267,13 @@ void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t
   //}
   //temporal timeslice from decorated links
   array_3cd_d2_eigen eigen_timeslice_ts(boost::extents[V3][3]);  
-  for (size_t j = 0; j < iter; ++j) {
-    for (size_t i = 0; i < V3; ++i) {
-      for (size_t dir = 0; dir < 3; ++dir) {
+  for (ssize_t j = 0; j < iter; ++j) {
+    for (ssize_t i = 0; i < V3; ++i) {
+      for (ssize_t dir = 0; dir < 3; ++dir) {
         Eigen::Matrix3cd staple = Eigen::Matrix3cd::Zero(); //Holding all smearing matrices for one link
         //filling each element of smearer using 3 links
         //Position indices mu nu eta
-        for (size_t not_dir = 0; not_dir < 3; ++not_dir) {
+        for (ssize_t not_dir = 0; not_dir < 3; ++not_dir) {
           if (dir != not_dir) {
             int mu = iup[i][not_dir];
             int nu = iup[mu][dir];
@@ -288,8 +292,8 @@ void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t
         eigen_timeslice_ts[i][dir] = (tslices.at(t)[i][dir] * (1.-alpha_1)) + (staple * alpha_1/4.);
       }
     }
-    for ( size_t i = 0; i < V3; ++i ) {
-      for ( size_t mu = 0; mu < 3; ++mu) {
+    for ( ssize_t i = 0; i < V3; ++i ) {
+      for ( ssize_t mu = 0; mu < 3; ++mu) {
         tslices.at(t)[i][mu] = proj_to_su3_imp(eigen_timeslice_ts[i][mu]);
       }
     }
@@ -298,8 +302,8 @@ void GaugeField::smearing_ape(const size_t t, const double alpha_1, const size_t
 
 //HYP-Smearing
 
-void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const double alpha_2,
-                               const size_t iter) {
+void GaugeField::smearing_hyp( const ssize_t t, const double alpha_1, const double alpha_2,
+                               const ssize_t iter) {
 
   //temporal timeslice twice the size for decorated links
   array_3cd_d2_eigen dec_timeslice(boost::extents[V3][6]);
@@ -308,7 +312,7 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
   array_3cd_d2_eigen eigen_timeslice_ts(boost::extents[V3][3]);  
   //temporal integers holding directions for decorated smearing
   int mu, nu, eta;
-  for (size_t run = 0; run < iter; ++run) {
+  for (ssize_t run = 0; run < iter; ++run) {
     //calculate inner staple from original timeslice, store in dec_timeslice each link can get smeared in two planes
     for (int vol = 0; vol < V3; ++vol) {
       for (int dir = 0; dir < 3; ++dir) {
@@ -403,7 +407,7 @@ void GaugeField::smearing_hyp( const size_t t, const double alpha_1, const doubl
 /*
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
-                                     const size_t t, const size_t dir, bool forward ) {
+                                     const ssize_t t, const ssize_t dir, bool forward ) {
 
   //Information on Matrix size
   const int dim_col = v.cols();
@@ -445,8 +449,8 @@ Eigen::MatrixXcd GaugeField::disp(const Eigen::MatrixXcd& v,
 }
 
 Eigen::MatrixXcd GaugeField::shift(const Eigen::MatrixXcd& v,
-                                   const size_t step,
-                                   const size_t dir){
+                                   const ssize_t step,
+                                   const ssize_t dir){
   look lookuptable;
   // +1 means we want to shift up
   if(step == 1) lookuptable = iup;
@@ -470,8 +474,8 @@ Eigen::MatrixXcd GaugeField::shift(const Eigen::MatrixXcd& v,
 //                - V^\dag(x-mu)U^\dag_mu(x-\mu)V(x) ) 
 //
 Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v, 
-                                                  const size_t t,
-                                                  const size_t dir) {
+                                                  const ssize_t t,
+                                                  const ssize_t dir) {
   //Information on Matrix size
   const int dim_col = v.cols();
   const int dim_row = v.rows();
@@ -487,8 +491,8 @@ Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,
 }
 */
 
-static size_t map_char_to_dir(const char dir){
-  size_t integer_dir;
+static ssize_t map_char_to_dir(const char dir){
+  ssize_t integer_dir;
   if (dir == 'x') integer_dir = 0; 
   if (dir == 'y') integer_dir = 1; 
   if (dir == 'z') integer_dir = 2; 
@@ -525,11 +529,11 @@ Eigen::Vector3f GaugeField::summed_displacement(const DisplacementDirection disp
 
 // Calculates U_mu(x)V(x+\hat{\mu})
 Eigen::MatrixXcd GaugeField::forward_uv(const Eigen::MatrixXcd& v,       
-                                                  const size_t t,
+                                                  const ssize_t t,
                                                   const char dir,
-                                                  const size_t verbose) {
-  // Map direction character to size_t
-  const size_t integer_dir = map_char_to_dir(dir);
+                                                  const ssize_t verbose) {
+  // Map direction character to ssize_t
+  const ssize_t integer_dir = map_char_to_dir(dir);
   //Information on Matrix size
   const int dim_col = v.cols();
   const int dim_row = v.rows();
@@ -554,11 +558,11 @@ Eigen::MatrixXcd GaugeField::forward_uv(const Eigen::MatrixXcd& v,
 
 // Calculates U_mu^dagger(x-\hat{mu})V(x-\hat{\mu})
 Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::MatrixXcd& v,       
-                                                  const size_t t,
+                                                  const ssize_t t,
                                                   const char dir,
-                                                  const size_t verbose) {
-  // Map direction character to size_t
-  const size_t integer_dir = map_char_to_dir(dir);
+                                                  const ssize_t verbose) {
+  // Map direction character to ssize_t
+  const ssize_t integer_dir = map_char_to_dir(dir);
   //Information on Matrix size
   const int dim_col = v.cols();
   const int dim_row = v.rows();
@@ -583,12 +587,9 @@ Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::MatrixXcd& v,
 
 // Generalized Displacements for several displacements in a row
 Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
-                                                   const size_t t,
+                                                   const ssize_t t,
                                                    const DisplacementDirection disp,
-                                                   const size_t verbose){
-  //Information on Matrix size
-  const int dim_col = v.cols();
-  const int dim_row = v.rows();
+                                                   const ssize_t verbose){
 
   Eigen::MatrixXcd out=v;
   // iterate over displacement vector
@@ -602,9 +603,9 @@ Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
 /*
 // Calculate U_mu(x)V(x)
 Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
-                                                  const size_t t,
-                                                  const size_t dir,
-                                                  const size_t verbose) {
+                                                  const ssize_t t,
+                                                  const ssize_t dir,
+                                                  const ssize_t verbose) {
   //Information on Matrix size
   const int dim_col = v.cols();
   const int dim_row = v.rows();
@@ -630,9 +631,9 @@ Eigen::MatrixXcd GaugeField::Umu_times_V(const Eigen::MatrixXcd& v,
 
 // Calculates U_mu(x)V(x+\hat{\mu})
 Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,       
-                                                  const size_t t,
-                                                  const size_t dir,
-                                                  const size_t verbose) {
+                                                  const ssize_t t,
+                                                  const ssize_t dir,
+                                                  const ssize_t verbose) {
   //Information on Matrix size
   const int dim_col = v.cols();
   const int dim_row = v.rows();
@@ -659,7 +660,7 @@ Eigen::MatrixXcd GaugeField::Umu_times_shiftedV(const Eigen::MatrixXcd& v,
 ///////////////////////////////////////////////////////////////////////////////
 //Derivative, toogle symmetrization via sym
 Eigen::MatrixXcd GaugeField::disp_2(const Eigen::MatrixXcd& v,
-                                     const size_t t, const size_t dir) {
+                                     const ssize_t t, const ssize_t dir) {
 
   //Information on Matrix size
   const int dim_col = v.cols();
@@ -705,28 +706,28 @@ Eigen::MatrixXcd GaugeField::disp_2(const Eigen::MatrixXcd& v,
 ///////////////////////////////////////////////////////////////////////////////
 
 //build gauge array
-void GaugeField::build_gauge_array(const size_t trange) {
+void GaugeField::build_gauge_array(const ssize_t trange) {
   //parameter passing still to be improved
-  const size_t V3 = Lx * Ly * Lz;
+  const ssize_t V3 = Lx * Ly * Lz;
   srand(1227);
   //resize omega
   omega.resize(boost::extents[trange][V3]);
   //fill omega
-  for (size_t t = 0; t < trange; ++t ){
-    for (size_t vol = 0; vol < V3; ++vol){
+  for (ssize_t t = 0; t < trange; ++t ){
+    for (ssize_t vol = 0; vol < V3; ++vol){
      omega[t][vol] = construct_random_su3();
     }
   }
 }
 //Gauge-transform config for every timeslice
-void GaugeField::trafo(const size_t t0, const size_t tf) {
+void GaugeField::trafo(const ssize_t t0, const ssize_t tf) {
 
-  const size_t V3 = Lx * Ly * Lz;
+  const ssize_t V3 = Lx * Ly * Lz;
 
   build_gauge_array(tf-t0);
-  for(size_t t = t0; t < tf; ++t){
-    for ( size_t v = 0; v < V3; ++v ) {
-      for ( size_t mu = 0; mu < 3; ++mu ) {
+  for(ssize_t t = t0; t < tf; ++t){
+    for ( ssize_t v = 0; v < V3; ++v ) {
+      for ( ssize_t mu = 0; mu < 3; ++mu ) {
         int w = iup[v][mu];
         tslices.at(t)[v][mu] = omega[t-t0][v].adjoint() *
                                (tslices.at(t)[v][mu] * omega[t-t0][w]);
@@ -740,14 +741,14 @@ void GaugeField::trafo(const size_t t0, const size_t tf) {
 //transform matrix of eigenvectors with gauge array
 Eigen::MatrixXcd GaugeField::trafo_ev(const Eigen::MatrixXcd& eig_sys) {
 
-  const size_t dim_row = eig_sys.rows();
-  const size_t dim_col = eig_sys.cols();
+  const ssize_t dim_row = eig_sys.rows();
+  const ssize_t dim_col = eig_sys.cols();
   Eigen::MatrixXcd ret(dim_row,dim_col);
   if (omega.shape()[0] == 0) build_gauge_array(1);
   //write_gauge_matrices("ev_trafo_log.bin",Omega);
 
-  for (size_t nev = 0; nev < dim_col; ++nev) {
-    for (size_t vol = 0; vol < dim_row; ++vol) {
+  for (ssize_t nev = 0; nev < dim_col; ++nev) {
+    for (ssize_t vol = 0; vol < dim_row; ++vol) {
       int ind_c = vol%3;
       Eigen::Vector3cd tmp = omega[0][ind_c].adjoint() *
                              (eig_sys.col(nev)).segment(ind_c,3); 
@@ -763,10 +764,10 @@ Eigen::MatrixXcd GaugeField::trafo_ev(const Eigen::MatrixXcd& eig_sys) {
 
 //Plaquette of timeslice
 //calculate plaquettes at given point i
-double GaugeField::plaque_pnt(const size_t mu, const size_t nu, const size_t vol, const size_t t) { 
+double GaugeField::plaque_pnt(const ssize_t mu, const ssize_t nu, const ssize_t vol, const ssize_t t) { 
 
   Eigen::Matrix3cd plaque;
-	size_t j,k,l;
+	ssize_t j,k,l;
 	double P;
 	j = iup[vol][mu];  //convention(up): 0:= n0+1, 1:= n1+1, 2:= n2+1, 3:= n3+1
 	k = iup[j][nu]; //convention(down): 0:= n0-1, 1:= n1-1, 2:= n2-1, 3:= n3-1
@@ -781,15 +782,15 @@ double GaugeField::plaque_pnt(const size_t mu, const size_t nu, const size_t vol
 	return P;
 }
 
-double GaugeField::plaque_ts(const size_t t){
+double GaugeField::plaque_ts(const ssize_t t){
 
-  const size_t V3 = Lx * Ly * Lz;
+  const ssize_t V3 = Lx * Ly * Lz;
 
   double plaquette = 0;
   double cnt = 0;
-  for (size_t vol = 0; vol < V3; ++vol) {
-    for (size_t dir_1 = 0; dir_1 < 3; ++dir_1) {
-      for (size_t dir_2 = 0; dir_2 < 3; ++dir_2) {
+  for (ssize_t vol = 0; vol < V3; ++vol) {
+    for (ssize_t dir_1 = 0; dir_1 < 3; ++dir_1) {
+      for (ssize_t dir_2 = 0; dir_2 < 3; ++dir_2) {
         //make sure not to run in same direction
         if (dir_1 != dir_2) {
           plaquette += plaque_pnt(dir_1, dir_2, vol, t);
@@ -801,33 +802,30 @@ double GaugeField::plaque_ts(const size_t t){
   return (plaquette/cnt);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-///Data IO from and to files///////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-//Read in gauge field to vector of timeslices
-void GaugeField::read_gauge_field(const size_t config_i, const size_t slice_i,
-                                  const size_t slice_f){
+/*! Read in gauge field to vector of timeslices */
+void GaugeField::read_gauge_field(const ssize_t config_i,
+                                  const ssize_t slice_i,
+                                  const ssize_t slice_f) {
+  const std::string name = config_path + "/conf";
+  const auto filename = (boost::format("%s.%04lu") % name % config_i).str();
 
-  char filename[200];
-  const std::string name = config_path+"/conf";
-  sprintf(filename,"%s.%04lu", name.c_str(), config_i);
-  double* configuration = new double[V_for_lime];
-  read_lime_gauge_field_doubleprec_timeslices(configuration, filename,
-                                              slice_i, slice_f);
+  std::vector<double> configuration(V_for_lime);
+
+  read_lime_gauge_field_doubleprec_timeslices(
+      configuration.data(), filename.c_str(), slice_i, slice_f);
   for (auto t = slice_i; t <= slice_f; ++t) {
-    double* timeslice = configuration + V_TS*t;
+    double *const timeslice = &configuration[V_TS * t];
     map_timeslice_to_eigen(t, timeslice);
-  }   
-  delete[] configuration;
-  std::cout << slice_f+1-slice_i << " timeslice(s) read in from config " << config_i 
+  }
+  std::cout << slice_f + 1 - slice_i << " timeslice(s) read in from config " << config_i
             << std::endl;
 }
 
 //Read in the gaugefield, deprecated tmLqcd routine
 void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
                                                              const char* filename,
-                                                             const size_t slice_i,
-                                                             const size_t slice_f) {
+                                                             const ssize_t slice_i,
+                                                             const ssize_t slice_f) {
 
   try{
 
@@ -835,7 +833,7 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
     //const int slice_f = Lt+1;
 
     FILE * ifs;
-    size_t t, x, y, z;
+    ssize_t t, x, y, z;
     int status;
     n_uint64_t bytes;
     char * header_type;
@@ -932,19 +930,19 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
 
             // copy of link variables from tmp2 into config
             // ILDG has mu-order: x,y,z,t so it is changed here to: t,x,y,z !
-            const size_t p = (size_t) ( ((t-slice_i)*Lx*Lz*Lz + 
+            const ssize_t p = (ssize_t) ( ((t-slice_i)*Lx*Lz*Lz + 
                   x*Ly*Lz + y*Lz + z) * 72); // position in config
-            size_t k = 0;
-            for(size_t mu = 1; mu <= 4; mu++) { // mu=4 is for the shift of U_t
-              size_t index;
+            ssize_t k = 0;
+            for(ssize_t mu = 1; mu <= 4; mu++) { // mu=4 is for the shift of U_t
+              ssize_t index;
               if (mu != 4)
                 index = p + mu*18; // for U_x, U_y and U_z
               else
                 index = p; // U_t is copied into the beginning of
               // the (config+p) array
 
-              for(size_t i = 0; i < 3; i++) {
-                for(size_t j = 0; j < 3; j++) {
+              for(ssize_t i = 0; i < 3; i++) {
+                for(ssize_t j = 0; j < 3; j++) {
                   gaugefield[index+6*i+2*j] = tmp2[2*k];
                   gaugefield[index+6*i+2*j+1] = tmp2[2*k+1];
                   k++;

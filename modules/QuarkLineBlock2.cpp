@@ -11,9 +11,9 @@ DilutedFactorFactory<qlt>::DilutedFactorFactory(
     RandomVector const &random_vector,
     Perambulator const &perambulator,
     OperatorFactory const &_meson_operator,
-    size_t const dilT,
-    size_t const dilE,
-    size_t const nev,
+    ssize_t const dilT,
+    ssize_t const dilE,
+    ssize_t const nev,
     typename DilutedFactorTypeTraits<qlt>::type const &_quarkline_indices)
     : peram(perambulator),
       rnd_vec(random_vector),
@@ -33,16 +33,16 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
 
   auto const t1 = time_key[0];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
-    const size_t gamma_id = op.gamma[0];
+    const ssize_t gamma_id = op.gamma[0];
     Eigen::MatrixXcd vdv;
     if (op.need_vdaggerv_daggering == false)
       vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
     else
       vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
 
-    size_t rnd_counter = 0;
+    ssize_t rnd_counter = 0;
     int check = -1;
     Eigen::MatrixXcd M;  // Intermediate memory
 
@@ -51,9 +51,9 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
       if (check != rnd_id.second) {  // this avoids recomputation
         /*! Should be 4*new rows, but there is always just one entry not zero */
         M = Eigen::MatrixXcd::Zero(nev, 4 * dilE);
-        for (size_t block = 0; block < 4; block++) {
-          for (size_t vec_i = 0; vec_i < nev; vec_i++) {
-            size_t blk = block + (vec_i + nev * t1) * 4;
+        for (ssize_t block = 0; block < 4; block++) {
+          for (ssize_t vec_i = 0; vec_i < nev; vec_i++) {
+            ssize_t blk = block + (vec_i + nev * t1) * 4;
             M.block(0, vec_i % dilE + dilE * block, nev, 1) +=
                 vdv.col(vec_i) * rnd_vec(rnd_id.second, blk);
           }
@@ -64,11 +64,11 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
-      for (size_t block = 0; block < 4; block++) {
+      for (ssize_t block = 0; block < 4; block++) {
         const Complex value = gamma_vec[gamma_id].value[block];
-        const size_t gamma_index = gamma_vec[gamma_id].row[block];
-        for (size_t vec_i = 0; vec_i < nev; vec_i++) {
-          size_t blk = gamma_index + (vec_i + nev * t1) * dilD;
+        const ssize_t gamma_index = gamma_vec[gamma_id].row[block];
+        for (ssize_t vec_i = 0; vec_i < nev; vec_i++) {
+          ssize_t blk = gamma_index + (vec_i + nev * t1) * dilD;
           matrix.block(vec_i % dilE + dilE * gamma_index, block * dilE, 1, dilE) +=
               value * M.block(vec_i, block * dilE, 1, dilE) *
               std::conj(rnd_vec(rnd_id.first, blk));
@@ -94,7 +94,7 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
   int const t1 = time_key[0];
   int const b2 = time_key[1];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const gamma_id = op.gamma[0];
@@ -107,9 +107,9 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
 
       Eigen::MatrixXcd rvdaggerv = Eigen::MatrixXcd::Zero(eigenspace_dirac_size, nev);
 
-      for (size_t block = 0; block < dilD; block++) {
-        for (size_t vec_i = 0; vec_i < nev; ++vec_i) {
-          size_t blk = block + vec_i * dilD + dilD * nev * t1;
+      for (ssize_t block = 0; block < dilD; block++) {
+        for (ssize_t vec_i = 0; vec_i < nev; ++vec_i) {
+          ssize_t blk = block + vec_i * dilD + dilD * nev * t1;
           rvdaggerv.block(vec_i % dilE + dilE * block, 0, 1, nev) +=
               vdv.row(vec_i) * std::conj(rnd_vec(rnd_id.first, blk));
         }
@@ -143,9 +143,9 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
   auto const t1 = time_key[1];
   auto const b2 = time_key[2];
 
-  for (int operator_key = 0; operator_key < quarkline_indices.size(); ++operator_key) {
+  for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
-    size_t rnd_counter = 0;
+    ssize_t rnd_counter = 0;
     int check = -1;
 
     Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(dilD * dilE, 4 * nev);
@@ -175,11 +175,11 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
-      const size_t gamma_id = op.gamma[0];
+      const ssize_t gamma_id = op.gamma[0];
 
-      for (size_t block_dil = 0; block_dil < dilD; block_dil++) {
+      for (ssize_t block_dil = 0; block_dil < dilD; block_dil++) {
         const Complex value = gamma_vec[gamma_id].value[block_dil];
-        const size_t gamma_index = gamma_vec[gamma_id].row[block_dil];
+        const ssize_t gamma_index = gamma_vec[gamma_id].row[block_dil];
         for (int row = 0; row < dilD; row++) {
           for (int col = 0; col < dilD; col++) {
             matrix.block(row * dilE, col * dilE, dilE, dilE) +=

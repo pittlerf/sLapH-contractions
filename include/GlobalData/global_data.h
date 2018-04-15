@@ -60,7 +60,7 @@ class GlobalData {
   int number_of_inversions;
   int start_config, end_config, delta_config;
   int verbose;
-  size_t nb_omp_threads, nb_eigen_threads;
+  ssize_t nb_omp_threads, nb_eigen_threads;
   std::string path_eigenvectors;
   std::string name_eigenvectors;
   std::string filename_eigenvectors;
@@ -109,7 +109,7 @@ class GlobalData {
   /*! Fills the random vector and perambulator structs with the paths and
    *  file names to read the data
    */
-  void build_IO_names(const size_t config);
+  void build_IO_names(const ssize_t config);
 
   inline std::string get_name_lattice() { return name_lattice; }
   inline std::string get_output_path() { return path_output; }
@@ -117,8 +117,8 @@ class GlobalData {
     return filename_ending_correlators;
   }
   inline std::string get_path_config() { return path_config; }
-  inline size_t get_nb_omp_threads() { return nb_omp_threads; }
-  inline size_t get_nb_eigen_threads() { return nb_eigen_threads; }
+  inline ssize_t get_nb_omp_threads() { return nb_omp_threads; }
+  inline ssize_t get_nb_eigen_threads() { return nb_eigen_threads; }
   inline int get_Lx() { return Lx; }
   inline int get_Ly() { return Ly; }
   inline int get_Lz() { return Lz; }

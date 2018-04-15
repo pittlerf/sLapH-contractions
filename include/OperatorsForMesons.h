@@ -40,12 +40,12 @@
 class OperatorFactory {
  public:
   /*! Constructor which allocates memory for all operators */
-  OperatorFactory(const size_t Lt,
-                  const size_t Lx,
-                  const size_t Ly,
-                  const size_t Lz,
-                  const size_t nb_ev,
-                  const size_t dilE,
+  OperatorFactory(const ssize_t Lt,
+                  const ssize_t Lx,
+                  const ssize_t Ly,
+                  const ssize_t Lz,
+                  const ssize_t nb_ev,
+                  const ssize_t dilE,
                   const OperatorLookup &operator_lookuptable,
                   const std::string &handling_vdaggerv,
                   const std::string &path_vdaggerv,
@@ -66,8 +66,8 @@ class OperatorFactory {
   void free_memory_vdaggerv();
 
   /*! @todo check of vdaggerv is already build */
-  inline const Eigen::MatrixXcd &return_vdaggerv(const size_t index,
-                                                 const size_t t) const {
+  inline const Eigen::MatrixXcd &return_vdaggerv(const ssize_t index,
+                                                 const ssize_t t) const {
     return vdaggerv[index][t];
   }
 
@@ -83,8 +83,8 @@ private:
   /****************************************************************************/
   /*! @TODO comment private members */
   const OperatorLookup operator_lookuptable;
-  const size_t Lt, Lx, Ly, Lz;
-  const size_t nb_ev, dilE;
+  const ssize_t Lt, Lx, Ly, Lz;
+  const ssize_t nb_ev, dilE;
   bool is_vdaggerv_set = false;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
