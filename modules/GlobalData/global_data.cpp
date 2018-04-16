@@ -346,6 +346,13 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
 
 #define GLOBAL_DATA_PRINT(x) (std::cout << "    " << #x << ": " << x << "\n")
 
+std::ostream &operator<<(std::ostream &os, std::map<int, int> const &map) {
+    for (auto const &elem : map) {
+        os << elem.first << "→" << elem.second << " ";
+    }
+    return os;
+}
+
 std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
     std::cout << "\nGlobal Data:\n";
 
@@ -379,6 +386,9 @@ std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
     GLOBAL_DATA_PRINT(gd.path_config);
     GLOBAL_DATA_PRINT(gd.handling_vdaggerv);
     GLOBAL_DATA_PRINT(gd.path_vdaggerv);
+
+    std::cout << "  Momentum Cutoff: ";
+    std::cout << gd.momentum_cutoff << "\n";
 
     //! @TODO Print more stuff here.
 
