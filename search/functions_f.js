@@ -12,13 +12,13 @@ var searchData=
   ['smearing_5fstout',['smearing_stout',['../class_gauge_field.html#abde12791b12bdaf4987e43de18ec653c',1,'GaugeField']]],
   ['source',['source',['../class_block_iterator.html#ad1ce640d7741de07e3e34b5d75f4f5f1',1,'BlockIterator::source()'],['../class_dilution_iterator.html#aeb3fdb64f9efa61da4f83795423c1226',1,'DilutionIterator::source()']]],
   ['source_5fblock',['source_block',['../class_block_iterator.html#afd98f85fe438ca98e4b3de2ff631c6c8',1,'BlockIterator']]],
-  ['sparse_5fto_5feigen_5fdense',['sparse_to_eigen_dense',['../tests_2gtest_2_gamma_8cpp.html#a1bb56b7c7ab624a8e1efee504fd734b9',1,'gamma.cpp']]],
+  ['sparse_5fto_5feigen_5fdense',['sparse_to_eigen_dense',['../tests_2gtest_2_gamma_8cpp.html#af4c5a34121d67ac9ff28ad33a3bd2eeb',1,'gamma.cpp']]],
   ['ssize',['ssize',['../typedefs_8h.html#a3908e1f24dddac75b5bb70e3b4eaa55f',1,'typedefs.h']]],
   ['start',['start',['../class_stop_watch.html#a09a3c8f9ab03d7b28e4f8b90a833974e',1,'StopWatch']]],
   ['stop',['stop',['../class_stop_watch.html#a6e80b598d9304e37d8768b716e713e0e',1,'StopWatch']]],
   ['stopwatch',['StopWatch',['../class_stop_watch.html#aa080f1ca8b2da216700814ec7d21e8b7',1,'StopWatch']]],
   ['store_5fto',['store_to',['../class_stop_watch.html#af0595feee04a52011c09e0db446d7bc8',1,'StopWatch']]],
-  ['sub_5faccumulate',['sub_accumulate',['../_diluted_factor_8h.html#ae98d8e17486cb5e947ad76d8da3f5c96',1,'DilutedFactor.h']]],
+  ['sub_5faccumulate',['sub_accumulate',['../_diluted_factor_8h.html#af644d11b9fd92ba028b508ef0d123813',1,'DilutedFactor.h']]],
   ['summands',['summands',['../class_stop_watch.html#aa4a68ed625afc6fadb748798c8135104',1,'StopWatch']]],
   ['summed_5fdisplacement',['summed_displacement',['../class_gauge_field.html#a5000029b1013c2fcf49c1960017067ae',1,'GaugeField']]]
 ];

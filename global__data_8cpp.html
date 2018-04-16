@@ -69,32 +69,70 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">global_data.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cmath&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global__data_8h_source.html">global_data.h</a>&quot;</code><br />
+<code>#include &lt;Eigen/Core&gt;</code><br />
+<code>#include &lt;Eigen/Dense&gt;</code><br />
+<code>#include &lt;Eigen/SparseCore&gt;</code><br />
+<code>#include &lt;boost/algorithm/string/classification.hpp&gt;</code><br />
+<code>#include &lt;boost/algorithm/string/replace.hpp&gt;</code><br />
+<code>#include &lt;boost/algorithm/string/split.hpp&gt;</code><br />
+<code>#include &lt;boost/lexical_cast.hpp&gt;</code><br />
+<code>#include &lt;boost/program_options.hpp&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
-<code>#include &quot;<a class="el" href="global__data_8h_source.html">global_data.h</a>&quot;</code><br />
+<code>#include &lt;iostream&gt;</code><br />
+<code>#include &lt;iterator&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
 </div>
 <p><a href="global__data_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a3f7b9c745068019bcd455787431f9df7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a3f7b9c745068019bcd455787431f9df7">GLOBAL_DATA_PRINT</a>(x)&#160;&#160;&#160;(std::cout &lt;&lt; &quot;    &quot; &lt;&lt; #x &lt;&lt; &quot;: &quot; &lt;&lt; x &lt;&lt; &quot;\n&quot;)</td></tr>
+<tr class="separator:a3f7b9c745068019bcd455787431f9df7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a765662c5195d54811069be8d4ef83243"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a765662c5195d54811069be8d4ef83243"><td class="memTemplItemLeft" align="right" valign="top">boost::program_options::typed_value&lt; T &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a765662c5195d54811069be8d4ef83243">make_value</a> (T *store_to)</td></tr>
 <tr class="separator:a765662c5195d54811069be8d4ef83243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e5505d50dbbdf2a58732cb392b7b0b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a9e5505d50dbbdf2a58732cb392b7b0b7">read_parameters</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd, int ac, char *av[])</td></tr>
+<tr class="separator:a9e5505d50dbbdf2a58732cb392b7b0b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a177226b94ae93cb1635ed09088ba3840"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a177226b94ae93cb1635ed09088ba3840">operator&lt;&lt;</a> (std::ostream &amp;os, std::map&lt; int, int &gt; const &amp;map)</td></tr>
+<tr class="separator:a177226b94ae93cb1635ed09088ba3840"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae50627d9bee3df2e81dccf300448d6a3"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#ae50627d9bee3df2e81dccf300448d6a3">operator&lt;&lt;</a> (std::ostream &amp;os, <a class="el" href="struct_global_data.html">GlobalData</a> const &amp;gd)</td></tr>
+<tr class="separator:ae50627d9bee3df2e81dccf300448d6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class definition of <a class="el" href="class_global_data.html">GlobalData</a></p>
-<dl class="section author"><dt>Author</dt><dd>Bastian Knippschild, </dd>
-<dd>
-Markus Werner</dd></dl>
-<dl class="section date"><dt>Date</dt><dd>Mar 28, 2013 </dd></dl>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a3f7b9c745068019bcd455787431f9df7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7b9c745068019bcd455787431f9df7">&#9670;&nbsp;</a></span>GLOBAL_DATA_PRINT</h2>
 
-<p class="definition">Definition in file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GLOBAL_DATA_PRINT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x</td><td>)</td>
+          <td>&#160;&#160;&#160;(std::cout &lt;&lt; &quot;    &quot; &lt;&lt; #x &lt;&lt; &quot;: &quot; &lt;&lt; x &lt;&lt; &quot;\n&quot;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00347">347</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a765662c5195d54811069be8d4ef83243"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a765662c5195d54811069be8d4ef83243">&#9670;&nbsp;</a></span>make_value()</h2>
 
@@ -121,7 +159,109 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to a type_value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00034">34</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00035">35</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a177226b94ae93cb1635ed09088ba3840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a177226b94ae93cb1635ed09088ba3840">&#9670;&nbsp;</a></span>operator<<() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; int, int &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>map</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00349">349</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ae50627d9bee3df2e81dccf300448d6a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae50627d9bee3df2e81dccf300448d6a3">&#9670;&nbsp;</a></span>operator<<() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_global_data.html">GlobalData</a> const &amp;&#160;</td>
+          <td class="paramname"><em>gd</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Print more stuff here. </p>
+
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00356">356</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9e5505d50dbbdf2a58732cb392b7b0b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e5505d50dbbdf2a58732cb392b7b0b7">&#9670;&nbsp;</a></span>read_parameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void read_parameters </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_global_data.html">GlobalData</a> &amp;&#160;</td>
+          <td class="paramname"><em>gd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ac</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>av</em>[]&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Reading of infile is delegated to boost::program_options.</p>
+<dl class="section see"><dt>See also</dt><dd>GlobalData::input_handling() </dd>
+<dd>
+GlobalData::init_lookup_tables() </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000012">Todo:</a></b></dt><dd>: setting the sizes and numbers of rnd_vecs and perams should be put in a separate function </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00046">46</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>

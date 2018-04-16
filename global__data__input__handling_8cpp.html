@@ -68,6 +68,8 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">global_data_input_handling.cpp File Reference</div>  </div>
 </div><!--header-->
@@ -76,6 +78,12 @@ $(function() {
 <code>#include &quot;<a class="el" href="global__data__utils_8h_source.html">global_data_utils.h</a>&quot;</code><br />
 </div>
 <p><a href="global__data__input__handling_8cpp_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a646e553c29160d1de0781849e351ba28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data__input__handling_8cpp.html#a646e553c29160d1de0781849e351ba28">input_handling</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd, const std::vector&lt; std::string &gt; &amp;quark_configs, const std::vector&lt; std::string &gt; &amp;operator_list_configs, const std::vector&lt; std::string &gt; &amp;correlator_list_configs)</td></tr>
+<tr class="separator:a646e553c29160d1de0781849e351ba28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions for checking and printing data read from infile as well as processing the strings to more manageable structs</p>
 <dl class="section author"><dt>Author</dt><dd>Bastian Knippschild </dd>
@@ -84,7 +92,62 @@ Markus Werner</dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Mar 28, 2013 </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="global__data__input__handling_8cpp_source.html">global_data_input_handling.cpp</a>.</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a646e553c29160d1de0781849e351ba28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a646e553c29160d1de0781849e351ba28">&#9670;&nbsp;</a></span>input_handling()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void input_handling </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_global_data.html">GlobalData</a> &amp;&#160;</td>
+          <td class="paramname"><em>gd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>quark_configs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>operator_list_configs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>correlator_list_configs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">quark_configs</td><td>Quarks as read from the infile </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">operator_list_configs</td><td>Operators as read from the infile </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">correlator_list_configs</td><td>Correlators as read from the infile</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="struct_global_data.html#a3b6140ae6ca8e3dae29d17576f101ea3">GlobalData::quarks</a></td><td>Quarks munged into a quark struct </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="struct_global_data.html#a607b6302cff003af341750bb8121b0e6">GlobalData::operator_list</a></td><td>Operators munged into a Operator struct </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname"><a class="el" href="struct_global_data.html#ad3344e1fcfb2e828ddfa2ac55c476a9b">GlobalData::correlator_list</a></td><td>Correlators munged into a Correlators struct</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>Split that into multiple functions for checks, output and munging to improve readability </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling_8cpp_source.html#l00258">258</a> of file <a class="el" href="global__data__input__handling_8cpp_source.html">global_data_input_handling.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

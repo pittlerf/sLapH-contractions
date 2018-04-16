@@ -23,6 +23,6 @@ var searchData=
   ['config_5fpath',['config_path',['../class_gauge_field.html#a463caa71793792be0f1afdd8b4b73b37',1,'GaugeField']]],
   ['corr_5flookup_5f',['corr_lookup_',['../class_diagram.html#a0332a6e49e0064f122d6d22a04971b7a',1,'Diagram']]],
   ['correlator_5f',['correlator_',['../class_diagram_numeric.html#add832211a5c1db997bf16dcfadb836d2',1,'DiagramNumeric']]],
-  ['correlator_5flist',['correlator_list',['../class_global_data.html#ad3344e1fcfb2e828ddfa2ac55c476a9b',1,'GlobalData']]],
-  ['correlator_5flookuptable',['correlator_lookuptable',['../class_global_data.html#a1d85c310870fb9176ccc887ed0149b21',1,'GlobalData']]]
+  ['correlator_5flist',['correlator_list',['../struct_global_data.html#ad3344e1fcfb2e828ddfa2ac55c476a9b',1,'GlobalData']]],
+  ['correlator_5flookuptable',['correlator_lookuptable',['../struct_global_data.html#a1d85c310870fb9176ccc887ed0149b21',1,'GlobalData']]]
 ];

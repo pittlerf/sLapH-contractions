@@ -7,7 +7,6 @@ var searchData=
   ['imim',['imim',['../struct_complex_product.html#aed5339a28e03ef9b4b3ecc7dd9f73373',1,'ComplexProduct']]],
   ['imre',['imre',['../struct_complex_product.html#a118f303882f5bb2d4d0a920eb09e8c97',1,'ComplexProduct']]],
   ['index_5fof_5funity',['index_of_unity',['../struct_operator_lookup.html#aabdd72e1081b43870323e371c35c3391',1,'OperatorLookup']]],
-  ['instance_5f',['instance_',['../class_global_data.html#a9210bbd36949d95ab3060934465a4df6',1,'GlobalData']]],
   ['is_5fvdaggerv_5fset',['is_vdaggerv_set',['../class_operator_factory.html#a45a3d4110f932b5dd943a13e1d7425b9',1,'OperatorFactory']]],
   ['iup',['iup',['../class_gauge_field.html#a6cc0e5fd675b1a8f64548472e8080dd5',1,'GaugeField']]]
 ];

@@ -9,7 +9,7 @@ var indexSectionsWithContent =
   6: "acdklnorstuvx",
   7: "d",
   8: "biq",
-  9: "bimprs",
+  9: "bgimprs",
   10: "bdgt"
 };
 
