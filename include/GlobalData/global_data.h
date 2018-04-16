@@ -7,6 +7,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iosfwd>
 
 #include <sys/stat.h>
 
@@ -82,3 +83,6 @@ void input_handling(GlobalData &gd,
                     const std::vector<std::string> &correlator_list_configs);
 
 void init_lookup_tables(GlobalData &gd);
+
+
+std::ostream &operator<<(std::ostream &os, GlobalData const &gd);

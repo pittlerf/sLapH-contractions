@@ -240,6 +240,8 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
     }
   }
 
+  std::cout << gd << std::endl;
+
   // printing information about memory consumption of all relevant parts that are cached
   std::cout << "Memory consumption:" << std::endl;
 
@@ -340,4 +342,45 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
             << " Gb" << std::endl;
 
   std::cout << "\tDiagrams:" << std::endl;
+}
+
+#define GLOBAL_DATA_PRINT(x) (std::cout << "    " << #x << ": " << x << "\n")
+
+std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
+    std::cout << "\nGlobal Data:\n";
+
+    std::cout << "  Lattice size:\n";
+    GLOBAL_DATA_PRINT(gd.Lx);
+    GLOBAL_DATA_PRINT(gd.Ly);
+    GLOBAL_DATA_PRINT(gd.Lz);
+    GLOBAL_DATA_PRINT(gd.Lt);
+
+    std::cout << "  Other stuff:\n";
+    GLOBAL_DATA_PRINT(gd.dim_row);
+    GLOBAL_DATA_PRINT(gd.V_TS);
+    GLOBAL_DATA_PRINT(gd.V_for_lime);
+    GLOBAL_DATA_PRINT(gd.number_of_eigen_vec);
+    GLOBAL_DATA_PRINT(gd.number_of_rnd_vec);
+    GLOBAL_DATA_PRINT(gd.number_of_inversions);
+    GLOBAL_DATA_PRINT(gd.start_config);
+    GLOBAL_DATA_PRINT(gd.end_config);
+    GLOBAL_DATA_PRINT(gd.delta_config);
+    GLOBAL_DATA_PRINT(gd.verbose);
+    GLOBAL_DATA_PRINT(gd.nb_omp_threads);
+    GLOBAL_DATA_PRINT(gd.nb_eigen_threads);
+    GLOBAL_DATA_PRINT(gd.path_eigenvectors);
+    GLOBAL_DATA_PRINT(gd.name_eigenvectors);
+    GLOBAL_DATA_PRINT(gd.filename_eigenvectors);
+    GLOBAL_DATA_PRINT(gd.path_perambulators);
+    GLOBAL_DATA_PRINT(gd.name_perambulators);
+    GLOBAL_DATA_PRINT(gd.name_lattice);
+    GLOBAL_DATA_PRINT(gd.filename_ending_correlators);
+    GLOBAL_DATA_PRINT(gd.path_output);
+    GLOBAL_DATA_PRINT(gd.path_config);
+    GLOBAL_DATA_PRINT(gd.handling_vdaggerv);
+    GLOBAL_DATA_PRINT(gd.path_vdaggerv);
+
+    //! @TODO Print more stuff here.
+
+    return os;
 }
