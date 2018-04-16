@@ -260,7 +260,8 @@ void input_handling(GlobalData &gd,
                     const std::vector<std::string> &operator_list_configs,
                     const std::vector<std::string> &correlator_list_configs) {
   // Checks and terminal output for lattice, config and paths
-  lattice_input_data_handling(gd.path_output, gd.name_lattice, gd.path_config, gd.Lt, gd.Lx, gd.Ly, gd.Lz);
+  lattice_input_data_handling(
+      gd.path_output, gd.name_lattice, gd.path_config, gd.Lt, gd.Lx, gd.Ly, gd.Lz);
   config_input_data_handling(gd.start_config, gd.end_config, gd.delta_config);
   eigenvec_perambulator_input_data_handling(gd.number_of_eigen_vec,
                                             gd.path_eigenvectors,

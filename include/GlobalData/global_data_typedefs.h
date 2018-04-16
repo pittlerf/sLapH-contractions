@@ -111,14 +111,14 @@ inline std::string to_string(Eigen::Vector3i const &vec) {
 inline std::string to_string(DisplacementDirection const &vec) {
   std::string result("");
   for (auto const &dir : vec) {
-    result += std::string(dir.first,dir.second);
+    result += std::string(dir.first, dir.second);
   }
   return result;
 }
 inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn) {
   os << "\tmomentum: " << qn.momentum[0] << qn.momentum[1] << qn.momentum[2]
      << "\n\tdisplacement: ";
-  for (auto const& dir : qn.displacement){
+  for (auto const &dir : qn.displacement) {
     os << dir.first << dir.second;
   }
   os << "\n\tgamma struct: ";

@@ -16,7 +16,7 @@
  */
 
 #include "global_data.h"
-//TODO: Need this header? no function from it called here!
+// TODO: Need this header? no function from it called here!
 #include "global_data_utils.h"
 
 namespace {
@@ -112,8 +112,7 @@ void build_quantum_numbers_from_correlator_list(
     qn_op.emplace_back(operator_list[op_number]);
   }
 
-  std::cout << "Constructing momentum combinations for " <<
-    correlator.type << std::endl;
+  std::cout << "Constructing momentum combinations for " << correlator.type << std::endl;
 
   /*! Restriction to what shall actually be computed is done in if statements
    *  for each diagram because it depends on the number of quarks.
@@ -338,12 +337,13 @@ void build_quantum_numbers_from_correlator_list(
   }
 }
 
-//TODO: Not the right place, not sure where to place it otherwise
+// TODO: Not the right place, not sure where to place it otherwise
 /*! Makes a string object of a displacement vector */
-static std::string vector_to_string(const std::vector< std::pair<char,char> > &in){
+static std::string vector_to_string(const std::vector<std::pair<char, char>> &in) {
   std::string out;
-  if (in.empty()) out = "000";
-  for (auto const& dis : in){ 
+  if (in.empty())
+    out = "000";
+  for (auto const &dis : in) {
     out.push_back(dis.first);
     out.push_back(dis.second);
   }
@@ -429,34 +429,34 @@ void build_VdaggerV_lookup(
       bool dagger;
       // checking if the combination of quantum numbers already exists in
       // vdaggerv. The position is stored in the iterator it.
-      auto it = std::find_if(
-          vdaggerv_lookup.begin(),
-          vdaggerv_lookup.end(),
-          [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
-            auto c1 = (vdv_qn.displacement == qn.displacement);
-            auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
-            // also negative momentum is checked
-            auto c3 = (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
-            /*! @TODO: Think about the daggering!! */
-            const Vector zero(0, 0, 0);
-            if (c1 and c2) {
-              dagger = false;
-              return true;
-            } else if ((c1 and c3) and (qn.displacement.empty() )) {
-              dagger = true;
-              return true;
-            } else
-              return false;
-          });
+      auto it = std::find_if(vdaggerv_lookup.begin(),
+                             vdaggerv_lookup.end(),
+                             [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
+                               auto c1 = (vdv_qn.displacement == qn.displacement);
+                               auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
+                               // also negative momentum is checked
+                               auto c3 =
+                                   (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
+                               /*! @TODO: Think about the daggering!! */
+                               const Vector zero(0, 0, 0);
+                               if (c1 and c2) {
+                                 dagger = false;
+                                 return true;
+                               } else if ((c1 and c3) and (qn.displacement.empty())) {
+                                 dagger = true;
+                                 return true;
+                               } else
+                                 return false;
+                             });
       // If the quantum number combination already exists only the id is needed
       // otherwise a new element is created at the end of the lookuptable.
       if (it != vdaggerv_lookup.end()) {
         vdv_indices_row.emplace_back((*it).id, dagger);
       } else {
-        vdaggerv_lookup.emplace_back(VdaggerVQuantumNumbers(
-            ssize(vdaggerv_lookup),
-            {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
-            qn.displacement));
+        vdaggerv_lookup.emplace_back(
+            VdaggerVQuantumNumbers(ssize(vdaggerv_lookup),
+                                   {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
+                                   qn.displacement));
         vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
       }
     }
@@ -564,7 +564,7 @@ static void build_Quarkline_lookup_one_qn(
 }
 
 static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
-                                std::vector<DiagramIndex> &trQ1_lookup) {
+                                 std::vector<DiagramIndex> &trQ1_lookup) {
   DiagramIndex candidate(ssize(trQ1_lookup), "", ql_ids);
   auto it = std::find(trQ1_lookup.begin(), trQ1_lookup.end(), candidate);
   if (it == trQ1_lookup.end()) {
@@ -578,7 +578,7 @@ static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
  *       give the correct id.
  */
 static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
-                                 std::vector<DiagramIndex> &trQ1Q1_lookup) {
+                                  std::vector<DiagramIndex> &trQ1Q1_lookup) {
   DiagramIndex candidate(ssize(trQ1Q1_lookup), "", ql_ids);
   auto it = std::find(trQ1Q1_lookup.begin(), trQ1Q1_lookup.end(), candidate);
   if (it == trQ1Q1_lookup.end()) {
@@ -589,7 +589,7 @@ static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
 }
 
 static ssize_t build_corrC_lookup(std::vector<ssize_t> const ql_ids,
-                                 std::vector<DiagramIndex> &trQ0Q2_lookup) {
+                                  std::vector<DiagramIndex> &trQ0Q2_lookup) {
   DiagramIndex candidate(ssize(trQ0Q2_lookup), "", ql_ids);
   auto it = std::find(trQ0Q2_lookup.begin(), trQ0Q2_lookup.end(), candidate);
   if (it == trQ0Q2_lookup.end()) {
@@ -1902,7 +1902,7 @@ void init_lookup_tables(GlobalData &gd) {
   std::array<int, 3> const zero{0, 0, 0};
   bool found = false;
   for (const auto &op_vdv : gd.operator_lookuptable.vdaggerv_lookup)
-    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty() )) {
+    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty())) {
       gd.operator_lookuptable.index_of_unity = op_vdv.id;
       found = true;
     }

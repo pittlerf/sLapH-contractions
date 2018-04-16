@@ -84,9 +84,9 @@ inline void create_mom_array_from_string(std::string in,
   }
 }
 
-DisplacementDirection make_displacement_direction(std::vector<std::string> token){
+DisplacementDirection make_displacement_direction(std::vector<std::string> token) {
   DisplacementDirection result;
-  for (auto &direction : token){
+  for (auto &direction : token) {
     result.push_back(std::make_pair(direction[0], direction[1]));
   }
 
@@ -94,14 +94,14 @@ DisplacementDirection make_displacement_direction(std::vector<std::string> token
 }
 
 // *****************************************************************************
-inline void create_displacement_direction_from_string(std::string in,
-                                         std::vector<DisplacementDirection> &out) {
+inline void create_displacement_direction_from_string(
+    std::string in, std::vector<DisplacementDirection> &out) {
   // erase the d (first entry)
   in.erase(0, 1);
   std::vector<std::string> tokens;
   boost::split(tokens, in, boost::is_any_of(","));
   out.resize(tokens.size());
-  for (ssize_t counter = 0; counter < ssize(tokens); ++counter){
+  for (ssize_t counter = 0; counter < ssize(tokens); ++counter) {
     std::vector<std::string> t;
     boost::split(t, tokens[counter], boost::is_any_of("|"));
     out[counter] = make_displacement_direction(t);
@@ -250,7 +250,7 @@ Operators make_operator_list(const std::string &operator_string) {
     std::vector<int> gammas;
     std::vector<DisplacementDirection> disp_dirs;
     std::vector<std::vector<Vector>> mom_vec;
-    for (auto& str : tokens) {
+    for (auto &str : tokens) {
       // getting the gamma structure
       if (str.compare(0, 1, "g") == 0)
         gammas.push_back(boost::lexical_cast<int>(str.erase(0, 1)));
@@ -258,9 +258,8 @@ Operators make_operator_list(const std::string &operator_string) {
       else if (str.compare(0, 1, "d") == 0) {
         // 0 encodes no displacement. disp_dir remains empty in this case
         if (str.compare(1, 1, "0") == 0) {
-          disp_dirs.push_back( DisplacementDirection() );
-        }
-        else if ((str.compare(1, 1, "<") == 0) || (str.compare(1, 1, ">") == 0))
+          disp_dirs.push_back(DisplacementDirection());
+        } else if ((str.compare(1, 1, "<") == 0) || (str.compare(1, 1, ">") == 0))
           create_displacement_direction_from_string(str, disp_dirs);
         else {
           std::cout << "Something wrong with the displacement in the operator"
@@ -274,8 +273,7 @@ Operators make_operator_list(const std::string &operator_string) {
         if (str.compare(1, 1, "(") == 0) {
           mom_vec.resize(1);
           mom_vec[0].push_back(create_3darray_from_string(str));
-        } 
-        else {
+        } else {
           create_mom_array_from_string(str, mom_vec);
         }
       }
@@ -372,6 +370,5 @@ Correlators_2 make_correlator(const std::string &correlator_string) {
 
   return {type, quark_number, operator_number, GEVP, tot_mom};
 }
-
 
 }  // end of namespace global_data_utils

@@ -21,7 +21,6 @@
 #include <iterator>
 #include <sstream>
 
-
 namespace po = boost::program_options;
 
 /*****************************************************************************/
@@ -93,12 +92,15 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
       "lattice", po::value<std::string>(&gd.name_lattice), "Codename of the lattice");
   config.add_options()(
       "Lt", po::value<int>(&gd.Lt)->default_value(0), "Lt: temporal lattice extend");
-  config.add_options()(
-      "Lx", po::value<int>(&gd.Lx)->default_value(0), "Lx: lattice extend in x direction");
-  config.add_options()(
-      "Ly", po::value<int>(&gd.Ly)->default_value(0), "Ly: lattice extend in y direction");
-  config.add_options()(
-      "Lz", po::value<int>(&gd.Lz)->default_value(0), "Lz: lattice extend in z direction");
+  config.add_options()("Lx",
+                       po::value<int>(&gd.Lx)->default_value(0),
+                       "Lx: lattice extend in x direction");
+  config.add_options()("Ly",
+                       po::value<int>(&gd.Ly)->default_value(0),
+                       "Ly: lattice extend in y direction");
+  config.add_options()("Lz",
+                       po::value<int>(&gd.Lz)->default_value(0),
+                       "Lz: lattice extend in z direction");
 
   // eigenvector options
   config.add_options()("number_of_eigen_vec",
@@ -147,8 +149,9 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   config.add_options()("start_config",
                        po::value<int>(&gd.start_config)->default_value(-1),
                        "First configuration");
-  config.add_options()(
-      "end_config", po::value<int>(&gd.end_config)->default_value(0), "Last configuration");
+  config.add_options()("end_config",
+                       po::value<int>(&gd.end_config)->default_value(0),
+                       "Last configuration");
   config.add_options()("delta_config",
                        po::value<int>(&gd.delta_config)->default_value(0),
                        "Stepsize between two configurations");
@@ -195,8 +198,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
     std::ifstream ifs(input_file.c_str());
     std::stringstream buffer;
     buffer << ifs.rdbuf();
-    std::cout << buffer.str()
-    << "\n\n---- End of configuration file ----\n\n";
+    std::cout << buffer.str() << "\n\n---- End of configuration file ----\n\n";
   }
 
   {
@@ -241,82 +243,101 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   // printing information about memory consumption of all relevant parts that are cached
   std::cout << "Memory consumption:" << std::endl;
 
-  std::cout << "\tOperatorFactory:\t" << std::fixed << std::setprecision(2) << 
-    gd.operator_lookuptable.size() * gd.Lt * gd.number_of_eigen_vec * gd.number_of_eigen_vec * 
-    sizeof(Complex) / std::pow(2, 30) << " Gb" << std::endl;
+  std::cout << "\tOperatorFactory:\t" << std::fixed << std::setprecision(2)
+            << gd.operator_lookuptable.size() * gd.Lt * gd.number_of_eigen_vec *
+                   gd.number_of_eigen_vec * sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
-  std::cout << "\tRandomVector:\t" << std::fixed << std::setprecision(2) << 
-    gd.rnd_vec_construct.nb_entities * gd.rnd_vec_construct.length * 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  std::cout << "\tRandomVector:\t" << std::fixed << std::setprecision(2)
+            << gd.rnd_vec_construct.nb_entities * gd.rnd_vec_construct.length *
+                   sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
   int peram_matrix_size_sum = 0;
-  for(auto i = 0; i < ssize(gd.peram_construct.size_rows); ++i){
-    peram_matrix_size_sum += gd.peram_construct.size_rows[i] * gd.peram_construct.size_cols[i];
+  for (auto i = 0; i < ssize(gd.peram_construct.size_rows); ++i) {
+    peram_matrix_size_sum +=
+        gd.peram_construct.size_rows[i] * gd.peram_construct.size_cols[i];
   }
-  std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2) << 
-    peram_matrix_size_sum * 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2)
+            << peram_matrix_size_sum * sizeof(Complex) / std::pow(2, 30) << " Gb"
+            << std::endl;
 
   std::cout << "\tDiagramParts:" << std::endl;
 
   int total_number_of_random_combinations_in_Q0 = 0;
-  for(auto const &q : gd.quarkline_lookuptable.Q0){
+  for (auto const &q : gd.quarkline_lookuptable.Q0) {
     total_number_of_random_combinations_in_Q0 += q.rnd_vec_ids.size();
   }
-  int Q0_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ0:\t" << std::fixed << std::setprecision(2) << 
-    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
-    total_number_of_random_combinations_in_Q0 * Q0_matrix_size* 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  int Q0_matrix_size =
+      gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ0:\t" << std::fixed << std::setprecision(2)
+            << gd.Lt / gd.quarks[0].number_of_dilution_T *
+                   (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
+                   total_number_of_random_combinations_in_Q0 * Q0_matrix_size *
+                   sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q1 = 0;
-  for(auto const &q : gd.quarkline_lookuptable.Q1){
+  for (auto const &q : gd.quarkline_lookuptable.Q1) {
     total_number_of_random_combinations_in_Q1 += q.rnd_vec_ids.size();
   }
-  int Q1_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ1:\t" << std::fixed << std::setprecision(2) << 
-    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
-    total_number_of_random_combinations_in_Q1 * Q1_matrix_size* 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  int Q1_matrix_size =
+      gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ1:\t" << std::fixed << std::setprecision(2)
+            << gd.Lt / gd.quarks[0].number_of_dilution_T *
+                   (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
+                   total_number_of_random_combinations_in_Q1 * Q1_matrix_size *
+                   sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q2L = 0;
-  for(auto const &q : gd.quarkline_lookuptable.Q2L){
+  for (auto const &q : gd.quarkline_lookuptable.Q2L) {
     total_number_of_random_combinations_in_Q2L += q.rnd_vec_ids.size();
   }
-  int Q2L_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ2L:\t" << std::fixed << std::setprecision(2) << 
-    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
-    total_number_of_random_combinations_in_Q2L * Q2L_matrix_size* 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  int Q2L_matrix_size =
+      gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ2L:\t" << std::fixed << std::setprecision(2)
+            << gd.Lt / gd.quarks[0].number_of_dilution_T *
+                   (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
+                   total_number_of_random_combinations_in_Q2L * Q2L_matrix_size *
+                   sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q2V = 0;
-  for(auto const &q : gd.quarkline_lookuptable.Q2V){
+  for (auto const &q : gd.quarkline_lookuptable.Q2V) {
     total_number_of_random_combinations_in_Q2V += q.rnd_vec_ids.size();
   }
-  int Q2V_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ2V:\t" << std::fixed << std::setprecision(2) << 
-    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
-    total_number_of_random_combinations_in_Q2V * Q2V_matrix_size* 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
-  
-  int total_number_of_random_combinations_in_trQ1Q1 = gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
-  std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2) << 
-    gd.correlator_lookuptable.trQ1Q1.size() * gd.Lt * gd.Lt * 
-    total_number_of_random_combinations_in_trQ1Q1 * 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  int Q2V_matrix_size =
+      gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
+  std::cout << "\t\tQ2V:\t" << std::fixed << std::setprecision(2)
+            << gd.Lt / gd.quarks[0].number_of_dilution_T *
+                   (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
+                   total_number_of_random_combinations_in_Q2V * Q2V_matrix_size *
+                   sizeof(Complex) / std::pow(2, 30)
+            << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ0Q2 = gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
-  std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2) << 
-    gd.correlator_lookuptable.trQ0Q2.size() * gd.Lt * gd.Lt * 
-    total_number_of_random_combinations_in_trQ0Q2 * 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  int total_number_of_random_combinations_in_trQ1Q1 =
+      gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
+  std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2)
+            << gd.correlator_lookuptable.trQ1Q1.size() * gd.Lt * gd.Lt *
+                   total_number_of_random_combinations_in_trQ1Q1 * sizeof(Complex) /
+                   std::pow(2, 30)
+            << " Gb" << std::endl;
+
+  int total_number_of_random_combinations_in_trQ0Q2 =
+      gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
+  std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
+            << gd.correlator_lookuptable.trQ0Q2.size() * gd.Lt * gd.Lt *
+                   total_number_of_random_combinations_in_trQ0Q2 * sizeof(Complex) /
+                   std::pow(2, 30)
+            << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_trQ1 = gd.number_of_rnd_vec;
-  std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2) << 
-    gd.correlator_lookuptable.trQ1.size() * gd.Lt * 
-    total_number_of_random_combinations_in_trQ1 * 
-    sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
+  std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2)
+            << gd.correlator_lookuptable.trQ1.size() * gd.Lt *
+                   total_number_of_random_combinations_in_trQ1 * sizeof(Complex) /
+                   std::pow(2, 30)
+            << " Gb" << std::endl;
 
   std::cout << "\tDiagrams:" << std::endl;
-
 }
