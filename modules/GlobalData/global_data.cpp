@@ -14,13 +14,13 @@
 
 namespace po = boost::program_options;
 
-GlobalData *GlobalData::instance_ = 0;
-
 GlobalData *GlobalData::Instance() {
-  if (instance_ == 0)
-    instance_ = new GlobalData;
+  static GlobalData *instance = nullptr;
 
-  return instance_;
+  if (instance == nullptr)
+    instance = new GlobalData;
+
+  return instance;
 }
 /*****************************************************************************/
 /*! Convenience function for when a @em store_to value is being provided

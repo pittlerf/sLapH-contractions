@@ -7,8 +7,7 @@
  *  @date Mar 28, 2013
  */
 
-#ifndef GLOBALDATA_H_
-#define GLOBALDATA_H_
+#pragma once
 
 #include <algorithm>
 #include <array>
@@ -45,56 +44,6 @@
  *  - paths
  */
 class GlobalData {
- private:
-  /*! A pointer on the class itself. Definition in Instance(). Deletion in
-   * ~GlobalData()
-   */
-  static GlobalData *instance_;
-
-  //! @cond
-  //! globally accessible data - naming should be clear and understandable
-  int Lx, Ly, Lz, Lt;
-  int dim_row, V_TS, V_for_lime;
-  int number_of_eigen_vec;
-  int number_of_rnd_vec;
-  int number_of_inversions;
-  int start_config, end_config, delta_config;
-  int verbose;
-  ssize_t nb_omp_threads, nb_eigen_threads;
-  std::string path_eigenvectors;
-  std::string name_eigenvectors;
-  std::string filename_eigenvectors;
-  std::string path_perambulators;
-  std::string name_perambulators;
-  std::string name_lattice;
-  std::string filename_ending_correlators;
-  std::string path_output;
-  std::string path_config;
-  std::string handling_vdaggerv;
-  std::string path_vdaggerv;
-  //! @endcond
-
-  RandomVectorConstruction rnd_vec_construct;
-  PerambulatorConstruction peram_construct;
-
-  std::vector<quark> quarks;
-  Operator_list operator_list;
-  Correlator_list correlator_list;
-
-  /*! Check and print lattice, config and path data and fills quarks,
-   *  operator_lists and correlator_lists with the strings created from the
-   *  infile
-   */
-  void input_handling(const std::vector<std::string> &quark_configs,
-                      const std::vector<std::string> &operator_list_configs,
-                      const std::vector<std::string> &correlator_list_configs);
-
-  DilutedFactorIndicesCollection quarkline_lookuptable;
-  OperatorLookup operator_lookuptable;
-  DiagramIndicesCollection correlator_lookuptable;
-  /*! Creates the lookup tables for quarklines, operators and correlators */
-  void init_lookup_tables();
-
  public:
   /*! Checks whether GlobalData was initialized before. If yes, returns the
    *   existing object. If not, allocates new object on the stack.
@@ -175,22 +124,51 @@ class GlobalData {
   inline const DiagramIndicesCollection get_correlator_lookuptable() {
     return correlator_lookuptable;
   }
-
-  /*! @cond
-   *  All con/de-structors are protected to assure that only one instance exists
-   *  at once. DO NOT CHANGE!!
-   */
- protected:
+    
+ private:
   GlobalData() {}
   GlobalData(const GlobalData &other) {}
-  /*! @endcond
-   * Destruktor needs to delete @ref instance_ manually because it is
-   * allocated on the stack
-   */
-  virtual ~GlobalData() {
-    // In GlobalData::Instance the object is allocated on the stack
-    delete instance_;
-  }
-};
+  //! @cond
+  //! globally accessible data - naming should be clear and understandable
+  int Lx, Ly, Lz, Lt;
+  int dim_row, V_TS, V_for_lime;
+  int number_of_eigen_vec;
+  int number_of_rnd_vec;
+  int number_of_inversions;
+  int start_config, end_config, delta_config;
+  int verbose;
+  ssize_t nb_omp_threads, nb_eigen_threads;
+  std::string path_eigenvectors;
+  std::string name_eigenvectors;
+  std::string filename_eigenvectors;
+  std::string path_perambulators;
+  std::string name_perambulators;
+  std::string name_lattice;
+  std::string filename_ending_correlators;
+  std::string path_output;
+  std::string path_config;
+  std::string handling_vdaggerv;
+  std::string path_vdaggerv;
+  //! @endcond
 
-#endif /* GLOBALDATA_H_ */
+  RandomVectorConstruction rnd_vec_construct;
+  PerambulatorConstruction peram_construct;
+
+  std::vector<quark> quarks;
+  Operator_list operator_list;
+  Correlator_list correlator_list;
+
+  /*! Check and print lattice, config and path data and fills quarks,
+   *  operator_lists and correlator_lists with the strings created from the
+   *  infile
+   */
+  void input_handling(const std::vector<std::string> &quark_configs,
+                      const std::vector<std::string> &operator_list_configs,
+                      const std::vector<std::string> &correlator_list_configs);
+
+  DilutedFactorIndicesCollection quarkline_lookuptable;
+  OperatorLookup operator_lookuptable;
+  DiagramIndicesCollection correlator_lookuptable;
+  /*! Creates the lookup tables for quarklines, operators and correlators */
+  void init_lookup_tables();
+};
