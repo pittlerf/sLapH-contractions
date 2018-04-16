@@ -8,20 +8,20 @@
 #SBATCH --mail-user={{ email_address }}
 #SBATCH --mail-type=FAIL
 {% endif %}
-#SBATCH --output={{ config_path }}/{{ jobname }}.out
-#SBATCH --error={{ config_path }}/{{ jobname }}.err
-
-export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+#SBATCH --output={{ rundir }}/{{ jobname }}.out
+#SBATCH --error={{ rundir }}/{{ jobname }}.err
 
 set -e
 set -u
+
+export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 
 cd {{ rundir }}
 
 date
 
 {% for config_id in config_ids_for_one_job %}
-(./contract -i {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.in || exit 1) &
+(./contract -i {{ config_path }} --config_start {{ config_id }} --config_end {{ config_id }} || exit 1) &
 {% endfor %}
 
 wait
