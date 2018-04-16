@@ -74,47 +74,52 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   // parallelisation options
   config.add_options()("nb_omp_threads",
                        po::value<ssize_t>(&nb_omp_threads)->default_value(1),
-                       "nb_omp_threads: number of openMP threads")(
-      "nb_eigen_threads",
-      po::value<ssize_t>(&nb_eigen_threads)->default_value(1),
-      "nb_eigen_threads: number of threads Eigen uses internally");
+                       "nb_omp_threads: number of openMP threads");
+  config.add_options()("nb_eigen_threads",
+                       po::value<ssize_t>(&nb_eigen_threads)->default_value(1),
+                       "nb_eigen_threads: number of threads Eigen uses internally");
 
   // lattice options
   config.add_options()(
       "output_path",
       po::value<std::string>(&path_output)->default_value("../../contractions"),
-      "path for output")(
-      "path_config",
-      po::value<std::string>(&path_config),
-      "path for gauge configurations")(
-      "lattice",
-      po::value<std::string>(&name_lattice),
-      "Codename of the lattice")(
-      "Lt", po::value<int>(&Lt)->default_value(0), "Lt: temporal lattice extend")(
-      "Lx", po::value<int>(&Lx)->default_value(0), "Lx: lattice extend in x direction")(
-      "Ly", po::value<int>(&Ly)->default_value(0), "Ly: lattice extend in y direction")(
+      "path for output");
+  config.add_options()("path_config",
+                       po::value<std::string>(&path_config),
+                       "path for gauge configurations");
+  config.add_options()(
+      "lattice", po::value<std::string>(&name_lattice), "Codename of the lattice");
+  config.add_options()(
+      "Lt", po::value<int>(&Lt)->default_value(0), "Lt: temporal lattice extend");
+  config.add_options()(
+      "Lx", po::value<int>(&Lx)->default_value(0), "Lx: lattice extend in x direction");
+  config.add_options()(
+      "Ly", po::value<int>(&Ly)->default_value(0), "Ly: lattice extend in y direction");
+  config.add_options()(
       "Lz", po::value<int>(&Lz)->default_value(0), "Lz: lattice extend in z direction");
 
   // eigenvector options
   config.add_options()("number_of_eigen_vec",
                        po::value<int>(&number_of_eigen_vec)->default_value(0),
-                       "Number of eigen vectors")(
-      "path_eigenvectors",
-      po::value<std::string>(&path_eigenvectors)->default_value("."),
-      "directory of eigenvectors")(
+                       "Number of eigen vectors");
+  config.add_options()("path_eigenvectors",
+                       po::value<std::string>(&path_eigenvectors)->default_value("."),
+                       "directory of eigenvectors");
+  config.add_options()(
       "name_eigenvectors",
       po::value<std::string>(&name_eigenvectors)->default_value("eigenvector"),
       "name of eigenvectors\nThe full name is internally created to:\n"
-      "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"")(
+      "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"");
+  config.add_options()(
       "handling_vdaggerv",
       po::value<std::string>(&handling_vdaggerv)->default_value("build"),
       "The options are:\n"
       "build: VdaggerV is build for all operators but not written to disk\n"
       "write: VdaggerV is build for all operators and written to disk\n"
-      "read: VdaggerV was previously constructed and is read from disk")(
-      "path_vdaggerv",
-      po::value<std::string>(&path_vdaggerv)->default_value(""),
-      "Path of vdaggerv");
+      "read: VdaggerV was previously constructed and is read from disk");
+  config.add_options()("path_vdaggerv",
+                       po::value<std::string>(&path_vdaggerv)->default_value(""),
+                       "Path of vdaggerv");
 
   // quark options
   config.add_options()("quarks.quark",
@@ -139,11 +144,13 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   // configuration options
   config.add_options()("start_config",
                        po::value<int>(&start_config)->default_value(-1),
-                       "First configuration")(
-      "end_config", po::value<int>(&end_config)->default_value(0), "Last configuration")(
-      "delta_config",
-      po::value<int>(&delta_config)->default_value(0),
-      "Stepsize between two configurations");
+                       "First configuration");
+
+  config.add_options()(
+      "end_config", po::value<int>(&end_config)->default_value(0), "Last configuration");
+  config.add_options()("delta_config",
+                       po::value<int>(&delta_config)->default_value(0),
+                       "Stepsize between two configurations");
 
   config.add_options()("momentum_cutoff_0",
                        po::value<int>(&momentum_cutoff_0)->default_value(4),
