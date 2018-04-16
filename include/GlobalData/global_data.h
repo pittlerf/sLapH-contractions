@@ -1,10 +1,4 @@
 /*! @file global_data.h
- *  Class declaration of GlobalData
- *
- *  @author Bastian Knippschild,
- *  @author Markus Werner
- *
- *  @date Mar 28, 2013
  */
 
 #pragma once
@@ -23,12 +17,6 @@
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
-
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/program_options.hpp>
 
 #include <sys/stat.h>
 

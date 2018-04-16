@@ -1,16 +1,26 @@
 /*! @file
- *
- *  Class definition of GlobalData
- *
- *  @author Bastian Knippschild,
- *  @author Markus Werner
- *
- *  @date Mar 28, 2013
  */
-#include <cmath>
-#include <iomanip>
 
 #include "global_data.h"
+
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/SparseCore>
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
+
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <sstream>
+
 
 namespace po = boost::program_options;
 
