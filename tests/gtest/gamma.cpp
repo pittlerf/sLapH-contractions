@@ -3,10 +3,10 @@
 #include <gtest/gtest.h>
 
 namespace {
-const std::complex<double> I{0.0, 1.0};
+std::complex<double> const I{0.0, 1.0};
 }
 
-Eigen::Matrix4cd sparse_to_eigen_dense(const gamma_lookup sparse) {
+Eigen::Matrix4cd sparse_to_eigen_dense(gamma_lookup const sparse) {
   Eigen::Matrix4cd dense;
   for (ssize_t col = 0; col < 4; ++col) {
     dense(sparse.row[col], col) = sparse.value[col];
