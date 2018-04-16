@@ -124,6 +124,8 @@ class GlobalData {
   inline const DiagramIndicesCollection get_correlator_lookuptable() {
     return correlator_lookuptable;
   }
+
+  int momentum_cutoff_0;
     
  private:
   GlobalData() {}

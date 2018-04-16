@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# Copyright © 2017 Martin Ueding <dev@martin-ueding.de>
+# Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 # Licensed under the MIT/Expat license
 
 import argparse
@@ -112,7 +112,7 @@ def main():
 
             # Create an input file for the contraction code.
             rendered_contract = template_contract.render(
-                cpus_per_task = options.omp_num_threads // options.jobs_per_node,
+                cpus_per_task=options.omp_num_threads // options.jobs_per_node,
                 lattice_time=options.lattice_time,
                 lattice_space=options.lattice_space,
                 config_start=config_id,
@@ -126,6 +126,7 @@ def main():
                 correlator_list=correlator_list,
                 operator_list=operator_list,
                 outdir=options.outdir,
+                momentum_cutoff_0=options.momentum_cutoff_0,
             )
             with open(os.path.join(config_path, 'contract_%04d.in' % config_id), 'w') as f:
                 f.write(rendered_contract)
@@ -196,6 +197,8 @@ def _parse_args():
     group_contraction.add_argument('--quark', nargs='+', required=True, dest='quarks', metavar='QUARK', help='Quark line including the path. Example: u:6:TF:1:EI:6:DF:4:/hiskp2/bartek/peram_generation/0120-Mpi270-L24-T96/light.ranlxd2.apbc_no_compression')
     group_contraction.add_argument('--operator-list', required=True, help='Path to text file which contains the operator definitions')
     group_contraction.add_argument('--correlator-list', required=True, help='Path to text file which contains the correlator definitions')
+
+    group_contraction.add_argument('--momentum-cutoff-0', default=4)
 
     options = parser.parse_args()
     return options

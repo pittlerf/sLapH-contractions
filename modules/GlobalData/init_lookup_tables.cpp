@@ -68,7 +68,7 @@ bool desired_total_momentum(Vector const &p_tot, std::vector<Vector> const &P) {
 static bool momenta_below_cutoff(Vector const &p1, Vector const &p2) {
   std::map<int, int> cutoff;
   // default value is the default initializer of type int: cutoff[default] = 0;
-  cutoff[0] = 4;
+  cutoff[0] = GlobalData::Instance()->momentum_cutoff_0;
   cutoff[1] = 5;
   cutoff[2] = 6;
   cutoff[3] = 7;

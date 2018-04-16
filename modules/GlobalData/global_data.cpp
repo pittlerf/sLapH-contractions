@@ -145,6 +145,10 @@ void GlobalData::read_parameters(int ac, char *av[]) {
       po::value<int>(&delta_config)->default_value(0),
       "Stepsize between two configurations");
 
+  config.add_options()("momentum_cutoff_0",
+                       po::value<int>(&momentum_cutoff_0)->default_value(4),
+                       "Cutoff for |p₁|² + |p₂|² when |P|² = 0");
+
   //////////////////////////////////////////////////////////////////////////////
 
   po::options_description cmdline_options;
