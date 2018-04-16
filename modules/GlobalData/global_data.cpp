@@ -180,15 +180,27 @@ void GlobalData::read_parameters(int ac, char *av[]) {
     std::cout << "Contraction code for LapHs perambulators. Version 0.1. \n";
     exit(0);
   }
-  std::ifstream ifs(input_file.c_str());
-  if (!ifs) {
-    std::cout << "CANNOT open input file: " << input_file << "\n";
-    exit(1);
-  } else {
-    po::store(parse_config_file(ifs, input_file_options), vm);
-    po::notify(vm);
+
+  {
+    std::cout << "\nConfiguration file read in is:\n\n";
+
+    std::ifstream ifs(input_file.c_str());
+    std::stringstream buffer;
+    buffer << ifs.rdbuf();
+    std::cout << buffer.str()
+    << "\n\n---- End of configuration file ----\n\n";
   }
-  ifs.close();
+
+  {
+    std::ifstream ifs(input_file.c_str());
+    if (!ifs) {
+      std::cout << "CANNOT open input file: " << input_file << "\n";
+      exit(1);
+    } else {
+      po::store(parse_config_file(ifs, input_file_options), vm);
+      po::notify(vm);
+    }
+  }
 
   /****************************************************************************/
 
