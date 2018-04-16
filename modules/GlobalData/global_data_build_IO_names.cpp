@@ -81,13 +81,13 @@ static std::string create_correlator_file_name(const ssize_t config) {
  * @param config Configuration number for which paths and file names shall be
  *               constructed
  */
-void GlobalData::build_IO_names(const ssize_t config) {
-  rnd_vec_construct.filename_list =
-      create_rnd_vector_file_names(config, number_of_eigen_vec, quarks);
-  peram_construct.filename_list =
-      create_perambulator_file_names(config, Lt, Lx, Ly, Lz, quarks);
-  filename_eigenvectors =
-      create_eigenvector_file_name(config, path_eigenvectors, name_eigenvectors);
+void build_IO_names(GlobalData &gd, const ssize_t config) {
+  gd.rnd_vec_construct.filename_list =
+      create_rnd_vector_file_names(config, gd.number_of_eigen_vec, gd.quarks);
+  gd.peram_construct.filename_list =
+      create_perambulator_file_names(config, gd.Lt, gd.Lx, gd.Ly, gd.Lz, gd.quarks);
+  gd.filename_eigenvectors =
+      create_eigenvector_file_name(config, gd.path_eigenvectors, gd.name_eigenvectors);
 
-  filename_ending_correlators = create_correlator_file_name(config);
+  gd.filename_ending_correlators = create_correlator_file_name(config);
 }

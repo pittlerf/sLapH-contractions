@@ -24,14 +24,6 @@
 
 namespace po = boost::program_options;
 
-GlobalData *GlobalData::Instance() {
-  static GlobalData *instance = nullptr;
-
-  if (instance == nullptr)
-    instance = new GlobalData;
-
-  return instance;
-}
 /*****************************************************************************/
 /*! Convenience function for when a @em store_to value is being provided
  *  to typed_value.
@@ -52,7 +44,7 @@ boost::program_options::typed_value<T> *make_value(T *store_to) {
  *  @see GlobalData::input_handling()
  *  @see GlobalData::init_lookup_tables()
  */
-void GlobalData::read_parameters(int ac, char *av[]) {
+void read_parameters(GlobalData &gd, int ac, char *av[]) {
   std::string input_file;
   std::string output_file;
   // Variables that will store parsed values for quarks.
@@ -83,52 +75,52 @@ void GlobalData::read_parameters(int ac, char *av[]) {
 
   // parallelisation options
   config.add_options()("nb_omp_threads",
-                       po::value<ssize_t>(&nb_omp_threads)->default_value(1),
+                       po::value<ssize_t>(&gd.nb_omp_threads)->default_value(1),
                        "nb_omp_threads: number of openMP threads");
   config.add_options()("nb_eigen_threads",
-                       po::value<ssize_t>(&nb_eigen_threads)->default_value(1),
+                       po::value<ssize_t>(&gd.nb_eigen_threads)->default_value(1),
                        "nb_eigen_threads: number of threads Eigen uses internally");
 
   // lattice options
   config.add_options()(
       "output_path",
-      po::value<std::string>(&path_output)->default_value("../../contractions"),
+      po::value<std::string>(&gd.path_output)->default_value("../../contractions"),
       "path for output");
   config.add_options()("path_config",
-                       po::value<std::string>(&path_config),
+                       po::value<std::string>(&gd.path_config),
                        "path for gauge configurations");
   config.add_options()(
-      "lattice", po::value<std::string>(&name_lattice), "Codename of the lattice");
+      "lattice", po::value<std::string>(&gd.name_lattice), "Codename of the lattice");
   config.add_options()(
-      "Lt", po::value<int>(&Lt)->default_value(0), "Lt: temporal lattice extend");
+      "Lt", po::value<int>(&gd.Lt)->default_value(0), "Lt: temporal lattice extend");
   config.add_options()(
-      "Lx", po::value<int>(&Lx)->default_value(0), "Lx: lattice extend in x direction");
+      "Lx", po::value<int>(&gd.Lx)->default_value(0), "Lx: lattice extend in x direction");
   config.add_options()(
-      "Ly", po::value<int>(&Ly)->default_value(0), "Ly: lattice extend in y direction");
+      "Ly", po::value<int>(&gd.Ly)->default_value(0), "Ly: lattice extend in y direction");
   config.add_options()(
-      "Lz", po::value<int>(&Lz)->default_value(0), "Lz: lattice extend in z direction");
+      "Lz", po::value<int>(&gd.Lz)->default_value(0), "Lz: lattice extend in z direction");
 
   // eigenvector options
   config.add_options()("number_of_eigen_vec",
-                       po::value<int>(&number_of_eigen_vec)->default_value(0),
+                       po::value<int>(&gd.number_of_eigen_vec)->default_value(0),
                        "Number of eigen vectors");
   config.add_options()("path_eigenvectors",
-                       po::value<std::string>(&path_eigenvectors)->default_value("."),
+                       po::value<std::string>(&gd.path_eigenvectors)->default_value("."),
                        "directory of eigenvectors");
   config.add_options()(
       "name_eigenvectors",
-      po::value<std::string>(&name_eigenvectors)->default_value("eigenvector"),
+      po::value<std::string>(&gd.name_eigenvectors)->default_value("eigenvector"),
       "name of eigenvectors\nThe full name is internally created to:\n"
       "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"");
   config.add_options()(
       "handling_vdaggerv",
-      po::value<std::string>(&handling_vdaggerv)->default_value("build"),
+      po::value<std::string>(&gd.handling_vdaggerv)->default_value("build"),
       "The options are:\n"
       "build: VdaggerV is build for all operators but not written to disk\n"
       "write: VdaggerV is build for all operators and written to disk\n"
       "read: VdaggerV was previously constructed and is read from disk");
   config.add_options()("path_vdaggerv",
-                       po::value<std::string>(&path_vdaggerv)->default_value(""),
+                       po::value<std::string>(&gd.path_vdaggerv)->default_value(""),
                        "Path of vdaggerv");
 
   // quark options
@@ -153,17 +145,16 @@ void GlobalData::read_parameters(int ac, char *av[]) {
 
   // configuration options
   config.add_options()("start_config",
-                       po::value<int>(&start_config)->default_value(-1),
+                       po::value<int>(&gd.start_config)->default_value(-1),
                        "First configuration");
-
   config.add_options()(
-      "end_config", po::value<int>(&end_config)->default_value(0), "Last configuration");
+      "end_config", po::value<int>(&gd.end_config)->default_value(0), "Last configuration");
   config.add_options()("delta_config",
-                       po::value<int>(&delta_config)->default_value(0),
+                       po::value<int>(&gd.delta_config)->default_value(0),
                        "Stepsize between two configurations");
 
   config.add_options()("momentum_cutoff_0",
-                       po::value<int>(&momentum_cutoff_0)->default_value(4),
+                       po::value<int>(&gd.momentum_cutoff[0])->default_value(4),
                        "Cutoff for |p₁|² + |p₂|² when |P|² = 0");
 
   //////////////////////////////////////////////////////////////////////////////
@@ -190,9 +181,9 @@ void GlobalData::read_parameters(int ac, char *av[]) {
     exit(0);
   }
   if (vm.count("verbose")) {
-    verbose = 1;
+    gd.verbose = 1;
   } else
-    verbose = 0;
+    gd.verbose = 0;
   if (vm.count("version")) {
     std::cout << "Contraction code for LapHs perambulators. Version 0.1. \n";
     exit(0);
@@ -223,27 +214,27 @@ void GlobalData::read_parameters(int ac, char *av[]) {
 
   // checks, terminal output and munging of strings for quarks, operators and
   // correlators
-  input_handling(quark_configs, operator_list_configs, correlator_list_configs);
+  input_handling(gd, quark_configs, operator_list_configs, correlator_list_configs);
 
   // setting the lookup tables for all needed quantum numbers to calculate
   // the wanted correlators
-  init_lookup_tables();
+  init_lookup_tables(gd);
 
   // setting the sizes and numbers of random vectors and perambulators
   /*! @todo: setting the sizes and numbers of rnd_vecs and perams should be
    *          put in a separate function
    */
-  rnd_vec_construct.nb_entities = 0;
-  for (const auto &q : quarks)
-    rnd_vec_construct.nb_entities += q.number_of_rnd_vec;
-  rnd_vec_construct.length = Lt * 4 * number_of_eigen_vec;
-  peram_construct.nb_entities = rnd_vec_construct.nb_entities;
-  for (const auto &q : quarks) {
+  gd.rnd_vec_construct.nb_entities = 0;
+  for (const auto &q : gd.quarks)
+    gd.rnd_vec_construct.nb_entities += q.number_of_rnd_vec;
+  gd.rnd_vec_construct.length = gd.Lt * 4 * gd.number_of_eigen_vec;
+  gd.peram_construct.nb_entities = gd.rnd_vec_construct.nb_entities;
+  for (const auto &q : gd.quarks) {
     for (ssize_t r = 0; r < q.number_of_rnd_vec; r++) {
-      peram_construct.size_rows.push_back(rnd_vec_construct.length);
-      peram_construct.size_cols.push_back((Lt / q.number_of_dilution_T) *
-                                          q.number_of_dilution_E *
-                                          q.number_of_dilution_D);
+      gd.peram_construct.size_rows.push_back(gd.rnd_vec_construct.length);
+      gd.peram_construct.size_cols.push_back((gd.Lt / q.number_of_dilution_T) *
+                                             q.number_of_dilution_E *
+                                             q.number_of_dilution_D);
     }
   }
 
@@ -251,16 +242,16 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   std::cout << "Memory consumption:" << std::endl;
 
   std::cout << "\tOperatorFactory:\t" << std::fixed << std::setprecision(2) << 
-    operator_lookuptable.size() * Lt * number_of_eigen_vec * number_of_eigen_vec * 
+    gd.operator_lookuptable.size() * gd.Lt * gd.number_of_eigen_vec * gd.number_of_eigen_vec * 
     sizeof(Complex) / std::pow(2, 30) << " Gb" << std::endl;
 
   std::cout << "\tRandomVector:\t" << std::fixed << std::setprecision(2) << 
-    rnd_vec_construct.nb_entities * rnd_vec_construct.length * 
+    gd.rnd_vec_construct.nb_entities * gd.rnd_vec_construct.length * 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   int peram_matrix_size_sum = 0;
-  for(auto i = 0; i < ssize(peram_construct.size_rows); ++i){
-    peram_matrix_size_sum += peram_construct.size_rows[i] * peram_construct.size_cols[i];
+  for(auto i = 0; i < ssize(gd.peram_construct.size_rows); ++i){
+    peram_matrix_size_sum += gd.peram_construct.size_rows[i] * gd.peram_construct.size_cols[i];
   }
   std::cout << "\tPerambulator:\t" << std::fixed << std::setprecision(2) << 
     peram_matrix_size_sum * 
@@ -269,60 +260,60 @@ void GlobalData::read_parameters(int ac, char *av[]) {
   std::cout << "\tDiagramParts:" << std::endl;
 
   int total_number_of_random_combinations_in_Q0 = 0;
-  for(auto const &q : quarkline_lookuptable.Q0){
+  for(auto const &q : gd.quarkline_lookuptable.Q0){
     total_number_of_random_combinations_in_Q0 += q.rnd_vec_ids.size();
   }
-  int Q0_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  int Q0_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
   std::cout << "\t\tQ0:\t" << std::fixed << std::setprecision(2) << 
-    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
     total_number_of_random_combinations_in_Q0 * Q0_matrix_size* 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q1 = 0;
-  for(auto const &q : quarkline_lookuptable.Q1){
+  for(auto const &q : gd.quarkline_lookuptable.Q1){
     total_number_of_random_combinations_in_Q1 += q.rnd_vec_ids.size();
   }
-  int Q1_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  int Q1_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
   std::cout << "\t\tQ1:\t" << std::fixed << std::setprecision(2) << 
-    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
     total_number_of_random_combinations_in_Q1 * Q1_matrix_size* 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q2L = 0;
-  for(auto const &q : quarkline_lookuptable.Q2L){
+  for(auto const &q : gd.quarkline_lookuptable.Q2L){
     total_number_of_random_combinations_in_Q2L += q.rnd_vec_ids.size();
   }
-  int Q2L_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  int Q2L_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
   std::cout << "\t\tQ2L:\t" << std::fixed << std::setprecision(2) << 
-    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
     total_number_of_random_combinations_in_Q2L * Q2L_matrix_size* 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_Q2V = 0;
-  for(auto const &q : quarkline_lookuptable.Q2V){
+  for(auto const &q : gd.quarkline_lookuptable.Q2V){
     total_number_of_random_combinations_in_Q2V += q.rnd_vec_ids.size();
   }
-  int Q2V_matrix_size = quarks[0].number_of_dilution_D * quarks[0].number_of_dilution_E;
+  int Q2V_matrix_size = gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
   std::cout << "\t\tQ2V:\t" << std::fixed << std::setprecision(2) << 
-    Lt/quarks[0].number_of_dilution_T * (Lt/quarks[0].number_of_dilution_T-1) / 2 *
+    gd.Lt/gd.quarks[0].number_of_dilution_T * (gd.Lt/gd.quarks[0].number_of_dilution_T-1) / 2 *
     total_number_of_random_combinations_in_Q2V * Q2V_matrix_size* 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
   
-  int total_number_of_random_combinations_in_trQ1Q1 = number_of_rnd_vec * (number_of_rnd_vec - 1);
+  int total_number_of_random_combinations_in_trQ1Q1 = gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
   std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2) << 
-    correlator_lookuptable.trQ1Q1.size() * Lt * Lt * 
+    gd.correlator_lookuptable.trQ1Q1.size() * gd.Lt * gd.Lt * 
     total_number_of_random_combinations_in_trQ1Q1 * 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ0Q2 = number_of_rnd_vec * (number_of_rnd_vec - 1);
+  int total_number_of_random_combinations_in_trQ0Q2 = gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2) << 
-    correlator_lookuptable.trQ0Q2.size() * Lt * Lt * 
+    gd.correlator_lookuptable.trQ0Q2.size() * gd.Lt * gd.Lt * 
     total_number_of_random_combinations_in_trQ0Q2 * 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ1 = number_of_rnd_vec;
+  int total_number_of_random_combinations_in_trQ1 = gd.number_of_rnd_vec;
   std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2) << 
-    correlator_lookuptable.trQ1.size() * Lt * 
+    gd.correlator_lookuptable.trQ1.size() * gd.Lt * 
     total_number_of_random_combinations_in_trQ1 * 
     sizeof(Complex) / std::pow(2,30) << " Gb" << std::endl;
 

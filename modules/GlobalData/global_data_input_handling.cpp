@@ -255,20 +255,21 @@ void correlator_input_data_handling(const std::vector<std::string> &correlator_s
  *  @todo Split that into multiple functions for checks, output and munging
  *        to improve readability
  */
-void GlobalData::input_handling(const std::vector<std::string> &quark_configs,
-                                const std::vector<std::string> &operator_list_configs,
-                                const std::vector<std::string> &correlator_list_configs) {
+void input_handling(GlobalData &gd,
+                    const std::vector<std::string> &quark_configs,
+                    const std::vector<std::string> &operator_list_configs,
+                    const std::vector<std::string> &correlator_list_configs) {
   // Checks and terminal output for lattice, config and paths
-  lattice_input_data_handling(path_output, name_lattice, path_config, Lt, Lx, Ly, Lz);
-  config_input_data_handling(start_config, end_config, delta_config);
-  eigenvec_perambulator_input_data_handling(number_of_eigen_vec,
-                                            path_eigenvectors,
-                                            name_eigenvectors,
-                                            path_perambulators,
-                                            name_perambulators);
+  lattice_input_data_handling(gd.path_output, gd.name_lattice, gd.path_config, gd.Lt, gd.Lx, gd.Ly, gd.Lz);
+  config_input_data_handling(gd.start_config, gd.end_config, gd.delta_config);
+  eigenvec_perambulator_input_data_handling(gd.number_of_eigen_vec,
+                                            gd.path_eigenvectors,
+                                            gd.name_eigenvectors,
+                                            gd.path_perambulators,
+                                            gd.name_perambulators);
 
   // Munging of quarks, operators und correlators
-  quark_input_data_handling(quark_configs, quarks);
-  operator_input_data_handling(operator_list_configs, operator_list);
-  correlator_input_data_handling(correlator_list_configs, correlator_list);
+  quark_input_data_handling(quark_configs, gd.quarks);
+  operator_input_data_handling(operator_list_configs, gd.operator_list);
+  correlator_input_data_handling(correlator_list_configs, gd.correlator_list);
 }

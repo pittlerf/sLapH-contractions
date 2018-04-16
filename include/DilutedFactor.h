@@ -368,9 +368,10 @@ UpTo get_max_used(DilutedTrace<rvecs> const &df, UpTo const &rnd_offset) {
 }
 
 template <size_t rvecs>
-std::map<UpTo, Complex> sub_accumulate(std::vector<DilutedTrace<rvecs>> const &traces) {
+std::map<UpTo, Complex> sub_accumulate(GlobalData const &gd,
+                                       std::vector<DilutedTrace<rvecs>> const &traces) {
   // Extract the number of random vectors per quark flavor.
-  auto const &quarks = GlobalData::Instance()->get_quarks();
+  auto const &quarks = gd.quarks;
   UpTo rnd_count;
   std::transform(std::begin(quarks),
                  std::end(quarks),
