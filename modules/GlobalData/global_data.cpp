@@ -102,6 +102,16 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                        po::value<int>(&gd.Lz)->default_value(0),
                        "Lz: lattice extend in z direction");
 
+  config.add_options()("alpha1",
+                       po::value<double>(&gd.hyp_parameters.alpha1)->default_value(0),
+                       "alpha1: Inner level strength of Hyp-smearing");
+  config.add_options()("alpha2",
+                       po::value<double>(&gd.hyp_parameters.alpha2)->default_value(0),
+                       "alpha2: Outer level strength of Hyp-smearing");
+  config.add_options()("iterations",
+                       po::value<ssize_t>(&gd.hyp_parameters.iterations)->default_value(0),
+                       "iterations: Number of Hyp-smearing applications");
+
   // eigenvector options
   config.add_options()("number_of_eigen_vec",
                        po::value<int>(&gd.number_of_eigen_vec)->default_value(0),

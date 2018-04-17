@@ -67,7 +67,8 @@ int main(int ac, char *av[]) {
                                   gd.operator_lookuptable,
                                   gd.handling_vdaggerv,
                                   gd.path_vdaggerv,
-                                  gd.path_config);
+                                  gd.path_config,
+                                  gd.hyp_parameters);
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------

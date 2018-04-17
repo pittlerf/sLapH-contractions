@@ -65,6 +65,8 @@ struct GlobalData {
   DiagramIndicesCollection correlator_lookuptable;
 
   std::map<int, int> momentum_cutoff;
+
+  HypPars hyp_parameters;
 };
 
 /*! Reading the input parameters from the infile in the main routine and
@@ -76,6 +78,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]);
  *  file names to read the data
  */
 void build_IO_names(GlobalData &gd, const ssize_t config);
+  
 
 void input_handling(GlobalData &gd,
                     const std::vector<std::string> &quark_configs,

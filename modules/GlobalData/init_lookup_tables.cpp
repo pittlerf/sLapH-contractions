@@ -381,7 +381,7 @@ static void build_correlator_names(
       filename += qt;
     for (const auto &qn : qn_row) {  // adding quantum numbers
       filename += std::string("_p") + to_string(qn.momentum);
-      filename += std::string(".d") + vector_to_string(qn.displacement);
+      filename += std::string(".d") + to_string(qn.displacement);
       filename += std::string(".g") + to_string(qn.gamma);
     }
     hdf5_dataset_name.emplace_back(filename);
@@ -399,7 +399,7 @@ static std::string const build_hdf5_dataset_name(
     filename += qt;
   for (const auto &op : qn) {  // adding quantum numbers
     filename += std::string("_p") + to_string(op.momentum);
-    filename += std::string(".d") + vector_to_string(op.displacement);
+    filename += std::string(".d") + to_string(op.displacement);
     filename += std::string(".g") + to_string(op.gamma);
   }
   return filename;
