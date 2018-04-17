@@ -18,7 +18,7 @@ var searchData=
   ['operator_5flist',['operator_list',['../struct_global_data.html#a607b6302cff003af341750bb8121b0e6',1,'GlobalData::operator_list()'],['../global__data__typedefs_8h.html#a9ae4c7631935c325a96ea3d507d1e10c',1,'Operator_list():&#160;global_data_typedefs.h']]],
   ['operator_5flookuptable',['operator_lookuptable',['../struct_global_data.html#a71d8bb7d17965e73be34a49dde9bb219',1,'GlobalData::operator_lookuptable()'],['../class_operator_factory.html#a771d3ef10b0b523d78cb2c83db2df4da',1,'OperatorFactory::operator_lookuptable()']]],
   ['operator_5fnumbers',['operator_numbers',['../struct_correlators__2.html#aecd6fa3075daf25f62ab853f5e5571ce',1,'Correlators_2']]],
-  ['operatorfactory',['OperatorFactory',['../class_operator_factory.html',1,'OperatorFactory'],['../class_operator_factory.html#acc2a104d240940c5ea4319679beb8a75',1,'OperatorFactory::OperatorFactory()']]],
+  ['operatorfactory',['OperatorFactory',['../class_operator_factory.html',1,'OperatorFactory'],['../class_operator_factory.html#a4b4edd73d47d93c3f328a10eab4835ce',1,'OperatorFactory::OperatorFactory()']]],
   ['operatorlookup',['OperatorLookup',['../struct_operator_lookup.html',1,'']]],
   ['operators',['Operators',['../global__data__typedefs_8h.html#a88a7903c1520c127ed4d810ef2c9c17d',1,'global_data_typedefs.h']]],
   ['operatorsformesons_2ecpp',['OperatorsForMesons.cpp',['../_operators_for_mesons_8cpp.html',1,'']]],

@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['alpha1',['alpha1',['../struct_hyp_pars.html#ab0f83559dfbc0b8bbfd06bb4af6180aa',1,'HypPars']]],
+  ['alpha2',['alpha2',['../struct_hyp_pars.html#a07bdac8a7b69cc549ea6fe962a4c5545',1,'HypPars']]],
   ['array_5f3cd_5fd2_5feigen',['array_3cd_d2_eigen',['../_gauge_field_8h.html#a3d504151352c4fd9b14dfdbe4b9a9fb8',1,'GaugeField.h']]],
   ['array_5fc1',['array_C1',['../typedefs_8h.html#a83c164ba92c69f9451b7ad3454bd0b62',1,'typedefs.h']]],
   ['array_5fcd_5fd10',['array_cd_d10',['../typedefs_8h.html#ac6eb4feb0110651a3a714d25ebb7d4b5',1,'typedefs.h']]],

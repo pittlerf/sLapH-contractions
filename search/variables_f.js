@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['sink',['sink',['../struct_dilution_iterator_1_1_element.html#adf0b277e4816e337bcbaffde7db72882',1,'DilutionIterator::Element']]],
-  ['size_5fcols',['size_cols',['../struct_perambulator_construction.html#ad09416a2320343315512b0f8179a5723',1,'PerambulatorConstruction']]],
-  ['size_5frows',['size_rows',['../struct_perambulator_construction.html#aca28a11accb5c0468b7cd2aa5868767b',1,'PerambulatorConstruction']]],
-  ['slice_5fsink_5f',['slice_sink_',['../class_block_iterator.html#a5277f72a888528d9edf6c58bffdebdaa',1,'BlockIterator']]],
-  ['slice_5fsource_5f',['slice_source_',['../class_block_iterator.html#ac82c97b5f7df577c4cc47edf34f3dce4',1,'BlockIterator']]],
-  ['source',['source',['../struct_dilution_iterator_1_1_element.html#a8cb04e5e8abeb1addf2b6251629ca4b4',1,'DilutionIterator::Element']]],
-  ['starts_5f',['starts_',['../class_stop_watch.html#a3a75e6d208d4adb9a14b84cb63e612e1',1,'StopWatch']]]
+  ['re',['re',['../structcomplex__t.html#aec1e67233fb6806c75b83af9bb83ff77',1,'complex_t::re()'],['../struct_complex1_times.html#a30478238d3ab03b2d54d3f5e10c67fd0',1,'Complex1Times::re()']]],
+  ['reim',['reim',['../struct_complex_product.html#a06c0d9f2f4f1caf2fc4e07cec9cf1af3',1,'ComplexProduct']]],
+  ['rere',['rere',['../struct_complex_product.html#a0860dfec28fbfab0166f44db6ace1034',1,'ComplexProduct']]],
+  ['ric',['ric',['../struct_diluted_factor.html#af24c2aed4e47e1d57329cfbcaeea461a',1,'DilutedFactor']]],
+  ['rnd_5fvec',['rnd_vec',['../class_diluted_factor_factory.html#aa6ad89503f6a34783ce581a38e4db136',1,'DilutedFactorFactory']]],
+  ['rnd_5fvec_5fconstruct',['rnd_vec_construct',['../struct_global_data.html#af7a85e7017a904fef6c0057cb1e153f4',1,'GlobalData']]],
+  ['rnd_5fvec_5fids',['rnd_vec_ids',['../struct_diluted_factor_index.html#a663fbf4028798d5e38973d5aa3672fdd',1,'DilutedFactorIndex']]],
+  ['row',['row',['../structgamma__lookup.html#afc24093dcfb5aef4b2f3a7341049afc2',1,'gamma_lookup']]]
 ];
