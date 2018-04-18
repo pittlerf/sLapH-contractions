@@ -1,0 +1,546 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     16278,        537]
+NotebookOptionsPosition[     13827,        445]
+NotebookOutlinePosition[     14164,        460]
+CellTagsIndexPosition[     14121,        457]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Theoretical Performance", "Title",
+ CellChangeTimes->{{3.732959008845664*^9, 3.732959013191478*^9}}],
+
+Cell[TextData[{
+ "In this document we compute and list the number of operations needed in the \
+contraction code. Since we need to have lowercase variables here in ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ ", we need to use a bit unusal symbols here.\n\nAdditions and \
+multiplications are currently just counted as flops and not distinguished \
+further.\n\nSizes are in terms of complex double."
+}], "Text",
+ CellChangeTimes->{{3.732959015698566*^9, 3.732959062134091*^9}, {
+  3.73295909512453*^9, 3.7329590986476192`*^9}, {3.732959139179984*^9, 
+  3.7329591514395113`*^9}, {3.7329643356131763`*^9, 3.732964371597692*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["General remarks", "Section",
+ CellChangeTimes->{{3.732960683248528*^9, 3.732960690464231*^9}}],
+
+Cell["\<\
+A matrix multiplication of sizes a and b with b and c needs the following \
+flops:\
+\>", "Text",
+ CellChangeTimes->{{3.732960701964119*^9, 3.73296072117445*^9}, {
+  3.732960751966267*^9, 3.732960756731388*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"matrixFlops", "[", 
+   RowBox[{"a_", ",", "b_", ",", "c_"}], "]"}], ":=", 
+  RowBox[{"a", " ", "c", 
+   RowBox[{"(", 
+    RowBox[{"b", "+", 
+     RowBox[{"(", 
+      RowBox[{"b", "-", "1"}], ")"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.732960723070537*^9, 3.7329607478723917`*^9}, {
+  3.732960948604341*^9, 3.73296097378267*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Variables", "Section",
+ CellChangeTimes->{{3.732960697054748*^9, 3.732960698120988*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"v", "=", 
+   RowBox[{"lx", " ", "ly", " ", "lz"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.732959155209642*^9, 3.7329591603332233`*^9}}],
+
+Cell[TextData[{
+ "First we need to write down the dimensions of the objects.\n\nV(lt, nd): ne \
+\[RightArrow] lx, ly, lz, nc\n",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["\[Rho]", "b"], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ "(bt, bd): be\nP(): bt, bd, be \[RightArrow] lt, nd, ne"
+}], "Text",
+ CellChangeTimes->{{3.7329596192022057`*^9, 3.7329597174661407`*^9}, {
+  3.732959786588079*^9, 3.732959804678897*^9}, {3.7329598363189497`*^9, 
+  3.7329598576040773`*^9}, {3.732959889160315*^9, 3.732959900106328*^9}, {
+  3.732959940774724*^9, 3.73296003547757*^9}, {3.732960083500216*^9, 
+  3.7329600896160593`*^9}, {3.732960138770178*^9, 3.732960143240507*^9}, {
+  3.732960219001343*^9, 3.732960231338315*^9}, {3.732960480525536*^9, 
+  3.732960487976831*^9}, {3.7329617290298634`*^9, 3.732961747491055*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Vdagger V", "Section",
+ CellChangeTimes->{{3.732960546747203*^9, 3.7329605764973307`*^9}}],
+
+Cell["\<\
+Easiest thing: Vdagger V without a kernel (no displacement, no momenta). \
+Computational cost of the inner multiplication:\
+\>", "Text",
+ CellChangeTimes->{{3.732960584002083*^9, 3.732960644106657*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"costVdaggerV", "=", 
+  RowBox[{"lt", " ", "nd", " ", 
+   RowBox[{"matrixFlops", "[", 
+    RowBox[{"ne", ",", 
+     RowBox[{"v", " ", "nc"}], ",", "ne"}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.732960651098505*^9, 3.732960653087851*^9}, {
+  3.732960997526105*^9, 3.732961026135564*^9}, {3.732961136056362*^9, 
+  3.732961140487825*^9}}],
+
+Cell[BoxData[
+ RowBox[{"lt", " ", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"-", "1"}], "+", 
+    RowBox[{"2", " ", "lx", " ", "ly", " ", "lz", " ", "nc"}]}], ")"}], " ", 
+  "nd", " ", 
+  SuperscriptBox["ne", "2"]}]], "Output",
+ CellChangeTimes->{3.732961027304603*^9, 3.7329612092968903`*^9}]
+}, Open  ]],
+
+Cell["The size of a V is", "Text",
+ CellChangeTimes->{{3.732961111306842*^9, 3.732961116324441*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sizeV", "=", 
+  RowBox[{"lt", " ", "nd", " ", "ne", " ", "v", " ", "nc"}]}]], "Input",
+ CellChangeTimes->{{3.732961120622381*^9, 3.732961149942545*^9}}],
+
+Cell[BoxData[
+ RowBox[{"lt", " ", "lx", " ", "ly", " ", "lz", " ", "nc", " ", "nd", " ", 
+  "ne"}]], "Output",
+ CellChangeTimes->{3.732961127208681*^9, 3.732961201109892*^9}]
+}, Open  ]],
+
+Cell["The VdaggerV is then smaller:", "Text",
+ CellChangeTimes->{{3.732961155622583*^9, 3.732961167707348*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sizeVdaggerV", "=", 
+  RowBox[{"lt", " ", "nd", " ", 
+   RowBox[{"ne", "^", "2"}]}]}]], "Input",
+ CellChangeTimes->{{3.732961172726384*^9, 3.7329611958437347`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"lt", " ", "nd", " ", 
+  SuperscriptBox["ne", "2"]}]], "Output",
+ CellChangeTimes->{3.732961196853104*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Quark line objects", "Section",
+ CellChangeTimes->{{3.732959255951488*^9, 3.732959258961007*^9}, {
+  3.7329661314546022`*^9, 3.7329661335050077`*^9}}],
+
+Cell[TextData[{
+ "The quark line objects are the smallest ones that have only diluted indices \
+on the outside. This makes them rather small on memory. They use the already \
+computed ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["V", "\[Dagger]"], "V"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " objects."
+}], "Text",
+ CellChangeTimes->{{3.7329592642304907`*^9, 3.7329592890889797`*^9}, 
+   3.732966145855489*^9, {3.7329663376648483`*^9, 3.732966369320525*^9}, {
+   3.732966404741469*^9, 3.732966434481853*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Q0", "Subsection",
+ CellChangeTimes->{{3.73296608008875*^9, 3.732966087130085*^9}}],
+
+Cell[TextData[{
+ "The Q0 is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["\[Rho]", "\[Dagger]"], 
+    SuperscriptBox["V", "\[Dagger]"], "V\[Rho]"}], TraditionalForm]]],
+ ". There is one matrix-vector multiplication and and then a vector-vector \
+multiplication."
+}], "Text",
+ CellChangeTimes->{{3.732966090082777*^9, 3.732966120759789*^9}, {
+  3.7329664463046083`*^9, 3.732966481682189*^9}, {3.73296657015512*^9, 
+  3.732966572298868*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"costQ0", "=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"nr1", "+", "nr2"}], ")"}], 
+   RowBox[{"(", 
+    RowBox[{"nr1", "-", "1", "+", "nr2", "-", "1"}], ")"}], 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"ne", " ", "nd", " ", 
+      RowBox[{"(", 
+       RowBox[{"2", "ne"}], ")"}]}], "+", 
+     RowBox[{"be", " ", "bd", " ", 
+      RowBox[{"matrixFlops", "[", 
+       RowBox[{"1", ",", "be", ",", "1"}], "]"}]}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.732966573775584*^9, 3.732966599489428*^9}, {
+  3.732966645965888*^9, 3.7329666720588627`*^9}, {3.73296673196165*^9, 
+  3.732966748506321*^9}, {3.7329668083446302`*^9, 3.7329668402721567`*^9}, {
+  3.73296689675662*^9, 3.732966898940295*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"bd", " ", "be", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"2", " ", "be"}]}], ")"}]}], "+", 
+    RowBox[{"2", " ", "nd", " ", 
+     SuperscriptBox["ne", "2"]}]}], ")"}], " ", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"-", "2"}], "+", "nr1", "+", "nr2"}], ")"}], " ", 
+  RowBox[{"(", 
+   RowBox[{"nr1", "+", "nr2"}], ")"}]}]], "Output",
+ CellChangeTimes->{3.7329668418398943`*^9, 3.7329669026448793`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sizeQ0", "=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"nr1", "+", "nr2"}], ")"}], 
+   RowBox[{"(", 
+    RowBox[{"nr1", "-", "1", "+", "nr2", "-", "1"}], ")"}], "be", " ", "bd", 
+   " "}]}]], "Input",
+ CellChangeTimes->{{3.732966849695568*^9, 3.732966875351338*^9}}],
+
+Cell[BoxData[
+ RowBox[{"bd", " ", "be", " ", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"-", "2"}], "+", "nr1", "+", "nr2"}], ")"}], " ", 
+  RowBox[{"(", 
+   RowBox[{"nr1", "+", "nr2"}], ")"}]}]], "Output",
+ CellChangeTimes->{3.732966865116185*^9, 3.7329669044766903`*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Q1", "Subsection",
+ CellChangeTimes->{{3.732965916002925*^9, 3.732965926663581*^9}}],
+
+Cell[TextData[{
+ "The Q1 is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["\[Rho]", "\[Dagger]"], 
+    SuperscriptBox["V", "\[Dagger]"], "VP"}], TraditionalForm]]],
+ ". The product of the random vector is done first."
+}], "Text",
+ CellChangeTimes->{{3.73296592966632*^9, 3.732965957705398*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"costQ1", "=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"nr1", "+", "nr2"}], ")"}], " ", "lt", " ", "bt", 
+   RowBox[{"(", " ", 
+    RowBox[{
+     RowBox[{"ne", " ", "nd", " ", 
+      RowBox[{"(", 
+       RowBox[{"2", "ne"}], ")"}]}], " ", "+", 
+     RowBox[{"matrixFlops", "[", 
+      RowBox[{
+       RowBox[{"bd", " ", "be"}], ",", 
+       RowBox[{"nd", " ", "ne"}], ",", 
+       RowBox[{"bd", " ", "be"}]}], "]"}]}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.732965959566647*^9, 3.73296596991993*^9}, 
+   3.732966023021398*^9}],
+
+Cell[BoxData[
+ RowBox[{"bt", " ", "lt", " ", 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"2", " ", "nd", " ", 
+     SuperscriptBox["ne", "2"]}], "+", 
+    RowBox[{
+     SuperscriptBox["bd", "2"], " ", 
+     SuperscriptBox["be", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"2", " ", "nd", " ", "ne"}]}], ")"}]}]}], ")"}], " ", 
+  RowBox[{"(", 
+   RowBox[{"nr1", "+", "nr2"}], ")"}]}]], "Output",
+ CellChangeTimes->{3.73296604531411*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sizeQ1", "=", 
+  RowBox[{"lt", " ", "bt", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"bd", " ", "be"}], ")"}], "^", "2"}]}]}]], "Input",
+ CellChangeTimes->{{3.7329660494707603`*^9, 3.732966065922812*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox["bd", "2"], " ", 
+  SuperscriptBox["be", "2"], " ", "bt", " ", "lt"}]], "Output",
+ CellChangeTimes->{3.732966067266173*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Trace objects", "Section",
+ CellChangeTimes->{{3.732966137608161*^9, 3.732966139373831*^9}}],
+
+Cell["\<\
+There are several trace objects which are pre-computed. These are the TrQ1, \
+TrQ0Q2 and TrQ1Q1 objects. These are computed from the existing Q0, Q1 and Q2 \
+objects and therefore are not very expensive.\
+\>", "Text",
+ CellChangeTimes->{{3.73296615197509*^9, 3.7329661765025177`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["TrQ1", "Subsection",
+ CellChangeTimes->{{3.7329595921921263`*^9, 3.732959595749103*^9}}],
+
+Cell[TextData[{
+ "The TrQ1 is given as ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"tr", "(", 
+    RowBox[{
+     SuperscriptBox["\[Rho]", "\[Dagger]"], 
+     SuperscriptBox["V", "\[Dagger]"], "VP"}], ")"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ". "
+}], "Text",
+ CellChangeTimes->{{3.7329612465864964`*^9, 3.732961280320073*^9}, {
+   3.732961338463977*^9, 3.732961391222107*^9}, {3.73296155760893*^9, 
+   3.7329615692095222`*^9}, 3.732965946230789*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"costTrQ1", "=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"nr1", "+", "nr2"}], ")"}], " ", "lt", " ", "bt", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"bd", " ", "be"}], "-", "1"}], ")"}]}]}]], "Input",
+ CellChangeTimes->{{3.732961574760203*^9, 3.7329616097659407`*^9}, {
+   3.732961641382601*^9, 3.732961658183839*^9}, {3.732962241547977*^9, 
+   3.732962254054391*^9}, {3.7329623220219727`*^9, 3.7329623451177473`*^9}, {
+   3.732962390389793*^9, 3.732962546536148*^9}, {3.732962592375597*^9, 
+   3.732962661190529*^9}, {3.73296272199748*^9, 3.73296275783501*^9}, {
+   3.732962840575102*^9, 3.7329628595747643`*^9}, {3.73296294040596*^9, 
+   3.7329629503551064`*^9}, 3.732963164214662*^9, {3.73296320061681*^9, 
+   3.732963207251861*^9}, {3.7329634236008987`*^9, 3.732963431913886*^9}, {
+   3.732966027108117*^9, 3.7329660280557537`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{"-", "1"}], "+", 
+    RowBox[{"bd", " ", "be"}]}], ")"}], " ", "bt", " ", "lt", " ", 
+  RowBox[{"(", 
+   RowBox[{"nr1", "+", "nr2"}], ")"}]}]], "Output",
+ CellChangeTimes->{{3.732962628539288*^9, 3.732962663458281*^9}, 
+   3.7329629568344812`*^9, 3.732963247623084*^9, 3.732963442145906*^9, 
+   3.732966033356833*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sizeTrQ1", "=", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"nr1", "+", "nr2"}], ")"}], "lt", " ", "bt"}]}]], "Input",
+ CellChangeTimes->{{3.7329643150406446`*^9, 3.7329643204046183`*^9}, {
+  3.732964421040812*^9, 3.7329644426494827`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"bt", " ", "lt", " ", 
+  RowBox[{"(", 
+   RowBox[{"nr1", "+", "nr2"}], ")"}]}]], "Output",
+ CellChangeTimes->{3.732964448094226*^9, 3.732966035009956*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["TrQ1Q1", "Section",
+ CellChangeTimes->{{3.732964513889764*^9, 3.7329645261476307`*^9}, {
+  3.732964912229474*^9, 3.732964913653216*^9}}],
+
+Cell[TextData[{
+ "TrQ1Q1 is defined as ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"tr", "(", 
+    RowBox[{
+     SuperscriptBox["\[Rho]", "\[Dagger]"], 
+     SuperscriptBox["V", "\[Dagger]"], "VP", 
+     SuperscriptBox["\[Rho]", "\[Dagger]"], 
+     SuperscriptBox["V", "\[Dagger]"], "VP"}], ")"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ". It seems to be that "
+}], "Text",
+ CellChangeTimes->{{3.732964934859201*^9, 3.732965000687306*^9}, {
+  3.732965881744966*^9, 3.732965888487255*^9}}]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{956, 1025},
+WindowMargins->{{960, Automatic}, {Automatic, 0}},
+FrontEndVersion->"10.3 for Linux x86 (64-bit) (October 9, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 106, 1, 93, "Title"],
+Cell[689, 25, 634, 11, 131, "Text"],
+Cell[CellGroupData[{
+Cell[1348, 40, 100, 1, 65, "Section"],
+Cell[1451, 43, 220, 5, 31, "Text"],
+Cell[1674, 50, 371, 10, 32, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2082, 65, 94, 1, 65, "Section"],
+Cell[2179, 68, 172, 4, 32, "Input"],
+Cell[2354, 74, 820, 15, 114, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3211, 94, 96, 1, 65, "Section"],
+Cell[3310, 97, 212, 4, 51, "Text"],
+Cell[CellGroupData[{
+Cell[3547, 105, 362, 8, 32, "Input"],
+Cell[3912, 115, 292, 8, 34, "Output"]
+}, Open  ]],
+Cell[4219, 126, 100, 1, 31, "Text"],
+Cell[CellGroupData[{
+Cell[4344, 131, 176, 3, 32, "Input"],
+Cell[4523, 136, 174, 3, 32, "Output"]
+}, Open  ]],
+Cell[4712, 142, 111, 1, 31, "Text"],
+Cell[CellGroupData[{
+Cell[4848, 147, 188, 4, 32, "Input"],
+Cell[5039, 153, 129, 3, 34, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[5217, 162, 156, 2, 65, "Section"],
+Cell[5376, 166, 541, 13, 54, "Text"],
+Cell[CellGroupData[{
+Cell[5942, 183, 89, 1, 44, "Subsection"],
+Cell[6034, 186, 454, 12, 54, "Text"],
+Cell[CellGroupData[{
+Cell[6513, 202, 723, 18, 32, "Input"],
+Cell[7239, 222, 513, 16, 37, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7789, 243, 290, 8, 32, "Input"],
+Cell[8082, 253, 270, 7, 32, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8401, 266, 90, 1, 44, "Subsection"],
+Cell[8494, 269, 308, 9, 34, "Text"],
+Cell[CellGroupData[{
+Cell[8827, 282, 554, 16, 32, "Input"],
+Cell[9384, 300, 482, 15, 37, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9903, 320, 234, 6, 32, "Input"],
+Cell[10140, 328, 164, 4, 34, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10365, 339, 98, 1, 65, "Section"],
+Cell[10466, 342, 294, 5, 71, "Text"],
+Cell[CellGroupData[{
+Cell[10785, 351, 94, 1, 44, "Subsection"],
+Cell[10882, 354, 464, 13, 38, "Text"],
+Cell[CellGroupData[{
+Cell[11371, 371, 862, 16, 32, "Input"],
+Cell[12236, 389, 381, 10, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12654, 404, 260, 6, 32, "Input"],
+Cell[12917, 412, 177, 4, 32, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13155, 423, 142, 2, 65, "Section"],
+Cell[13300, 427, 499, 14, 38, "Text"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
