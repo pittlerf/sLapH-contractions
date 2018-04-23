@@ -288,13 +288,15 @@ void OperatorFactory::read_vdaggerv(const int config) {
               }
             }
             if (!file.good()) {
-              std::cout << "Problems while reading from " << infile << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile;
+              std::runtime_error(oss.str());
             }
             file.close();
           } else {
-            std::cout << "can't open " << infile << std::endl;
-            exit(0);
+            std::ostringstream oss;
+            oss << "Can't open " << infile;
+            std::runtime_error(oss.str());
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
@@ -362,8 +364,9 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
             }
             vdaggerv[op.id][t].adjointInPlace();
             if (!file1.good()) {
-              std::cout << "Problems while reading from " << infile1 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile1;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file1.close();
@@ -384,14 +387,16 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
 //            // (master branch)
 //            vdaggerv[op.id][t].adjointInPlace();
             if (!file2.good()) {
-              std::cout << "Problems while reading from " << infile2 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile2;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file2.close();
         } else {
-          std::cout << "can't open " << infile1 << " NOR " << infile2 << std::endl;
-          exit(0);
+          std::ostringstream oss;
+          oss << "can't open " << infile1 << " NOR " << infile2;
+          std::runtime_error(oss.str());
         }
       } else  // zero momentum
         for (ssize_t t = 0; t < Lt; ++t)
@@ -430,9 +435,7 @@ void OperatorFactory::create_operators(const std::string &filename,
   else if (handling_vdaggerv == "liuming")
     read_vdaggerv_liuming(config);
   else {
-    std::cout << "\n\tThe flag handling_vdaggerv in input file is wrong!!\n\n"
-              << std::endl;
-    exit(0);
+    throw std::runtime_error("The flag handling_vdaggerv in input file is wrong!");
   }
 }
 

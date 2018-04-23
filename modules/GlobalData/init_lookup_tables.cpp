@@ -1897,8 +1897,9 @@ void init_lookup_tables(GlobalData &gd) {
                         gd.quarkline_lookuptable.Q1,
                         gd.correlator_lookuptable.C40B);
     } else {
-      std::cout << "Correlator type " << correlator.type << " not known!" << std::endl;
-      exit(0);
+      std::ostringstream oss;
+      oss << "Correlator type " << correlator.type << " not known!" << std::endl;
+      throw std::runtime_error(oss.str());
     }
   }
 

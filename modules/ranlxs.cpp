@@ -111,7 +111,7 @@ static void error(int no) {
       break;
   }
   printf("Program aborted\n");
-  exit(0);
+  exit(1);
 }
 
 static void update(void) {
@@ -398,7 +398,7 @@ static void error(int no) {
       break;
   }
   printf("Program aborted\n");
-  exit(0);
+  exit(1);
 }
 
 static void update(void) {

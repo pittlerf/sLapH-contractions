@@ -3,6 +3,8 @@
 
 #include "global_data.h"
 
+#include "git.h"
+
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
@@ -198,7 +200,10 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   } else
     gd.verbose = 0;
   if (vm.count("version")) {
-    std::cout << "Contraction code for LapHs perambulators. Version 0.1. \n";
+    std::cout << "Contraction code for LapHs perambulators.\n"
+              << "Git SHA-1: " << git_sha1 << "\n"
+              << "Git refspec: " << git_refspec << "\n"
+              << "Git status: " << git_changes << "\n";
     exit(0);
   }
 

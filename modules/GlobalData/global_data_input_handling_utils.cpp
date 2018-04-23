@@ -163,50 +163,37 @@ quark make_quark(const std::string &quark_string) {
 }
 
 void quark_check(quark quarks) {
-  try {
-    if (quarks.type != "u" && quarks.type != "d" && quarks.type != "s" &&
-        quarks.type != "c") {
-      std::cout << "quarks.quark.type must be u, d, s or c" << std::endl;
-      exit(0);
-    }
-    /*! @todo Check that the number of random vectors is greater than the
-     *  largest required diagram
-     */
-    else if (quarks.number_of_rnd_vec < 1) {
-      std::cout << "quarks.quark.number_of_rnd_vec must be greater than 0" << std::endl;
-      exit(0);
-    } else if (quarks.dilution_T != "TI" && quarks.dilution_T != "TB" &&
-               quarks.dilution_T != "TF") {
-      std::cout << "quarks.quark.dilution_T must be TI, TB, TF" << std::endl;
-      exit(0);
-    } else if (quarks.number_of_dilution_T < 1) {
-      std::cout << "quarks.quark.number_of_dilution_T must be greater than 0 "
-                   "and smaller than the temporal extend"
-                << std::endl;
-      exit(0);
-    } else if (quarks.dilution_E != "EI" && quarks.dilution_E != "EB" &&
-               quarks.dilution_E != "EF") {
-      std::cout << "quarks.quark.dilution_E must be EI, EB or EF" << std::endl;
-      exit(0);
-    } else if (quarks.number_of_dilution_E < 1) {
-      std::cout << "quarks.quark.number_of_dilution_E must be greater than 0 "
-                   "and smaller than number of eigen vectors"
-                << std::endl;
-      exit(0);
-    } else if (quarks.dilution_D != "DI" && quarks.dilution_D != "DB" &&
-               quarks.dilution_D != "DF") {
-      std::cout << "quarks.quark.dilution_D must be DI, DB or DF" << std::endl;
-      exit(0);
-    } else if (quarks.number_of_dilution_D < 1 || quarks.number_of_dilution_D > 4) {
-      std::cout << "quarks.quark.number_of_dilution_D must be greater than 0 "
-                   "and smaller than 5"
-                << std::endl;
-      exit(0);
-    } else
-      std::cout << quarks << std::endl;
-  } catch (std::exception &e) {
-    std::cout << e.what() << "\n";
-    exit(0);
+  if (quarks.type != "u" && quarks.type != "d" && quarks.type != "s" &&
+      quarks.type != "c") {
+    throw std::runtime_error("quarks.quark.type must be u, d, s or c");
+  }
+  /*! @todo Check that the number of random vectors is greater than the
+   *  largest required diagram
+   */
+  else if (quarks.number_of_rnd_vec < 1) {
+    throw std::runtime_error("quarks.quark.number_of_rnd_vec must be greater than 0");
+  } else if (quarks.dilution_T != "TI" && quarks.dilution_T != "TB" &&
+             quarks.dilution_T != "TF") {
+    throw std::runtime_error("quarks.quark.dilution_T must be TI, TB, TF");
+  } else if (quarks.number_of_dilution_T < 1) {
+    throw std::runtime_error(
+        "quarks.quark.number_of_dilution_T must be greater than 0 and smaller than the "
+        "temporal extent");
+  } else if (quarks.dilution_E != "EI" && quarks.dilution_E != "EB" &&
+             quarks.dilution_E != "EF") {
+    throw std::runtime_error("quarks.quark.dilution_E must be EI, EB or EF");
+  } else if (quarks.number_of_dilution_E < 1) {
+    throw std::runtime_error(
+        "quarks.quark.number_of_dilution_E must be greater than 0 and smaller than "
+        "number of eigen vectors");
+  } else if (quarks.dilution_D != "DI" && quarks.dilution_D != "DB" &&
+             quarks.dilution_D != "DF") {
+    throw std::runtime_error("quarks.quark.dilution_D must be DI, DB or DF");
+  } else if (quarks.number_of_dilution_D < 1 || quarks.number_of_dilution_D > 4) {
+    throw std::runtime_error(
+        "quarks.quark.number_of_dilution_D must be greater than 0 and smaller than 5");
+  } else {
+    std::cout << quarks << std::endl;
   }
 }
 
@@ -262,10 +249,7 @@ Operators make_operator_list(const std::string &operator_string) {
         } else if ((str.compare(1, 1, "<") == 0) || (str.compare(1, 1, ">") == 0))
           create_displacement_direction_from_string(str, disp_dirs);
         else {
-          std::cout << "Something wrong with the displacement in the operator"
-                       " definition"
-                    << std::endl;
-          exit(0);
+          throw std::runtime_error("Something wrong with the displacement in the operator definition!");
         }
       }
       // getting the momenta
@@ -279,8 +263,7 @@ Operators make_operator_list(const std::string &operator_string) {
       }
       // catching wrong entries
       else {
-        std::cout << "there is something wrong with the operators" << std::endl;
-        exit(0);
+        throw std::runtime_error("There is something wrong with the operators!");
       }
     }
 
@@ -361,10 +344,7 @@ Correlators_2 make_correlator(const std::string &correlator_string) {
 
     // catching wrong entries
     else {
-      std::cout << "There is something wrong with the correlators in the"
-                   " input file!"
-                << std::endl;
-      exit(0);
+      throw std::runtime_error("There is something wrong with the correlators in the input file!");
     }
   }
 

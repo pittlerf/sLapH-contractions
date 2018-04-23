@@ -38,8 +38,7 @@ void read_eigen_vector(const std::string& filename, const ssize_t verbose,
     }
   }
   else {
-    std::cout << "eigenvector file does not exist!!!\n" << std::endl;
-    exit(0);
+    throw std::runtime_error("Eigenvector file does not exist!");
   }
   infile.close();
 
