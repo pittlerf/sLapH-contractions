@@ -109,6 +109,13 @@ void build_quantum_numbers_from_correlator_list(
     std::map<int, int> const &momentum_cutoff) {
   std::vector<Operators> qn_op;
   for (const auto &op_number : correlator.operator_numbers) {
+    if (op_number >= ssize(operator_list)) {
+      std::ostringstream oss;
+      oss << "Operator with ID " << op_number
+          << " which is used in [correlator_lists] is not defined. Please adjust your "
+             "parameter file.";
+      throw std::runtime_error(oss.str());
+    }
     qn_op.emplace_back(operator_list[op_number]);
   }
 
