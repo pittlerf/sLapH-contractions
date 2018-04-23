@@ -21,35 +21,56 @@ namespace {
  *  @param[in,out] momentum    Two dimensional array where the momenta are
  *                             stored
  */
-void create_momenta(const ssize_t Lx,
-                    const ssize_t Ly,
-                    const ssize_t Lz,
-                    const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+void create_momenta(ssize_t const Lx,
+                    ssize_t const Ly,
+                    ssize_t const Lz,
+                    std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
                     array_cd_d2 &momentum) {
-  static const std::complex<double> I(0.0, 1.0);
+  static std::complex<double> const I(0.0, 1.0);
 
   /*! To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
    *  quantum number id in op_VdaggerV will be used. The rest can be obtained
    *  by adjoining
    */
-  for (const auto &op : vdaggerv_lookup) {
-    // op_VdaggerV contains the index of one (redundancy) op_Corr which
-    // allows to deduce the quantum numbers (momentum)
-    const double ipx = op.momentum[0] * 2. * M_PI / (double)Lx;
-    const double ipy = op.momentum[1] * 2. * M_PI / (double)Ly;
-    const double ipz = op.momentum[2] * 2. * M_PI / (double)Lz;
-    // calculate \vec{p} \cdot \vec{x} for all \vec{x} on the lattice
+  for (auto const &op : vdaggerv_lookup) {
+    // op_VdaggerV contains the index of one (redundancy) op_Corr which allows
+    // to deduce the quantum numbers (momentum).
+    auto const ipx = op.momentum[0] * 2.0 * M_PI / Lx;
+    auto const ipy = op.momentum[1] * 2.0 * M_PI / Ly;
+    auto const ipz = op.momentum[2] * 2.0 * M_PI / Lz;
+
+    // Going to the next lattice site means multiplication with the base phase
+    // factor. This lets us avoid calling `exp()` for each argument $i \vec{p}
+    // \cdot \vec{x}$. A complex multiplication is likely cheaper than the
+    // complex exponential function. This chain of multiplication might lead to
+    // rounding errors for large lattices.
+    auto const base_phase_x = exp(-I * ipx);
+    auto const base_phase_y = exp(-I * ipy);
+    auto const base_phase_z = exp(-I * ipz);
+
+    std::complex<double> phase_x{1.0, 0.0};
+
+    // Calculate $\vec{p} \cdot \vec{x}$ for all $\vec{x}$ on the lattice.
     for (int x = 0; x < Lx; ++x) {
-      const int xH = x * Ly * Lz;   // helper variable
-      const double ipxH = ipx * x;  // helper variable
+      int const xH = x * Ly * Lz;
+      double const ipxH = ipx * x;
+      auto phase_xy = phase_x;
+
       for (int y = 0; y < Ly; ++y) {
-        const int xHyH = xH + y * Lz;            // helper variable
-        const double ipxHipyH = ipxH + ipy * y;  // helper variable
+        int const xHyH = xH + y * Lz;
+        double const ipxHipyH = ipxH + ipy * y;
+        auto phase_xyz = phase_xy;
+
         for (int z = 0; z < Lz; ++z) {
-          // multiply \vec{p} \cdot \vec{x} with complex unit and exponentiate
-          momentum[op.id][xHyH + z] = exp(-I * (ipxHipyH + ipz * z));
+          momentum[op.id][xHyH + z] = phase_xyz;
+
+          phase_xyz *= base_phase_z;
         }
+
+        phase_xy *= base_phase_y;
       }
+
+      phase_x *= base_phase_x;
     }  // loops over spatial vectors end here
   }    // loop over redundant quantum numbers ends here
 }
