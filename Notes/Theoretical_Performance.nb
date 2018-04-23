@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     16278,        537]
-NotebookOptionsPosition[     13827,        445]
-NotebookOutlinePosition[     14164,        460]
-CellTagsIndexPosition[     14121,        457]
+NotebookDataLength[     20023,        639]
+NotebookOptionsPosition[     17379,        541]
+NotebookOutlinePosition[     17743,        557]
+CellTagsIndexPosition[     17700,        554]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -29,57 +29,84 @@ contraction code. Since we need to have lowercase variables here in ",
  StyleBox["Mathematica",
   FontSlant->"Italic"],
  ", we need to use a bit unusal symbols here.\n\nAdditions and \
-multiplications are currently just counted as flops and not distinguished \
-further.\n\nSizes are in terms of complex double."
+multiplications are grouped in a two-vector with additions being the first \
+and multiplications being the second element.\n\nSizes are in terms of \
+complex double."
 }], "Text",
  CellChangeTimes->{{3.732959015698566*^9, 3.732959062134091*^9}, {
   3.73295909512453*^9, 3.7329590986476192`*^9}, {3.732959139179984*^9, 
-  3.7329591514395113`*^9}, {3.7329643356131763`*^9, 3.732964371597692*^9}}],
-
-Cell[CellGroupData[{
-
-Cell["General remarks", "Section",
- CellChangeTimes->{{3.732960683248528*^9, 3.732960690464231*^9}}],
-
-Cell["\<\
-A matrix multiplication of sizes a and b with b and c needs the following \
-flops:\
-\>", "Text",
- CellChangeTimes->{{3.732960701964119*^9, 3.73296072117445*^9}, {
-  3.732960751966267*^9, 3.732960756731388*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"matrixFlops", "[", 
-   RowBox[{"a_", ",", "b_", ",", "c_"}], "]"}], ":=", 
-  RowBox[{"a", " ", "c", 
-   RowBox[{"(", 
-    RowBox[{"b", "+", 
-     RowBox[{"(", 
-      RowBox[{"b", "-", "1"}], ")"}]}], ")"}]}]}]], "Input",
- CellChangeTimes->{{3.732960723070537*^9, 3.7329607478723917`*^9}, {
-  3.732960948604341*^9, 3.73296097378267*^9}}]
-}, Open  ]],
+  3.7329591514395113`*^9}, {3.7329643356131763`*^9, 3.732964371597692*^9}, {
+  3.733128337052552*^9, 3.733128363275647*^9}}],
 
 Cell[CellGroupData[{
 
 Cell["Variables", "Section",
  CellChangeTimes->{{3.732960697054748*^9, 3.732960698120988*^9}}],
 
-Cell[BoxData[
- RowBox[{
-  RowBox[{"v", "=", 
-   RowBox[{"lx", " ", "ly", " ", "lz"}]}], ";"}]], "Input",
- CellChangeTimes->{{3.732959155209642*^9, 3.7329591603332233`*^9}}],
-
 Cell[TextData[{
- "First we need to write down the dimensions of the objects.\n\nV(lt, nd): ne \
-\[RightArrow] lx, ly, lz, nc\n",
+ "The following external parameters exist in the complexity of this problem:\n\
+\n",
+ Cell[BoxData[GridBox[{
+    {
+     StyleBox["Variable", "Text",
+      FontWeight->"Bold"], 
+     StyleBox["Meaning", "Text",
+      FontWeight->"Bold"]},
+    {
+     StyleBox[
+      RowBox[{"lx", ",", " ", "ly", ",", " ", "lz"}], "Text"], 
+     StyleBox[
+      RowBox[{"Spatial", " ", "size", " ", "of", " ", "the", " ", "lattice"}],
+       "Text"]},
+    {
+     StyleBox["lt", "Text"], 
+     StyleBox[
+      RowBox[{
+      "Temporal", " ", "size", " ", "of", " ", "the", " ", "lattice"}], 
+      "Text"]},
+    {
+     StyleBox[
+      RowBox[{"ne", ",", " ", "nc", ",", " ", "nd"}], "Text"], 
+     StyleBox[
+      RowBox[{
+       RowBox[{"Number", " ", 
+        RowBox[{"of", ":", " ", "eigenvectors"}]}], ",", " ", "colors", ",", 
+       " ", 
+       RowBox[{"Dirac", " ", "elements"}]}], "Text"]},
+    {
+     StyleBox[
+      RowBox[{"bt", ",", " ", "bd", ",", " ", "be"}], "Text"], 
+     StyleBox[
+      RowBox[{
+       RowBox[{"Number", " ", "of", " ", "blocks", " ", 
+        RowBox[{"in", ":", " ", "time"}]}], ",", " ", "Dirac", ",", " ", 
+       "eigenvectors"}], "Text"]},
+    {
+     StyleBox[
+      RowBox[{"nr1", ",", " ", "nr1"}], "Text"], 
+     StyleBox[
+      RowBox[{
+      "Number", " ", "of", " ", "random", " ", "vectors", " ", "in", " ", 
+       "flavors", " ", "1", " ", "and", " ", "2"}], "Text"]}
+   },
+   GridBoxDividers->{
+    "Columns" -> {True, {False}, True}, "ColumnsIndexed" -> {}, 
+     "Rows" -> {{True}}, "RowsIndexed" -> {}}]]],
+ "\n\nFirst we need to write down the dimensions of the objects. We denote \
+spaces that the element is diagonal in in round parentheses and then the left \
+and right indices. The arrow indicates the mapping in the sense of a linear \
+map. Since we think of matrix multiplications the order is reversed in terms \
+of left and right indices.\n\nV(lt, nd): lx, ly, lz, nc \[LeftArrow] ne\n",
  Cell[BoxData[
   FormBox[
-   SuperscriptBox["\[Rho]", "b"], TraditionalForm]],
-  FormatType->"TraditionalForm"],
- "(bt, bd): be\nP(): bt, bd, be \[RightArrow] lt, nd, ne"
+   SuperscriptBox["\[Rho]", "b"], TraditionalForm]]],
+ "(bt, bd): be\nP(): lt, nd, ne",
+ StyleBox[" ",
+  FontWeight->"Bold"],
+ "\[LeftArrow]",
+ StyleBox[" ",
+  FontWeight->"Bold"],
+ "bt, bd, be"
 }], "Text",
  CellChangeTimes->{{3.7329596192022057`*^9, 3.7329597174661407`*^9}, {
   3.732959786588079*^9, 3.732959804678897*^9}, {3.7329598363189497`*^9, 
@@ -87,7 +114,49 @@ Cell[TextData[{
   3.732959940774724*^9, 3.73296003547757*^9}, {3.732960083500216*^9, 
   3.7329600896160593`*^9}, {3.732960138770178*^9, 3.732960143240507*^9}, {
   3.732960219001343*^9, 3.732960231338315*^9}, {3.732960480525536*^9, 
-  3.732960487976831*^9}, {3.7329617290298634`*^9, 3.732961747491055*^9}}]
+  3.732960487976831*^9}, {3.7329617290298634`*^9, 3.732961747491055*^9}, {
+  3.733124086923224*^9, 3.733124135195195*^9}, {3.733124168729308*^9, 
+  3.7331241858968678`*^9}, {3.733124535517583*^9, 3.733124577435976*^9}, {
+  3.733124712463423*^9, 3.733124783052745*^9}, {3.73312750256861*^9, 
+  3.733127533800997*^9}, {3.733128556073381*^9, 3.733128569930489*^9}, {
+  3.733128734745023*^9, 3.7331288167680902`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"v", "=", 
+   RowBox[{"lx", " ", "ly", " ", "lz"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.732959155209642*^9, 3.7329591603332233`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["General remarks", "Section",
+ CellChangeTimes->{{3.732960683248528*^9, 3.732960690464231*^9}}],
+
+Cell["\<\
+A dense matrix multiplication of sizes a and b with b and c needs the \
+following number of muliplications and additions:\
+\>", "Text",
+ CellChangeTimes->{{3.732960701964119*^9, 3.73296072117445*^9}, {
+  3.732960751966267*^9, 3.732960756731388*^9}, {3.733128325191887*^9, 
+  3.733128331672377*^9}, {3.733128894287156*^9, 3.733128904470785*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"matrixFlops", "[", 
+   RowBox[{"a_", ",", "b_", ",", "c_"}], "]"}], ":=", 
+  RowBox[{"a", " ", "c", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"b", "-", "1"}], ",", "b"}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.732960723070537*^9, 3.7329607478723917`*^9}, {
+  3.732960948604341*^9, 3.73296097378267*^9}, {3.733128299275066*^9, 
+  3.733128345344555*^9}}],
+
+Cell["\<\
+For a sparse matrix multiplication, this becomes more complicated.\
+\>", "Text",
+ CellChangeTimes->{{3.733128886210857*^9, 3.733128910464242*^9}}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -332,6 +401,33 @@ Cell[BoxData[
   SuperscriptBox["be", "2"], " ", "bt", " ", "lt"}]], "Output",
  CellChangeTimes->{3.732966067266173*^9}]
 }, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Q2", "Subsection",
+ CellChangeTimes->{{3.7331249612191553`*^9, 3.73312497338122*^9}}],
+
+Cell[TextData[{
+ "The Q2 has two perambulators and is defined ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["P", "\[Dagger]"], 
+    SuperscriptBox["V", "\[Dagger]"], "V", " ", "P"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ ". The evaluation order likely is the costly ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["V", "\[Dagger]"], "V"}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ " first, then the perambulators. We only count the cost of the perambulator \
+multiplication because the middle part is already computed before."
+}], "Text",
+ CellChangeTimes->{{3.733124975220553*^9, 3.7331250312187138`*^9}, {
+  3.7331252088695707`*^9, 3.733125219147347*^9}, {3.73312525489544*^9, 
+  3.733125328000923*^9}, {3.7331258257284307`*^9, 3.733125851126395*^9}}]
 }, Open  ]]
 }, Open  ]],
 
@@ -443,8 +539,9 @@ Cell[TextData[{
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{956, 1025},
-WindowMargins->{{960, Automatic}, {Automatic, 0}},
+WindowToolbars->"EditBar",
+WindowSize->{956, 711},
+WindowMargins->{{Automatic, -896}, {Automatic, 0}},
 FrontEndVersion->"10.3 for Linux x86 (64-bit) (October 9, 2015)",
 StyleDefinitions->"Default.nb"
 ]
@@ -461,82 +558,87 @@ CellTagsIndex->{}
 Notebook[{
 Cell[CellGroupData[{
 Cell[580, 22, 106, 1, 93, "Title"],
-Cell[689, 25, 634, 11, 131, "Text"],
+Cell[689, 25, 723, 13, 151, "Text"],
 Cell[CellGroupData[{
-Cell[1348, 40, 100, 1, 65, "Section"],
-Cell[1451, 43, 220, 5, 31, "Text"],
-Cell[1674, 50, 371, 10, 32, "Input"]
+Cell[1437, 42, 94, 1, 65, "Section"],
+Cell[1534, 45, 3029, 76, 389, "Text"],
+Cell[4566, 123, 172, 4, 32, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2082, 65, 94, 1, 65, "Section"],
-Cell[2179, 68, 172, 4, 32, "Input"],
-Cell[2354, 74, 820, 15, 114, "Text"]
+Cell[4775, 132, 100, 1, 65, "Section"],
+Cell[4878, 135, 354, 6, 51, "Text"],
+Cell[5235, 143, 393, 10, 32, "Input"],
+Cell[5631, 155, 156, 3, 31, "Text"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3211, 94, 96, 1, 65, "Section"],
-Cell[3310, 97, 212, 4, 51, "Text"],
+Cell[5824, 163, 96, 1, 65, "Section"],
+Cell[5923, 166, 212, 4, 51, "Text"],
 Cell[CellGroupData[{
-Cell[3547, 105, 362, 8, 32, "Input"],
-Cell[3912, 115, 292, 8, 34, "Output"]
+Cell[6160, 174, 362, 8, 32, "Input"],
+Cell[6525, 184, 292, 8, 34, "Output"]
 }, Open  ]],
-Cell[4219, 126, 100, 1, 31, "Text"],
+Cell[6832, 195, 100, 1, 31, "Text"],
 Cell[CellGroupData[{
-Cell[4344, 131, 176, 3, 32, "Input"],
-Cell[4523, 136, 174, 3, 32, "Output"]
+Cell[6957, 200, 176, 3, 32, "Input"],
+Cell[7136, 205, 174, 3, 32, "Output"]
 }, Open  ]],
-Cell[4712, 142, 111, 1, 31, "Text"],
+Cell[7325, 211, 111, 1, 31, "Text"],
 Cell[CellGroupData[{
-Cell[4848, 147, 188, 4, 32, "Input"],
-Cell[5039, 153, 129, 3, 34, "Output"]
+Cell[7461, 216, 188, 4, 32, "Input"],
+Cell[7652, 222, 129, 3, 34, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5217, 162, 156, 2, 65, "Section"],
-Cell[5376, 166, 541, 13, 54, "Text"],
+Cell[7830, 231, 156, 2, 65, "Section"],
+Cell[7989, 235, 541, 13, 54, "Text"],
 Cell[CellGroupData[{
-Cell[5942, 183, 89, 1, 44, "Subsection"],
-Cell[6034, 186, 454, 12, 54, "Text"],
+Cell[8555, 252, 89, 1, 44, "Subsection"],
+Cell[8647, 255, 454, 12, 34, "Text"],
 Cell[CellGroupData[{
-Cell[6513, 202, 723, 18, 32, "Input"],
-Cell[7239, 222, 513, 16, 37, "Output"]
+Cell[9126, 271, 723, 18, 32, "Input"],
+Cell[9852, 291, 513, 16, 37, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7789, 243, 290, 8, 32, "Input"],
-Cell[8082, 253, 270, 7, 32, "Output"]
+Cell[10402, 312, 290, 8, 32, "Input"],
+Cell[10695, 322, 270, 7, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8401, 266, 90, 1, 44, "Subsection"],
-Cell[8494, 269, 308, 9, 34, "Text"],
+Cell[11014, 335, 90, 1, 44, "Subsection"],
+Cell[11107, 338, 308, 9, 34, "Text"],
 Cell[CellGroupData[{
-Cell[8827, 282, 554, 16, 32, "Input"],
-Cell[9384, 300, 482, 15, 37, "Output"]
+Cell[11440, 351, 554, 16, 32, "Input"],
+Cell[11997, 369, 482, 15, 37, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9903, 320, 234, 6, 32, "Input"],
-Cell[10140, 328, 164, 4, 34, "Output"]
+Cell[12516, 389, 234, 6, 32, "Input"],
+Cell[12753, 397, 164, 4, 34, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[12966, 407, 91, 1, 44, "Subsection"],
+Cell[13060, 410, 808, 19, 74, "Text"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13917, 435, 98, 1, 65, "Section"],
+Cell[14018, 438, 294, 5, 71, "Text"],
+Cell[CellGroupData[{
+Cell[14337, 447, 94, 1, 44, "Subsection"],
+Cell[14434, 450, 464, 13, 38, "Text"],
+Cell[CellGroupData[{
+Cell[14923, 467, 862, 16, 32, "Input"],
+Cell[15788, 485, 381, 10, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[16206, 500, 260, 6, 32, "Input"],
+Cell[16469, 508, 177, 4, 32, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10365, 339, 98, 1, 65, "Section"],
-Cell[10466, 342, 294, 5, 71, "Text"],
-Cell[CellGroupData[{
-Cell[10785, 351, 94, 1, 44, "Subsection"],
-Cell[10882, 354, 464, 13, 38, "Text"],
-Cell[CellGroupData[{
-Cell[11371, 371, 862, 16, 32, "Input"],
-Cell[12236, 389, 381, 10, 32, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[12654, 404, 260, 6, 32, "Input"],
-Cell[12917, 412, 177, 4, 32, "Output"]
-}, Open  ]]
-}, Open  ]]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[13155, 423, 142, 2, 65, "Section"],
-Cell[13300, 427, 499, 14, 38, "Text"]
+Cell[16707, 519, 142, 2, 65, "Section"],
+Cell[16852, 523, 499, 14, 38, "Text"]
 }, Open  ]]
 }, Open  ]]
 }
