@@ -41,7 +41,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lt\""
                 << " is mendatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\n\ttemporal lattice extent .................. " << Lt << "\n";
     //
@@ -50,7 +50,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lx\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in x direction .... " << Lx << "\n";
     //
@@ -59,7 +59,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Ly\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in y direction .... " << Ly << "\n";
     //
@@ -68,7 +68,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lz\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in z direction .... " << Lz << "\n\n";
     std::cout << "\tEnsemble ...................................... " << name_lattice
@@ -82,7 +82,7 @@ void lattice_input_data_handling(const std::string path_output,
               << alpha1 << ", " << alpha2 << ", " << iterations << std::endl;
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -101,7 +101,7 @@ void eigenvec_perambulator_input_data_handling(const int number_of_eigen_vec,
                 << "\toption \"number_of_eigen_vec\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else {
       std::cout << "\tnumber of eigen vectors .................. " << number_of_eigen_vec
                 << "\n";
@@ -110,7 +110,7 @@ void eigenvec_perambulator_input_data_handling(const int number_of_eigen_vec,
               << "/" << name_eigenvectors << "\".eigenvector.t.config\"\n\n";
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -127,26 +127,26 @@ void config_input_data_handling(const int start_config,
                 << "\toption \"start config\""
                 << " is mandatory and its value must be an integer greater or equal 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else if (end_config < 0 || end_config < start_config) {
       std::cout << "\ninput file error:\n"
                 << "\toption \"end_config\""
                 << " is mandatory, its value must be an integer greater than 0,"
                 << " and it must be larger than start config!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else if (delta_config < 0) {
       std::cout << "\ninput file error:\n"
                 << "\toption \"delta_config\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tprocessing configurations " << start_config << " to " << end_config
                 << " in steps of " << delta_config << "\n\n";
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -178,7 +178,7 @@ void quark_input_data_handling(const std::vector<std::string> quark_configs,
     std::for_each(quarks.begin(), quarks.end(), quark_check);
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -202,7 +202,7 @@ void operator_input_data_handling(const std::vector<std::string> operator_string
     // TODO write a check for correctness of input
   } catch (std::exception &e) {
     std::cout << "operator_input_data_handling: " << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -240,7 +240,7 @@ void correlator_input_data_handling(const std::vector<std::string> &correlator_s
     }
   } catch (std::exception &e) {
     std::cout << "correlator_input_data_handling: " << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
