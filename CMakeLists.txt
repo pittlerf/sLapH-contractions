@@ -168,6 +168,7 @@ target_link_libraries(test-derivative
 #                               Subdirectories                                #
 ###############################################################################
 
+add_subdirectory(benchmarks)
 add_subdirectory(tests/gtest)
 
 ###############################################################################
