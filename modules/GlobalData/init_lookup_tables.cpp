@@ -16,7 +16,7 @@
  */
 
 #include "global_data.h"
-//TODO: Need this header? no function from it called here!
+// TODO: Need this header? no function from it called here!
 #include "global_data_utils.h"
 
 namespace {
@@ -65,15 +65,9 @@ bool desired_total_momentum(Vector const &p_tot, std::vector<Vector> const &P) {
  *  @warning Cutoff is hardcoded in this function!
  *  @warning No cutoff for P > 4 is implemented!
  */
-static bool momenta_below_cutoff(Vector const &p1, Vector const &p2) {
-  std::map<int, int> cutoff;
-  // default value is the default initializer of type int: cutoff[default] = 0;
-  cutoff[0] = 4;
-  cutoff[1] = 5;
-  cutoff[2] = 6;
-  cutoff[3] = 7;
-  cutoff[4] = 4;
-
+static bool momenta_below_cutoff(Vector const &p1,
+                                 Vector const &p2,
+                                 std::map<int, int> const &momentum_cutoff) {
   const Vector p_tot = p1 + p2;
 
   if (p_tot.squaredNorm() > 4) {
@@ -81,7 +75,7 @@ static bool momenta_below_cutoff(Vector const &p1, Vector const &p2) {
               << " implemented" << std::endl;
   }
 
-  if (p1.squaredNorm() + p2.squaredNorm() > cutoff[p_tot.squaredNorm()]) {
+  if (p1.squaredNorm() + p2.squaredNorm() > momentum_cutoff.at(p_tot.squaredNorm())) {
     return false;
   } else {
     return true;
@@ -111,14 +105,21 @@ static bool momenta_below_cutoff(Vector const &p1, Vector const &p2) {
 void build_quantum_numbers_from_correlator_list(
     const Correlators_2 &correlator,
     const Operator_list &operator_list,
-    std::vector<std::vector<QuantumNumbers>> &quantum_numbers) {
+    std::vector<std::vector<QuantumNumbers>> &quantum_numbers,
+    std::map<int, int> const &momentum_cutoff) {
   std::vector<Operators> qn_op;
   for (const auto &op_number : correlator.operator_numbers) {
+    if (op_number >= ssize(operator_list)) {
+      std::ostringstream oss;
+      oss << "Operator with ID " << op_number
+          << " which is used in [correlator_lists] is not defined. Please adjust your "
+             "parameter file.";
+      throw std::runtime_error(oss.str());
+    }
     qn_op.emplace_back(operator_list[op_number]);
   }
 
-  std::cout << "Constructing momentum combinations for " <<
-    correlator.type << std::endl;
+  std::cout << "Constructing momentum combinations for " << correlator.type << std::endl;
 
   /*! Restriction to what shall actually be computed is done in if statements
    *  for each diagram because it depends on the number of quarks.
@@ -159,7 +160,7 @@ void build_quantum_numbers_from_correlator_list(
         Vector p_so = p_so_1 + p_so_2;
 
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
-            momenta_below_cutoff(p_so_1, p_so_2)) {
+            momenta_below_cutoff(p_so_1, p_so_2, momentum_cutoff)) {
           for (const auto &op1 : qn_op[1]) {
             Vector p_si = op1.momentum;
 
@@ -193,7 +194,7 @@ void build_quantum_numbers_from_correlator_list(
         Vector p_so = p_so_1 + p_so_2;
 
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
-            momenta_below_cutoff(p_so_1, p_so_2)) {
+            momenta_below_cutoff(p_so_1, p_so_2, momentum_cutoff)) {
           for (const auto &op2 : qn_op[2]) {
             Vector p_si = op2.momentum;
 
@@ -230,7 +231,7 @@ void build_quantum_numbers_from_correlator_list(
         Vector p_so = p_so_1 + p_so_2;
 
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
-            momenta_below_cutoff(p_so_1, p_so_2)) {
+            momenta_below_cutoff(p_so_1, p_so_2, momentum_cutoff)) {
           for (const auto &op1 : qn_op[1]) {
             for (const auto &op3 : qn_op[3]) {
               Vector p_si_1 = op1.momentum;
@@ -238,7 +239,7 @@ void build_quantum_numbers_from_correlator_list(
               Vector p_si = p_si_1 + p_si_2;
 
               if (desired_total_momentum(p_si, correlator.tot_mom) &&
-                  momenta_below_cutoff(p_si_1, p_si_2)) {
+                  momenta_below_cutoff(p_si_1, p_si_2, momentum_cutoff)) {
                 if (p_so == -p_si) {
                   const int p_tot = p_si.squaredNorm();
                   counter[p_tot]++;
@@ -273,7 +274,7 @@ void build_quantum_numbers_from_correlator_list(
         Vector p_so = p_so_1 + p_so_2;
 
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
-            momenta_below_cutoff(p_so_1, p_so_2)) {
+            momenta_below_cutoff(p_so_1, p_so_2, momentum_cutoff)) {
           for (const auto &op1 : qn_op[1]) {
             for (const auto &op2 : qn_op[2]) {
               Vector p_si_1 = op1.momentum;
@@ -281,7 +282,7 @@ void build_quantum_numbers_from_correlator_list(
               Vector p_si = p_si_1 + p_si_2;
 
               if (desired_total_momentum(p_si, correlator.tot_mom) &&
-                  momenta_below_cutoff(p_si_1, p_si_2)) {
+                  momenta_below_cutoff(p_si_1, p_si_2, momentum_cutoff)) {
                 if (p_so == -p_si) {
                   const int p_tot = p_si.squaredNorm();
                   counter[p_tot]++;
@@ -314,7 +315,7 @@ void build_quantum_numbers_from_correlator_list(
         Vector p_so_2 = op1.momentum;
         Vector p_so = p_so_1 + p_so_2;
         if (desired_total_momentum(p_so, correlator.tot_mom) &&
-            momenta_below_cutoff(p_so_1, p_so_2)) {
+            momenta_below_cutoff(p_so_1, p_so_2, momentum_cutoff)) {
           for (const auto &op2 : qn_op[2]) {
             for (const auto &op3 : qn_op[3]) {  // all combinations of operators
               Vector p_si_1 = op2.momentum;
@@ -343,12 +344,13 @@ void build_quantum_numbers_from_correlator_list(
   }
 }
 
-//TODO: Not the right place, not sure where to place it otherwise
+// TODO: Not the right place, not sure where to place it otherwise
 /*! Makes a string object of a displacement vector */
-static std::string vector_to_string(const std::vector< std::pair<char,char> > &in){
+static std::string vector_to_string(const std::vector<std::pair<char, char>> &in) {
   std::string out;
-  if (in.empty()) out = "000";
-  for (auto const& dis : in){ 
+  if (in.empty())
+    out = "000";
+  for (auto const &dis : in) {
     out.push_back(dis.first);
     out.push_back(dis.second);
   }
@@ -386,7 +388,7 @@ static void build_correlator_names(
       filename += qt;
     for (const auto &qn : qn_row) {  // adding quantum numbers
       filename += std::string("_p") + to_string(qn.momentum);
-      filename += std::string(".d") + vector_to_string(qn.displacement);
+      filename += std::string(".d") + to_string(qn.displacement);
       filename += std::string(".g") + to_string(qn.gamma);
     }
     hdf5_dataset_name.emplace_back(filename);
@@ -404,7 +406,7 @@ static std::string const build_hdf5_dataset_name(
     filename += qt;
   for (const auto &op : qn) {  // adding quantum numbers
     filename += std::string("_p") + to_string(op.momentum);
-    filename += std::string(".d") + vector_to_string(op.displacement);
+    filename += std::string(".d") + to_string(op.displacement);
     filename += std::string(".g") + to_string(op.gamma);
   }
   return filename;
@@ -434,34 +436,34 @@ void build_VdaggerV_lookup(
       bool dagger;
       // checking if the combination of quantum numbers already exists in
       // vdaggerv. The position is stored in the iterator it.
-      auto it = std::find_if(
-          vdaggerv_lookup.begin(),
-          vdaggerv_lookup.end(),
-          [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
-            auto c1 = (vdv_qn.displacement == qn.displacement);
-            auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
-            // also negative momentum is checked
-            auto c3 = (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
-            /*! @TODO: Think about the daggering!! */
-            const Vector zero(0, 0, 0);
-            if (c1 and c2) {
-              dagger = false;
-              return true;
-            } else if ((c1 and c3) and (qn.displacement.empty() )) {
-              dagger = true;
-              return true;
-            } else
-              return false;
-          });
+      auto it = std::find_if(vdaggerv_lookup.begin(),
+                             vdaggerv_lookup.end(),
+                             [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
+                               auto c1 = (vdv_qn.displacement == qn.displacement);
+                               auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
+                               // also negative momentum is checked
+                               auto c3 =
+                                   (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
+                               /*! @TODO: Think about the daggering!! */
+                               const Vector zero(0, 0, 0);
+                               if (c1 and c2) {
+                                 dagger = false;
+                                 return true;
+                               } else if ((c1 and c3) and (qn.displacement.empty())) {
+                                 dagger = true;
+                                 return true;
+                               } else
+                                 return false;
+                             });
       // If the quantum number combination already exists only the id is needed
       // otherwise a new element is created at the end of the lookuptable.
       if (it != vdaggerv_lookup.end()) {
         vdv_indices_row.emplace_back((*it).id, dagger);
       } else {
-        vdaggerv_lookup.emplace_back(VdaggerVQuantumNumbers(
-            ssize(vdaggerv_lookup),
-            {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
-            qn.displacement));
+        vdaggerv_lookup.emplace_back(
+            VdaggerVQuantumNumbers(ssize(vdaggerv_lookup),
+                                   {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
+                                   qn.displacement));
         vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
       }
     }
@@ -569,7 +571,7 @@ static void build_Quarkline_lookup_one_qn(
 }
 
 static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
-                                std::vector<DiagramIndex> &trQ1_lookup) {
+                                 std::vector<DiagramIndex> &trQ1_lookup) {
   DiagramIndex candidate(ssize(trQ1_lookup), "", ql_ids);
   auto it = std::find(trQ1_lookup.begin(), trQ1_lookup.end(), candidate);
   if (it == trQ1_lookup.end()) {
@@ -583,7 +585,7 @@ static ssize_t build_trQ1_lookup(std::vector<ssize_t> const ql_ids,
  *       give the correct id.
  */
 static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
-                                 std::vector<DiagramIndex> &trQ1Q1_lookup) {
+                                  std::vector<DiagramIndex> &trQ1Q1_lookup) {
   DiagramIndex candidate(ssize(trQ1Q1_lookup), "", ql_ids);
   auto it = std::find(trQ1Q1_lookup.begin(), trQ1Q1_lookup.end(), candidate);
   if (it == trQ1Q1_lookup.end()) {
@@ -594,7 +596,7 @@ static ssize_t build_corr0_lookup(std::vector<ssize_t> const ql_ids,
 }
 
 static ssize_t build_corrC_lookup(std::vector<ssize_t> const ql_ids,
-                                 std::vector<DiagramIndex> &trQ0Q2_lookup) {
+                                  std::vector<DiagramIndex> &trQ0Q2_lookup) {
   DiagramIndex candidate(ssize(trQ0Q2_lookup), "", ql_ids);
   auto it = std::find(trQ0Q2_lookup.begin(), trQ0Q2_lookup.end(), candidate);
   if (it == trQ0Q2_lookup.end()) {
@@ -1701,23 +1703,23 @@ static void build_C40B_lookup(
  *
  *  @bug In build_Q1_lookup the order of quarks given is consistently switched.
  */
-void GlobalData::init_lookup_tables() {
-  for (const auto &correlator : correlator_list) {
+void init_lookup_tables(GlobalData &gd) {
+  for (const auto &correlator : gd.correlator_list) {
     /*! 1. Build an array (quantum_numbers) with all the quantum numbers needed
      *      for this particular correlation function.
      */
     std::vector<std::vector<QuantumNumbers>> quantum_numbers;
     build_quantum_numbers_from_correlator_list(
-        correlator, operator_list, quantum_numbers);
+        correlator, gd.operator_list, quantum_numbers, gd.momentum_cutoff);
 
     // Build the correlator and dataset names for hdf5 output files
     std::vector<std::string> quark_types;
     for (const auto &id : correlator.quark_numbers)
-      quark_types.emplace_back(quarks[id].type);
+      quark_types.emplace_back(gd.quarks[id].type);
     std::vector<std::string> hdf5_dataset_name;
     build_correlator_names(correlator.type,
-                           start_config,
-                           path_output,
+                           gd.start_config,
+                           gd.path_output,
                            quark_types,
                            quantum_numbers,
                            hdf5_dataset_name);
@@ -1729,18 +1731,18 @@ void GlobalData::init_lookup_tables() {
      */
     std::vector<std::vector<std::pair<ssize_t, bool>>> vdv_indices;
     build_VdaggerV_lookup(
-        quantum_numbers, operator_lookuptable.vdaggerv_lookup, vdv_indices);
+        quantum_numbers, gd.operator_lookuptable.vdaggerv_lookup, vdv_indices);
     std::vector<std::pair<ssize_t, ssize_t>> rnd_index;
     if (correlator.type == "C1") {
-      build_C1_lookup(quarks,
+      build_C1_lookup(gd.quarks,
                       correlator.quark_numbers,
-                      start_config,
-                      path_output,
+                      gd.start_config,
+                      gd.path_output,
                       quantum_numbers,
                       vdv_indices,
-                      quarkline_lookuptable.Q1,
-                      correlator_lookuptable.trQ1,
-                      correlator_lookuptable.C1);
+                      gd.quarkline_lookuptable.Q1,
+                      gd.correlator_lookuptable.trQ1,
+                      gd.correlator_lookuptable.C1);
     } else if (correlator.type == "C2c" || correlator.type == "Check") {
       /*! 3. Build the lookuptable for rVdaggerVr and return an array of indices
        *      corresponding to the 'quantum_numbers' computed in step 1.
@@ -1748,155 +1750,156 @@ void GlobalData::init_lookup_tables() {
        *      corresponding to the 'quantum_numbers' computed in step 1.
        *  5. Build the lookuptable for the correlation functions
        */
-      build_C2c_lookup(quarks,
+      build_C2c_lookup(gd.quarks,
                        correlator.quark_numbers,
-                       start_config,
-                       path_output,
+                       gd.start_config,
+                       gd.path_output,
                        quantum_numbers,
                        vdv_indices,
-                       quarkline_lookuptable.Q0,
-                       quarkline_lookuptable.Q2V,
-                       correlator_lookuptable.trQ0Q2,
-                       correlator_lookuptable.C2c);
+                       gd.quarkline_lookuptable.Q0,
+                       gd.quarkline_lookuptable.Q2V,
+                       gd.correlator_lookuptable.trQ0Q2,
+                       gd.correlator_lookuptable.C2c);
     }
     /*! 6. Repeat steps 1.-5. for all correlators in correlator_list. Where
      *      applicable rVdaggerVr must be replaced by rVdaggerV in step 3. and
      *      Q2 by Q1 in step 4.
      */
     else if (correlator.type == "C3c") {
-      build_C3c_lookup(quarks,
+      build_C3c_lookup(gd.quarks,
                        correlator.quark_numbers,
-                       start_config,
-                       path_output,
+                       gd.start_config,
+                       gd.path_output,
                        quantum_numbers,
                        vdv_indices,
-                       quarkline_lookuptable.Q0,
-                       quarkline_lookuptable.Q1,
-                       quarkline_lookuptable.Q2L,
-                       correlator_lookuptable.C3c);
+                       gd.quarkline_lookuptable.Q0,
+                       gd.quarkline_lookuptable.Q1,
+                       gd.quarkline_lookuptable.Q2L,
+                       gd.correlator_lookuptable.C3c);
     } else if (correlator.type == "C4cD") {
-      build_C4cD_lookup(quarks,
+      build_C4cD_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V,
-                        correlator_lookuptable.trQ0Q2,
-                        correlator_lookuptable.C4cD);
+                        gd.quarkline_lookuptable.Q0,
+                        gd.quarkline_lookuptable.Q2V,
+                        gd.correlator_lookuptable.trQ0Q2,
+                        gd.correlator_lookuptable.C4cD);
     } else if (correlator.type == "C4cV") {
-      build_C4cV_lookup(quarks,
+      build_C4cV_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V,
-                        correlator_lookuptable.trQ0Q2,
-                        correlator_lookuptable.C4cV);
+                        gd.quarkline_lookuptable.Q0,
+                        gd.quarkline_lookuptable.Q2V,
+                        gd.correlator_lookuptable.trQ0Q2,
+                        gd.correlator_lookuptable.C4cV);
     } else if (correlator.type == "C4cC") {
-      build_C4cC_lookup(quarks,
+      build_C4cC_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2V,
-                        correlator_lookuptable.C4cC);
+                        gd.quarkline_lookuptable.Q0,
+                        gd.quarkline_lookuptable.Q2V,
+                        gd.correlator_lookuptable.C4cC);
     } else if (correlator.type == "C4cB") {
-      build_C4cB_lookup(quarks,
+      build_C4cB_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q0,
-                        quarkline_lookuptable.Q2L,
-                        correlator_lookuptable.C4cB);
+                        gd.quarkline_lookuptable.Q0,
+                        gd.quarkline_lookuptable.Q2L,
+                        gd.correlator_lookuptable.C4cB);
     } else if (correlator.type == "C20V") {
-      build_C20V_lookup(quarks,
+      build_C20V_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.trQ1,
-                        correlator_lookuptable.C20V);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.trQ1,
+                        gd.correlator_lookuptable.C20V);
     } else if (correlator.type == "C20") {
-      build_C20_lookup(quarks,
+      build_C20_lookup(gd.quarks,
                        correlator.quark_numbers,
-                       start_config,
-                       path_output,
+                       gd.start_config,
+                       gd.path_output,
                        quantum_numbers,
                        vdv_indices,
-                       quarkline_lookuptable.Q1,
-                       correlator_lookuptable.trQ1Q1,
-                       correlator_lookuptable.C20);
+                       gd.quarkline_lookuptable.Q1,
+                       gd.correlator_lookuptable.trQ1Q1,
+                       gd.correlator_lookuptable.C20);
     } else if (correlator.type == "C30V") {
-      build_C30V_lookup(quarks,
+      build_C30V_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.trQ1,
-                        correlator_lookuptable.trQ1Q1,
-                        correlator_lookuptable.C30V);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.trQ1,
+                        gd.correlator_lookuptable.trQ1Q1,
+                        gd.correlator_lookuptable.C30V);
     } else if (correlator.type == "C30") {
-      build_C30_lookup(quarks,
+      build_C30_lookup(gd.quarks,
                        correlator.quark_numbers,
-                       start_config,
-                       path_output,
+                       gd.start_config,
+                       gd.path_output,
                        quantum_numbers,
                        vdv_indices,
-                       quarkline_lookuptable.Q1,
-                       correlator_lookuptable.C30);
+                       gd.quarkline_lookuptable.Q1,
+                       gd.correlator_lookuptable.C30);
     } else if (correlator.type == "C40D") {
-      build_C40D_lookup(quarks,
+      build_C40D_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.trQ1Q1,
-                        correlator_lookuptable.C40D);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.trQ1Q1,
+                        gd.correlator_lookuptable.C40D);
     } else if (correlator.type == "C40V") {
-      build_C40V_lookup(quarks,
+      build_C40V_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.trQ1Q1,
-                        correlator_lookuptable.C40V);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.trQ1Q1,
+                        gd.correlator_lookuptable.C40V);
     } else if (correlator.type == "C40C") {
-      build_C40C_lookup(quarks,
+      build_C40C_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.C40C);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.C40C);
     } else if (correlator.type == "C40B") {
-      build_C40B_lookup(quarks,
+      build_C40B_lookup(gd.quarks,
                         correlator.quark_numbers,
-                        start_config,
-                        path_output,
+                        gd.start_config,
+                        gd.path_output,
                         quantum_numbers,
                         vdv_indices,
-                        quarkline_lookuptable.Q1,
-                        correlator_lookuptable.C40B);
+                        gd.quarkline_lookuptable.Q1,
+                        gd.correlator_lookuptable.C40B);
     } else {
-      std::cout << "Correlator type " << correlator.type << " not known!" << std::endl;
-      exit(0);
+      std::ostringstream oss;
+      oss << "Correlator type " << correlator.type << " not known!" << std::endl;
+      throw std::runtime_error(oss.str());
     }
   }
 
@@ -1906,11 +1909,11 @@ void GlobalData::init_lookup_tables() {
    */
   std::array<int, 3> const zero{0, 0, 0};
   bool found = false;
-  for (const auto &op_vdv : operator_lookuptable.vdaggerv_lookup)
-    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty() )) {
-      operator_lookuptable.index_of_unity = op_vdv.id;
+  for (const auto &op_vdv : gd.operator_lookuptable.vdaggerv_lookup)
+    if ((op_vdv.momentum == zero) && (op_vdv.displacement.empty())) {
+      gd.operator_lookuptable.index_of_unity = op_vdv.id;
       found = true;
     }
   if (!found)
-    operator_lookuptable.index_of_unity = -1;
+    gd.operator_lookuptable.index_of_unity = -1;
 }

@@ -1,5 +1,7 @@
 #include "EigenVector.h"
+
 #include <boost/format.hpp>
+
 void EigenVector::write_eigen_vector(const std::string &filename,
                                      const ssize_t t,
                                      const ssize_t verbose){
@@ -11,15 +13,13 @@ void EigenVector::write_eigen_vector(const std::string &filename,
       outfile.write(reinterpret_cast<char*> (V[t].data()), eigsys_bytes);
       std::streamsize end = outfile.tellp();
       if ( (end - begin)/eigsys_bytes != 1 ){
-        std::cout << "Timeslice:  " << t << " Error: write incomplete, exiting"
-                  << std::endl;
-        std::cout << (end-begin) << " bytes instead of expected "<< eigsys_bytes
-                  << " bytes" << std::endl;
-        exit(1);
+        std::ostringstream oss;
+        oss << "Timeslice:  " << t << ". Error: write incomplete, exiting. "
+            << (end - begin) << " bytes instead of expected " << eigsys_bytes << " bytes";
+        throw std::runtime_error(oss.str());
       } 
   } else {
-    std::cout << "eigenvector file does not exist!!!\n" << std::endl;
-    exit(0);
+    throw std::runtime_error("Eigenvector file does not exist!");
   }
   outfile.close();
 
@@ -49,16 +49,14 @@ void EigenVector::read_eigen_vector(const std::string &filename,
       std::fill(eigen_vec.begin(), eigen_vec.end(), Complex(.0, .0));
       infile.read((char *)&(eigen_vec[0]), 2 * V[t].rows() * sizeof(double));
       if (!infile) {
-        std::cout << "\n\nProblem while reading Eigenvectors\n" << std::endl;
-        exit(0);
+        throw std::runtime_error("Problem while reading Eigenvectors!");
       }
       for (ssize_t nrow = 0; nrow < V[t].rows(); ++nrow) {
         (V[t])(nrow, ncol) = eigen_vec[nrow];
       }
     }
   } else {
-    std::cout << "eigenvector file does not exist!!!\n" << std::endl;
-    exit(0);
+    throw std::runtime_error("Eigenvector file does not exist!");
   }
   infile.close();
 

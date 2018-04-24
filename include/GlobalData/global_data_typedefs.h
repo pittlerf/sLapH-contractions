@@ -108,17 +108,20 @@ inline std::string to_string(Eigen::Vector3i const &vec) {
   return result;
 }
 
-inline std::string to_string(DisplacementDirection const &vec) {
-  std::string result("");
-  for (auto const &dir : vec) {
-    result += std::string(dir.first,dir.second);
+/*! Makes a string object of a displacement vector */
+inline std::string to_string(DisplacementDirection const &vec){
+  std::string out;
+  if (vec.empty()) out = "000";
+  for (auto const& dis : vec){ 
+    out.push_back(dis.first);
+    out.push_back(dis.second);
   }
-  return result;
+  return out;
 }
 inline std::ostream &operator<<(std::ostream &os, QuantumNumbers const &qn) {
   os << "\tmomentum: " << qn.momentum[0] << qn.momentum[1] << qn.momentum[2]
      << "\n\tdisplacement: ";
-  for (auto const& dir : qn.displacement){
+  for (auto const &dir : qn.displacement) {
     os << dir.first << dir.second;
   }
   os << "\n\tgamma struct: ";
@@ -152,3 +155,11 @@ struct Correlators_2 {
 typedef std::vector<QuantumNumbers> Operators;
 typedef std::vector<Operators> Operator_list;
 typedef std::vector<Correlators_2> Correlator_list;
+
+//Typedef for hypercubic blocking of gauge links, takes alpha1, alpha2 and
+//number of iterations
+struct HypPars {
+  double alpha1;
+  double alpha2;
+  ssize_t iterations;
+};

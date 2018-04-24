@@ -2,6 +2,7 @@
 
 #include <boost/format.hpp>
 
+#include <sstream>
 #include <vector>
 
 // member initializer is executed from left to right. Is used to set constant members
@@ -857,8 +858,7 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
     }
     limereader = limeCreateReader( ifs );
     if( limereader == (LimeReader *)NULL ) {
-      fprintf(stderr, "Unable to open LimeReader\n");
-      exit(500);
+      throw std::runtime_error("Unable to open LimeReader!");
     }
     while( (status = limeReaderNextRecord(limereader)) != LIME_EOF ) {
       if(status != LIME_SUCCESS ) {
@@ -888,12 +888,7 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
       }
       else {
         fclose(ifs);
-        fprintf(stderr, "single precision read!\n");
-
-        //fprintf(stderr, "Not implemented!\n");
-        exit(EXIT_FAILURE);
-        //read_lime_gauge_field_singleprec(gaugefield, filename, Lt, Lx, Ly, Lz);
-        return;
+        throw std::runtime_error("Single precision read!");
       }
     }
 
@@ -967,7 +962,7 @@ void GaugeField::read_lime_gauge_field_doubleprec_timeslices(double* gaugefield,
   }
   catch(std::exception& e){
     std::cout << e.what() << "in: ReadWrite::read_lime_gauge_field_doubleprec_timeslices\n";
-    exit(0);
+    throw e;
   }
 
 }

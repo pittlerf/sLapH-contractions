@@ -37,9 +37,9 @@ void RandomVector::write_random_vector(const std::string &filename) const {
   // writing random vector to file
   FILE *fp = NULL;
   if ((fp = fopen(filename.c_str(), "wb")) == NULL) {
-    std::cout << "failed to open file to write random vector: " << filename << "\n"
-              << std::endl;
-    exit(0);
+    std::ostringstream oss;
+    oss << "failed to open file to write random vector: " << filename;
+    std::runtime_error(oss.str());
   }
   int check_read_in = fwrite(&(vec[0]), sizeof(Complex), vec.size(), fp);
   if (check_read_in != ssize(vec))
@@ -55,9 +55,9 @@ void RandomVector::write_random_vector(const ssize_t entity,
   // writing random vector to file
   FILE *fp = NULL;
   if ((fp = fopen(filename.c_str(), "wb")) == NULL) {
-    std::cout << "failed to open file to write random vector: " << filename << "\n"
-              << std::endl;
-    exit(0);
+    std::ostringstream oss;
+    oss << "failed to open file to write random vector: " << filename;
+    std::runtime_error(oss.str());
   }
   int check_read_in = fwrite(&(vec[entity * length]), sizeof(Complex), length, fp);
   if (check_read_in != length)
@@ -72,9 +72,9 @@ void RandomVector::read_random_vector(const std::string &filename) {
   // open file for reading
   FILE *fp = NULL;
   if ((fp = fopen(filename.c_str(), "rb")) == NULL) {
-    std::cout << "failed to open file to read random vector: " << filename << "\n"
-              << std::endl;
-    exit(0);
+    std::ostringstream oss;
+    oss << "failed to open file to read random vector: " << filename;
+    std::runtime_error(oss.str());
   }
   // set random vector to zero
   std::fill(vec.begin(), vec.end(), Complex(.0, .0));
@@ -92,9 +92,9 @@ void RandomVector::read_random_vector(const ssize_t entity, const std::string &f
   std::cout << "\tReading random vector from file:\n\t\t" << filename << std::endl;
   FILE *fp = NULL;
   if ((fp = fopen(filename.c_str(), "rb")) == NULL) {
-    std::cout << "failed to open file to read random vector: " << filename << "\n"
-              << std::endl;
-    exit(0);
+    std::ostringstream oss;
+    oss << "failed to open file to read random vector: " << filename;
+    std::runtime_error(oss.str());
   }
   // reading data
   int check_read_in = fread(&(vec[entity * length]), sizeof(Complex), length, fp);

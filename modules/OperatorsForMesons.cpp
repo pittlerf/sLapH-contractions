@@ -105,7 +105,8 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
                                  const OperatorLookup &operator_lookuptable,
                                  const std::string &handling_vdaggerv,
                                  const std::string &path_vdaggerv,
-                                 const std::string &path_config)
+                                 const std::string &path_config,
+                                 const HypPars &hyp_parameters)
     : vdaggerv(),
       momentum(),
       operator_lookuptable(operator_lookuptable),
@@ -117,7 +118,8 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
       dilE(dilE),
       handling_vdaggerv(handling_vdaggerv),
       path_vdaggerv(path_vdaggerv),
-      path_config(path_config) {
+      path_config(path_config),
+      hyp_parameters(hyp_parameters){
 
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[operator_lookuptable.vdaggerv_lookup.size()][Lt]);
@@ -130,6 +132,8 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
 
   std::cout << "\tMeson operators initialised" << std::endl;
 }
+
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::build_vdaggerv(const std::string &filename, const int config) {
@@ -168,10 +172,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     Eigen::VectorXcd dis = Eigen::VectorXcd::Zero(dim_row);
     // Check if gauges are needed
     bool need_gauge = false;
+    bool need_smearing = false;
     for (auto const& op : operator_lookuptable.vdaggerv_lookup)
         if(!op.displacement.empty()) need_gauge=true;
+    // If parameters for smearing are set, smear operator
     GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, path_config,0,Lt-1,4);
-    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1); 
+    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1);
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
 #pragma omp for schedule(dynamic)
     for (ssize_t t = 0; t < Lt; ++t) {
@@ -193,6 +199,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           // Forward derivative
           Eigen::MatrixXcd W_t;
           if (!op.displacement.empty()){
+            if(hyp_parameters.iterations > 0){
+              const double alpha1 = hyp_parameters.alpha1;
+              const double alpha2 = hyp_parameters.alpha2; 
+              const size_t iter = hyp_parameters.iterations; 
+              gauge.smearing_hyp(t,alpha1,alpha2,iter);
+            }
             W_t = gauge.displace_eigenvectors(V_t[0],t,op.displacement,1);
             vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
           }
@@ -207,13 +219,14 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
-            auto const dummy2 = (boost::format("operators.%04d.p_") % config).str();
-            std::string dummy = dummy2 + std::to_string(op.momentum[0]) +
+            std::string momentum_string = std::to_string(op.momentum[0]) +
                                 std::to_string(op.momentum[1]) +
                                 std::to_string(op.momentum[2]);
-
-            auto const outfile = (boost::format("%s_.t_%03d") % dummy % t).str();
-            write_vdaggerv(full_path, outfile, vdaggerv[op.id][t]);
+            std::string displacement_string = to_string(op.displacement);
+            std::string outfile = (boost::format("operators.%04d.p_%s.d_%s.t_%03d" )%
+                       config % momentum_string % displacement_string %
+                       (int)t ).str();
+            write_vdaggerv(full_path, std::string(outfile), vdaggerv[op.id][t]);
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
@@ -275,13 +288,15 @@ void OperatorFactory::read_vdaggerv(const int config) {
               }
             }
             if (!file.good()) {
-              std::cout << "Problems while reading from " << infile << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile;
+              std::runtime_error(oss.str());
             }
             file.close();
           } else {
-            std::cout << "can't open " << infile << std::endl;
-            exit(0);
+            std::ostringstream oss;
+            oss << "Can't open " << infile;
+            std::runtime_error(oss.str());
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
@@ -349,8 +364,9 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
             }
             vdaggerv[op.id][t].adjointInPlace();
             if (!file1.good()) {
-              std::cout << "Problems while reading from " << infile1 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile1;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file1.close();
@@ -371,14 +387,16 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
 //            // (master branch)
 //            vdaggerv[op.id][t].adjointInPlace();
             if (!file2.good()) {
-              std::cout << "Problems while reading from " << infile2 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile2;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file2.close();
         } else {
-          std::cout << "can't open " << infile1 << " NOR " << infile2 << std::endl;
-          exit(0);
+          std::ostringstream oss;
+          oss << "can't open " << infile1 << " NOR " << infile2;
+          std::runtime_error(oss.str());
         }
       } else  // zero momentum
         for (ssize_t t = 0; t < Lt; ++t)
@@ -417,9 +435,7 @@ void OperatorFactory::create_operators(const std::string &filename,
   else if (handling_vdaggerv == "liuming")
     read_vdaggerv_liuming(config);
   else {
-    std::cout << "\n\tThe flag handling_vdaggerv in input file is wrong!!\n\n"
-              << std::endl;
-    exit(0);
+    throw std::runtime_error("The flag handling_vdaggerv in input file is wrong!");
   }
 }
 
