@@ -5,7 +5,7 @@ if(${benchmark_FOUND})
     main.cpp
     )
 
-  target_link_libraries(bench-main benchmark::benchmark)
+  target_link_libraries(bench-main benchmark::benchmark lcontract)
 
 else()
   message(STATUS "Google benchmark framework was not found, not building benchmarks.")

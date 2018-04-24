@@ -7,19 +7,16 @@ endif()
 
 
 if(${GTEST_FOUND})
-  include_directories(${GTEST_INCLUDE_DIRS})
-
-  add_executable(main
+  add_executable(main-gtest
     main.cpp
     gamma.cpp
-    ../../modules/Gamma.cpp
     )
 
-  target_link_libraries(main ${GTEST_LIBRARIES})
+  target_link_libraries(main-gtest GTest::GTest lcontract)
 
   enable_testing()
   add_test(NAME gtest
-    COMMAND ./main)
+    COMMAND ./main-gtest)
 else()
   message(STATUS "gtest was not found, building without this test.")
 endif()
