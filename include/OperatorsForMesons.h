@@ -105,3 +105,9 @@ private:
 
 
 };
+
+void create_momenta(const ssize_t Lx,
+                    const ssize_t Ly,
+                    const ssize_t Lz,
+                    const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+                    array_cd_d2 &momentum);

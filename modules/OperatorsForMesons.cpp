@@ -12,7 +12,6 @@
 
 #include <iomanip>
 
-namespace {
 
 /*! Creates a two-dimensional vector containing the momenta for the operators
  *
@@ -53,6 +52,8 @@ void create_momenta(const ssize_t Lx,
     }  // loops over spatial vectors end here
   }    // loop over redundant quantum numbers ends here
 }
+
+namespace {
 
 /******************************************************************************/
 void write_vdaggerv(const std::string &pathname,

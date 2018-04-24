@@ -1,4 +1,4 @@
-//#include "OperatorsForMesons.h"
+#include "OperatorsForMesons.h"
 
 #include <benchmark/benchmark.h>
 
@@ -12,14 +12,16 @@ static void BM_exp(benchmark::State &state) {
 
 BENCHMARK(BM_exp);
 
-#if 0
 static void BM_create_momenta_old(benchmark::State &state) {
-  std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup{
-    {0, {1, 2, 3}, {}}
-  };
+  ssize_t Lx = 32, Ly = 32, Lz = 32, Lt = 96;
+  std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup{{0, {1, 2, 3}, {}}};
+  array_cd_d2 momentum(boost::extents[1][Lx*Ly*Lz]);
+
+  for (auto _ : state) {
+    create_momenta(Lx, Ly, Lz, vdaggerv_lookup, momentum);
+  }
 }
 
 BENCHMARK(BM_create_momenta_old);
-#endif
 
 BENCHMARK_MAIN();
