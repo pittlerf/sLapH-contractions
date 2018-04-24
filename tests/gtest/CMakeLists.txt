@@ -10,6 +10,7 @@ if(${GTEST_FOUND})
   add_executable(main-gtest
     main.cpp
     gamma.cpp
+    create_momenta.cpp
     )
 
   target_link_libraries(main-gtest GTest::GTest lcontract)
