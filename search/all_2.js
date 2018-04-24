@@ -3,6 +3,8 @@ var searchData=
   ['backward_5fuv',['backward_uv',['../class_gauge_field.html#a4126fc11039c2be8d713f4e83a2d6bda',1,'GaugeField']]],
   ['base',['BASE',['../ranlxs_8cpp.html#a79bcfb6bde984f42d1124b068a509af7',1,'ranlxs.cpp']]],
   ['begin',['begin',['../class_dilution_iterator.html#a4932e77a3504929fc9349c1aa7596391',1,'DilutionIterator::begin()'],['../class_dilution_scheme.html#a0b6218536847ae496013f2ec61a49a5c',1,'DilutionScheme::begin()']]],
+  ['benchmark',['BENCHMARK',['../benchmarks_2main_8cpp.html#ab1ff17999a24fcd25c767fc050a10b69',1,'BENCHMARK(BM_create_momenta_old):&#160;main.cpp'],['../benchmarks_2main_8cpp.html#ade36b8c318b7562008db899e3692aba4',1,'BENCHMARK(BM_create_momenta_new):&#160;main.cpp']]],
+  ['benchmark_5fmain',['BENCHMARK_MAIN',['../benchmarks_2main_8cpp.html#a5851750faa9cfec10f7cad1f3b89697e',1,'main.cpp']]],
   ['big_5fendian',['big_endian',['../io__utils_8h.html#a0833b57cbbe8a57ab5e7e11be6aa5c3d',1,'big_endian():&#160;io_utils.cpp'],['../io__utils_8cpp.html#a0833b57cbbe8a57ab5e7e11be6aa5c3d',1,'big_endian():&#160;io_utils.cpp']]],
   ['block',['block',['../dilution-iterator_8h.html#a58d067538ffe364c891ea41ddcf52aaba14511f2f5564650d129ca7cabc333278',1,'dilution-iterator.h']]],
   ['block_5fsink_5f',['block_sink_',['../class_block_iterator.html#a0db5800c68d9371c2532110bbf014d31',1,'BlockIterator::block_sink_()'],['../class_dilution_iterator.html#a5a7f961f8be4ff7d1f1c598d627a1f32',1,'DilutionIterator::block_sink_()']]],

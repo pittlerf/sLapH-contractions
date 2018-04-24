@@ -68,6 +68,8 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OperatorsForMesons.cpp File Reference</div>  </div>
 </div><!--header-->
@@ -78,6 +80,14 @@ $(function() {
 <code>#include &lt;iomanip&gt;</code><br />
 </div>
 <p><a href="_operators_for_mesons_8cpp_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a85be2e3a3fdab4447ba824298d651ba9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operators_for_mesons_8cpp.html#a85be2e3a3fdab4447ba824298d651ba9">create_momenta</a> (ssize_t const Lx, ssize_t const Ly, ssize_t const Lz, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;vdaggerv_lookup, <a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;momentum)</td></tr>
+<tr class="separator:a85be2e3a3fdab4447ba824298d651ba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a578fc372270eff9f114267490fbdc2c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operators_for_mesons_8cpp.html#a578fc372270eff9f114267490fbdc2c5">create_momenta_new</a> (ssize_t const Lx, ssize_t const Ly, ssize_t const Lz, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;vdaggerv_lookup, <a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;momentum)</td></tr>
+<tr class="separator:a578fc372270eff9f114267490fbdc2c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class definition of OperatorsForMesons</p>
 <dl class="section author"><dt>Author</dt><dd>Bastian Knippschild </dd>
@@ -85,7 +95,115 @@ $(function() {
 Markus Werner </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="_operators_for_mesons_8cpp_source.html">OperatorsForMesons.cpp</a>.</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a85be2e3a3fdab4447ba824298d651ba9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85be2e3a3fdab4447ba824298d651ba9">&#9670;&nbsp;</a></span>create_momenta()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void create_momenta </td>
+          <td>(</td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Lx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Ly</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Lz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>vdaggerv_lookup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;&#160;</td>
+          <td class="paramname"><em>momentum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a two-dimensional vector containing the momenta for the operators</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">Lx,Ly,Lz</td><td>Lattice extent in spatial directions </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">vdaggerv_lookup</td><td>Contains the momenta </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">momentum</td><td>Two dimensional array where the momenta are stored </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the quantum number id in op_VdaggerV will be used. The rest can be obtained by adjoining</p>
+
+<p class="definition">Definition at line <a class="el" href="_operators_for_mesons_8cpp_source.html#l00022">22</a> of file <a class="el" href="_operators_for_mesons_8cpp_source.html">OperatorsForMesons.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a578fc372270eff9f114267490fbdc2c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a578fc372270eff9f114267490fbdc2c5">&#9670;&nbsp;</a></span>create_momenta_new()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void create_momenta_new </td>
+          <td>(</td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Lx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Ly</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t const&#160;</td>
+          <td class="paramname"><em>Lz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>vdaggerv_lookup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;&#160;</td>
+          <td class="paramname"><em>momentum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the quantum number id in op_VdaggerV will be used. The rest can be obtained by adjoining</p>
+
+<p class="definition">Definition at line <a class="el" href="_operators_for_mesons_8cpp_source.html#l00055">55</a> of file <a class="el" href="_operators_for_mesons_8cpp_source.html">OperatorsForMesons.cpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
