@@ -40,7 +40,7 @@ struct GlobalData {
   int number_of_inversions;
   int start_config, end_config, delta_config;
   int verbose;
-  ssize_t nb_omp_threads, nb_eigen_threads;
+  ssize_t nb_eigen_threads;
   std::string path_eigenvectors;
   std::string name_eigenvectors;
   std::string filename_eigenvectors;

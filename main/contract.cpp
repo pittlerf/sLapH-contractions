@@ -46,7 +46,6 @@ int main(int ac, char *av[]) {
 
   // initialization of OMP paralization
   Eigen::initParallel();
-  omp_set_num_threads(gd.nb_omp_threads);
   Eigen::setNbThreads(gd.nb_eigen_threads);
 
   // ---------------------------------------------------------------------------

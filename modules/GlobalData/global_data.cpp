@@ -75,9 +75,6 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   // Options for infile ////////////////////////////////////////////////////////
 
   // parallelisation options
-  config.add_options()("nb_omp_threads",
-                       po::value<ssize_t>(&gd.nb_omp_threads)->default_value(1),
-                       "nb_omp_threads: number of openMP threads");
   config.add_options()("nb_eigen_threads",
                        po::value<ssize_t>(&gd.nb_eigen_threads)->default_value(1),
                        "nb_eigen_threads: number of threads Eigen uses internally");
@@ -388,7 +385,6 @@ std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
     GLOBAL_DATA_PRINT(gd.end_config);
     GLOBAL_DATA_PRINT(gd.delta_config);
     GLOBAL_DATA_PRINT(gd.verbose);
-    GLOBAL_DATA_PRINT(gd.nb_omp_threads);
     GLOBAL_DATA_PRINT(gd.nb_eigen_threads);
     GLOBAL_DATA_PRINT(gd.path_eigenvectors);
     GLOBAL_DATA_PRINT(gd.name_eigenvectors);
