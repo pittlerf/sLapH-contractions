@@ -85,6 +85,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a85be2e3a3fdab4447ba824298d651ba9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operators_for_mesons_8cpp.html#a85be2e3a3fdab4447ba824298d651ba9">create_momenta</a> (ssize_t const Lx, ssize_t const Ly, ssize_t const Lz, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;vdaggerv_lookup, <a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;momentum)</td></tr>
 <tr class="separator:a85be2e3a3fdab4447ba824298d651ba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb3c2a529c372f3734226dc7e0c5f48a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="typedefs_8h.html#a400479783e355a94cc961fb30b81b31f">Complex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operators_for_mesons_8cpp.html#adb3c2a529c372f3734226dc7e0c5f48a">roots_of_unity</a> (int momentum, ssize_t size)</td></tr>
+<tr class="separator:adb3c2a529c372f3734226dc7e0c5f48a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a578fc372270eff9f114267490fbdc2c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operators_for_mesons_8cpp.html#a578fc372270eff9f114267490fbdc2c5">create_momenta_new</a> (ssize_t const Lx, ssize_t const Ly, ssize_t const Lz, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;vdaggerv_lookup, <a class="el" href="typedefs_8h.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;momentum)</td></tr>
 <tr class="separator:a578fc372270eff9f114267490fbdc2c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -198,6 +200,36 @@ Markus Werner </dd></dl>
       </table>
 </div><div class="memdoc">
 <p>To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the quantum number id in op_VdaggerV will be used. The rest can be obtained by adjoining</p>
+
+<p class="definition">Definition at line <a class="el" href="_operators_for_mesons_8cpp_source.html#l00068">68</a> of file <a class="el" href="_operators_for_mesons_8cpp_source.html">OperatorsForMesons.cpp</a>.</p>
+
+</div>
+</div>
+<a id="adb3c2a529c372f3734226dc7e0c5f48a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb3c2a529c372f3734226dc7e0c5f48a">&#9670;&nbsp;</a></span>roots_of_unity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="typedefs_8h.html#a400479783e355a94cc961fb30b81b31f">Complex</a>&gt; roots_of_unity </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>momentum</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ssize_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="_operators_for_mesons_8cpp_source.html#l00055">55</a> of file <a class="el" href="_operators_for_mesons_8cpp_source.html">OperatorsForMesons.cpp</a>.</p>
 
