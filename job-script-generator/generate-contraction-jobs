@@ -89,7 +89,7 @@ def main():
             jobname=options.jobname + '_' + str(config_base_id),
             cpus_per_task = options.cpus_per_task,
             email_address=options.email,
-            rundir=os.path.abspath(options.rundir),
+            rundir=os.path.abspath(config_path),
             config_path=os.path.abspath(options.contractinput),
             config_ids_for_one_job=config_ids_for_one_job,
         )
