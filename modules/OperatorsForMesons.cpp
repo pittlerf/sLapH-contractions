@@ -52,56 +52,49 @@ void create_momenta(ssize_t const Lx,
   }    // loop over redundant quantum numbers ends here
 }
 
+std::vector<Complex> roots_of_unity(int momentum, ssize_t size) {
+  Complex const I(0.0, 1.0);
+
+  double const two_pi_p_L = momentum * 2.0 * M_PI / static_cast<double>(size);
+
+  std::vector<Complex> roots(size);
+  for (ssize_t i = 0; i < size; ++i) {
+    roots[i] = exp(-I * two_pi_p_L * static_cast<double>(i));
+  }
+
+  return roots;
+}
+
 void create_momenta_new(ssize_t const Lx,
                         ssize_t const Ly,
                         ssize_t const Lz,
                         std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
                         array_cd_d2 &momentum) {
-  static const std::complex<double> I(0.0, 1.0);
-
   /*! To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
    *  quantum number id in op_VdaggerV will be used. The rest can be obtained
    *  by adjoining
    */
   for (auto const &op : vdaggerv_lookup) {
-    // op_VdaggerV contains the index of one (redundancy) op_Corr which allows
-    // to deduce the quantum numbers (momentum).
-    double const ipx = op.momentum[0] * 2. * M_PI / static_cast<double>(Lx);
-    double const ipy = op.momentum[1] * 2. * M_PI / static_cast<double>(Ly);
-    double const ipz = op.momentum[2] * 2. * M_PI / static_cast<double>(Lz);
-
-    // Going to the next lattice site means multiplication with the base phase
-    // factor. This lets us avoid calling `exp()` for each argument $i \vec{p}
-    // \cdot \vec{x}$. A complex multiplication is likely cheaper than the
-    // complex exponential function. This chain of multiplication might lead to
-    // rounding errors for large lattices.
-    auto const base_phase_x = exp(-I * ipx);
-    auto const base_phase_y = exp(-I * ipy);
-    auto const base_phase_z = exp(-I * ipz);
-
-    std::complex<double> phase_x{1.0, 0.0};
+    auto const phases_x = roots_of_unity(op.momentum[0], Lx);
+    auto const phases_y = roots_of_unity(op.momentum[1], Ly);
+    auto const phases_z = roots_of_unity(op.momentum[2], Lz);
 
     // Calculate $\vec{p} \cdot \vec{x}$ for all $\vec{x}$ on the lattice.
     for (ssize_t x = 0; x < Lx; ++x) {
       auto const xH = x * Ly * Lz;
-      auto phase_xy = phase_x;
+      auto const phase_x = phases_x[x];
 
       for (ssize_t y = 0; y < Ly; ++y) {
         auto const xHyH = xH + y * Lz;
-        auto phase_xyz = phase_xy;
+        auto const phase_xy = phase_x * phases_y[y];
 
         for (ssize_t z = 0; z < Lz; ++z) {
+          auto const phase_xyz = phase_xy * phases_z[z];
           momentum[op.id][xHyH + z] = phase_xyz;
-
-          phase_xyz *= base_phase_z;
         }
-
-        phase_xy *= base_phase_y;
       }
-
-      phase_x *= base_phase_x;
-    }  // loops over spatial vectors end here
-  }    // loop over redundant quantum numbers ends here
+    }
+  }
 }
 
 namespace {
