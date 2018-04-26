@@ -37,7 +37,8 @@ int main(int ac, char *av[]) {
             << "  git branch " << git_refspec << "\n"
             << "  git revision " << git_sha1 << "\n"
             << "  git state " << git_changes << "\n"
-            << "  compiled by " << git_user << " on " << git_host << "\n";
+            << "  compiled by " << git_user << " on " << git_host << "\n"
+            << "  running with up to " << omp_get_max_threads() << " OpenMP threads\n";
 
   // reading global parameters from input file
   GlobalData gd;
