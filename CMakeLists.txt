@@ -71,14 +71,14 @@ if(NOT DEFINED HDF5_INCLUDE_DIRS OR NOT DEFINED HDF5_LIBRARIES)
   find_package(HDF5 REQUIRED COMPONENTS C CXX)
 endif()
 target_include_directories(lcontract PUBLIC ${HDF5_INCLUDE_DIRS})
-target_link_libraries(lcontract ${HDF5_LIBRARIES})
+target_link_libraries(lcontract PUBLIC ${HDF5_LIBRARIES})
 
 # Boost
 if(NOT DEFINED Boost_INCLUDE_DIRS OR NOT DEFINED Boost_LIBRARIES)
   find_package(Boost REQUIRED COMPONENTS filesystem system program_options)
 endif()
 target_include_directories(lcontract PUBLIC ${Boost_INCLUDE_DIRS})
-target_link_libraries(lcontract ${Boost_LIBRARIES})
+target_link_libraries(lcontract PUBLIC ${Boost_LIBRARIES})
 
 # Eigen
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
@@ -91,7 +91,7 @@ if(NOT DEFINED LIME_INCLUDE_DIRS)
   message(FATAL_ERROR "Must specify -DLIME_INCLUDE_DIRS on the command line to CMake.")
 endif()
 target_include_directories(lcontract SYSTEM PUBLIC ${LIME_INCLUDE_DIRS})
-target_link_libraries(lcontract ${LIME_LIBRARIES})
+target_link_libraries(lcontract PUBLIC ${LIME_LIBRARIES})
 
 # Lime
 if(NOT DEFINED LIME_LIBRARIES)
@@ -101,7 +101,7 @@ endif()
 # OpenMP
 find_package(OpenMP)
 #target_compile_options(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
-target_link_libraries(lcontract OpenMP::OpenMP_CXX)
+target_link_libraries(lcontract PUBLIC OpenMP::OpenMP_CXX)
 
 ###############################################################################
 #                                 Build Flags                                 #
