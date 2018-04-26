@@ -360,7 +360,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
 
 std::ostream &operator<<(std::ostream &os, std::map<int, int> const &map) {
     for (auto const &elem : map) {
-        os << elem.first << "→" << elem.second << " ";
+        os << elem.first << "->" << elem.second << " ";
     }
     return os;
 }
