@@ -100,8 +100,8 @@ endif()
 
 # OpenMP
 find_package(OpenMP)
-#target_compile_options(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
-target_link_libraries(lcontract PUBLIC OpenMP::OpenMP_CXX)
+target_compile_options(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
+target_link_libraries(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 #                                 Build Flags                                 #
