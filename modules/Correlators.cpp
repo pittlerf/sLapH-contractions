@@ -11,6 +11,8 @@
 
 #include <iomanip>
 
+#include <omp.h>
+
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
@@ -163,7 +165,7 @@ void contract(const ssize_t Lt,
       }
       local_timer = omp_get_wtime() - local_timer;
       std::cout << "Thread " << omp_get_thread_num() << " build_trQ0Q2 " <<
-        std::setprecision(3) << local_timer << " seconds" << std::endl;
+        local_timer << " seconds" << std::endl;
 
       local_timer = omp_get_wtime();
       // Build trQ1Q1.
@@ -186,7 +188,7 @@ void contract(const ssize_t Lt,
       }
       local_timer = omp_get_wtime() - local_timer;
       std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
-        std::setprecision(3) << local_timer << " seconds" << std::endl;
+        local_timer << " seconds" << std::endl;
 
       local_timer = omp_get_wtime();
       // Build tr(Q1).
@@ -200,7 +202,7 @@ void contract(const ssize_t Lt,
       }
       local_timer = omp_get_wtime() - local_timer;
       std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
-        std::setprecision(3) << local_timer << " seconds" << std::endl;
+        local_timer << " seconds" << std::endl;
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
@@ -217,7 +219,7 @@ void contract(const ssize_t Lt,
         local_timer = omp_get_wtime() - local_timer;
         std::cout << "Thread " << omp_get_thread_num() << " diagram " <<
           diagram->name() << " " <<
-          std::setprecision(3) << local_timer << " seconds" << std::endl;
+          local_timer << " seconds" << std::endl;
 
       }    // End of diagram loop.
 

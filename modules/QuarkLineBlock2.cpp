@@ -1,6 +1,7 @@
 #include "QuarkLineBlock2.h"
 
 #include <utility>
+#include <iostream>
 
 namespace {
 std::complex<double> const I(0.0, 1.0);
@@ -32,15 +33,24 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
   int const eigenspace_dirac_size = dilD * dilE;
 
   auto const t1 = time_key[0];
+  
+  double local_timer;
 
   for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     const ssize_t gamma_id = op.gamma[0];
+
+    local_timer = omp_get_wtime();
+
     Eigen::MatrixXcd vdv;
     if (op.need_vdaggerv_daggering == false)
       vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
     else
       vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
+
+    local_timer = omp_get_wtime() - local_timer;
+    std::cout << "[DilutedFactorFactory::Q0] return_vdaggerv Thread " <<
+      omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
 
     ssize_t rnd_counter = 0;
     int check = -1;
@@ -49,7 +59,8 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
     /*! Dilution of columns */
     for (const auto &rnd_id : op.rnd_vec_ids) {
       if (check != rnd_id.second) {  // this avoids recomputation
-        /*! Should be 4*new rows, but there is always just one entry not zero */
+        local_timer = omp_get_wtime();
+        /*! Should be 4*nev rows, but there is always just one entry not zero */
         M = Eigen::MatrixXcd::Zero(nev, 4 * dilE);
         for (ssize_t block = 0; block < 4; block++) {
           for (ssize_t vec_i = 0; vec_i < nev; vec_i++) {
@@ -58,12 +69,15 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
                 vdv.col(vec_i) * rnd_vec(rnd_id.second, blk);
           }
         }
+        local_timer = omp_get_wtime() - local_timer;
+        std::cout << "[DilutedFactorFactory::Q0] VdaggerV*r Thread " <<
+          omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
       }
 
+      local_timer = omp_get_wtime();
       /*! Dilution of rows and creating a sparse matrix from smaller blocks */
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
-
       for (ssize_t block = 0; block < 4; block++) {
         const Complex value = gamma_vec[gamma_id].value[block];
         const ssize_t gamma_index = gamma_vec[gamma_id].row[block];
@@ -74,6 +88,9 @@ void DilutedFactorFactory<DilutedFactorType::Q0>::build(Key const &time_key) {
               std::conj(rnd_vec(rnd_id.first, blk));
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "[DilutedFactorFactory::Q0] r*VdaggerV*r Thread " <<
+        omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
 
       check = rnd_id.second;
       rnd_counter++;
@@ -94,19 +111,25 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
   int const t1 = time_key[0];
   int const b2 = time_key[1];
 
+  double local_timer;
+
   for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     for (auto const &rnd_id : op.rnd_vec_ids) {
       auto const gamma_id = op.gamma[0];
 
+      local_timer = omp_get_wtime();
       Eigen::MatrixXcd vdv;
       if (op.need_vdaggerv_daggering == false)
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1);
       else
         vdv = meson_operator.return_vdaggerv(op.id_vdaggerv, t1).adjoint();
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "[DilutedFactorFactory::Q1] return_vdaggerv Thread " <<
+        omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
 
+      local_timer = omp_get_wtime();
       Eigen::MatrixXcd rvdaggerv = Eigen::MatrixXcd::Zero(eigenspace_dirac_size, nev);
-
       for (ssize_t block = 0; block < dilD; block++) {
         for (ssize_t vec_i = 0; vec_i < nev; ++vec_i) {
           ssize_t blk = block + vec_i * dilD + dilD * nev * t1;
@@ -114,7 +137,11 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
               vdv.row(vec_i) * std::conj(rnd_vec(rnd_id.first, blk));
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "[DilutedFactorFactory::Q1] r*VdaggerV Thread " <<
+        omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
 
+      local_timer = omp_get_wtime();
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
       for (int row = 0; row < dilD; row++) {
@@ -127,6 +154,10 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
                                          dilE);
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "[DilutedFactorFactory::Q1] r*VdaggerV*Peram*r Thread " <<
+        omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
+
       Ql[time_key][{operator_key}].push_back(
           {matrix, std::make_pair(rnd_id.first, rnd_id.second), {}});
     }
@@ -143,6 +174,8 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
   auto const t1 = time_key[1];
   auto const b2 = time_key[2];
 
+  double local_timer;
+
   for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
     ssize_t rnd_counter = 0;
@@ -152,6 +185,7 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
 
     for (const auto &rnd_id : op.rnd_vec_ids) {
       if (check != rnd_id.first) {  // this avoids recomputation
+        local_timer = omp_get_wtime();
         for (int row = 0; row < dilD; row++) {
           for (int col = 0; col < 4; col++) {
             if (!op.need_vdaggerv_daggering)
@@ -171,7 +205,12 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
               M.block(col * dilE, row * nev, dilE, nev) *= -1.;
           }
         }
+        local_timer = omp_get_wtime() - local_timer;
+        std::cout << "[DilutedFactorFactory::Q2] Peram_dagger*VdaggerV Thread " <<
+          omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
       }
+     
+      local_timer = omp_get_wtime(); 
       Eigen::MatrixXcd matrix =
           Eigen::MatrixXcd::Zero(eigenspace_dirac_size, eigenspace_dirac_size);
 
@@ -189,6 +228,10 @@ void DilutedFactorFactory<DilutedFactorType::Q2>::build(Key const &time_key) {
           }
         }
       }
+      local_timer = omp_get_wtime() - local_timer;
+      std::cout << "[DilutedFactorFactory::Q2] r*VdaggerV*Peram*r Thread " <<
+        omp_get_thread_num() << " Timing " << local_timer << " seconds " << std::endl;
+      
       check = rnd_id.first;
       rnd_counter++;
 

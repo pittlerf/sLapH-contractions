@@ -1,5 +1,8 @@
 #include "Diagram.h"
 
+#include <omp.h>
+#include <iostream>
+
 /*****************************************************************************/
 /*                                    C2c                                    */
 /*****************************************************************************/
@@ -69,6 +72,8 @@ void C3c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   DilutedFactors<2, 1> L1;
+  double local_timer;
+  local_timer = omp_get_wtime();
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(
         L1,
@@ -76,13 +81,20 @@ void C3c::assemble_impl(std::vector<Complex> &c,
         q.q0[{slice_pair.source()}],
         q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C3c::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
         trace(L1[std::get<0>(ids)],
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C3c::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
 
 /*****************************************************************************/
@@ -107,19 +119,27 @@ void C30::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   DilutedFactors<2, 1> L1;
+  double local_timer = omp_get_wtime();
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1, 0, 0>(L1,
                          std::get<0>(ids),
                          q.q1[{slice_pair.source(), slice_pair.source_block()}],
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C30::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
         trace(L1[std::get<0>(ids)],
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C30::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
 
 /*****************************************************************************/
@@ -230,6 +250,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
 void C4cB::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  double local_timer = omp_get_wtime();
   DilutedFactors<2, 1> L1;
   DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -245,11 +266,18 @@ void C4cB::assemble_impl(std::vector<Complex> &c,
         q.q0[{slice_pair.sink()}],
         q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C4cB::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C4cB::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
 
 /*****************************************************************************/
@@ -273,6 +301,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
 void C40B::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  double local_timer = omp_get_wtime();
   DilutedFactors<2, 1> L1;
   DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -286,11 +315,18 @@ void C40B::assemble_impl(std::vector<Complex> &c,
                          q.q1[{slice_pair.sink(), slice_pair.sink_block()}],
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C40B::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C40B::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
 
 /*****************************************************************************/
@@ -314,6 +350,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
 void C4cC::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  double local_timer = omp_get_wtime();
   DilutedFactors<2, 1> L1;
   DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -328,11 +365,18 @@ void C4cC::assemble_impl(std::vector<Complex> &c,
         q.q0[{slice_pair.sink()}],
         q.q2v[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C4cC::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C4cC::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
 
 /*****************************************************************************/
@@ -356,6 +400,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
 void C40C::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  double local_timer = omp_get_wtime();
   DilutedFactors<2, 1> L1;
   DilutedFactors<2, 1> L2;
   for (const auto &ids : quantum_num_ids_) {
@@ -369,9 +414,16 @@ void C40C::assemble_impl(std::vector<Complex> &c,
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}],
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C40C::assemble_impl] multiply Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 
+  local_timer = omp_get_wtime();
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
+  local_timer = omp_get_wtime() - local_timer;
+  std::cout << "[C40C::assemble_impl] trace Thread " << omp_get_thread_num() <<
+    " Timing " << local_timer << " seconds" << std::endl;
 }
