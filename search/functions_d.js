@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['qline_5fid',['qline_id',['../class_block_iterator.html#a143e240bfa39327a476ab61d50c84870',1,'BlockIterator']]],
-  ['quark',['quark',['../structquark.html#ad88f82ff1030d6455ea81ffb745a4966',1,'quark']]],
-  ['quark_5fcheck',['quark_check',['../namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4',1,'global_data_utils']]]
+  ['perambulator',['Perambulator',['../class_perambulator.html#ac85a18292e5cd1b6f2b71ff5b763a035',1,'Perambulator::Perambulator()'],['../class_perambulator.html#a34bc2d5ca3c68d2467548fe274b27c57',1,'Perambulator::Perambulator(const ssize_t nb_entities, const std::vector&lt; ssize_t &gt; &amp;size_rows, const std::vector&lt; ssize_t &gt; &amp;size_cols)']]],
+  ['plaque_5fpnt',['plaque_pnt',['../class_gauge_field.html#a64fdb2aebbfdfb7cd9e5e2c25295918d',1,'GaugeField']]],
+  ['plaque_5fts',['plaque_ts',['../class_gauge_field.html#ab2f4a0363717709cc9e4d541969bf7a7',1,'GaugeField']]],
+  ['print',['print',['../class_stop_watch.html#a829d6b4d6ebd1817e2ded17f5fc1e3e7',1,'StopWatch::print()'],['../_diluted_factor_8h.html#a53860cd5fa11c60e1a75574e7e351b05',1,'print(DilutedFactors&lt; n, rvecs &gt; const &amp;otfm):&#160;DilutedFactor.h'],['../_quark_line_block2_8h.html#a98df23161e9a5cbaf7d57633a713a5c8',1,'print(std::array&lt; T, n &gt; const &amp;a):&#160;QuarkLineBlock2.h']]]
 ];

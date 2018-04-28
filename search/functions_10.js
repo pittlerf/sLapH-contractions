@@ -1,10 +1,24 @@
 var searchData=
 [
-  ['test',['TEST',['../create__momenta_8cpp.html#a6061f045ef53ee7c58d74878bb28aa5e',1,'TEST(createMomenta, aniso):&#160;create_momenta.cpp'],['../tests_2gtest_2_gamma_8cpp.html#a072bd81762288f95f30f02f3d081602d',1,'TEST(gamma, checkBasis):&#160;gamma.cpp'],['../tests_2gtest_2_gamma_8cpp.html#aa4cb895d2d70bc40fc2d2afdb73cbb92',1,'TEST(gamma, checkProducts):&#160;gamma.cpp']]],
-  ['test_5fdilution_5fscheme',['test_dilution_scheme',['../dilution-iterator_8h.html#a7f02b8bedffe62f3bfaafe4bdfd210f7',1,'test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type):&#160;dilution-iterator.cpp'],['../dilution-iterator_8cpp.html#a7f02b8bedffe62f3bfaafe4bdfd210f7',1,'test_dilution_scheme(int const num_slice, int const num_block, DilutionType const type):&#160;dilution-iterator.cpp']]],
-  ['time_5fto_5fblock',['time_to_block',['../class_dilution_scheme.html#a1c18258ef39dd8bfb2faefdb15846034',1,'DilutionScheme']]],
-  ['to_5fstring',['to_string',['../_diluted_factor_8h.html#a3a67df60346c5a21304e5262200c84e4',1,'to_string(typename DilutedFactors&lt; n, rvecs &gt;::key_type const &amp;array):&#160;DilutedFactor.h'],['../global__data__typedefs_8h.html#a05253c6ba3e37a87d2d516017ef122f0',1,'to_string(std::vector&lt; int &gt; const &amp;vec):&#160;global_data_typedefs.h'],['../global__data__typedefs_8h.html#ab9e36a84835c04956f443140d6953324',1,'to_string(Eigen::Vector3i const &amp;vec):&#160;global_data_typedefs.h'],['../global__data__typedefs_8h.html#aa7c9e67bb68640bca89fc7eea14a08d8',1,'to_string(DisplacementDirection const &amp;vec):&#160;global_data_typedefs.h']]],
-  ['trace',['trace',['../_diluted_factor_8h.html#a086a0cdd2b40ca683df07f19fec42337',1,'DilutedFactor.h']]],
-  ['trafo',['trafo',['../class_gauge_field.html#a91e42dc5390fd17be1d15ec3e4a79b7b',1,'GaugeField']]],
-  ['trafo_5fev',['trafo_ev',['../class_gauge_field.html#a8238b8b87ead46470e0bab3a83d35865',1,'GaugeField']]]
+  ['set',['set',['../class_random_vector.html#a6fa7e60727cb82e298a931da03de6ae0',1,'RandomVector::set(const ssize_t entity, const int seed)'],['../class_random_vector.html#a5ba28a2a2e02ba94141c3c326f635068',1,'RandomVector::set(const ssize_t entity, const int seed, const std::string &amp;filename)']]],
+  ['set_5fv',['set_V',['../class_eigen_vector.html#a3b4c6b54c6b7e4c4efca9d99fefd54c9',1,'EigenVector']]],
+  ['single2double',['single2double',['../io__utils_8h.html#a197346db5240db3b6d3923e9fbae9bba',1,'single2double(void *out_ptr, void *in_ptr, int nmemb):&#160;io_utils.cpp'],['../io__utils_8cpp.html#a197346db5240db3b6d3923e9fbae9bba',1,'single2double(void *out_ptr, void *in_ptr, int nmemb):&#160;io_utils.cpp']]],
+  ['single2double_5fcm',['single2double_cm',['../io__utils_8h.html#a7ccca1debcdc539524a43845f0746df9',1,'io_utils.h']]],
+  ['sink',['sink',['../class_block_iterator.html#ae394e7e320d240f4dec35a0ab0cfb719',1,'BlockIterator::sink()'],['../class_dilution_iterator.html#a3c7d906c2092e6ee23634f2f7a8d12e7',1,'DilutionIterator::sink()']]],
+  ['sink_5fblock',['sink_block',['../class_block_iterator.html#a83b36fe64646d84df68f13070be40277',1,'BlockIterator']]],
+  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a1389d13ea4ad89f0c247f5b8cf1b83ba',1,'OperatorLookup::size()']]],
+  ['smearing_5fape',['smearing_ape',['../class_gauge_field.html#a18610e999eee481068945b9ffdd0f742',1,'GaugeField']]],
+  ['smearing_5fhyp',['smearing_hyp',['../class_gauge_field.html#a6de55b42bfa727d31ecbe7d68e57494c',1,'GaugeField']]],
+  ['smearing_5fstout',['smearing_stout',['../class_gauge_field.html#abde12791b12bdaf4987e43de18ec653c',1,'GaugeField']]],
+  ['source',['source',['../class_block_iterator.html#ad1ce640d7741de07e3e34b5d75f4f5f1',1,'BlockIterator::source()'],['../class_dilution_iterator.html#aeb3fdb64f9efa61da4f83795423c1226',1,'DilutionIterator::source()']]],
+  ['source_5fblock',['source_block',['../class_block_iterator.html#afd98f85fe438ca98e4b3de2ff631c6c8',1,'BlockIterator']]],
+  ['sparse_5fto_5feigen_5fdense',['sparse_to_eigen_dense',['../tests_2gtest_2_gamma_8cpp.html#af4c5a34121d67ac9ff28ad33a3bd2eeb',1,'gamma.cpp']]],
+  ['ssize',['ssize',['../typedefs_8h.html#a3908e1f24dddac75b5bb70e3b4eaa55f',1,'typedefs.h']]],
+  ['start',['start',['../class_stop_watch.html#a09a3c8f9ab03d7b28e4f8b90a833974e',1,'StopWatch']]],
+  ['stop',['stop',['../class_stop_watch.html#a6e80b598d9304e37d8768b716e713e0e',1,'StopWatch']]],
+  ['stopwatch',['StopWatch',['../class_stop_watch.html#aa080f1ca8b2da216700814ec7d21e8b7',1,'StopWatch']]],
+  ['store_5fto',['store_to',['../class_stop_watch.html#af0595feee04a52011c09e0db446d7bc8',1,'StopWatch']]],
+  ['sub_5faccumulate',['sub_accumulate',['../_diluted_factor_8h.html#af644d11b9fd92ba028b508ef0d123813',1,'DilutedFactor.h']]],
+  ['summands',['summands',['../class_stop_watch.html#aa4a68ed625afc6fadb748798c8135104',1,'StopWatch']]],
+  ['summed_5fdisplacement',['summed_displacement',['../class_gauge_field.html#a5000029b1013c2fcf49c1960017067ae',1,'GaugeField']]]
 ];

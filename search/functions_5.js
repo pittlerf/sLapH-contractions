@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['factor_5fto_5ftrace',['factor_to_trace',['../_diluted_factor_8h.html#a9bb7c7de95a539e171cc9ba90697d28e',1,'factor_to_trace(std::vector&lt; DilutedFactor&lt; rvecs1 &gt;&gt; const &amp;left_vec, std::vector&lt; DilutedFactor&lt; rvecs2 &gt;&gt; const &amp;right_vec):&#160;DilutedFactor.h'],['../_diluted_factor_8h.html#ab5e687dfd1a8b78be968c6f1c02f254b',1,'factor_to_trace(std::vector&lt; DilutedFactor&lt; rvecs &gt;&gt; const &amp;vec):&#160;DilutedFactor.h']]],
-  ['forward_5fuv',['forward_uv',['../class_gauge_field.html#a9985ef91ad25f4a72bd2a1eb9a89e7db',1,'GaugeField']]],
-  ['free_5fmemory_5fvdaggerv',['free_memory_vdaggerv',['../class_operator_factory.html#ad489f1dd0d0b1de1d6a0a6d72f0dfca9',1,'OperatorFactory']]]
+  ['eigenvector',['EigenVector',['../class_eigen_vector.html#ac6517ee52877fd9f972803b229f6034a',1,'EigenVector::EigenVector()'],['../class_eigen_vector.html#a55495d6569f37b484e0e24e9bd49502a',1,'EigenVector::EigenVector(const ssize_t length, const ssize_t row_size, const ssize_t col_size)']]],
+  ['end',['end',['../class_dilution_iterator.html#ab64e7879087ae44e99db03f75bc2cbe4',1,'DilutionIterator::end()'],['../class_dilution_scheme.html#a0cff6782d09e0f1fbae905911a8488d1',1,'DilutionScheme::end()']]]
 ];
