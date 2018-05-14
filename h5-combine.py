@@ -30,8 +30,6 @@ def main():
 
                 # Retrieve a list of all available data sets.
                 for ds_id, datasetname in enumerate(file_input.keys()):
-                    print(' ', datasetname)
-
                     # If we are on the first file, create the needed datasets as groups
                     # in the output.
                     if first_iteration:
@@ -42,6 +40,8 @@ def main():
                     file_input.copy(datasetname, file_output['/{}'.format(datasetname)])
                     file_output.move('/{}/{}'.format(datasetname, datasetname),
                                      '/{}/{:04d}'.format(datasetname, ip_id))
+
+            file_output.flush()
 
             first_iteration = False
 
