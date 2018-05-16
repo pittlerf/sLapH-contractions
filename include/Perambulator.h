@@ -57,7 +57,8 @@ class Perambulator {
                          const ssize_t Lt,
                          const ssize_t nb_eigen_vec,
                          const quark &quark,
-                         const std::string &filename);
+                         const std::string &filename,
+                         const bool mock = false);
 
   /*! Reading perambulators where each perambulator is stored in a different
    *  file
