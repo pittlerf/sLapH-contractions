@@ -9,6 +9,8 @@
 #include "dilution-iterator.h"
 #include "typedefs.h"
 
+#include "local_timer.h"
+
 #include <iomanip>
 
 #include <omp.h>
@@ -120,7 +122,7 @@ void contract(const ssize_t Lt,
   {
     swatch.start();
 
-    double local_timer;
+    LT_CORRELATOR_DECLARE;
 
     DiagramParts q(randomvectors,
                    perambulators,
@@ -144,7 +146,7 @@ void contract(const ssize_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
-      local_timer = omp_get_wtime();
+      LT_CORRELATOR_START;
       // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ0Q2) {
@@ -163,11 +165,10 @@ void contract(const ssize_t Lt,
                       slice_pair.source_block());
         }
       }
-      local_timer = omp_get_wtime() - local_timer;
-      std::cout << "Thread " << omp_get_thread_num() << " build_trQ0Q2 " <<
-        local_timer << " seconds" << std::endl;
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ0Q2");
 
-      local_timer = omp_get_wtime();
+      LT_CORRELATOR_START;
       // Build trQ1Q1.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ1Q1) {
@@ -186,11 +187,10 @@ void contract(const ssize_t Lt,
                       slice_pair.source_block());
         }
       }
-      local_timer = omp_get_wtime() - local_timer;
-      std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
-        local_timer << " seconds" << std::endl;
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ1Q1");
 
-      local_timer = omp_get_wtime();
+      LT_CORRELATOR_START;
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
         for (const auto &c_look : corr_lookup.trQ1) {
@@ -200,27 +200,22 @@ void contract(const ssize_t Lt,
                       slice_pair.source_block());
         }
       }
-      local_timer = omp_get_wtime() - local_timer;
-      std::cout << "Thread " << omp_get_thread_num() << " build_trQ1Q1 " <<
-        local_timer << " seconds" << std::endl;
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ1");
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
         if (diagram->corr_lookup().empty()) {
           continue;
         }
-        local_timer = omp_get_wtime();
-
+        LT_CORRELATOR_START;
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
           diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.
-        local_timer = omp_get_wtime() - local_timer;
-        std::cout << "Thread " << omp_get_thread_num() << " diagram " <<
-          diagram->name() << " " <<
-          local_timer << " seconds" << std::endl;
-
+        LT_CORRELATOR_STOP;
+        LT_CORRELATOR_PRINT( std::string("[contract] ") + diagram->name() );
       }    // End of diagram loop.
 
       q.clear();

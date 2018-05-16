@@ -7,6 +7,8 @@
 
 #include <mutex>
 
+#include <omp.h>
+
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
                Perambulator const &perambulator,

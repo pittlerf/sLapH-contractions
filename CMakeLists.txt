@@ -120,6 +120,24 @@ if(has_diagnostics_color)
   endif()
 endif()
 
+option(SLAPH_TIMING_CORRELATOR "Timing of correlator building (per thread)" OFF)
+option(SLAPH_TIMING_DIAGRAMS "Timing of individual diagram multiplies and traces" OFF)
+option(SLAPH_TIMING_ULTRA_FINE "Timing of DilutedFactor components" OFF)
+option(SLAPH_TIMING_FINE "Timing of QuarkLineBlock constructions" OFF)
+
+if(SLAPH_TIMING_CORRELATOR)
+  add_definitions("-DSLAPH_TIMING_CORRELATOR")
+endif()
+if(SLAPH_TIMING_DIAGRAMS)
+  add_definitions("-DSLAPH_TIMING_DIAGRAMS")
+endif()
+if(SLAPH_TIMING_ULTRA_FINE)
+  add_definitions("-DSLAPH_TIMING_ULTRA_FINE")
+endif()
+if(SLAPH_TIMING_FINE)
+  add_definitions("-DSLAPH_TIMING_FINE")
+endif()
+
 # Default to “Release” build type.
 message(STATUS "Build Type: '${CMAKE_BUILD_TYPE}'")
 if(CMAKE_BUILD_TYPE STREQUAL "")
@@ -129,9 +147,9 @@ endif()
 
 # Tune for the local architecture because this code will be used where it is
 # compiled, in most cases.
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -DEIGEN_DONT_PARALLELIZE")
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -DEIGEN_DONT_PARALLELIZE")
 
 ###############################################################################
 #                                 Executables                                 #

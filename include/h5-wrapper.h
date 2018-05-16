@@ -11,6 +11,8 @@
 #include <sstream>
 #include <string>
 
+#include <omp.h>
+
 #define PRINT(x) std::cout << #x << ": " << (x) << std::endl;
 
 void create_folder(std::string const &path);
