@@ -70,6 +70,13 @@ int main(int ac, char *av[]) {
                                   gd.path_config,
                                   gd.hyp_parameters);
 
+  if (gd.delta_config <= 0) {
+    std::cerr << "The 'delta_config' option has been set to a negative value. This makes "
+                 "no sense."
+              << std::endl;
+    std::abort();
+  }
+
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
   for (ssize_t config_i = gd.start_config; config_i <= gd.end_config;

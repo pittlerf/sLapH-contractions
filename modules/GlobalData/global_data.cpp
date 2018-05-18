@@ -162,7 +162,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                        po::value<int>(&gd.end_config)->default_value(0),
                        "Last configuration");
   config.add_options()("delta_config",
-                       po::value<int>(&gd.delta_config)->default_value(0),
+                       po::value<int>(&gd.delta_config)->default_value(1),
                        "Stepsize between two configurations");
 
   config.add_options()("momentum_cutoff_0",
