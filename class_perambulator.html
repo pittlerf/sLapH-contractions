@@ -85,8 +85,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab4c061d3fc27ce3672b0bf8e275ff9aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee1019448fa670f8b60340cdb54059f2"><td class="memItemLeft" align="right" valign="top">const Eigen::MatrixXcd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perambulator.html#aee1019448fa670f8b60340cdb54059f2">operator[]</a> (const ssize_t entity) const</td></tr>
 <tr class="separator:aee1019448fa670f8b60340cdb54059f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52d3f1f675a38cead34d8669accae4f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perambulator.html#a52d3f1f675a38cead34d8669accae4f3">read_perambulator</a> (const ssize_t entity, const ssize_t Lt, const ssize_t nb_eigen_vec, const <a class="el" href="structquark.html">quark</a> &amp;<a class="el" href="structquark.html">quark</a>, const std::string &amp;filename)</td></tr>
-<tr class="separator:a52d3f1f675a38cead34d8669accae4f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bbc99e9b8cccaf08d8e4479befadeea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perambulator.html#a0bbc99e9b8cccaf08d8e4479befadeea">read_perambulator</a> (const ssize_t entity, const ssize_t Lt, const ssize_t nb_eigen_vec, const <a class="el" href="structquark.html">quark</a> &amp;<a class="el" href="structquark.html">quark</a>, const std::string &amp;filename, const bool mock=false)</td></tr>
+<tr class="separator:a0bbc99e9b8cccaf08d8e4479befadeea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecf77bc4b1c8c8bfbc384c94436d9fac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_perambulator.html#aecf77bc4b1c8c8bfbc384c94436d9fac">read_perambulators_from_separate_files</a> (const ssize_t Lt, const ssize_t nb_eigen_vec, const std::vector&lt; <a class="el" href="structquark.html">quark</a> &gt; &amp;<a class="el" href="structquark.html">quark</a>, const std::vector&lt; std::string &gt; &amp;filename_list)</td></tr>
 <tr class="separator:aecf77bc4b1c8c8bfbc384c94436d9fac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -239,8 +239,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a52d3f1f675a38cead34d8669accae4f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52d3f1f675a38cead34d8669accae4f3">&#9670;&nbsp;</a></span>read_perambulator()</h2>
+<a id="a0bbc99e9b8cccaf08d8e4479befadeea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bbc99e9b8cccaf08d8e4479befadeea">&#9670;&nbsp;</a></span>read_perambulator()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,7 +273,13 @@ Private Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>filename</em>&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>mock</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -345,9 +351,9 @@ Private Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<p>Loops over</p><div class="fragment"><div class="line">nb_entities = <a class="code" href="structquark.html">quark</a>.size() * nb_rnd_vec </div></div><!-- fragment --><p>. For each internally <a class="el" href="class_perambulator.html#a52d3f1f675a38cead34d8669accae4f3">read_perambulator()</a> for a single file is called </p>
+<p>Loops over</p><div class="fragment"><div class="line">nb_entities = <a class="code" href="structquark.html">quark</a>.size() * nb_rnd_vec </div></div><!-- fragment --><p>. For each internally <a class="el" href="class_perambulator.html#a0bbc99e9b8cccaf08d8e4479befadeea">read_perambulator()</a> for a single file is called </p>
 
-<p class="definition">Definition at line <a class="el" href="_perambulator_8cpp_source.html#l00077">77</a> of file <a class="el" href="_perambulator_8cpp_source.html">Perambulator.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_perambulator_8cpp_source.html#l00082">82</a> of file <a class="el" href="_perambulator_8cpp_source.html">Perambulator.cpp</a>.</p>
 
 </div>
 </div>
