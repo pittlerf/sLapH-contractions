@@ -46,6 +46,7 @@ class EigenVector {
   //        verbose  -> if 1 additional information will be written out
   void read_eigen_vector(const std::string &filename,
                          const ssize_t t,
-                         const ssize_t verbose);
+                         const ssize_t verbose,
+                         const bool mock = false);
   void set_V(Eigen::MatrixXcd &v, const ssize_t t);
 };
