@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zero_5fspinor',['zero_spinor',['../io__utils_8h.html#ac2bad62a4aa8053b6a67c59f61c6ee04',1,'io_utils.h']]]
+  ['xcd_5fd3_5feigen',['Xcd_d3_eigen',['../typedefs_8h.html#a947c299fddc67914ffa986d3b5ac1bc8',1,'typedefs.h']]]
 ];
