@@ -75,9 +75,6 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   // Options for infile ////////////////////////////////////////////////////////
 
   // parallelisation options
-  config.add_options()("nb_omp_threads",
-                       po::value<ssize_t>(&gd.nb_omp_threads)->default_value(1),
-                       "nb_omp_threads: number of openMP threads");
   config.add_options()("nb_eigen_threads",
                        po::value<ssize_t>(&gd.nb_eigen_threads)->default_value(1),
                        "nb_eigen_threads: number of threads Eigen uses internally");
@@ -93,16 +90,16 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   config.add_options()(
       "lattice", po::value<std::string>(&gd.name_lattice), "Codename of the lattice");
   config.add_options()(
-      "Lt", po::value<int>(&gd.Lt)->default_value(0), "Lt: temporal lattice extend");
+      "Lt", po::value<int>(&gd.Lt)->default_value(0), "Lt: temporal lattice extent");
   config.add_options()("Lx",
                        po::value<int>(&gd.Lx)->default_value(0),
-                       "Lx: lattice extend in x direction");
+                       "Lx: lattice extent in x direction");
   config.add_options()("Ly",
                        po::value<int>(&gd.Ly)->default_value(0),
-                       "Ly: lattice extend in y direction");
+                       "Ly: lattice extent in y direction");
   config.add_options()("Lz",
                        po::value<int>(&gd.Lz)->default_value(0),
-                       "Lz: lattice extend in z direction");
+                       "Lz: lattice extent in z direction");
 
   config.add_options()("alpha1",
                        po::value<double>(&gd.hyp_parameters.alpha1)->default_value(0),
@@ -165,7 +162,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                        po::value<int>(&gd.end_config)->default_value(0),
                        "Last configuration");
   config.add_options()("delta_config",
-                       po::value<int>(&gd.delta_config)->default_value(0),
+                       po::value<int>(&gd.delta_config)->default_value(1),
                        "Stepsize between two configurations");
 
   config.add_options()("momentum_cutoff_0",
@@ -363,7 +360,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
 
 std::ostream &operator<<(std::ostream &os, std::map<int, int> const &map) {
     for (auto const &elem : map) {
-        os << elem.first << "→" << elem.second << " ";
+        os << elem.first << "->" << elem.second << " ";
     }
     return os;
 }
@@ -388,7 +385,6 @@ std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
     GLOBAL_DATA_PRINT(gd.end_config);
     GLOBAL_DATA_PRINT(gd.delta_config);
     GLOBAL_DATA_PRINT(gd.verbose);
-    GLOBAL_DATA_PRINT(gd.nb_omp_threads);
     GLOBAL_DATA_PRINT(gd.nb_eigen_threads);
     GLOBAL_DATA_PRINT(gd.path_eigenvectors);
     GLOBAL_DATA_PRINT(gd.name_eigenvectors);

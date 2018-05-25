@@ -37,7 +37,8 @@ int main(int ac, char *av[]) {
             << "  git branch " << git_refspec << "\n"
             << "  git revision " << git_sha1 << "\n"
             << "  git state " << git_changes << "\n"
-            << "  compiled by " << git_user << " on " << git_host << "\n";
+            << "  compiled by " << git_user << " on " << git_host << "\n"
+            << "  running with up to " << omp_get_max_threads() << " OpenMP threads\n";
 
   // reading global parameters from input file
   GlobalData gd;
@@ -46,7 +47,6 @@ int main(int ac, char *av[]) {
 
   // initialization of OMP paralization
   Eigen::initParallel();
-  omp_set_num_threads(gd.nb_omp_threads);
   Eigen::setNbThreads(gd.nb_eigen_threads);
 
   // ---------------------------------------------------------------------------
@@ -69,6 +69,13 @@ int main(int ac, char *av[]) {
                                   gd.path_vdaggerv,
                                   gd.path_config,
                                   gd.hyp_parameters);
+
+  if (gd.delta_config <= 0) {
+    std::cerr << "The 'delta_config' option has been set to a negative value. This makes "
+                 "no sense."
+              << std::endl;
+    std::abort();
+  }
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------

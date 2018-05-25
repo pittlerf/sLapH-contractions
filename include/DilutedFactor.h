@@ -18,6 +18,10 @@
 #include "global_data.h"
 #include "typedefs.h"
 
+#include "local_timer.h"
+
+#include <omp.h>
+
 template <size_t rvecs1, size_t rvecs2>
 bool has_intersection(SmallVectorRndId<rvecs1> const &left,
                       SmallVectorRndId<rvecs2> const &right) {
@@ -88,7 +92,7 @@ std::vector<DilutedFactor<rvecs1 + rvecs2 + 1>> operator*(
       merge_append(used, left.used_rnd_ids);
       merge_append(used, right.used_rnd_ids);
 
-      result_vec.push_back({Eigen::MatrixXcd{left.data * right.data},
+      result_vec.push_back({left.data * right.data,
                             std::make_pair(left.ric.first, right.ric.second),
                             used});
     }
@@ -150,10 +154,13 @@ Complex trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
 
   int num_summands = 0;
 
+  LT_ULTRA_FINE_DECLARE;
+
   for (auto const &left : left_vec) {
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
 
+    LT_ULTRA_FINE_START;
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
@@ -183,10 +190,16 @@ Complex trace(std::vector<DilutedFactor<rvecs1>> const &left_vec,
       right_sum += right.data;
       ++num_summands;
     }
-
+    LT_ULTRA_FINE_STOP;
+    LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
+    
+    LT_ULTRA_FINE_START;
     auto const &product = left.data * right_sum;
     result += product.trace();
-  }
+    LT_ULTRA_FINE_STOP;
+    LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] product_trace");
+
+  } // for(left_vec)
 
   if (num_summands == 0) {
     throw std::runtime_error(
@@ -207,13 +220,13 @@ std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
   int constexpr rvecs_result = rvecs1 + rvecs2 + 2;
   std::vector<DilutedTrace<rvecs_result>> result_vec;
 
+  LT_ULTRA_FINE_DECLARE;
+
   for (auto const &left : left_vec) {
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
 
-    Eigen::MatrixXcd right_sum(
-        Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
-
+    LT_ULTRA_FINE_START;
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
       // match because the product would not make sense otherwise. The outer indices must
@@ -247,10 +260,12 @@ std::vector<DilutedTrace<rvecs1 + rvecs2 + 2>> factor_to_trace(
       // vector indices. Therefore we can sum all these elements up to have less
       // multiplications to do.
       result_vec.push_back(
-          {typename DilutedTrace<rvecs_result>::Data{(left.data * right.data).trace()},
+          {typename DilutedTrace<rvecs_result>::Data{ (left.data * right.data).trace()},
            used});
     }
-  }
+    LT_ULTRA_FINE_STOP;
+    LT_ULTRA_FINE_PRINT("[DilutedFactor::factor_to_trace] multiply_trace"); 
+  } // for(left_vec)
 
   if (result_vec.size() == 0) {
     throw std::runtime_error(
@@ -444,6 +459,7 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
               std::array<ssize_t, n1 + n2> const &key,
               DilutedFactors<n1, rvecs1> const &factor0,
               DilutedFactors<n2, rvecs2> const &factor1) {
+  LT_ULTRA_FINE_DECLARE;
   if (L.count(key) == 0) {
     std::array<ssize_t, n1> key1;
     std::array<ssize_t, n2> key2;
@@ -454,6 +470,12 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
     auto const &f0 = factor0.at(key1);
     auto const &f1 = factor1.at(key2);
 
+    LT_ULTRA_FINE_START;
+
     L[key] = f0 * f1;
+   
+    LT_ULTRA_FINE_STOP;
+    LT_ULTRA_FINE_PRINT("[DilutedFactor::multiply] multiply");
   }
 }
+

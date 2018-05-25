@@ -12,8 +12,6 @@
 
 #include <iomanip>
 
-namespace {
-
 /*! Creates a two-dimensional vector containing the momenta for the operators
  *
  *  @param[in] Lx, Ly, Lz      Lattice extent in spatial directions
@@ -21,10 +19,10 @@ namespace {
  *  @param[in,out] momentum    Two dimensional array where the momenta are
  *                             stored
  */
-void create_momenta(const ssize_t Lx,
-                    const ssize_t Ly,
-                    const ssize_t Lz,
-                    const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+void create_momenta(ssize_t const Lx,
+                    ssize_t const Ly,
+                    ssize_t const Lz,
+                    std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
                     array_cd_d2 &momentum) {
   static const std::complex<double> I(0.0, 1.0);
 
@@ -35,9 +33,9 @@ void create_momenta(const ssize_t Lx,
   for (const auto &op : vdaggerv_lookup) {
     // op_VdaggerV contains the index of one (redundancy) op_Corr which
     // allows to deduce the quantum numbers (momentum)
-    const double ipx = op.momentum[0] * 2. * M_PI / (double)Lx;
-    const double ipy = op.momentum[1] * 2. * M_PI / (double)Ly;
-    const double ipz = op.momentum[2] * 2. * M_PI / (double)Lz;
+    const double ipx = op.momentum[0] * 2. * M_PI / static_cast<double>(Lx);
+    const double ipy = op.momentum[1] * 2. * M_PI / static_cast<double>(Ly);
+    const double ipz = op.momentum[2] * 2. * M_PI / static_cast<double>(Lz);
     // calculate \vec{p} \cdot \vec{x} for all \vec{x} on the lattice
     for (int x = 0; x < Lx; ++x) {
       const int xH = x * Ly * Lz;   // helper variable
@@ -53,6 +51,53 @@ void create_momenta(const ssize_t Lx,
     }  // loops over spatial vectors end here
   }    // loop over redundant quantum numbers ends here
 }
+
+std::vector<Complex> roots_of_unity(int momentum, ssize_t size) {
+  Complex const I(0.0, 1.0);
+
+  double const two_pi_p_L = momentum * 2.0 * M_PI / static_cast<double>(size);
+
+  std::vector<Complex> roots(size);
+  for (ssize_t i = 0; i < size; ++i) {
+    roots[i] = exp(-I * two_pi_p_L * static_cast<double>(i));
+  }
+
+  return roots;
+}
+
+void create_momenta_new(ssize_t const Lx,
+                        ssize_t const Ly,
+                        ssize_t const Lz,
+                        std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
+                        array_cd_d2 &momentum) {
+  /*! To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
+   *  quantum number id in op_VdaggerV will be used. The rest can be obtained
+   *  by adjoining
+   */
+  for (auto const &op : vdaggerv_lookup) {
+    auto const phases_x = roots_of_unity(op.momentum[0], Lx);
+    auto const phases_y = roots_of_unity(op.momentum[1], Ly);
+    auto const phases_z = roots_of_unity(op.momentum[2], Lz);
+
+    // Calculate $\vec{p} \cdot \vec{x}$ for all $\vec{x}$ on the lattice.
+    for (ssize_t x = 0; x < Lx; ++x) {
+      auto const xH = x * Ly * Lz;
+      auto const phase_x = phases_x[x];
+
+      for (ssize_t y = 0; y < Ly; ++y) {
+        auto const xHyH = xH + y * Lz;
+        auto const phase_xy = phase_x * phases_y[y];
+
+        for (ssize_t z = 0; z < Lz; ++z) {
+          auto const phase_xyz = phase_xy * phases_z[z];
+          momentum[op.id][xHyH + z] = phase_xyz;
+        }
+      }
+    }
+  }
+}
+
+namespace {
 
 /******************************************************************************/
 void write_vdaggerv(const std::string &pathname,

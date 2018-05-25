@@ -1,11 +1,35 @@
 # Copyright © 2017-2018 Martin Ueding <dev@martin-ueding.de>
 
 # Enforce a version that is actually available on QBiG.
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 project(sLapH-contractions CXX C)
 
-include_directories("include" "include/GlobalData/")
+set(CMAKE_CXX_STANDARD 11)
+
+add_library(lcontract
+  modules/Correlators.cpp
+  modules/Diagram.cpp
+  modules/dilution-iterator.cpp
+  modules/EigenVector.cpp
+  modules/Gamma.cpp
+  modules/GaugeField.cpp
+  modules/GlobalData/global_data.cpp
+  modules/GlobalData/global_data_build_IO_names.cpp
+  modules/GlobalData/global_data_input_handling.cpp
+  modules/GlobalData/global_data_input_handling_utils.cpp
+  modules/GlobalData/init_lookup_tables.cpp
+  modules/h5-wrapper.cpp
+  modules/io_utils.cpp
+  modules/OperatorsForMesons.cpp
+  modules/Perambulator.cpp
+  modules/QuarkLineBlock2.cpp
+  modules/RandomVector.cpp
+  modules/ranlxs.cpp
+  modules/StopWatch.cpp
+  )
+
+target_include_directories(lcontract PUBLIC "include" "include/GlobalData/")
 
 ###############################################################################
 #                          Git Revision Information                           #
@@ -36,7 +60,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/include/git.h.in"
   "${CMAKE_CURRENT_BINARY_DIR}/include/git.h"
   @ONLY)
 list(APPEND SOURCES "${CMAKE_CURRENT_BINARY_DIR}/include/git.h")
-include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
+target_include_directories(lcontract PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/include")
 
 ###############################################################################
 #                             External Libraries                              #
@@ -46,25 +70,29 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}/include")
 if(NOT DEFINED HDF5_INCLUDE_DIRS OR NOT DEFINED HDF5_LIBRARIES)
   find_package(HDF5 REQUIRED COMPONENTS C CXX)
 endif()
-include_directories(${HDF5_INCLUDE_DIRS})
+target_include_directories(lcontract PUBLIC ${HDF5_INCLUDE_DIRS})
+target_link_libraries(lcontract PUBLIC ${HDF5_LIBRARIES})
 
 # Boost
 if(NOT DEFINED Boost_INCLUDE_DIRS OR NOT DEFINED Boost_LIBRARIES)
   find_package(Boost REQUIRED COMPONENTS filesystem system program_options)
 endif()
-include_directories(${Boost_INCLUDE_DIRS})
+target_include_directories(lcontract PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(lcontract PUBLIC ${Boost_LIBRARIES})
 
 # Eigen
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   find_package(Eigen3 REQUIRED)
 endif()
-include_directories(SYSTEM ${EIGEN3_INCLUDE_DIR})
+target_include_directories(lcontract SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
+target_compile_definitions(lcontract PUBLIC EIGEN_DONT_PARALLELIZE)
 
 # Lime
 if(NOT DEFINED LIME_INCLUDE_DIRS)
   message(FATAL_ERROR "Must specify -DLIME_INCLUDE_DIRS on the command line to CMake.")
 endif()
-include_directories(SYSTEM ${LIME_INCLUDE_DIRS})
+target_include_directories(lcontract SYSTEM PUBLIC ${LIME_INCLUDE_DIRS})
+target_link_libraries(lcontract PUBLIC ${LIME_LIBRARIES})
 
 # Lime
 if(NOT DEFINED LIME_LIBRARIES)
@@ -73,15 +101,15 @@ endif()
 
 # OpenMP
 find_package(OpenMP)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+target_compile_options(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
+target_link_libraries(lcontract PUBLIC ${OpenMP_CXX_LIBRARIES} ${OpenMP_CXX_FLAGS})
 
 ###############################################################################
 #                                 Build Flags                                 #
 ###############################################################################
 
 # We want warnings, but not all of them.
-add_definitions(-Wall -pedantic --std=c++11)
+add_definitions(-Wall -pedantic)
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-fdiagnostics-color has_diagnostics_color)
@@ -91,6 +119,24 @@ if(has_diagnostics_color)
   else()
     add_definitions("-fdiagnostics-color=auto")
   endif()
+endif()
+
+option(SLAPH_TIMING_CORRELATOR "Timing of correlator building (per thread)" OFF)
+option(SLAPH_TIMING_DIAGRAMS "Timing of individual diagram multiplies and traces" OFF)
+option(SLAPH_TIMING_ULTRA_FINE "Timing of DilutedFactor components" OFF)
+option(SLAPH_TIMING_FINE "Timing of QuarkLineBlock constructions" OFF)
+
+if(SLAPH_TIMING_CORRELATOR)
+  add_definitions("-DSLAPH_TIMING_CORRELATOR")
+endif()
+if(SLAPH_TIMING_DIAGRAMS)
+  add_definitions("-DSLAPH_TIMING_DIAGRAMS")
+endif()
+if(SLAPH_TIMING_ULTRA_FINE)
+  add_definitions("-DSLAPH_TIMING_ULTRA_FINE")
+endif()
+if(SLAPH_TIMING_FINE)
+  add_definitions("-DSLAPH_TIMING_FINE")
 endif()
 
 # Default to “Release” build type.
@@ -112,62 +158,24 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0")
 
 ### contract
 
-add_executable(contract
-
-  main/contract.cpp
-  modules/Correlators.cpp
-  modules/Diagram.cpp
-  modules/dilution-iterator.cpp
-  modules/EigenVector.cpp
-  modules/Gamma.cpp
-  modules/GaugeField.cpp
-  modules/GlobalData/global_data.cpp
-  modules/GlobalData/global_data_build_IO_names.cpp
-  modules/GlobalData/global_data_input_handling.cpp
-  modules/GlobalData/global_data_input_handling_utils.cpp
-  modules/GlobalData/init_lookup_tables.cpp
-  modules/h5-wrapper.cpp
-  modules/io_utils.cpp
-  modules/OperatorsForMesons.cpp
-  modules/Perambulator.cpp
-  modules/QuarkLineBlock2.cpp
-  modules/RandomVector.cpp
-  modules/ranlxs.cpp
-  modules/StopWatch.cpp
-
-  )
-
-target_link_libraries(contract 
-  ${Boost_LIBRARIES}
-  ${HDF5_LIBRARIES}
-  ${LIME_LIBRARIES}
-  )
+add_executable(contract main/contract.cpp)
+target_link_libraries(contract lcontract)
 
 install(TARGETS contract DESTINATION bin)
 
 ### test-iterator
-
-add_executable(test-dilution-iterator
-  main/test-iterator.cpp
-  modules/dilution-iterator.cpp
-  )
+add_executable(test-dilution-iterator main/test-iterator.cpp)
+target_link_libraries(test-dilution-iterator lcontract)
 
 ### test-derivative
-add_executable(test-derivative
-  main/test-derivative.cpp
-  modules/io_utils.cpp
-  modules/GaugeField.cpp
-  modules/EigenVector.cpp
-  )
-
-target_link_libraries(test-derivative
-  ${LIME_LIBRARIES}
-  )
+add_executable(test-derivative main/test-derivative.cpp)
+target_link_libraries(test-derivative lcontract)
 
 ###############################################################################
 #                               Subdirectories                                #
 ###############################################################################
 
+add_subdirectory(benchmarks)
 add_subdirectory(tests/gtest)
 
 ###############################################################################
