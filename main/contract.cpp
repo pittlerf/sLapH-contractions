@@ -71,7 +71,7 @@ int main(int ac, char *av[]) {
                                   gd.hyp_parameters);
 
   if (gd.delta_config <= 0) {
-    std::cerr << "The 'delta_config' option has been set to a negative value. This makes "
+    std::cerr << "The 'delta_config' option has been set to a non-positive value. This makes "
                  "no sense."
               << std::endl;
     std::abort();
