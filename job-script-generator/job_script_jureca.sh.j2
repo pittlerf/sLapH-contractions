@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J {{ jobname }}
-#SBATCH --time=18:00:00
+#SBATCH --time=12:00:00
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task={{ cpus_per_task }}
 {% if email_address != '' %}
