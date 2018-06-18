@@ -26,25 +26,25 @@ int main (int ac, char* av[]) {
   const int Ly = 24;
   const int Lz = 24;
 
-  const size_t nb_ev = 120;
+  const ssize_t nb_ev = 120;
 
-  const size_t nb_peram = 6;
-  const size_t nb_rnd_vec = 6;
-  const size_t nb_dil_T = 2;
-  const size_t nb_dil_E = 6;
+  const ssize_t nb_peram = 6;
+  const ssize_t nb_rnd_vec = 6;
+  const ssize_t nb_dil_T = 2;
+  const ssize_t nb_dil_E = 6;
   const std::string peram_path = 
                     "/data/LapHs/contraction_Markus/test_data/peram/up";
   const quark q("u", nb_peram, "B", nb_dil_T, "I", nb_dil_E, "F", 4, 0, 
                 peram_path);
 
-  const size_t start_config = 714;
-  const size_t end_config = 714;
-  const size_t delta_config = 1;
+  const ssize_t start_config = 714;
+  const ssize_t end_config = 714;
+  const ssize_t delta_config = 1;
 
   // ---------------------------------------------------------------------------
   // initialization of OMP paralization
-  const size_t nb_omp_threads = 4;
-  const size_t nb_eigen_threads = 1;
+  const ssize_t nb_omp_threads = 4;
+  const ssize_t nb_eigen_threads = 1;
   Eigen::initParallel();
   omp_set_dynamic(0);
   omp_set_num_threads(nb_omp_threads);
@@ -54,13 +54,13 @@ int main (int ac, char* av[]) {
   // Creating instances of perambulators, random vectors, operators, and 
   // correlators. The eigenvectors are read from disc in the operator class.
   Perambulator perambulators(nb_peram, 
-                     std::vector<size_t>(nb_rnd_vec, Lt*4*nb_ev), 
-                     std::vector<size_t>(nb_rnd_vec, (Lt/nb_dil_T)*nb_dil_E*4));
+                     std::vector<ssize_t>(nb_rnd_vec, Lt*4*nb_ev), 
+                     std::vector<ssize_t>(nb_rnd_vec, (Lt/nb_dil_T)*nb_dil_E*4));
   RandomVector randomvectors(nb_peram, Lt*4*nb_ev);
 
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
-  for(size_t config_i  = start_config; config_i <= end_config; 
+  for(ssize_t config_i  = start_config; config_i <= end_config; 
                                        config_i += delta_config){
     std::cout << "\nprocessing configuration: " << config_i << "\n\n";
 

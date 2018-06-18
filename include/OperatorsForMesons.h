@@ -15,9 +15,12 @@
 #include <Eigen/Dense>
 
 #include "boost/filesystem.hpp"
+#include "boost/format.hpp"
 #include "boost/multi_array.hpp"
 
+
 #include "EigenVector.h"
+#include "global_data_typedefs.h"
 #include "GaugeField.h"
 #include "RandomVector.h"
 #include "typedefs.h"
@@ -40,16 +43,17 @@
 class OperatorFactory {
  public:
   /*! Constructor which allocates memory for all operators */
-  OperatorFactory(const size_t Lt,
-                  const size_t Lx,
-                  const size_t Ly,
-                  const size_t Lz,
-                  const size_t nb_ev,
-                  const size_t dilE,
+  OperatorFactory(const ssize_t Lt,
+                  const ssize_t Lx,
+                  const ssize_t Ly,
+                  const ssize_t Lz,
+                  const ssize_t nb_ev,
+                  const ssize_t dilE,
                   const OperatorLookup &operator_lookuptable,
                   const std::string &handling_vdaggerv,
                   const std::string &path_vdaggerv,
-                  const std::string &path_config);
+                  const std::string &path_config,
+                  const HypPars &hyp_parameters);
   /*! Standard Destructor
    *
    *  Everything should be handled by Eigen, std::vector, and boost::multi_array
@@ -66,8 +70,8 @@ class OperatorFactory {
   void free_memory_vdaggerv();
 
   /*! @todo check of vdaggerv is already build */
-  inline const Eigen::MatrixXcd &return_vdaggerv(const size_t index,
-                                                 const size_t t) const {
+  inline const Eigen::MatrixXcd &return_vdaggerv(const ssize_t index,
+                                                 const ssize_t t) const {
     return vdaggerv[index][t];
   }
 
@@ -83,12 +87,14 @@ private:
   /****************************************************************************/
   /*! @TODO comment private members */
   const OperatorLookup operator_lookuptable;
-  const size_t Lt, Lx, Ly, Lz;
-  const size_t nb_ev, dilE;
+  const ssize_t Lt, Lx, Ly, Lz;
+  const ssize_t nb_ev, dilE;
   bool is_vdaggerv_set = false;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
   std::string path_config;
+  HypPars hyp_parameters;
+  
 
   // Internal functions to build individual operators --> The interface to these
   // functions is 'create_Operators'
@@ -99,3 +105,15 @@ private:
 
 
 };
+
+void create_momenta(const ssize_t Lx,
+                    const ssize_t Ly,
+                    const ssize_t Lz,
+                    const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+                    array_cd_d2 &momentum);
+
+void create_momenta_new(const ssize_t Lx,
+                        const ssize_t Ly,
+                        const ssize_t Lz,
+                        const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+                        array_cd_d2 &momentum);

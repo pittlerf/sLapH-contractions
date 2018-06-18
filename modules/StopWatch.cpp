@@ -1,5 +1,7 @@
 #include <StopWatch.h>
 
+#include "typedefs.h"
+
 #include <omp.h>
 
 #include <algorithm>
@@ -27,7 +29,7 @@ void StopWatch::stop() {
 double StopWatch::mean() const {
 #pragma omp barrier
   double sum = 0.0;
-  for (int i = 0; i < starts_.size(); ++i) {
+  for (int i = 0; i < ssize(starts_); ++i) {
     sum += ends_[i] - starts_[i];
   }
   return sum / summands();
@@ -40,7 +42,7 @@ void StopWatch::print() const {
 
 void StopWatch::store_to(std::vector<double> &vec) {
   int const t_id = omp_get_thread_num();
-  assert(t_id < vec.size() &&
+  assert(t_id < ssize(vec) &&
          "This particular stopwatch does not support this many threads.");
   double const wtime = omp_get_wtime();
   vec.at(t_id) = wtime;

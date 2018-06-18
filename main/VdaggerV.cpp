@@ -20,7 +20,7 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void read_eigen_vector(const std::string& filename, const size_t verbose, 
+void read_eigen_vector(const std::string& filename, const ssize_t verbose, 
                        Eigen::MatrixXcd& Vt){
 
   //buffer for read in
@@ -30,16 +30,15 @@ void read_eigen_vector(const std::string& filename, const size_t verbose,
   //setting up file
   std::ifstream infile(filename, std::ifstream::binary); 
   if (infile) {
-    for (size_t ncol = 0; ncol < Vt.cols(); ++ncol) {
+    for (ssize_t ncol = 0; ncol < Vt.cols(); ++ncol) {
       infile.read( (char*) &(eigen_vec[0]), 2*Vt.rows()*sizeof(double));
-      for(size_t nrow = 0; nrow < Vt.rows(); ++nrow){
+      for(ssize_t nrow = 0; nrow < Vt.rows(); ++nrow){
         (Vt)(nrow, ncol) = eigen_vec[nrow];
       }
     }
   }
   else {
-    std::cout << "eigenvector file does not exist!!!\n" << std::endl;
-    exit(0);
+    throw std::runtime_error("Eigenvector file does not exist!");
   }
   infile.close();
 
@@ -75,8 +74,8 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
               << std::endl;
     // buffer for writing
     vec eigen_vec(Vt.size());
-    for (size_t ncol = 0; ncol < Vt.cols(); ncol++) {
-      for(size_t nrow = 0; nrow < Vt.rows(); nrow++){
+    for (ssize_t ncol = 0; ncol < Vt.cols(); ncol++) {
+      for(ssize_t nrow = 0; nrow < Vt.rows(); nrow++){
         eigen_vec.at(ncol*Vt.rows() + nrow) = (Vt)(nrow, ncol);
       }
     }
@@ -97,7 +96,7 @@ void write_vdaggerv(const std::string& pathname, const std::string& filename,
 // input: Lx, Ly, Lz      -> lattice extend in x, y, and z direction
 //        vdaggerv_lookup -> contains the momenta
 // output: momentum -> two dimensional array where the momenta are stored
-void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz, 
+void create_momenta(const ssize_t Lx, const ssize_t Ly, const ssize_t Lz, 
                     const std::vector<VdaggerVQuantumNumbers>& vdaggerv_lookup, 
                     array_cd_d2& momentum){
 
@@ -127,16 +126,16 @@ void create_momenta(const size_t Lx, const size_t Ly, const size_t Lz,
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void build_and_write_vdaggerv(const size_t Lt, const size_t Lx, const size_t Ly,
-                              const size_t Lz, const size_t nb_ev, 
+void build_and_write_vdaggerv(const ssize_t Lt, const ssize_t Lx, const ssize_t Ly,
+                              const ssize_t Lz, const ssize_t nb_ev, 
                               const OperatorLookup& operator_lookuptable,
                               const std::string& filename_ev,
                               const std::string& pathname_vdaggerv,
                               const std::string& filename_vdaggerv){
 
   clock_t t2 = clock();
-  const size_t dim_row = 3*Lx*Ly*Lz;
-  const size_t id_unity = operator_lookuptable.index_of_unity;
+  const ssize_t dim_row = 3*Lx*Ly*Lz;
+  const ssize_t id_unity = operator_lookuptable.index_of_unity;
 
   array_cd_d2 momentum;
   momentum.resize(boost::extents[
@@ -150,7 +149,7 @@ void build_and_write_vdaggerv(const size_t Lt, const size_t Lx, const size_t Ly,
   Eigen::MatrixXcd V_t = Eigen::MatrixXcd::Zero(dim_row, nb_ev);
    
   #pragma omp for schedule(dynamic)
-  for(size_t t = 0; t < Lt; ++t){
+  for(ssize_t t = 0; t < Lt; ++t){
 
     // creating full filename for eigenvectors and reading them in
     char infile[200];
@@ -167,7 +166,7 @@ void build_and_write_vdaggerv(const size_t Lt, const size_t Lx, const size_t Ly,
       if(op.id != id_unity){
         // momentum vector contains exp(-i p x). Divisor 3 for colour index. 
         // All three colours on same lattice site get the same momentum.
-        for(size_t x = 0; x < dim_row; ++x) {
+        for(ssize_t x = 0; x < dim_row; ++x) {
           mom(x) = momentum[op.id][x/3];
         }
         vdaggerv = V_t.adjoint() * mom.asDiagonal() * V_t;
@@ -201,17 +200,17 @@ int main (int ac, char* av[]) {
   const int Ly = 24;
   const int Lz = 24;
 
-  const size_t nb_ev = 120;
-  const size_t nb_dil_E = 6;
+  const ssize_t nb_ev = 120;
+  const ssize_t nb_dil_E = 6;
 
-  const size_t start_config = 714;
-  const size_t end_config = 714;
-  const size_t delta_config = 1;
+  const ssize_t start_config = 714;
+  const ssize_t end_config = 714;
+  const ssize_t delta_config = 1;
 
   // ---------------------------------------------------------------------------
   // initialization of OMP paralization
-  const size_t nb_omp_threads = 4;
-  const size_t nb_eigen_threads = 1;
+  const ssize_t nb_omp_threads = 4;
+  const ssize_t nb_eigen_threads = 1;
   Eigen::initParallel();
   omp_set_dynamic(0);
   omp_set_num_threads(nb_omp_threads);
@@ -223,7 +222,7 @@ int main (int ac, char* av[]) {
   std::vector<VdaggerVQuantumNumbers> vdaggerv_lookup;
   // emplacing back all the momenta
   std::array<int, 3> displacement = {0,0,0};
-  size_t id = 0;
+  ssize_t id = 0;
   for(int p1 = 2; p1 >= -2; p1--)
   for(int p2 = 2; p2 >= -2; p2--)
   for(int p3 = 2; p3 >= -2; p3--)
@@ -253,7 +252,7 @@ int main (int ac, char* av[]) {
   
   // ---------------------------------------------------------------------------
   // Loop over all configurations stated in the infile -------------------------
-  for(size_t config_i  = start_config; config_i <= end_config; 
+  for(ssize_t config_i  = start_config; config_i <= end_config; 
                                        config_i += delta_config){
     std::cout << "\nprocessing configuration: " << config_i << "\n\n";
 

@@ -5,11 +5,12 @@
  *  @author Markus Werner
  */
 
-#include <iomanip>
-
 #include "OperatorsForMesons.h"
+#include "StopWatch.h"
 
-namespace {
+#include <boost/format.hpp>
+
+#include <iomanip>
 
 /*! Creates a two-dimensional vector containing the momenta for the operators
  *
@@ -18,10 +19,10 @@ namespace {
  *  @param[in,out] momentum    Two dimensional array where the momenta are
  *                             stored
  */
-void create_momenta(const size_t Lx,
-                    const size_t Ly,
-                    const size_t Lz,
-                    const std::vector<VdaggerVQuantumNumbers> &vdaggerv_lookup,
+void create_momenta(ssize_t const Lx,
+                    ssize_t const Ly,
+                    ssize_t const Lz,
+                    std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
                     array_cd_d2 &momentum) {
   static const std::complex<double> I(0.0, 1.0);
 
@@ -32,9 +33,9 @@ void create_momenta(const size_t Lx,
   for (const auto &op : vdaggerv_lookup) {
     // op_VdaggerV contains the index of one (redundancy) op_Corr which
     // allows to deduce the quantum numbers (momentum)
-    const double ipx = op.momentum[0] * 2. * M_PI / (double)Lx;
-    const double ipy = op.momentum[1] * 2. * M_PI / (double)Ly;
-    const double ipz = op.momentum[2] * 2. * M_PI / (double)Lz;
+    const double ipx = op.momentum[0] * 2. * M_PI / static_cast<double>(Lx);
+    const double ipy = op.momentum[1] * 2. * M_PI / static_cast<double>(Ly);
+    const double ipz = op.momentum[2] * 2. * M_PI / static_cast<double>(Lz);
     // calculate \vec{p} \cdot \vec{x} for all \vec{x} on the lattice
     for (int x = 0; x < Lx; ++x) {
       const int xH = x * Ly * Lz;   // helper variable
@@ -51,6 +52,53 @@ void create_momenta(const size_t Lx,
   }    // loop over redundant quantum numbers ends here
 }
 
+std::vector<Complex> roots_of_unity(int momentum, ssize_t size) {
+  Complex const I(0.0, 1.0);
+
+  double const two_pi_p_L = momentum * 2.0 * M_PI / static_cast<double>(size);
+
+  std::vector<Complex> roots(size);
+  for (ssize_t i = 0; i < size; ++i) {
+    roots[i] = exp(-I * two_pi_p_L * static_cast<double>(i));
+  }
+
+  return roots;
+}
+
+void create_momenta_new(ssize_t const Lx,
+                        ssize_t const Ly,
+                        ssize_t const Lz,
+                        std::vector<VdaggerVQuantumNumbers> const &vdaggerv_lookup,
+                        array_cd_d2 &momentum) {
+  /*! To calculate Vdagger exp(i*p*x) V only the momenta corresponding to the
+   *  quantum number id in op_VdaggerV will be used. The rest can be obtained
+   *  by adjoining
+   */
+  for (auto const &op : vdaggerv_lookup) {
+    auto const phases_x = roots_of_unity(op.momentum[0], Lx);
+    auto const phases_y = roots_of_unity(op.momentum[1], Ly);
+    auto const phases_z = roots_of_unity(op.momentum[2], Lz);
+
+    // Calculate $\vec{p} \cdot \vec{x}$ for all $\vec{x}$ on the lattice.
+    for (ssize_t x = 0; x < Lx; ++x) {
+      auto const xH = x * Ly * Lz;
+      auto const phase_x = phases_x[x];
+
+      for (ssize_t y = 0; y < Ly; ++y) {
+        auto const xHyH = xH + y * Lz;
+        auto const phase_xy = phase_x * phases_y[y];
+
+        for (ssize_t z = 0; z < Lz; ++z) {
+          auto const phase_xyz = phase_xy * phases_z[z];
+          momentum[op.id][xHyH + z] = phase_xyz;
+        }
+      }
+    }
+  }
+}
+
+namespace {
+
 /******************************************************************************/
 void write_vdaggerv(const std::string &pathname,
                     const std::string &filename,
@@ -63,8 +111,8 @@ void write_vdaggerv(const std::string &pathname,
     std::cout << "\twriting VdaggerV to file:" << pathname + filename << std::endl;
     // buffer for writing
     std::vector<Complex> eigen_vec(Vt.size());
-    for (size_t ncol = 0; ncol < Vt.cols(); ncol++) {
-      for (size_t nrow = 0; nrow < Vt.rows(); nrow++) {
+    for (ssize_t ncol = 0; ncol < Vt.cols(); ncol++) {
+      for (ssize_t nrow = 0; nrow < Vt.rows(); nrow++) {
         eigen_vec.at(ncol * Vt.rows() + nrow) = (Vt)(nrow, ncol);
       }
     }
@@ -93,16 +141,17 @@ void write_vdaggerv(const std::string &pathname,
  * is done in the member initializer list of the constructor. The allocation
  * of heap memory is delegated to boost::multi_array::resize
  */
-OperatorFactory::OperatorFactory(const size_t Lt,
-                                 const size_t Lx,
-                                 const size_t Ly,
-                                 const size_t Lz,
-                                 const size_t nb_ev,
-                                 const size_t dilE,
+OperatorFactory::OperatorFactory(const ssize_t Lt,
+                                 const ssize_t Lx,
+                                 const ssize_t Ly,
+                                 const ssize_t Lz,
+                                 const ssize_t nb_ev,
+                                 const ssize_t dilE,
                                  const OperatorLookup &operator_lookuptable,
                                  const std::string &handling_vdaggerv,
                                  const std::string &path_vdaggerv,
-                                 const std::string &path_config)
+                                 const std::string &path_config,
+                                 const HypPars &hyp_parameters)
     : vdaggerv(),
       momentum(),
       operator_lookuptable(operator_lookuptable),
@@ -114,7 +163,8 @@ OperatorFactory::OperatorFactory(const size_t Lt,
       dilE(dilE),
       handling_vdaggerv(handling_vdaggerv),
       path_vdaggerv(path_vdaggerv),
-      path_config(path_config) {
+      path_config(path_config),
+      hyp_parameters(hyp_parameters){
 
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[operator_lookuptable.vdaggerv_lookup.size()][Lt]);
@@ -127,17 +177,18 @@ OperatorFactory::OperatorFactory(const size_t Lt,
 
   std::cout << "\tMeson operators initialised" << std::endl;
 }
+
+
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::build_vdaggerv(const std::string &filename, const int config) {
-  clock_t t2 = clock();
-  const size_t dim_row = 3 * Lx * Ly * Lz;
+  const ssize_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for writing
-  char dummy_path[200];
-  sprintf(dummy_path, "/%s/cnfg%04d/", path_vdaggerv.c_str(), config);
-  const std::string full_path(dummy_path);
+  std::string const full_path =
+      (boost::format("/%s/cnfg%04d/") % path_vdaggerv % config).str();
+
   // check if directory exists
   if (handling_vdaggerv == "write" && access(full_path.c_str(), 0) != 0) {
     std::cout << "\tdirectory " << full_path.c_str()
@@ -148,7 +199,8 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     else
       std::cout << "\tFailure" << std::endl;
   }
-
+  
+  StopWatch swatch("Eigenvector and Gauge I/O");
   // resizing each matrix in vdaggerv
   // TODO: check if it is better to use for_each and resize instead of std::fill
   std::fill(vdaggerv.origin(),
@@ -157,6 +209,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
 #pragma omp parallel
   {
+    swatch.start();
     // Read in gauge field from lime configuration, need all directions
     //GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, PATH_GAUGE_IN, 0, Lt-1, 4);
     //gauge.read_gauge_field(CONFIG,0,Lt-1);
@@ -164,19 +217,20 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     Eigen::VectorXcd dis = Eigen::VectorXcd::Zero(dim_row);
     // Check if gauges are needed
     bool need_gauge = false;
+    bool need_smearing = false;
     for (auto const& op : operator_lookuptable.vdaggerv_lookup)
         if(!op.displacement.empty()) need_gauge=true;
+    // If parameters for smearing are set, smear operator
     GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, path_config,0,Lt-1,4);
-    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1); 
+    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1);
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
 #pragma omp for schedule(dynamic)
-    for (size_t t = 0; t < Lt; ++t) {
+    for (ssize_t t = 0; t < Lt; ++t) {
       // creating full filename for eigenvectors and reading them in
       if (!(operator_lookuptable.vdaggerv_lookup.size() == 1 &&
             operator_lookuptable.vdaggerv_lookup[0].id == id_unity)) {
-        char inter_name[200];
-        sprintf(inter_name, "%s%03d", filename.c_str(), (int)t);
-        V_t.read_eigen_vector(inter_name, 0, 0);  // reading eigenvectors
+        auto const inter_name = (boost::format("%s%03d") % filename % t).str();
+        V_t.read_eigen_vector(inter_name.c_str(), 0, 0);  // reading eigenvectors
       }
 
       // VdaggerV is independent of the gamma structure and momenta connected by
@@ -190,6 +244,12 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           // Forward derivative
           Eigen::MatrixXcd W_t;
           if (!op.displacement.empty()){
+            if(hyp_parameters.iterations > 0){
+              const double alpha1 = hyp_parameters.alpha1;
+              const double alpha2 = hyp_parameters.alpha2; 
+              const size_t iter = hyp_parameters.iterations; 
+              gauge.smearing_hyp(t,alpha1,alpha2,iter);
+            }
             W_t = gauge.displace_eigenvectors(V_t[0],t,op.displacement,1);
             vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
           }
@@ -198,55 +258,53 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
           }
           // momentum vector contains exp(-i p x). Divisor 3 for colour index.
           // All three colours on same lattice site get the same momentum.
-          for (size_t x = 0; x < dim_row; ++x) {
+          for (ssize_t x = 0; x < dim_row; ++x) {
             mom(x) = momentum[op.id][x / 3];
           }
           vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
-            char dummy2[200];
-            sprintf(dummy2, "operators.%04d.p_", config);
-            std::string dummy = std::string(dummy2) + std::to_string(op.momentum[0]) +
+            std::string momentum_string = std::to_string(op.momentum[0]) +
                                 std::to_string(op.momentum[1]) +
                                 std::to_string(op.momentum[2]);
-            char outfile[200];
-            sprintf(outfile, "%s_.t_%03d", dummy.c_str(), (int)t);
+            std::string displacement_string = to_string(op.displacement);
+            std::string outfile = (boost::format("operators.%04d.p_%s.d_%s.t_%03d" )%
+                       config % momentum_string % displacement_string %
+                       (int)t ).str();
             write_vdaggerv(full_path, std::string(outfile), vdaggerv[op.id][t]);
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
       }
     }  // loop over time
+    swatch.stop();
   }    // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv(const int config) {
-  clock_t t2 = clock();
-  const size_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
-  char dummy_path[200];
-  sprintf(
-      dummy_path, "/%s/cnfg%04d/operators.%04d", path_vdaggerv.c_str(), config, config);
-  std::string full_path(dummy_path);
+  auto const full_path =
+      (boost::format("/%s/cnfg%04d/operators.%04d") % path_vdaggerv % config % config)
+          .str();
 
   // resizing each matrix in vdaggerv
   std::fill(vdaggerv.origin(),
             vdaggerv.origin() + vdaggerv.num_elements(),
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
+  StopWatch swatch("VdaggerV I/O");
 
 #pragma omp parallel
   {
+    swatch.start();
 #pragma omp for schedule(dynamic)
-    for (size_t t = 0; t < Lt; ++t) {
+    for (ssize_t t = 0; t < Lt; ++t) {
       for (const auto &op : operator_lookuptable.vdaggerv_lookup) {
         // For zero momentum and displacement VdaggerV is the unit matrix, thus
         // the calculation is not performed
@@ -256,8 +314,7 @@ void OperatorFactory::read_vdaggerv(const int config) {
                               std::to_string(op.momentum[1]) +
                               std::to_string(op.momentum[2]);
 
-          char infile[200];
-          sprintf(infile, "%s_.t_%03d", dummy.c_str(), (int)t);
+          auto const infile = (boost::format("%s_.t_%03d") % dummy % t).str();
 
           // writing the data
           std::ifstream file(infile, std::ifstream::binary);
@@ -269,56 +326,55 @@ void OperatorFactory::read_vdaggerv(const int config) {
             std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
             file.read(reinterpret_cast<char *>(&eigen_vec[0]),
                       vdaggerv[op.id][t].size() * sizeof(Complex));
-            for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
-              for (size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
+            for (ssize_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+              for (ssize_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
                 (vdaggerv[op.id][t])(nrow, ncol) =
                     eigen_vec.at(ncol * vdaggerv[op.id][t].rows() + nrow);
               }
             }
             if (!file.good()) {
-              std::cout << "Problems while reading from " << infile << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile;
+              std::runtime_error(oss.str());
             }
             file.close();
           } else {
-            std::cout << "can't open " << infile << std::endl;
-            exit(0);
+            std::ostringstream oss;
+            oss << "Can't open " << infile;
+            std::runtime_error(oss.str());
           }
         } else  // zero momentum
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
       }
     }  // loop over time
+    swatch.stop();
   }    // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void OperatorFactory::read_vdaggerv_liuming(const int config) {
-  clock_t t2 = clock();
-  const size_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
   // prepare full path for reading
-  char dummy_path[200];
-  sprintf(dummy_path, "/%s/VdaggerV.", path_vdaggerv.c_str());
-  std::string full_path(dummy_path);
+  auto const full_path = (boost::format("/%s/VdaggerV.") % path_vdaggerv).str();
 
   // resizing each matrix in vdaggerv
   std::fill(vdaggerv.origin(),
             vdaggerv.origin() + vdaggerv.num_elements(),
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 
+  StopWatch swatch("Liuming VdaggerV I/O");
 #pragma omp parallel
   {
+    swatch.start();
   //  #pragma omp for schedule(dynamic)
   //    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
 #pragma omp for schedule(dynamic)
-    for (size_t i = 0; i < operator_lookuptable.vdaggerv_lookup.size(); ++i) {
+    for (ssize_t i = 0; i < ssize(operator_lookuptable.vdaggerv_lookup); ++i) {
       const auto op = (operator_lookuptable.vdaggerv_lookup[i]);
       // For zero momentum and displacement VdaggerV is the unit matrix, thus
       // the calculation is not performed
@@ -328,46 +384,46 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
         std::string dummy1 = full_path + "p" + std::to_string(-op.momentum[0]) + "p" +
                              std::to_string(-op.momentum[1]) + "p" +
                              std::to_string(-op.momentum[2]) + ".conf";
-        char infile1[200];
-        sprintf(infile1, "%s%04d", dummy1.c_str(), config);
+        auto const infile1 = (boost::format("%s%04d") % dummy1 % config).str();
         std::ifstream file1(infile1, std::ifstream::binary);
+
         // second possibility for a name
         std::string dummy2 = full_path + "p" + std::to_string(op.momentum[0]) + "p" +
                              std::to_string(op.momentum[1]) + "p" +
                              std::to_string(op.momentum[2]) + ".conf";
-        char infile2[200];
-        sprintf(infile2, "%s%04d", dummy2.c_str(), config);
+        auto const infile2 = (boost::format("%s%04d") % dummy2 % config).str();
         std::ifstream file2(infile2, std::ifstream::binary);
 
         if (file1.is_open()) {
           std::cout << "\treading VdaggerV from file:" << infile1 << std::endl;
-          for (size_t t = 0; t < Lt; ++t) {
+          for (ssize_t t = 0; t < Lt; ++t) {
             // buffer for reading
             std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
             file1.read(reinterpret_cast<char *>(&eigen_vec[0]),
                        vdaggerv[op.id][t].size() * sizeof(Complex));
-            for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
-              for (size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
+            for (ssize_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+              for (ssize_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
                 (vdaggerv[op.id][t])(nrow, ncol) =
                     eigen_vec.at(nrow * vdaggerv[op.id][t].cols() + ncol);
               }
             }
             vdaggerv[op.id][t].adjointInPlace();
             if (!file1.good()) {
-              std::cout << "Problems while reading from " << infile1 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile1;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file1.close();
         } else if (file2.is_open()) {
           std::cout << "\treading VdaggerV from file:" << infile2 << std::endl;
-          for (size_t t = 0; t < Lt; ++t) {
+          for (ssize_t t = 0; t < Lt; ++t) {
             // buffer for reading
             std::vector<Complex> eigen_vec(vdaggerv[op.id][t].size());
             file2.read(reinterpret_cast<char *>(&eigen_vec[0]),
                        vdaggerv[op.id][t].size() * sizeof(Complex));
-            for (size_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
-              for (size_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
+            for (ssize_t ncol = 0; ncol < vdaggerv[op.id][t].cols(); ncol++) {
+              for (ssize_t nrow = 0; nrow < vdaggerv[op.id][t].rows(); nrow++) {
                 (vdaggerv[op.id][t])(nrow, ncol) =
                     eigen_vec.at(nrow * vdaggerv[op.id][t].cols() + ncol);
               }
@@ -376,24 +432,25 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
 //            // (master branch)
 //            vdaggerv[op.id][t].adjointInPlace();
             if (!file2.good()) {
-              std::cout << "Problems while reading from " << infile2 << std::endl;
-              exit(0);
+              std::ostringstream oss;
+              oss << "Problems while reading from " << infile2;
+              std::runtime_error(oss.str());
             }
           }  // loop over time
           file2.close();
         } else {
-          std::cout << "can't open " << infile1 << " NOR " << infile2 << std::endl;
-          exit(0);
+          std::ostringstream oss;
+          oss << "can't open " << infile1 << " NOR " << infile2;
+          std::runtime_error(oss.str());
         }
       } else  // zero momentum
-        for (size_t t = 0; t < Lt; ++t)
+        for (ssize_t t = 0; t < Lt; ++t)
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
     }
+    swatch.stop();
   }  // pragma omp parallel ends here
 
-  t2 = clock() - t2;
-  std::cout << std::setprecision(1) << "\t\t\tSUCCESS - " << std::fixed
-            << ((float)t2) / CLOCKS_PER_SEC << " seconds" << std::endl;
+  swatch.print();
   is_vdaggerv_set = true;
 }
 
@@ -423,9 +480,7 @@ void OperatorFactory::create_operators(const std::string &filename,
   else if (handling_vdaggerv == "liuming")
     read_vdaggerv_liuming(config);
   else {
-    std::cout << "\n\tThe flag handling_vdaggerv in input file is wrong!!\n\n"
-              << std::endl;
-    exit(0);
+    throw std::runtime_error("The flag handling_vdaggerv in input file is wrong!");
   }
 }
 

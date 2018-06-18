@@ -54,7 +54,7 @@ struct DilutedFactorLookup {
  *  instances of Quarklines, OperatorsForMesons and
  *  Perambulators
  *
- *  The diagrams trQ1Q1, trQ0Q2 (and thus C20, C2+) as well as C3c and C4cB are
+ *  The diagrams trQ1Q1, trQ0Q2 (and thus C20, C2c) as well as C3c and C4cB are
  *  memory optimized calling quarklines within an outer loop over time and thus
  *  only need 1/Lt the memory.
  *
@@ -63,10 +63,10 @@ struct DilutedFactorLookup {
  *
  */
 
-void contract(const size_t Lt,
-              const size_t dilT,
-              const size_t dilE,
-              const size_t nev,
+void contract(const ssize_t Lt,
+              const ssize_t dilT,
+              const ssize_t dilE,
+              const ssize_t nev,
               OperatorFactory const &meson_operator,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,

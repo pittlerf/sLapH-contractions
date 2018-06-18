@@ -28,6 +28,9 @@ using gdu::quark_check;
 void lattice_input_data_handling(const std::string path_output,
                                  const std::string name_lattice,
                                  const std::string path_config,
+                                 double alpha1,
+                                 double alpha2,
+                                 size_t iterations,
                                  int Lt,
                                  int Lx,
                                  int Ly,
@@ -38,7 +41,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lt\""
                 << " is mendatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\n\ttemporal lattice extent .................. " << Lt << "\n";
     //
@@ -47,7 +50,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lx\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in x direction .... " << Lx << "\n";
     //
@@ -56,7 +59,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Ly\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in y direction .... " << Ly << "\n";
     //
@@ -65,7 +68,7 @@ void lattice_input_data_handling(const std::string path_output,
                 << "\toption \"Lz\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tspatial lattice extent in z direction .... " << Lz << "\n\n";
     std::cout << "\tEnsemble ...................................... " << name_lattice
@@ -74,9 +77,12 @@ void lattice_input_data_handling(const std::string path_output,
               << std::endl;
     std::cout << "\tConfigurations will be read from:\n\t\t" << path_config << "/"
               << std::endl;
+    std::cout << "\tConfigurations will be hyp smeared with parameter set "
+              << "(alpha1, alpha2, N):\n\t\t"
+              << alpha1 << ", " << alpha2 << ", " << iterations << std::endl;
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -95,7 +101,7 @@ void eigenvec_perambulator_input_data_handling(const int number_of_eigen_vec,
                 << "\toption \"number_of_eigen_vec\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else {
       std::cout << "\tnumber of eigen vectors .................. " << number_of_eigen_vec
                 << "\n";
@@ -104,7 +110,7 @@ void eigenvec_perambulator_input_data_handling(const int number_of_eigen_vec,
               << "/" << name_eigenvectors << "\".eigenvector.t.config\"\n\n";
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -121,26 +127,26 @@ void config_input_data_handling(const int start_config,
                 << "\toption \"start config\""
                 << " is mandatory and its value must be an integer greater or equal 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else if (end_config < 0 || end_config < start_config) {
       std::cout << "\ninput file error:\n"
                 << "\toption \"end_config\""
                 << " is mandatory, its value must be an integer greater than 0,"
                 << " and it must be larger than start config!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else if (delta_config < 0) {
       std::cout << "\ninput file error:\n"
                 << "\toption \"delta_config\""
                 << " is mandatory and its value must be an integer greater than 0!"
                 << "\n\n";
-      exit(0);
+      exit(1);
     } else
       std::cout << "\tprocessing configurations " << start_config << " to " << end_config
                 << " in steps of " << delta_config << "\n\n";
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -163,7 +169,7 @@ void quark_input_data_handling(const std::vector<std::string> quark_configs,
                    std::back_inserter(quarks),
                    make_quark);
     // setting id's in quarks
-    size_t quark_counter = 0;
+    ssize_t quark_counter = 0;
     for (auto &q : quarks) {
       q.id = quark_counter;
       quark_counter++;
@@ -172,7 +178,7 @@ void quark_input_data_handling(const std::vector<std::string> quark_configs,
     std::for_each(quarks.begin(), quarks.end(), quark_check);
   } catch (std::exception &e) {
     std::cout << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -196,7 +202,7 @@ void operator_input_data_handling(const std::vector<std::string> operator_string
     // TODO write a check for correctness of input
   } catch (std::exception &e) {
     std::cout << "operator_input_data_handling: " << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -208,7 +214,7 @@ void operator_input_data_handling(const std::vector<std::string> operator_string
  *    correlator_list = @em type : @em quark : @em operator : ... : [@em GEVP] :
  *                      [@em P]
  *    where the following abbreviationswhere used
- *    - @em type {C1,C2+,C20,C20V,C3+,C30,C4cD,C4cV,C4cC,C4cB,C40D,C40V,C40C,C40B} :
+ *    - @em type {C1,C2c,C20,C20V,C3c,C30,C4cD,C4cV,C4cC,C4cB,C40D,C40V,C40C,C40B} :
  *                              Identifier for the Wick diagram to be
  *                              calculated. @see { LapH::Correlators }
  *    - @em quark {"Q%d"} :     Specifies which of the quarks from the infile
@@ -234,7 +240,7 @@ void correlator_input_data_handling(const std::vector<std::string> &correlator_s
     }
   } catch (std::exception &e) {
     std::cout << "correlator_input_data_handling: " << e.what() << "\n";
-    exit(0);
+    exit(1);
   }
 }
 
@@ -255,20 +261,23 @@ void correlator_input_data_handling(const std::vector<std::string> &correlator_s
  *  @todo Split that into multiple functions for checks, output and munging
  *        to improve readability
  */
-void GlobalData::input_handling(const std::vector<std::string> &quark_configs,
-                                const std::vector<std::string> &operator_list_configs,
-                                const std::vector<std::string> &correlator_list_configs) {
+void input_handling(GlobalData &gd,
+                    const std::vector<std::string> &quark_configs,
+                    const std::vector<std::string> &operator_list_configs,
+                    const std::vector<std::string> &correlator_list_configs) {
   // Checks and terminal output for lattice, config and paths
-  lattice_input_data_handling(path_output, name_lattice, path_config, Lt, Lx, Ly, Lz);
-  config_input_data_handling(start_config, end_config, delta_config);
-  eigenvec_perambulator_input_data_handling(number_of_eigen_vec,
-                                            path_eigenvectors,
-                                            name_eigenvectors,
-                                            path_perambulators,
-                                            name_perambulators);
+  lattice_input_data_handling(
+      gd.path_output, gd.name_lattice, gd.path_config, gd.hyp_parameters.alpha1,
+      gd.hyp_parameters.alpha2, gd.hyp_parameters.iterations, gd.Lt, gd.Lx, gd.Ly, gd.Lz);
+  config_input_data_handling(gd.start_config, gd.end_config, gd.delta_config);
+  eigenvec_perambulator_input_data_handling(gd.number_of_eigen_vec,
+                                            gd.path_eigenvectors,
+                                            gd.name_eigenvectors,
+                                            gd.path_perambulators,
+                                            gd.name_perambulators);
 
   // Munging of quarks, operators und correlators
-  quark_input_data_handling(quark_configs, quarks);
-  operator_input_data_handling(operator_list_configs, operator_list);
-  correlator_input_data_handling(correlator_list_configs, correlator_list);
+  quark_input_data_handling(quark_configs, gd.quarks);
+  operator_input_data_handling(operator_list_configs, gd.operator_list);
+  correlator_input_data_handling(correlator_list_configs, gd.correlator_list);
 }

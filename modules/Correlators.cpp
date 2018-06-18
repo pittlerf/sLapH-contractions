@@ -9,7 +9,11 @@
 #include "dilution-iterator.h"
 #include "typedefs.h"
 
+#include "local_timer.h"
+
 #include <iomanip>
+
+#include <omp.h>
 
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
@@ -60,10 +64,10 @@ void build_trQ1(DiagramParts &q,
  *  If a diagram is not specified in the infile, corr_lookup contains an empty
  *  vector for this diagram and the build function immediately returns
  */
-void contract(const size_t Lt,
-              const size_t dilT,
-              const size_t dilE,
-              const size_t nev,
+void contract(const ssize_t Lt,
+              const ssize_t dilT,
+              const ssize_t dilE,
+              const ssize_t nev,
               OperatorFactory const &meson_operator,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,
@@ -94,19 +98,19 @@ void contract(const size_t Lt,
   
   if (!corr_lookup.C4cB.empty())
     diagrams.emplace_back(new C4cB(corr_lookup.C4cB, output_path, output_filename, Lt));
-  if (!corr_lookup.C40B.empty())
-    diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
   if (!corr_lookup.C4cC.empty())
     diagrams.emplace_back(new C4cC(corr_lookup.C4cC, output_path, output_filename, Lt));
+  if (!corr_lookup.C40B.empty())
+    diagrams.emplace_back(new C40B(corr_lookup.C40B, output_path, output_filename, Lt));
   if (!corr_lookup.C40C.empty())
     diagrams.emplace_back(new C40C(corr_lookup.C40C, output_path, output_filename, Lt));
   
   if (!corr_lookup.C4cD.empty())
     diagrams.emplace_back(new C4cD(corr_lookup.C4cD, output_path, output_filename, Lt));
-  if (!corr_lookup.C40D.empty())
-    diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
   if (!corr_lookup.C4cV.empty())
     diagrams.emplace_back(new C4cV(corr_lookup.C4cV, output_path, output_filename, Lt));
+  if (!corr_lookup.C40D.empty())
+    diagrams.emplace_back(new C40D(corr_lookup.C40D, output_path, output_filename, Lt));
   if (!corr_lookup.C40V.empty())
     diagrams.emplace_back(new C40V(corr_lookup.C40V, output_path, output_filename, Lt));
 
@@ -117,6 +121,8 @@ void contract(const size_t Lt,
 #pragma omp parallel
   {
     swatch.start();
+
+    LT_CORRELATOR_DECLARE;
 
     DiagramParts q(randomvectors,
                    perambulators,
@@ -140,6 +146,7 @@ void contract(const size_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
+      LT_CORRELATOR_START;
       // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ0Q2) {
@@ -158,7 +165,10 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ0Q2");
 
+      LT_CORRELATOR_START;
       // Build trQ1Q1.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ1Q1) {
@@ -177,7 +187,10 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ1Q1");
 
+      LT_CORRELATOR_START;
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
         for (const auto &c_look : corr_lookup.trQ1) {
@@ -187,18 +200,22 @@ void contract(const size_t Lt,
                       slice_pair.source_block());
         }
       }
+      LT_CORRELATOR_STOP;
+      LT_CORRELATOR_PRINT("[contract] build_trQ1");
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
         if (diagram->corr_lookup().empty()) {
           continue;
         }
-
+        LT_CORRELATOR_START;
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
           diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.
+        LT_CORRELATOR_STOP;
+        LT_CORRELATOR_PRINT( std::string("[contract] ") + diagram->name() );
       }    // End of diagram loop.
 
       q.clear();

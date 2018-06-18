@@ -22,8 +22,8 @@ class RandomVector {
  private:
   // the random vector
   std::vector<Complex> vec;
-  const size_t nb_entities;
-  const size_t length;
+  const ssize_t nb_entities;
+  const ssize_t length;
 
  public:
   /*! Constructor which delegates memory allocation to std::vector
@@ -33,7 +33,7 @@ class RandomVector {
    *
    *  @warning It is assumed that all random vector have the same length!
    */
-  RandomVector(const size_t nb_entities, const size_t length)
+  RandomVector(const ssize_t nb_entities, const ssize_t length)
       : vec(nb_entities * length, Complex(0.0, 0.0)),
         nb_entities(nb_entities),
         length(length) {
@@ -44,8 +44,12 @@ class RandomVector {
   ~RandomVector(){};
 
   /*! Overloading () operator to directly access the elements of vec */
-  inline Complex operator()(const size_t entity, const size_t entry) const {
+  inline Complex operator()(const ssize_t entity, const ssize_t entry) const {
     return vec.at(entity * length + entry);
+  }
+
+  const std::vector<Complex> & get(void) const {
+    return vec;
   }
 
   /*! Computes the random vectors for the sources
@@ -54,7 +58,7 @@ class RandomVector {
    *  @param seed   Seed for the random vector
    *  @param length Length of the random vector
    */
-  void set(const size_t entity, const int seed);
+  void set(const ssize_t entity, const int seed);
 
   /*! Computes the random vectors for the sources and stores them to file
    *
@@ -63,7 +67,7 @@ class RandomVector {
    *  @param length   Length of the random vector
    *  @param filename The random vector is directly stored in this file
    */
-  void set(const size_t entity, const int seed, const std::string &filename);
+  void set(const ssize_t entity, const int seed, const std::string &filename);
 
   /*! Write all random vectors to some file */
   void write_random_vector(const std::string &filename) const;
@@ -73,7 +77,7 @@ class RandomVector {
    *  @param entity   The random vector to be stored on disk
    *  @param filename The filename
    */
-  void write_random_vector(const size_t entity, const std::string &filename) const;
+  void write_random_vector(const ssize_t entity, const std::string &filename) const;
 
   /*! Read all random vectors from some file */
   void read_random_vector(const std::string &filename);
@@ -83,7 +87,7 @@ class RandomVector {
    *  @param entity   The random vector to be read from disk
    *  @param filename The filename
    */
-  void read_random_vector(const size_t entity, const std::string &filename);
+  void read_random_vector(const ssize_t entity, const std::string &filename);
 
   /*! Read random vectors where each vector is stored in a different file
    *

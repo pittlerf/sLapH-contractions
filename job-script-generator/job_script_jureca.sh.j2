@@ -10,6 +10,9 @@
 #SBATCH --output={{ config_path }}/{{ jobname }}.out
 #SBATCH --error={{ config_path }}/{{ jobname }}.err
 
+set -e
+set -u
+
 module load defaults
 module load Intel
 module load Boost
@@ -24,7 +27,9 @@ cd {{ rundir }}
 date
 
 {% for config_id in config_ids_for_one_job %}
-srun -N1 -n1 -c{{ cpus_per_task }} --exclusive -o {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.out ./contract -i {{ config_path }}/contract_{{ '%04d'|format(config_id) }}.in &
+srun -N1 -n1 -c{{ cpus_per_task }} --exclusive \
+        ../contract -i {{ config_path }} \
+        --start_config {{ config_id }} --end_config {{ config_id }} &
 {% endfor %}
 
 wait
