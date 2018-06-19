@@ -192,6 +192,7 @@ struct OperatorLookup {
    *  @em index_of_unity is set to -1
    */
   int index_of_unity;
+  bool need_gaugefield = false;
 
   inline ssize_t size(){ return vdaggerv_lookup.size(); }
 };
