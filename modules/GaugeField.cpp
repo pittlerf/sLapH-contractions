@@ -492,14 +492,6 @@ Eigen::MatrixXcd GaugeField::symmetric_derivative(const Eigen::MatrixXcd& v,
 }
 */
 
-static ssize_t map_char_to_dir(const char dir){
-  ssize_t integer_dir;
-  if (dir == 'x') integer_dir = 0; 
-  if (dir == 'y') integer_dir = 1; 
-  if (dir == 'z') integer_dir = 2; 
-  return integer_dir; 
-}
-
 static Eigen::Vector3f cartesian_vector(const char dim){
   Eigen::Vector3f cart(0,0,0);
   switch (dim){
@@ -529,77 +521,27 @@ Eigen::Vector3f GaugeField::summed_displacement(const DisplacementDirection disp
 }
 
 // Calculates U_mu(x)V(x+\hat{\mu})
-Eigen::MatrixXcd GaugeField::forward_uv(const Eigen::MatrixXcd& v,       
+Eigen::MatrixXcd GaugeField::forward_uv(const Eigen::VectorXcd& v,       
                                                   const ssize_t t,
-                                                  const char dir,
-                                                  const ssize_t verbose) {
-  // Map direction character to ssize_t
-  const ssize_t integer_dir = map_char_to_dir(dir);
-  //Information on Matrix size
-  const int dim_col = v.cols();
-  const int dim_row = v.rows();
-  //Loop over all eigenvectors in 
-  //storing eigenvector
-  Eigen::VectorXcd in(dim_row);
-  Eigen::MatrixXcd out(dim_row, dim_col);
-  for(int ev=0; ev < dim_col; ++ev){ 
-    in = v.col(ev);
-    //multiply eigenvector with according gauge matrix
-    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
-      Eigen::Vector3cd quark_up;
-      int up_ind = iup[spatial_ind][integer_dir];
-      quark_up = in.segment(3*up_ind,3);
-      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[spatial_ind][integer_dir]
-                                              *quark_up;
-    }//end spatial loop
-  }//end eigenvector loop
-  return out;
+                                                  const int spatial_ind,
+                                                  const int direction) const {
 
+  int up_ind = iup[spatial_ind][direction];
+
+  return (tslices.at(t))[spatial_ind][direction]*v.segment(3*up_ind,3);
 }
 
 // Calculates U_mu^dagger(x-\hat{mu})V(x-\hat{\mu})
-Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::MatrixXcd& v,       
+Eigen::MatrixXcd GaugeField::backward_uv(const Eigen::VectorXcd& v,       
                                                   const ssize_t t,
-                                                  const char dir,
-                                                  const ssize_t verbose) {
-  // Map direction character to ssize_t
-  const ssize_t integer_dir = map_char_to_dir(dir);
-  //Information on Matrix size
-  const int dim_col = v.cols();
-  const int dim_row = v.rows();
-  //Loop over all eigenvectors in 
-  //storing eigenvector
-  Eigen::VectorXcd in(dim_row);
-  Eigen::MatrixXcd out(dim_row, dim_col);
-  for(int ev=0; ev < dim_col; ++ev){ 
-    in = v.col(ev);
-    //multiply eigenvector with according gauge matrix
-    for (int spatial_ind = 0; spatial_ind < V3; ++spatial_ind) {
-      Eigen::Vector3cd quark_down;
-      int down_ind = idown[spatial_ind][integer_dir];
-      quark_down = in.segment(3*down_ind,3);
-      (out.col(ev)).segment(3*spatial_ind,3)=(tslices.at(t))[down_ind][integer_dir].adjoint()
-                                              *quark_down;
-    }//end spatial loop
-  }//end eigenvector loop
-  return out;
+                                                  const int spatial_ind,
+                                                  const int direction) const {
 
+  int down_ind = idown[spatial_ind][direction];
+
+  return (tslices.at(t))[down_ind][direction].adjoint()*v.segment(3*down_ind,3);
 }
 
-// Generalized Displacements for several displacements in a row
-Eigen::MatrixXcd GaugeField::displace_eigenvectors(const Eigen::MatrixXcd& v,
-                                                   const ssize_t t,
-                                                   const DisplacementDirection disp,
-                                                   const ssize_t verbose){
-
-  Eigen::MatrixXcd out=v;
-  // iterate over displacement vector
-  for (const auto& d : disp){
-    d.first == '>' ?  out = forward_uv(out,t,d.second,verbose) 
-                   :  out = backward_uv(out,t,d.second,verbose);
-  }
-  return out;
-}
 
 /*
 // Calculate U_mu(x)V(x)

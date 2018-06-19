@@ -114,34 +114,20 @@ class GaugeField {
     //! v is the eigensystem at timeslice t
     //! t is the timeslice index
     //! dir is the direction of the derivative
-    Eigen::MatrixXcd forward_uv(const Eigen::MatrixXcd& v, const ssize_t t,
-                                                  const char dir,
-                                                  const ssize_t verbose);
+    Eigen::MatrixXcd forward_uv(const Eigen::VectorXcd& v, const ssize_t t,
+                                                  const int spatial_ind,
+                                                  const int direction) const;
 
     //! \brief Backward displacement acting to the right once in direction dir
     //! 
     //! v is the eigensystem at timeslice t
     //! t is the timeslice index
     //! dir is the direction of the derivative
-    Eigen::MatrixXcd backward_uv(const Eigen::MatrixXcd& v, const ssize_t t,
-                                                  const char dir,
-                                                  const ssize_t verbose);
+    Eigen::MatrixXcd backward_uv(const Eigen::VectorXcd& v, const ssize_t t,
+                                                  const int spatial_ind,
+                                                  const int direction) const;
 
-    //! \brief Displace Matrix of eigenvectors by looping over displacement
-    //! vectors
-    //!
-    //! v is the Eigensystem at a specific timeslice
-    //! t is the timeslice to take into account
-    //! disp is a vector of displacement pairs
-    //! verbose is an integer controlling the debug level
-    //! The eigenvectors of timeslice t are displaced using the vector of
-    //! displacement pairs. The First entry of each pair specifies the direction
-    //! of the right acting derivative, ">" meaning forward and "<" meaning backward
-    Eigen::MatrixXcd displace_eigenvectors(const Eigen::MatrixXcd& v,
-                                           const ssize_t t,
-                                           const DisplacementDirection disp,
-                                           const ssize_t verbose);
-  
+ 
     //! \brief Returns displaced vector or matrix
     //! 
     //! v is the address of the Object to be displaced, t is the timeslice
