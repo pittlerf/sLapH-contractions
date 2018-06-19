@@ -17,5 +17,5 @@ var searchData=
   ['rlxs_5finit',['rlxs_init',['../ranlxs_8h.html#aa924f8edb5c17eb7ebd7c2fc0eb90245',1,'rlxs_init(int level, int seed):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#aa924f8edb5c17eb7ebd7c2fc0eb90245',1,'rlxs_init(int level, int seed):&#160;ranlxs.cpp']]],
   ['rlxs_5freset',['rlxs_reset',['../ranlxs_8h.html#a9ec92e1cd14df4944a0b4b491695a5ac',1,'rlxs_reset(int state[]):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#a9ec92e1cd14df4944a0b4b491695a5ac',1,'rlxs_reset(int state[]):&#160;ranlxs.cpp']]],
   ['rlxs_5fsize',['rlxs_size',['../ranlxs_8h.html#a2225adda8880f9a1d70f2fca7bfba5d1',1,'rlxs_size(void):&#160;ranlxs.cpp'],['../ranlxs_8cpp.html#a2225adda8880f9a1d70f2fca7bfba5d1',1,'rlxs_size(void):&#160;ranlxs.cpp']]],
-  ['roots_5fof_5funity',['roots_of_unity',['../_operators_for_mesons_8cpp.html#adb3c2a529c372f3734226dc7e0c5f48a',1,'OperatorsForMesons.cpp']]]
+  ['roots_5fof_5funity',['roots_of_unity',['../_operator_factory_8cpp.html#adb3c2a529c372f3734226dc7e0c5f48a',1,'OperatorFactory.cpp']]]
 ];

@@ -32,6 +32,6 @@ var searchData=
   ['rnd_5fvec_5fconstruct',['rnd_vec_construct',['../struct_global_data.html#af7a85e7017a904fef6c0057cb1e153f4',1,'GlobalData']]],
   ['rnd_5fvec_5fids',['rnd_vec_ids',['../struct_diluted_factor_index.html#a663fbf4028798d5e38973d5aa3672fdd',1,'DilutedFactorIndex']]],
   ['rndid',['RndId',['../typedefs_8h.html#a10eac438045f58cf716d4cfe06b38ffb',1,'typedefs.h']]],
-  ['roots_5fof_5funity',['roots_of_unity',['../_operators_for_mesons_8cpp.html#adb3c2a529c372f3734226dc7e0c5f48a',1,'OperatorsForMesons.cpp']]],
+  ['roots_5fof_5funity',['roots_of_unity',['../_operator_factory_8cpp.html#adb3c2a529c372f3734226dc7e0c5f48a',1,'OperatorFactory.cpp']]],
   ['row',['row',['../structgamma__lookup.html#afc24093dcfb5aef4b2f3a7341049afc2',1,'gamma_lookup']]]
 ];

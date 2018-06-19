@@ -2,6 +2,7 @@ var searchData=
 [
   ['nb_5fentities',['nb_entities',['../struct_random_vector_construction.html#ad021c927bc99ff490d7af1d78cd279b0',1,'RandomVectorConstruction::nb_entities()'],['../struct_perambulator_construction.html#a73c8849f6a74661eb2328aeaa4d0ecbb',1,'PerambulatorConstruction::nb_entities()'],['../class_random_vector.html#adf7c10e2286dbfae872175179f00e66d',1,'RandomVector::nb_entities()']]],
   ['nb_5fev',['nb_ev',['../class_operator_factory.html#a2d6994d0fa0eb4231b2912a026bb8a45',1,'OperatorFactory']]],
+  ['need_5fgaugefield',['need_gaugefield',['../struct_operator_lookup.html#ac63777cce806adfbc4a8a5de84f6bf27',1,'OperatorLookup']]],
   ['need_5fvdaggerv_5fdaggering',['need_vdaggerv_daggering',['../struct_diluted_factor_index.html#aaef476730f786f664b56bf1426517f37',1,'DilutedFactorIndex']]],
   ['nev',['nev',['../class_diluted_factor_factory.html#a1c809188b17c4c547bae2021b1be7b41',1,'DilutedFactorFactory']]],
   ['num',['num',['../ranlxs_8cpp.html#abd4b8092ae98408161d2c1dd67f576c9',1,'ranlxs.cpp']]],
