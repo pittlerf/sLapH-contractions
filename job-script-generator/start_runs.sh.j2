@@ -7,7 +7,7 @@ for cfg in {% for config in config_ids %}{{ config }} {% endfor %}; do
   
     {% if machine == 'qbig' %}
     sbatch cnfg${j}/job_script_qbig_slurm.sh
-    {% elif machine == 'jureca' %}
-    sbatch cnfg${j}/job_script_jureca.sh
+    {% elif machine == 'jurecabooster' %}
+    sbatch cnfg${j}/job_script_jurecabooster.sh
     {% endif %}
 done
