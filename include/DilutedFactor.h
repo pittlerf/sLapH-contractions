@@ -478,4 +478,3 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
     LT_ULTRA_FINE_PRINT("[DilutedFactor::multiply] multiply");
   }
 }
-
