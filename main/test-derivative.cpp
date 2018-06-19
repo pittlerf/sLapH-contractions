@@ -40,8 +40,8 @@ int main() {
   for (ssize_t t = 0; t < 24; ++t){
     Eigen::MatrixXcd df_eigvecs = gauge.forward_uv(V_t[t],t,'x',1);
     Eigen::MatrixXcd db_eigvecs = gauge.backward_uv(V_t[t],t,'x',1);
-    Eigen::MatrixXcd disp_eigvecs = gauge.displace_eigenvectors(V_t[t],t,displacements,1);
-    std::cout<<(V_t[t].adjoint()*disp_eigvecs).trace()<<std::endl;
+//    Eigen::MatrixXcd disp_eigvecs = gauge.displace_eigenvectors(V_t[t],t,displacements,1);
+ //   std::cout<<(V_t[t].adjoint()*disp_eigvecs).trace()<<std::endl;
     std::cout<<(V_t[t].adjoint()*V_t[t]).trace()<<std::endl;
     //// Calculate Umu_V
     //Eigen::MatrixXcd umu_v = gauge.Umu_times_V(V_t[t],t,0,1);
