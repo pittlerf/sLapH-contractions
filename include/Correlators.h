@@ -24,7 +24,7 @@
 #include "DiagramForward.h"
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
-#include "QuarkLineBlock2.h"
+#include "DilutedFactorY.h"
 #include "typedefs.h"
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */

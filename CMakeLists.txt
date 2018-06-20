@@ -23,7 +23,7 @@ add_library(lcontract
   modules/io_utils.cpp
   modules/OperatorFactory.cpp
   modules/Perambulator.cpp
-  modules/QuarkLineBlock2.cpp
+  modules/DilutedFactorY.cpp
   modules/RandomVector.cpp
   modules/ranlxs.cpp
   modules/StopWatch.cpp

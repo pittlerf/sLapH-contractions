@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Correlators.h"
-#include "QuarkLineBlock2.h"
+#include "DilutedFactorY.h"
 #include "h5-wrapper.h"
 #include "typedefs.h"
 

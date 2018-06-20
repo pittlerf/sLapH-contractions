@@ -369,6 +369,16 @@ struct DilutedTraceCollection3{
   tr.resize(boost::extents[size0][Lt][Lt]);
   }
 
+//  Value const &operator[](Key const &key) {
+//    if (Ql.count(key) == 0) {
+//      build(key);
+//    }
+//
+//    return Ql.at(key);
+//  }
+
+//  void build(Key const &time_key);
+
   void clear(){
     return;
   }

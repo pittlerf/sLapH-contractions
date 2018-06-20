@@ -4,7 +4,7 @@
 
 #include "Diagram.h"
 #include "DilutedFactor.h"
-#include "QuarkLineBlock2.h"
+#include "DilutedFactorY.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
