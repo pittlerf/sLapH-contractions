@@ -25,6 +25,7 @@
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
 #include "DilutedFactorY.h"
+#include "DilutedTraceFactory.h"
 #include "typedefs.h"
 
 /*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
