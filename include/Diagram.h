@@ -46,10 +46,10 @@ struct DiagramParts {
             dilT,
             dilE,
             nev,
-            dil_fac_lookup.Q2V) {
-    trQ0Q2.resize(boost::extents[corr_lookup.trQ0Q2.size()][Lt][Lt]);
-    trQ1Q1.resize(boost::extents[corr_lookup.trQ1Q1.size()][Lt][Lt]);
-    trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
+            dil_fac_lookup.Q2V),
+        trQ0Q2(corr_lookup.trQ0Q2.size(), Lt),
+        trQ1Q1(corr_lookup.trQ1Q1.size(), Lt),
+        trQ1(corr_lookup.trQ1.size(), Lt){
   }
 
   void clear() {
@@ -57,6 +57,10 @@ struct DiagramParts {
     q1.clear();
     q2l.clear();
     q2v.clear();
+    trQ0Q2.clear();
+    trQ1Q1.clear();
+    trQ1.clear();
+
   }
 
   DilutedFactorFactory<DilutedFactorType::Q0> q0;
@@ -65,13 +69,13 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q2> q2v;
 
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTracesTwoTimes<2> trQ1Q1;
+  DilutedTraceCollection3<2> trQ1Q1;
 
   //< Temporal memory for tr(Q2V*rVdaggerVr)
-  DilutedTracesTwoTimes<2> trQ0Q2;
+  DilutedTraceCollection3<2> trQ0Q2;
 
   //< Temporal memory for tr(Q1)
-  DilutedTraceOneTime<1> trQ1;
+  DilutedTraceCollection2<1> trQ1;
 };
 
 class Diagram {

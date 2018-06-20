@@ -25,7 +25,7 @@ void build_trQ0Q2(DiagramParts &q,
                  int const t2,
                  int const b1,
                  int const b2) {
-  q.trQ0Q2[c_look.id][t1][t2] = factor_to_trace(
+  q.trQ0Q2.tr[c_look.id][t1][t2] = factor_to_trace(
       q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
 }
 
@@ -35,7 +35,7 @@ void build_trQ1Q1(DiagramParts &q,
                  int const t2,
                  int const b1,
                  int const b2) {
-  q.trQ1Q1[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
+  q.trQ1Q1.tr[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
                                                 q.q1[{t2, b1}].at({c_look.lookup[1]}));
 }
 
@@ -43,7 +43,7 @@ void build_trQ1(DiagramParts &q,
                 DiagramIndex const &c_look,
                 int const t,
                 int const b) {
-  q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+  q.trQ1.tr[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
 }
 
 

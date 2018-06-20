@@ -20,6 +20,7 @@
 #include "Eigen/Dense"
 #include "boost/container/static_vector.hpp"
 #include "boost/multi_array.hpp"
+#include <boost/type_traits.hpp>
 
 int constexpr max_rnd_ids = 10;
 
@@ -57,16 +58,6 @@ typedef boost::multi_array<Complex, 7> array_cd_d7;
 typedef boost::multi_array<Complex, 8> array_cd_d8;
 typedef boost::multi_array<Complex, 9> array_cd_d9;
 typedef boost::multi_array<Complex, 10> array_cd_d10;
-
-/*! Special type for Correlators */
-typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
-
-// TODO (Martin Ueding 2017-12-21): Rename this to DilutedTraceCollection3.
-template <size_t rvecs>
-using DilutedTracesTwoTimes = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3>;
-
-template <size_t rvecs>
-using DilutedTraceOneTime = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2>;
 
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
@@ -366,6 +357,39 @@ struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
 };
 
 #define MU_DEBUG(x) std::cout << std::setw(30) << #x << ": " << (x) << std::endl;
+
+/*! Special type for Correlators */
+typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
+
+template <size_t rvecs>
+struct DilutedTraceCollection3{
+  DilutedTraceCollection3(size_t const size0,
+                          ssize_t const Lt){
+
+  tr.resize(boost::extents[size0][Lt][Lt]);
+  }
+
+  void clear(){
+    return;
+  }
+
+  boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3> tr;
+};
+
+template <size_t rvecs>
+struct DilutedTraceCollection2{
+  DilutedTraceCollection2(size_t const size0,
+                          ssize_t const Lt){
+
+    tr.resize(boost::extents[size0][Lt]);
+  }
+
+  void clear(){
+    return;
+  }
+
+  boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2> tr;
+};
 
 template <typename T>
 ssize_t ssize(std::vector<T> const &vec) {
