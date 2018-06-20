@@ -322,9 +322,6 @@ struct DiagramIndicesCollection {
 template <DilutedFactorType qlt>
 struct DilutedFactorTypeTraits {};
 
-/*! @todo QuarkLineType is a bad name in this case. That's a proxy for
- *        DiagramIndex.lookup
- */
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q0> {
   typedef std::vector<DilutedFactorIndex> type;

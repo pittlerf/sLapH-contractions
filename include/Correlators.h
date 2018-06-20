@@ -24,17 +24,8 @@
 #include "DiagramForward.h"
 #include "OperatorsForMesons.h"
 #include "Perambulator.h"
-#include "DilutedFactorY.h"
-#include "DilutedTraceFactory.h"
+#include "Diagram.h"
 #include "typedefs.h"
-
-/*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
-struct DilutedFactorLookup {
-  std::vector<DilutedFactorIndex> const Q0;
-  std::vector<DilutedFactorIndex> const Q1;
-  std::vector<DilutedFactorIndex> const Q2V;
-  std::vector<DilutedFactorIndex> const Q2L;
-};
 
 /******************************************************************************/
 

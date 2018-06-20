@@ -24,6 +24,7 @@ add_library(lcontract
   modules/OperatorFactory.cpp
   modules/Perambulator.cpp
   modules/DilutedFactorY.cpp
+  modules/DilutedTraceFactory.cpp
   modules/RandomVector.cpp
   modules/ranlxs.cpp
   modules/StopWatch.cpp

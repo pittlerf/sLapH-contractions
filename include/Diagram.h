@@ -2,12 +2,20 @@
 
 #include "Correlators.h"
 #include "DilutedFactorY.h"
+#include "DilutedTraceFactory.h"
 #include "h5-wrapper.h"
-#include "typedefs.h"
 
 #include <mutex>
 
 #include <omp.h>
+
+/*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
+struct DilutedFactorLookup {
+  std::vector<DilutedFactorIndex> const Q0;
+  std::vector<DilutedFactorIndex> const Q1;
+  std::vector<DilutedFactorIndex> const Q2V;
+  std::vector<DilutedFactorIndex> const Q2L;
+};
 
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
@@ -69,13 +77,13 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q2> q2v;
 
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTraceCollection3<2> trQ1Q1;
+  DilutedTraceCollection<DilutedFactorType::Q1, DilutedFactorType::Q1, 2> trQ1Q1;
 
   //< Temporal memory for tr(Q2V*rVdaggerVr)
-  DilutedTraceCollection3<2> trQ0Q2;
+  DilutedTraceCollection<DilutedFactorType::Q0, DilutedFactorType::Q2, 2> trQ0Q2;
 
   //< Temporal memory for tr(Q1)
-  DilutedTraceCollection2<1> trQ1;
+  DilutedTraceCollection2<DilutedFactorType::Q1, 1> trQ1;
 };
 
 class Diagram {
