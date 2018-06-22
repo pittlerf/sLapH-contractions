@@ -147,26 +147,22 @@ void contract(const ssize_t Lt,
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
-            q.trQ0Q2.build(corr_lookup.trQ0Q2,
-                        slice_pair.source(),
+            q.trQ0Q2.build(slice_pair.source(),
                         slice_pair.sink(),
                         slice_pair.source_block(),
                         slice_pair.sink_block());
 
-            q.trQ0Q2.build(corr_lookup.trQ0Q2,
-                        slice_pair.source(),
+            q.trQ0Q2.build(slice_pair.source(),
                         slice_pair.source(),
                         slice_pair.source_block(),
                         slice_pair.source_block());
 
-            q.trQ1Q1.build(corr_lookup.trQ1Q1,
-                        slice_pair.source(),
+            q.trQ1Q1.build(slice_pair.source(),
                         slice_pair.sink(),
                         slice_pair.source_block(),
                         slice_pair.sink_block());
 
-            q.trQ1Q1.build(corr_lookup.trQ1Q1,
-                        slice_pair.source(),
+            q.trQ1Q1.build(slice_pair.source(),
                         slice_pair.source(),
                         slice_pair.source_block(),
                         slice_pair.source_block());
