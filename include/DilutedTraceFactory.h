@@ -13,18 +13,19 @@ struct DilutedTraceCollection{
     DilutedFactorTypeTraits<qlt2>::num_times - 2;
 
   using Key = std::array<int, num_times>;
-  using Value = std::vector<DilutedTrace<rvecs>>;
+  using Value = DilutedTraces<rvecs>;
 
   DilutedTraceCollection(size_t const size0, ssize_t const Lt){
-    tr.resize(boost::extents[Lt][Lt][size0]);
+//    tr.resize(boost::extents[Lt][Lt][size0]);
   }
 
-  Value const &at(Key const &key, size_t const size0) {
+  Value const &at(Key const &key) {
 //    if (Ql.count(key) == 0) {
 //      build(key);
 //    }
 
-    return tr[key[0]][key[1]][size0];
+//    return boost::const_multi_array_ref<std::vector<DilutedTrace<rvecs>>(tr, boost::extents[key[0]][key[1]]);
+    return tr[{key[0],key[1]}];
   }
 
   void build(DilutedFactorFactory<qlt1> &q,
@@ -40,7 +41,7 @@ struct DilutedTraceCollection{
   }
 
   private:
-  boost::multi_array<std::vector<DilutedTrace<rvecs>>, num_times + 1> tr;
+  std::map<Key, Value> tr;
 
 };
 

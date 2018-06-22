@@ -478,3 +478,7 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
     LT_ULTRA_FINE_PRINT("[DilutedFactor::multiply] multiply");
   }
 }
+
+template <size_t rvecs>
+using DilutedTraces = std::map<ssize_t, std::vector<DilutedTrace<rvecs>>>;
+
