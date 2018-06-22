@@ -129,15 +129,13 @@ void contract(const ssize_t Lt,
       // Build trQ0Q2.
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ0Q2) {
-          q.trQ0Q2.build(q.q0, q.q2v,
-                      c_look,
+          q.trQ0Q2.build(c_look,
                       slice_pair.source(),
                       slice_pair.sink(),
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-          q.trQ0Q2.build(q.q0, q.q2v,
-                      c_look,
+          q.trQ0Q2.build(c_look,
                       slice_pair.source(),
                       slice_pair.source(),
                       slice_pair.source_block(),
@@ -152,15 +150,13 @@ void contract(const ssize_t Lt,
       for (auto const slice_pair : block_pair) {
         for (const auto &c_look : corr_lookup.trQ1Q1) {
 
-          q.trQ1Q1.build(q.q1, q.q1,
-                    c_look,
+          q.trQ1Q1.build(c_look,
                       slice_pair.source(),
                       slice_pair.sink(),
                       slice_pair.source_block(),
                       slice_pair.sink_block());
 
-          q.trQ1Q1.build(q.q1, q.q1,
-              c_look,
+          q.trQ1Q1.build(c_look,
                       slice_pair.source(),
                       slice_pair.source(),
                       slice_pair.source_block(),
