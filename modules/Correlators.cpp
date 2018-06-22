@@ -126,47 +126,6 @@ void contract(const ssize_t Lt,
       auto const block_pair = dilution_scheme[b];
 
       LT_CORRELATOR_START;
-      // Build trQ0Q2.
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.trQ0Q2) {
-          q.trQ0Q2.build(c_look,
-                      slice_pair.source(),
-                      slice_pair.sink(),
-                      slice_pair.source_block(),
-                      slice_pair.sink_block());
-
-          q.trQ0Q2.build(c_look,
-                      slice_pair.source(),
-                      slice_pair.source(),
-                      slice_pair.source_block(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ0Q2");
-
-      LT_CORRELATOR_START;
-      // Build trQ1Q1.
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.trQ1Q1) {
-
-          q.trQ1Q1.build(c_look,
-                      slice_pair.source(),
-                      slice_pair.sink(),
-                      slice_pair.source_block(),
-                      slice_pair.sink_block());
-
-          q.trQ1Q1.build(c_look,
-                      slice_pair.source(),
-                      slice_pair.source(),
-                      slice_pair.source_block(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ1Q1");
-
-      LT_CORRELATOR_START;
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
         for (const auto &c_look : corr_lookup.trQ1) {
@@ -187,6 +146,30 @@ void contract(const ssize_t Lt,
         LT_CORRELATOR_START;
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
+
+            q.trQ0Q2.build(corr_lookup.trQ0Q2,
+                        slice_pair.source(),
+                        slice_pair.sink(),
+                        slice_pair.source_block(),
+                        slice_pair.sink_block());
+
+            q.trQ0Q2.build(corr_lookup.trQ0Q2,
+                        slice_pair.source(),
+                        slice_pair.source(),
+                        slice_pair.source_block(),
+                        slice_pair.source_block());
+
+            q.trQ1Q1.build(corr_lookup.trQ1Q1,
+                        slice_pair.source(),
+                        slice_pair.sink(),
+                        slice_pair.source_block(),
+                        slice_pair.sink_block());
+
+            q.trQ1Q1.build(corr_lookup.trQ1Q1,
+                        slice_pair.source(),
+                        slice_pair.source(),
+                        slice_pair.source_block(),
+                        slice_pair.source_block());
 
           diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.

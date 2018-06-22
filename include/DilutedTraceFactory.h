@@ -29,7 +29,7 @@ struct DilutedTraceCollection{
     return tr[{key[0],key[1]}];
   }
 
-  void build(DiagramIndex const &c_look,
+  void build(std::vector<DiagramIndex> const &diagram_index_collection,
                  int const t1,
                  int const t2,
                  int const b1,
