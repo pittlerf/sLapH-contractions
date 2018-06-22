@@ -17,10 +17,12 @@ struct DilutedTraceCollection{
 
   DilutedTraceCollection(DilutedFactorFactory<qlt1> &_df1,
        DilutedFactorFactory<qlt2> &_df2, 
-       std::vector<DiagramIndex> const &_dic) :
+       std::vector<DiagramIndex> const &_dic,
+       DilutionScheme const &_ds) :
     df1(_df1),
     df2(_df2),
-    diagram_index_collection(_dic){
+    diagram_index_collection(_dic),
+    dilution_scheme(_ds){
   }
 
   Value const &at(Key const &key) {
@@ -38,9 +40,10 @@ struct DilutedTraceCollection{
   }
 
   private:
-  DilutedFactorFactory<qlt1> df1;
-  DilutedFactorFactory<qlt2> df2;
-  std::vector<DiagramIndex> diagram_index_collection;
+  DilutedFactorFactory<qlt1> &df1;
+  DilutedFactorFactory<qlt2> &df2;
+  std::vector<DiagramIndex> const &diagram_index_collection;
+  DilutionScheme const &dilution_scheme;
   std::map<Key, Value> tr;
 };
 
