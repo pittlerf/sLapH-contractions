@@ -144,28 +144,12 @@ void contract(const ssize_t Lt,
           continue;
         }
         LT_CORRELATOR_START;
+
+        q.trQ0Q2.build(block_pair);
+        q.trQ1Q1.build(block_pair);
+
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
-
-            q.trQ0Q2.build(slice_pair.source(),
-                        slice_pair.sink(),
-                        slice_pair.source_block(),
-                        slice_pair.sink_block());
-
-            q.trQ0Q2.build(slice_pair.source(),
-                        slice_pair.source(),
-                        slice_pair.source_block(),
-                        slice_pair.source_block());
-
-            q.trQ1Q1.build(slice_pair.source(),
-                        slice_pair.sink(),
-                        slice_pair.source_block(),
-                        slice_pair.sink_block());
-
-            q.trQ1Q1.build(slice_pair.source(),
-                        slice_pair.source(),
-                        slice_pair.source_block(),
-                        slice_pair.source_block());
 
           diagram->assemble(t, slice_pair, q);
         }  // End of slice pair loop.

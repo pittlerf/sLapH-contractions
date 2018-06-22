@@ -31,10 +31,7 @@ struct DilutedTraceCollection{
     return tr[{key[0],key[1]}];
   }
 
-  void build(int const t1,
-                 int const t2,
-                 int const b1,
-                 int const b2);
+  void build(DilutionIterator const &block_pair);
 
   void clear(){
     return;
