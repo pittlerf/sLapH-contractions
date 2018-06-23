@@ -26,14 +26,14 @@ struct DilutedTraceCollection{
   }
 
   Value const &at(Key const &key) {
-//    if (Ql.count(key) == 0) {
-//      build(key);
-//    }
+    if (tr.count(key) == 0) {
+      build(key);
+    }
 
     return tr[{key[0],key[1]}];
   }
 
-  void build(DilutionIterator const &block_pair);
+  void build(Key const &time_key);
 
   void clear(){
     return;

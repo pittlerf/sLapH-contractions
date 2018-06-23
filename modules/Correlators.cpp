@@ -146,9 +146,6 @@ void contract(const ssize_t Lt,
         }
         LT_CORRELATOR_START;
 
-        q.trQ0Q2.build(block_pair);
-        q.trQ1Q1.build(block_pair);
-
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
