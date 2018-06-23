@@ -53,11 +53,11 @@ struct DilutedTraceFactory {
       : df(_df), diagram_index_collection(_dic), dilution_scheme(_ds) {}
 
   Value const &operator[](Key const &key) {
-    if (tr.count(key) == 0) {
+    if (Tr.count(key) == 0) {
       build(key);
     }
 
-    return tr.at(key);
+    return Tr.at(key);
   }
 
   void build(Key const &time_key);
@@ -68,7 +68,7 @@ struct DilutedTraceFactory {
   DilutedFactorFactory<qlt> &df;
   std::vector<DiagramIndex> const &diagram_index_collection;
   DilutionScheme const &dilution_scheme;
-  std::map<Key, Value> tr;
+  std::map<Key, Value> Tr;
 
 
 };
