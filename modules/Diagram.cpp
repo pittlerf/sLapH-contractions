@@ -14,7 +14,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.trQ0Q2.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[0]);
+    auto const &x = q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]);
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -30,7 +30,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.trQ1Q1.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[0]);
+    auto const &x = q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]);
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -46,8 +46,8 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    c[i] += inner_product(q.trQ1.tr[c_look.lookup[0]][slice_pair.source()],
-                          q.trQ1.tr[c_look.lookup[1]][slice_pair.sink()]);
+    c[i] += inner_product(q.trQ1[{slice_pair.source()}].at(c_look.lookup[0]), 
+                          q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
   }
 }
 
@@ -150,8 +150,8 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
 //    assert(slice_pair.sink() < q.trQ1.tr.shape()[1]);
 
     c[i] += inner_product(
-        q.trQ1Q1.at({slice_pair.source(),slice_pair.source()}).at(c_look.lookup[0]),
-        q.trQ1.tr[c_look.lookup[1]][slice_pair.sink()]);
+        q.trQ1Q1[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C30::assemble_impl] inner_product");
@@ -170,8 +170,8 @@ void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.trQ0Q2.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[0]),
-                      q.trQ0Q2.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[1]));
+        inner_product(q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]),
+                      q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cD::assemble_impl] inner_product");
@@ -190,8 +190,8 @@ void C40D::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.trQ1Q1.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[0]),
-                      q.trQ1Q1.at({slice_pair.source(),slice_pair.sink()}).at(c_look.lookup[1]));
+        inner_product(q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]),
+                      q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40D::assemble_impl] inner_product");
@@ -210,8 +210,8 @@ void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
-        q.trQ0Q2.at({slice_pair.source(),slice_pair.source()}).at(c_look.lookup[0]),
-        q.trQ0Q2.at({slice_pair.sink(),slice_pair.sink()}).at(c_look.lookup[1]));
+        q.trQ0Q2[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ0Q2[{slice_pair.sink(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cV::assemble_impl] inner_product");
@@ -230,8 +230,8 @@ void C40V::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
-        q.trQ1Q1.at({slice_pair.source(),slice_pair.source()}).at(c_look.lookup[0]),
-        q.trQ1Q1.at({slice_pair.sink(),slice_pair.sink()}).at(c_look.lookup[1]));
+        q.trQ1Q1[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ1Q1[{slice_pair.sink(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40V::assemble_impl] inner_product");

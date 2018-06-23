@@ -23,7 +23,7 @@ void build_trQ1(DiagramParts &q,
                 DiagramIndex const &c_look,
                 int const t,
                 int const b) {
-  q.trQ1.tr[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
+  q.trQ1.tr[{t}][c_look.id] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
 }
 
 
