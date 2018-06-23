@@ -6,5 +6,6 @@ var searchData=
   ['slice_5fsink_5f',['slice_sink_',['../class_block_iterator.html#a5277f72a888528d9edf6c58bffdebdaa',1,'BlockIterator']]],
   ['slice_5fsource_5f',['slice_source_',['../class_block_iterator.html#ac82c97b5f7df577c4cc47edf34f3dce4',1,'BlockIterator']]],
   ['source',['source',['../struct_dilution_iterator_1_1_element.html#a8cb04e5e8abeb1addf2b6251629ca4b4',1,'DilutionIterator::Element']]],
+  ['start_5fconfig',['start_config',['../struct_global_data.html#a2c1d0f734f55dd6a482dc388116f8310',1,'GlobalData']]],
   ['starts_5f',['starts_',['../class_stop_watch.html#a3a75e6d208d4adb9a14b84cb63e612e1',1,'StopWatch']]]
 ];

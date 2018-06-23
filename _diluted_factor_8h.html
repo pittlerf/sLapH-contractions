@@ -96,6 +96,9 @@ Typedefs</h2></td></tr>
 <tr class="separator:ae79ef48e7ad6864154ae6816573245fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a157018df43ad617970b320d2531703d5"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_diluted_factor_8h.html#a157018df43ad617970b320d2531703d5">UpTo</a> = boost::container::static_vector&lt; <a class="el" href="typedefs_8h.html#a10eac438045f58cf716d4cfe06b38ffb">RndId</a>, <a class="el" href="_diluted_factor_8h.html#a342debbe1e7ed3081e3087206f3af73f">max_flavor</a> &gt;</td></tr>
 <tr class="separator:a157018df43ad617970b320d2531703d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13612b56d3cbcaad81461d8fbb96a766"><td class="memTemplParams" colspan="2">template&lt;size_t rvecs&gt; </td></tr>
+<tr class="memitem:a13612b56d3cbcaad81461d8fbb96a766"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="_diluted_factor_8h.html#a13612b56d3cbcaad81461d8fbb96a766">DilutedTraces</a> = std::map&lt; ssize_t, std::vector&lt; <a class="el" href="struct_diluted_trace.html">DilutedTrace</a>&lt; rvecs &gt; &gt;&gt;</td></tr>
+<tr class="separator:a13612b56d3cbcaad81461d8fbb96a766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -166,6 +169,25 @@ template&lt;int n, size_t rvecs&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="_diluted_factor_8h_source.html#l00121">121</a> of file <a class="el" href="_diluted_factor_8h_source.html">DilutedFactor.h</a>.</p>
+
+</div>
+</div>
+<a id="a13612b56d3cbcaad81461d8fbb96a766"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13612b56d3cbcaad81461d8fbb96a766">&#9670;&nbsp;</a></span>DilutedTraces</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;size_t rvecs&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="_diluted_factor_8h.html#a13612b56d3cbcaad81461d8fbb96a766">DilutedTraces</a> =  std::map&lt;ssize_t, std::vector&lt;<a class="el" href="struct_diluted_trace.html">DilutedTrace</a>&lt;rvecs&gt; &gt;&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Map from <a class="el" href="struct_diagram_index.html#a784ce650fb179855f3d7f658da16151f">DiagramIndex.id</a> to <a class="el" href="struct_diluted_trace.html">DilutedTrace</a> for all random index combinations </p>
+
+<p class="definition">Definition at line <a class="el" href="_diluted_factor_8h_source.html#l00484">484</a> of file <a class="el" href="_diluted_factor_8h_source.html">DilutedFactor.h</a>.</p>
 
 </div>
 </div>

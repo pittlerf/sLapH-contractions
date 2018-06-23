@@ -20,6 +20,7 @@ var searchData=
   ['sparse_5fto_5feigen_5fdense',['sparse_to_eigen_dense',['../tests_2gtest_2_gamma_8cpp.html#af4c5a34121d67ac9ff28ad33a3bd2eeb',1,'gamma.cpp']]],
   ['ssize',['ssize',['../typedefs_8h.html#a3908e1f24dddac75b5bb70e3b4eaa55f',1,'typedefs.h']]],
   ['start',['start',['../class_stop_watch.html#a09a3c8f9ab03d7b28e4f8b90a833974e',1,'StopWatch']]],
+  ['start_5fconfig',['start_config',['../struct_global_data.html#a2c1d0f734f55dd6a482dc388116f8310',1,'GlobalData']]],
   ['starts_5f',['starts_',['../class_stop_watch.html#a3a75e6d208d4adb9a14b84cb63e612e1',1,'StopWatch']]],
   ['step',['STEP',['../ranlxs_8cpp.html#a8b0e84850c4377e027a24247ad109701',1,'ranlxs.cpp']]],
   ['stop',['stop',['../class_stop_watch.html#a6e80b598d9304e37d8768b716e713e0e',1,'StopWatch']]],
