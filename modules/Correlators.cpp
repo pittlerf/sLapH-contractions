@@ -118,19 +118,6 @@ void contract(const ssize_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
-      LT_CORRELATOR_START;
-      // Build tr(Q1).
-      for (auto const slice_pair : block_pair.one_sink_slice()) {
-        for (const auto &c_look : corr_lookup.trQ1) {
-          q.trQ1.build(q.q1,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ1");
-
       // Build the diagrams.
       for (auto &diagram : diagrams) {
         if (diagram->corr_lookup().empty()) {

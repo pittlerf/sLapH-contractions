@@ -58,7 +58,7 @@ struct DiagramParts {
             dil_fac_lookup.Q2V),
         trQ0Q2(q0, q2v, corr_lookup.trQ0Q2, dilution_scheme),
         trQ1Q1(q1, q1, corr_lookup.trQ1Q1, dilution_scheme),
-        trQ1(corr_lookup.trQ1.size(), Lt){
+        trQ1(q1, corr_lookup.trQ1, dilution_scheme){
   }
 
   void clear() {

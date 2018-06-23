@@ -34,11 +34,13 @@ template class DilutedTraceTraceFactory<DilutedFactorType::Q1, DilutedFactorType
 
 template <>
 void DilutedTraceFactory<DilutedFactorType::Q1, 1>::build(
-    DilutedFactorFactory<DilutedFactorType::Q1> &df,
-    DiagramIndex const &c_look,
-    int const t,
-    int const b) {
-  tr[{t}][c_look.id] = factor_to_trace(df[{t, b}].at({c_look.lookup[0]}));
+    Key const &time_key) {
+
+  auto t = time_key[0];
+  auto b = dilution_scheme.time_to_block(t);
+  for (const auto &c_look : diagram_index_collection) {
+    tr[{t}][c_look.id] = factor_to_trace(df[{t, b}].at({c_look.lookup[0]}));
+  }
 }
 
 template class DilutedTraceFactory<DilutedFactorType::Q1, 1>;

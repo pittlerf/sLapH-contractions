@@ -47,24 +47,28 @@ struct DilutedTraceFactory {
   using Key = std::array<int, num_times>;
   using Value = DilutedTraces<rvecs>;
 
-  DilutedTraceFactory(size_t const size0, ssize_t const Lt) {
-  }
+  DilutedTraceFactory(DilutedFactorFactory<qlt> &_df,
+                         std::vector<DiagramIndex> const &_dic,
+                         DilutionScheme const &_ds)
+      : df(_df), diagram_index_collection(_dic), dilution_scheme(_ds) {}
 
   Value const &operator[](Key const &key) {
-//    if (Tr.count(key) == 0) {
-//      build(key);
-//    }
+    if (tr.count(key) == 0) {
+      build(key);
+    }
 
     return tr.at(key);
   }
 
-  void build(
-    DilutedFactorFactory<qlt> &df,
-    DiagramIndex const &c_look,
-    int const t,
-    int const b);
+  void build(Key const &time_key);
 
   void clear() { return; }
 
+ private:
+  DilutedFactorFactory<qlt> &df;
+  std::vector<DiagramIndex> const &diagram_index_collection;
+  DilutionScheme const &dilution_scheme;
   std::map<Key, Value> tr;
+
+
 };
