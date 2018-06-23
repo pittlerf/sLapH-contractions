@@ -19,14 +19,6 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
-void build_trQ1(DiagramParts &q,
-                DiagramIndex const &c_look,
-                int const t,
-                int const b) {
-  q.trQ1.tr[{t}][c_look.id] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
-}
-
-
 /******************************************************************************/
 /*!
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
@@ -130,7 +122,7 @@ void contract(const ssize_t Lt,
       // Build tr(Q1).
       for (auto const slice_pair : block_pair.one_sink_slice()) {
         for (const auto &c_look : corr_lookup.trQ1) {
-          build_trQ1(q,
+          q.trQ1.build(q.q1,
                       c_look,
                       slice_pair.source(),
                       slice_pair.source_block());

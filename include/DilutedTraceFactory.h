@@ -41,14 +41,13 @@ struct DilutedTraceTraceFactory {
 };
 
 template <DilutedFactorType qlt, size_t rvecs>
-struct DilutedTraceCollection2 {
+struct DilutedTraceFactory {
   static constexpr int num_times = DilutedFactorTypeTraits<qlt>::num_times - 1;
 
   using Key = std::array<int, num_times>;
   using Value = DilutedTraces<rvecs>;
 
-  DilutedTraceCollection2(size_t const size0, ssize_t const Lt) {
-//    tr.resize(boost::extents[size0][Lt]);
+  DilutedTraceFactory(size_t const size0, ssize_t const Lt) {
   }
 
   Value const &operator[](Key const &key) {
@@ -59,8 +58,13 @@ struct DilutedTraceCollection2 {
     return tr.at(key);
   }
 
+  void build(
+    DilutedFactorFactory<qlt> &df,
+    DiagramIndex const &c_look,
+    int const t,
+    int const b);
+
   void clear() { return; }
 
   std::map<Key, Value> tr;
-//  boost::multi_array<std::vector<DilutedTrace<rvecs>>, 1 + num_times> tr;
 };

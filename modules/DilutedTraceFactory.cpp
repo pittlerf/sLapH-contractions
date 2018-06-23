@@ -31,3 +31,14 @@ void DilutedTraceTraceFactory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2>::
 
 template class DilutedTraceTraceFactory<DilutedFactorType::Q0, DilutedFactorType::Q2, 2>;
 template class DilutedTraceTraceFactory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2>;
+
+template <>
+void DilutedTraceFactory<DilutedFactorType::Q1, 1>::build(
+    DilutedFactorFactory<DilutedFactorType::Q1> &df,
+    DiagramIndex const &c_look,
+    int const t,
+    int const b) {
+  tr[{t}][c_look.id] = factor_to_trace(df[{t, b}].at({c_look.lookup[0]}));
+}
+
+template class DilutedTraceFactory<DilutedFactorType::Q1, 1>;

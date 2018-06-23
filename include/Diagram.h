@@ -83,9 +83,8 @@ struct DiagramParts {
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
   DilutedTraceTraceFactory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2> trQ1Q1;
 
-
   //< Temporal memory for tr(Q1)
-  DilutedTraceCollection2<DilutedFactorType::Q1, 1> trQ1;
+  DilutedTraceFactory<DilutedFactorType::Q1, 1> trQ1;
 };
 
 class Diagram {
