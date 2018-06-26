@@ -37,8 +37,8 @@
  *  not implemented
  *
  *  @TODO Implement derivate operators
- *  @note (MW 3.12.2017) rVdaggerVr moved to QuarkLineBlock
- *  @note (MW 21.12.2017) rVdaggerV moved to QuarkLineBlock
+ *  @note (MW 3.12.2017) rVdaggerVr moved to DilutedFactorFactory 
+ *  @note (MW 21.12.2017) rVdaggerV moved to DilutedFactorFactory 
  */
 class OperatorFactory {
  public:

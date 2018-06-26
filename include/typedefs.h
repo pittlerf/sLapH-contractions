@@ -58,16 +58,6 @@ typedef boost::multi_array<Complex, 8> array_cd_d8;
 typedef boost::multi_array<Complex, 9> array_cd_d9;
 typedef boost::multi_array<Complex, 10> array_cd_d10;
 
-/*! Special type for Correlators */
-typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
-
-// TODO (Martin Ueding 2017-12-21): Rename this to DilutedTraceCollection3.
-template <size_t rvecs>
-using DilutedTracesTwoTimes = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 3>;
-
-template <size_t rvecs>
-using DilutedTraceOneTime = boost::multi_array<std::vector<DilutedTrace<rvecs>>, 2>;
-
 /*! Special type for Quarklines */
 typedef boost::multi_array<std::vector<Eigen::MatrixXcd>, 3> array_quarkline;
 
@@ -192,6 +182,7 @@ struct OperatorLookup {
    *  @em index_of_unity is set to -1
    */
   int index_of_unity;
+  bool need_gaugefield = false;
 
   inline ssize_t size(){ return vdaggerv_lookup.size(); }
 };
@@ -331,9 +322,6 @@ struct DiagramIndicesCollection {
 template <DilutedFactorType qlt>
 struct DilutedFactorTypeTraits {};
 
-/*! @todo QuarkLineType is a bad name in this case. That's a proxy for
- *        DiagramIndex.lookup
- */
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q0> {
   typedef std::vector<DilutedFactorIndex> type;
@@ -365,6 +353,9 @@ struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
 };
 
 #define MU_DEBUG(x) std::cout << std::setw(30) << #x << ": " << (x) << std::endl;
+
+/*! Special type for Correlators */
+typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
 
 template <typename T>
 ssize_t ssize(std::vector<T> const &vec) {

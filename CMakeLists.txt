@@ -21,9 +21,10 @@ add_library(lcontract
   modules/GlobalData/init_lookup_tables.cpp
   modules/h5-wrapper.cpp
   modules/io_utils.cpp
-  modules/OperatorsForMesons.cpp
+  modules/OperatorFactory.cpp
   modules/Perambulator.cpp
-  modules/QuarkLineBlock2.cpp
+  modules/DilutedFactorY.cpp
+  modules/DilutedTraceFactory.cpp
   modules/RandomVector.cpp
   modules/ranlxs.cpp
   modules/StopWatch.cpp

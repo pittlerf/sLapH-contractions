@@ -14,7 +14,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+    auto const &x = q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]);
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -30,7 +30,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    auto const &x = q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()];
+    auto const &x = q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]);
     c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
             static_cast<double>(x.size());
   }
@@ -46,8 +46,8 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    c[i] += inner_product(q.trQ1[c_look.lookup[0]][slice_pair.source()],
-                          q.trQ1[c_look.lookup[1]][slice_pair.sink()]);
+    c[i] += inner_product(q.trQ1[{slice_pair.source()}].at(c_look.lookup[0]), 
+                          q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
   }
 }
 
@@ -72,25 +72,14 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
 void C3c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  DilutedFactors<2, 1> L1;
-
-  LT_DIAGRAMS_DECLARE;
-  LT_DIAGRAMS_START;
-  for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(
-        L1,
-        std::get<0>(ids),
-        q.q0[{slice_pair.source()}],
-        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C3c::assemble_impl] multiply");
-  
+ 
   LT_DIAGRAMS_START;
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
-        trace(L1[std::get<0>(ids)],
+        trace(q.q0[{slice_pair.source()}].at(std::array<ssize_t, 1>{std::get<0>(ids)[0]}) *
+              q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}].at(
+                std::array<ssize_t, 1>{std::get<0>(ids)[1]}),
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
   }
   LT_DIAGRAMS_STOP;
@@ -153,16 +142,16 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
   for (int i = 0; i != ssize(corr_lookup()); ++i) {
     auto const &c_look = corr_lookup()[i];
 
-    assert(c_look.lookup[0] < q.trQ1Q1.shape()[0]);
-    assert(slice_pair.source() < q.trQ1Q1.shape()[1]);
-    assert(slice_pair.source() < q.trQ1Q1.shape()[2]);
-
-    assert(c_look.lookup[1] < q.trQ1.shape()[0]);
-    assert(slice_pair.sink() < q.trQ1.shape()[1]);
+//    assert(c_look.lookup[0] < q.trQ1Q1.tr.shape()[0]);
+//    assert(slice_pair.source() < q.trQ1Q1.tr.shape()[1]);
+//    assert(slice_pair.source() < q.trQ1Q1.tr.shape()[2]);
+//
+//    assert(c_look.lookup[1] < q.trQ1.tr.shape()[0]);
+//    assert(slice_pair.sink() < q.trQ1.tr.shape()[1]);
 
     c[i] += inner_product(
-        q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-        q.trQ1[c_look.lookup[1]][slice_pair.sink()]);
+        q.trQ1Q1[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C30::assemble_impl] inner_product");
@@ -181,8 +170,8 @@ void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-                      q.trQ0Q2[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
+        inner_product(q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]),
+                      q.trQ0Q2[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cD::assemble_impl] inner_product");
@@ -201,8 +190,8 @@ void C40D::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] +=
-        inner_product(q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.sink()],
-                      q.trQ1Q1[c_look.lookup[1]][slice_pair.source()][slice_pair.sink()]);
+        inner_product(q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[0]),
+                      q.trQ1Q1[{slice_pair.source(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40D::assemble_impl] inner_product");
@@ -221,8 +210,8 @@ void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
-        q.trQ0Q2[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-        q.trQ0Q2[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+        q.trQ0Q2[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ0Q2[{slice_pair.sink(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cV::assemble_impl] inner_product");
@@ -241,8 +230,8 @@ void C40V::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &c_look = corr_lookup()[i];
 
     c[i] += inner_product(
-        q.trQ1Q1[c_look.lookup[0]][slice_pair.source()][slice_pair.source()],
-        q.trQ1Q1[c_look.lookup[1]][slice_pair.sink()][slice_pair.sink()]);
+        q.trQ1Q1[{slice_pair.source(),slice_pair.source()}].at(c_look.lookup[0]),
+        q.trQ1Q1[{slice_pair.sink(),slice_pair.sink()}].at(c_look.lookup[1]));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40V::assemble_impl] inner_product");
@@ -269,30 +258,17 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
 void C4cB::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  LT_DIAGRAMS_DECLARE;
-  LT_DIAGRAMS_START;
-  DilutedFactors<2, 1> L1;
-  DilutedFactors<2, 1> L2;
-  for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(
-        L1,
-        ids[0],
-        q.q0[{slice_pair.source()}],
-        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
-
-    multiply<1, 1, 0, 0>(
-        L2,
-        ids[1],
-        q.q0[{slice_pair.sink()}],
-        q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C4cB::assemble_impl] multiply");
-  
+ 
   LT_DIAGRAMS_START;
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
-    c[i] += trace(L1[ids[0]], L2[ids[1]]);
+    c[i] += trace(
+              q.q0[{slice_pair.source()}].at(std::array<ssize_t, 1>{ids[0][0]}) * 
+              q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}].at(
+                std::array<ssize_t, 1>{ids[0][1]}), 
+              q.q0[{slice_pair.sink()}].at(std::array<ssize_t, 1>{ids[1][0]}) * 
+              q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}].at(
+                std::array<ssize_t, 1>{ids[1][1]}));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cB::assemble_impl] trace");

@@ -1,18 +1,27 @@
 #pragma once
 
 #include "Correlators.h"
-#include "QuarkLineBlock2.h"
+#include "DilutedFactorY.h"
+#include "DilutedTraceFactory.h"
 #include "h5-wrapper.h"
-#include "typedefs.h"
 
 #include <mutex>
 
 #include <omp.h>
 
+/*! Locally replaces QuarklineLookup extended by lookuptable for rVdaggerVr */
+struct DilutedFactorLookup {
+  std::vector<DilutedFactorIndex> const Q0;
+  std::vector<DilutedFactorIndex> const Q1;
+  std::vector<DilutedFactorIndex> const Q2V;
+  std::vector<DilutedFactorIndex> const Q2L;
+};
+
 struct DiagramParts {
   DiagramParts(RandomVector const &random_vector,
                Perambulator const &perambulator,
                OperatorFactory const &meson_operator,
+               DilutionScheme const &dilution_scheme,
                ssize_t const dilT,
                ssize_t const dilE,
                ssize_t const nev,
@@ -46,10 +55,10 @@ struct DiagramParts {
             dilT,
             dilE,
             nev,
-            dil_fac_lookup.Q2V) {
-    trQ0Q2.resize(boost::extents[corr_lookup.trQ0Q2.size()][Lt][Lt]);
-    trQ1Q1.resize(boost::extents[corr_lookup.trQ1Q1.size()][Lt][Lt]);
-    trQ1.resize(boost::extents[corr_lookup.trQ1.size()][Lt]);
+            dil_fac_lookup.Q2V),
+        trQ0Q2(q0, q2v, corr_lookup.trQ0Q2, dilution_scheme),
+        trQ1Q1(q1, q1, corr_lookup.trQ1Q1, dilution_scheme),
+        trQ1(q1, corr_lookup.trQ1, dilution_scheme){
   }
 
   void clear() {
@@ -57,6 +66,10 @@ struct DiagramParts {
     q1.clear();
     q2l.clear();
     q2v.clear();
+    trQ0Q2.clear();
+    trQ1Q1.clear();
+    trQ1.clear();
+
   }
 
   DilutedFactorFactory<DilutedFactorType::Q0> q0;
@@ -64,14 +77,14 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q2> q2l;
   DilutedFactorFactory<DilutedFactorType::Q2> q2v;
 
-  //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTracesTwoTimes<2> trQ1Q1;
-
   //< Temporal memory for tr(Q2V*rVdaggerVr)
-  DilutedTracesTwoTimes<2> trQ0Q2;
+  DilutedTraceTraceFactory<DilutedFactorType::Q0, DilutedFactorType::Q2, 2> trQ0Q2;
+
+  //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
+  DilutedTraceTraceFactory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2> trQ1Q1;
 
   //< Temporal memory for tr(Q1)
-  DilutedTraceOneTime<1> trQ1;
+  DilutedTraceFactory<DilutedFactorType::Q1, 1> trQ1;
 };
 
 class Diagram {

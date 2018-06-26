@@ -12,6 +12,52 @@
 
 #include <iomanip>
 
+static ssize_t map_char_to_dir(const char dir) {
+  ssize_t integer_dir;
+  if (dir == 'x')
+    integer_dir = 0;
+  if (dir == 'y')
+    integer_dir = 1;
+  if (dir == 'z')
+    integer_dir = 2;
+  return integer_dir;
+}
+
+//! \brief Displace Matrix of eigenvectors by looping over displacement
+//! vectors
+//!
+//! v is the Eigensystem at a specific timeslice
+//! t is the timeslice to take into account
+//! disp is a vector of displacement pairs
+//! verbose is an integer controlling the debug level
+//! The eigenvectors of timeslice t are displaced using the vector of
+//! displacement pairs. The First entry of each pair specifies the direction
+//! of the right acting derivative, ">" meaning forward and "<" meaning backward
+//!
+//! @todo Swap order of loops?
+Eigen::MatrixXcd displace_eigenvectors(Eigen::MatrixXcd const &v,
+                                       GaugeField const &gauge,
+                                       ssize_t const t,
+                                       DisplacementDirection const disp,
+                                       ssize_t const verbose) {
+  auto res = v;
+  // iterate over displacement vector
+  for (const auto &d : disp) {
+    // Loop over all eigenvectors in v
+    for (int ev = 0; ev < v.cols(); ++ev) {
+      // Multiply eigenvector with according gauge matrix
+      for (int spatial_ind = 0; spatial_ind < v.rows()/3; ++spatial_ind) {
+        res.col(ev).segment(3 * spatial_ind, 3) =
+            (d.first == '>')
+                ? gauge.forward_uv(res.col(ev), t, spatial_ind, map_char_to_dir(d.second))
+                : gauge.backward_uv(res.col(ev), t, spatial_ind, map_char_to_dir(d.second));
+      }  // End spatial loop
+
+    }  // end eigenvector loop
+  }
+  return res;
+}
+
 /*! Creates a two-dimensional vector containing the momenta for the operators
  *
  *  @param[in] Lx, Ly, Lz      Lattice extent in spatial directions
@@ -164,8 +210,7 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
       handling_vdaggerv(handling_vdaggerv),
       path_vdaggerv(path_vdaggerv),
       path_config(path_config),
-      hyp_parameters(hyp_parameters){
-
+      hyp_parameters(hyp_parameters) {
   // resizing containers to their correct size
   vdaggerv.resize(boost::extents[operator_lookuptable.vdaggerv_lookup.size()][Lt]);
 
@@ -177,7 +222,6 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
 
   std::cout << "\tMeson operators initialised" << std::endl;
 }
-
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -199,7 +243,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     else
       std::cout << "\tFailure" << std::endl;
   }
-  
+
   StopWatch swatch("Eigenvector and Gauge I/O");
   // resizing each matrix in vdaggerv
   // TODO: check if it is better to use for_each and resize instead of std::fill
@@ -207,23 +251,30 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
             vdaggerv.origin() + vdaggerv.num_elements(),
             Eigen::MatrixXcd::Zero(nb_ev, nb_ev));
 
+  // Read gauge field only if it is needed.
+  /*! @todo might be useful to parallelize */
+  std::unique_ptr<GaugeField> gauge(nullptr);
+  if (operator_lookuptable.need_gaugefield) {
+    // If parameters for smearing are set, smear operator
+    gauge.reset(new GaugeField(Lt, Lx, Ly, Lz, path_config, 0, Lt - 1, 4));
+    gauge->read_gauge_field(config, 0, Lt - 1);
+    if (hyp_parameters.iterations > 0) {
+      const double alpha1 = hyp_parameters.alpha1;
+      const double alpha2 = hyp_parameters.alpha2;
+      const size_t iter = hyp_parameters.iterations;
+      for (ssize_t t = 0; t < Lt; ++t) {
+        gauge->smearing_hyp(t, alpha1, alpha2, iter);
+      }
+    }
+  }
+
 #pragma omp parallel
   {
     swatch.start();
-    // Read in gauge field from lime configuration, need all directions
-    //GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, PATH_GAUGE_IN, 0, Lt-1, 4);
-    //gauge.read_gauge_field(CONFIG,0,Lt-1);
     Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
-    Eigen::VectorXcd dis = Eigen::VectorXcd::Zero(dim_row);
-    // Check if gauges are needed
-    bool need_gauge = false;
-    bool need_smearing = false;
-    for (auto const& op : operator_lookuptable.vdaggerv_lookup)
-        if(!op.displacement.empty()) need_gauge=true;
-    // If parameters for smearing are set, smear operator
-    GaugeField gauge = GaugeField(Lt, Lx, Ly, Lz, path_config,0,Lt-1,4);
-    if(need_gauge) gauge.read_gauge_field(config,0,Lt-1);
+
     EigenVector V_t(1, dim_row, nb_ev);  // each thread needs its own copy
+    Eigen::MatrixXcd W_t;
 #pragma omp for schedule(dynamic)
     for (ssize_t t = 0; t < Lt; ++t) {
       // creating full filename for eigenvectors and reading them in
@@ -242,43 +293,40 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
         // the calculation is not performed
         if (op.id != id_unity) {
           // Forward derivative
-          Eigen::MatrixXcd W_t;
-          if (!op.displacement.empty()){
-            if(hyp_parameters.iterations > 0){
-              const double alpha1 = hyp_parameters.alpha1;
-              const double alpha2 = hyp_parameters.alpha2; 
-              const size_t iter = hyp_parameters.iterations; 
-              gauge.smearing_hyp(t,alpha1,alpha2,iter);
+          if (!op.displacement.empty()) {
+            W_t = displace_eigenvectors(V_t[0], *gauge, t, op.displacement, 1);
+          } else {
+            // momentum vector contains exp(-i p x). Divisor 3 for colour index.
+            // All three colours on same lattice site get the same momentum.
+            for (ssize_t x = 0; x < dim_row; ++x) {
+              mom(x) = momentum[op.id][x / 3];
             }
-            W_t = gauge.displace_eigenvectors(V_t[0],t,op.displacement,1);
-            vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+            W_t = mom.asDiagonal() * V_t[0];
           }
-          else {
-            W_t = V_t[0];
-          }
-          // momentum vector contains exp(-i p x). Divisor 3 for colour index.
-          // All three colours on same lattice site get the same momentum.
-          for (ssize_t x = 0; x < dim_row; ++x) {
-            mom(x) = momentum[op.id][x / 3];
-          }
-          vdaggerv[op.id][t] = V_t[0].adjoint() * mom.asDiagonal() * W_t;
+
+          vdaggerv[op.id][t] = V_t[0].adjoint() * W_t;
+
           // writing vdaggerv to disk
           if (handling_vdaggerv == "write") {
             std::string momentum_string = std::to_string(op.momentum[0]) +
-                                std::to_string(op.momentum[1]) +
-                                std::to_string(op.momentum[2]);
+                                          std::to_string(op.momentum[1]) +
+                                          std::to_string(op.momentum[2]);
             std::string displacement_string = to_string(op.displacement);
-            std::string outfile = (boost::format("operators.%04d.p_%s.d_%s.t_%03d" )%
-                       config % momentum_string % displacement_string %
-                       (int)t ).str();
+            std::string outfile =
+                (boost::format("operators.%04d.p_%s.d_%s.t_%03d") % config %
+                 momentum_string % displacement_string % (int)t)
+                    .str();
             write_vdaggerv(full_path, std::string(outfile), vdaggerv[op.id][t]);
           }
-        } else  // zero momentum
+
+        } else {
+          // zero momentum and no displacement
           vdaggerv[op.id][t] = Eigen::MatrixXcd::Identity(nb_ev, nb_ev);
+        }
       }
     }  // loop over time
     swatch.stop();
-  }    // pragma omp parallel ends here
+  }  // pragma omp parallel ends here
 
   swatch.print();
   is_vdaggerv_set = true;
@@ -348,7 +396,7 @@ void OperatorFactory::read_vdaggerv(const int config) {
       }
     }  // loop over time
     swatch.stop();
-  }    // pragma omp parallel ends here
+  }  // pragma omp parallel ends here
 
   swatch.print();
   is_vdaggerv_set = true;
@@ -371,8 +419,8 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
 #pragma omp parallel
   {
     swatch.start();
-  //  #pragma omp for schedule(dynamic)
-  //    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
+    //  #pragma omp for schedule(dynamic)
+    //    for(const auto& op : operator_lookuptable.vdaggerv_lookup){
 #pragma omp for schedule(dynamic)
     for (ssize_t i = 0; i < ssize(operator_lookuptable.vdaggerv_lookup); ++i) {
       const auto op = (operator_lookuptable.vdaggerv_lookup[i]);
@@ -428,9 +476,10 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
                     eigen_vec.at(nrow * vdaggerv[op.id][t].cols() + ncol);
               }
             }
-//            // @todo Check whether that must be adjoint before file 1 is closed
-//            // (master branch)
-//            vdaggerv[op.id][t].adjointInPlace();
+            //            // @todo Check whether that must be adjoint before file 1 is
+            //            closed
+            //            // (master branch)
+            //            vdaggerv[op.id][t].adjointInPlace();
             if (!file2.good()) {
               std::ostringstream oss;
               oss << "Problems while reading from " << infile2;

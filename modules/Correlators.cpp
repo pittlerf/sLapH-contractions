@@ -4,7 +4,7 @@
 
 #include "Diagram.h"
 #include "DilutedFactor.h"
-#include "QuarkLineBlock2.h"
+#include "DilutedFactorY.h"
 #include "StopWatch.h"
 #include "dilution-iterator.h"
 #include "typedefs.h"
@@ -18,35 +18,6 @@
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
-
-void build_trQ0Q2(DiagramParts &q,
-                 DiagramIndex const &c_look,
-                 int const t1,
-                 int const t2,
-                 int const b1,
-                 int const b2) {
-  q.trQ0Q2[c_look.id][t1][t2] = factor_to_trace(
-      q.q0[{t2}].at({c_look.lookup[1]}), q.q2v[{b2, t1, b2}].at({c_look.lookup[0]}));
-}
-
-void build_trQ1Q1(DiagramParts &q,
-                 DiagramIndex const &c_look,
-                 int const t1,
-                 int const t2,
-                 int const b1,
-                 int const b2) {
-  q.trQ1Q1[c_look.id][t1][t2] = factor_to_trace(q.q1[{t1, b2}].at({c_look.lookup[0]}),
-                                                q.q1[{t2, b1}].at({c_look.lookup[1]}));
-}
-
-void build_trQ1(DiagramParts &q,
-                DiagramIndex const &c_look,
-                int const t,
-                int const b) {
-  q.trQ1[c_look.id][t] = factor_to_trace(q.q1[{t, b}].at({c_look.lookup[0]}));
-}
-
-
 
 /******************************************************************************/
 /*!
@@ -127,6 +98,7 @@ void contract(const ssize_t Lt,
     DiagramParts q(randomvectors,
                    perambulators,
                    meson_operator,
+                   dilution_scheme,
                    dilT,
                    dilE,
                    nev,
@@ -146,69 +118,13 @@ void contract(const ssize_t Lt,
 
       auto const block_pair = dilution_scheme[b];
 
-      LT_CORRELATOR_START;
-      // Build trQ0Q2.
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.trQ0Q2) {
-          build_trQ0Q2(q,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.sink(),
-                      slice_pair.source_block(),
-                      slice_pair.sink_block());
-
-          build_trQ0Q2(q,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.source(),
-                      slice_pair.source_block(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ0Q2");
-
-      LT_CORRELATOR_START;
-      // Build trQ1Q1.
-      for (auto const slice_pair : block_pair) {
-        for (const auto &c_look : corr_lookup.trQ1Q1) {
-          build_trQ1Q1(q,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.sink(),
-                      slice_pair.source_block(),
-                      slice_pair.sink_block());
-
-          build_trQ1Q1(q,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.source(),
-                      slice_pair.source_block(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ1Q1");
-
-      LT_CORRELATOR_START;
-      // Build tr(Q1).
-      for (auto const slice_pair : block_pair.one_sink_slice()) {
-        for (const auto &c_look : corr_lookup.trQ1) {
-          build_trQ1(q,
-                      c_look,
-                      slice_pair.source(),
-                      slice_pair.source_block());
-        }
-      }
-      LT_CORRELATOR_STOP;
-      LT_CORRELATOR_PRINT("[contract] build_trQ1");
-
       // Build the diagrams.
       for (auto &diagram : diagrams) {
         if (diagram->corr_lookup().empty()) {
           continue;
         }
         LT_CORRELATOR_START;
+
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
