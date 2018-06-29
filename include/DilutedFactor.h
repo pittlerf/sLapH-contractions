@@ -482,4 +482,3 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
 /*! Map from DiagramIndex.id to DilutedTrace for all random index combinations */
 template <size_t rvecs>
 using DilutedTraces = std::map<ssize_t, std::vector<DilutedTrace<rvecs>>>;
-
