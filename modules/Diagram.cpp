@@ -72,14 +72,25 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
 void C3c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
- 
+  DilutedFactors<2, 1> L1;
+
+  LT_DIAGRAMS_DECLARE;
+  LT_DIAGRAMS_START;
+  for (const auto &ids : quantum_num_ids_) {
+    multiply<1, 1, 0, 0>(
+        L1,
+        std::get<0>(ids),
+        q.q0[{slice_pair.source()}],
+        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
+  }
+  LT_DIAGRAMS_STOP;
+  LT_DIAGRAMS_PRINT("[C3c::assemble_impl] multiply");
+  
   LT_DIAGRAMS_START;
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
     c[i] +=
-        trace(q.q0[{slice_pair.source()}].at(std::array<ssize_t, 1>{std::get<0>(ids)[0]}) *
-              q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}].at(
-                std::array<ssize_t, 1>{std::get<0>(ids)[1]}),
+        trace(L1[std::get<0>(ids)],
               q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
   }
   LT_DIAGRAMS_STOP;
@@ -258,17 +269,30 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
 void C4cB::assemble_impl(std::vector<Complex> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
- 
+  LT_DIAGRAMS_DECLARE;
+  LT_DIAGRAMS_START;
+  DilutedFactors<2, 1> L1;
+  DilutedFactors<2, 1> L2;
+  for (const auto &ids : quantum_num_ids_) {
+    multiply<1, 1, 0, 0>(
+        L1,
+        ids[0],
+        q.q0[{slice_pair.source()}],
+        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
+
+    multiply<1, 1, 0, 0>(
+        L2,
+        ids[1],
+        q.q0[{slice_pair.sink()}],
+        q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
+  }
+  LT_DIAGRAMS_STOP;
+  LT_DIAGRAMS_PRINT("[C4cB::assemble_impl] multiply");
+  
   LT_DIAGRAMS_START;
   for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
     auto const &ids = quantum_num_ids_[i];
-    c[i] += trace(
-              q.q0[{slice_pair.source()}].at(std::array<ssize_t, 1>{ids[0][0]}) * 
-              q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}].at(
-                std::array<ssize_t, 1>{ids[0][1]}), 
-              q.q0[{slice_pair.sink()}].at(std::array<ssize_t, 1>{ids[1][0]}) * 
-              q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}].at(
-                std::array<ssize_t, 1>{ids[1][1]}));
+    c[i] += trace(L1[ids[0]], L2[ids[1]]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cB::assemble_impl] trace");
