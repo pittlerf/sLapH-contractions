@@ -353,7 +353,7 @@ ComplexProduct inner_product(std::vector<DilutedTrace<rvecs1>> const &left_vec,
         "vector<DilutedTrace>) has an empty result.");
   }
 
-  return result / num_summands;
+  return result / static_cast<double>(num_summands);
 }
 
 int constexpr max_flavor = 8;
