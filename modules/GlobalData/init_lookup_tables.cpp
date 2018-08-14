@@ -1916,4 +1916,11 @@ void init_lookup_tables(GlobalData &gd) {
     }
   if (!found)
     gd.operator_lookuptable.index_of_unity = -1;
+
+  for (const auto &op_vdv : gd.operator_lookuptable.vdaggerv_lookup)
+    if (!op_vdv.displacement.empty()) {
+      gd.operator_lookuptable.need_gaugefield = true;
+      break;
+    }
+
 }

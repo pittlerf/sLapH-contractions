@@ -330,25 +330,37 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                    sizeof(Complex) / std::pow(2, 30)
             << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ1Q1 =
-      gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
+  int total_number_of_random_combinations_in_trQ1Q1 = 0;
+  for (auto const &q : gd.correlator_lookuptable.trQ1Q1) {
+    total_number_of_random_combinations_in_trQ1Q1 += 
+      gd.quarkline_lookuptable.Q1[q.lookup[0]].rnd_vec_ids.size() *
+      gd.quarkline_lookuptable.Q1[q.lookup[1]].rnd_vec_ids.size();
+  }
   std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2)
-            << gd.correlator_lookuptable.trQ1Q1.size() * gd.Lt * gd.Lt *
+            <<  gd.Lt * gd.Lt *
                    total_number_of_random_combinations_in_trQ1Q1 * sizeof(Complex) /
                    std::pow(2, 30)
             << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ0Q2 =
-      gd.number_of_rnd_vec * (gd.number_of_rnd_vec - 1);
+  int total_number_of_random_combinations_in_trQ0Q2 = 0;
+  for (auto const &q : gd.correlator_lookuptable.trQ0Q2) {
+    total_number_of_random_combinations_in_trQ0Q2 += 
+      gd.quarkline_lookuptable.Q0[q.lookup[0]].rnd_vec_ids.size() *
+      gd.quarkline_lookuptable.Q2V[q.lookup[1]].rnd_vec_ids.size();
+  }
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
-            << gd.correlator_lookuptable.trQ0Q2.size() * gd.Lt * gd.Lt *
+            << gd.Lt * gd.Lt *
                    total_number_of_random_combinations_in_trQ0Q2 * sizeof(Complex) /
                    std::pow(2, 30)
             << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_trQ1 = gd.number_of_rnd_vec;
+  int total_number_of_random_combinations_in_trQ1 = 0;
+  for (auto const &q : gd.correlator_lookuptable.trQ1) {
+    total_number_of_random_combinations_in_trQ1 += 
+      gd.quarkline_lookuptable.Q1[q.lookup[0]].rnd_vec_ids.size();
+  }
   std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2)
-            << gd.correlator_lookuptable.trQ1.size() * gd.Lt *
+            << gd.Lt *
                    total_number_of_random_combinations_in_trQ1 * sizeof(Complex) /
                    std::pow(2, 30)
             << " Gb" << std::endl;
@@ -379,7 +391,6 @@ std::ostream &operator<<(std::ostream &os, GlobalData const &gd) {
     GLOBAL_DATA_PRINT(gd.V_TS);
     GLOBAL_DATA_PRINT(gd.V_for_lime);
     GLOBAL_DATA_PRINT(gd.number_of_eigen_vec);
-    GLOBAL_DATA_PRINT(gd.number_of_rnd_vec);
     GLOBAL_DATA_PRINT(gd.number_of_inversions);
     GLOBAL_DATA_PRINT(gd.start_config);
     GLOBAL_DATA_PRINT(gd.end_config);

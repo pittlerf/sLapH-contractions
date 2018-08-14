@@ -5,7 +5,7 @@ This is the new version of the contraction code.
 
 [GitHub Page](https://github.com/maowerner/sLapH-contractions)
 
-[Doxygen Documentation](https://maowerner.github.io/sLapH-contractions)
+[Doxygen Documentation](https://hiskp-lqcd.github.io/sLapH-contractions/)
 
 [![Build
 Status](https://travis-ci.org/maowerner/sLapH-contractions.svg?branch=master)](https://travis-ci.org/maowerner/sLapH-contractions)

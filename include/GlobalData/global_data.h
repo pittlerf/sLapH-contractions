@@ -31,12 +31,9 @@ struct GlobalData {
     momentum_cutoff[4] = 4;
   }
 
-  //! @cond
-  //! globally accessible data - naming should be clear and understandable
   int Lx, Ly, Lz, Lt;
   int dim_row, V_TS, V_for_lime;
   int number_of_eigen_vec;
-  int number_of_rnd_vec;
   int number_of_inversions;
   int start_config, end_config, delta_config;
   int verbose;
@@ -52,7 +49,6 @@ struct GlobalData {
   std::string path_config;
   std::string handling_vdaggerv;
   std::string path_vdaggerv;
-  //! @endcond
 
   RandomVectorConstruction rnd_vec_construct;
   PerambulatorConstruction peram_construct;
