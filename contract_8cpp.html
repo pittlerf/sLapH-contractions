@@ -74,32 +74,25 @@ $(function() {
 <div class="title">contract.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
-<code>#include &quot;omp.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="_correlators_8h_source.html">Correlators.h</a>&quot;</code><br />
-<code>#include &quot;git.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="global__data_8h_source.html">global_data.h</a>&quot;</code><br />
+
+<p>Main function of Contraction code for sLapH Perambulators.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="_correlators_8hpp_source.html">Correlators.hpp</a>&quot;</code><br />
+<code>#include &quot;git.hpp&quot;</code><br />
+<code>#include &quot;<a class="el" href="global__data_8hpp_source.html">global_data.hpp</a>&quot;</code><br />
+<code>#include &lt;omp.h&gt;</code><br />
+<code>#include &lt;iostream&gt;</code><br />
 </div>
 <p><a href="contract_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:adacbe0175a79dff748855d8c9839f82b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="contract_8cpp.html#adacbe0175a79dff748855d8c9839f82b">main</a> (int ac, char *av[])</td></tr>
+<tr class="memdesc:adacbe0175a79dff748855d8c9839f82b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read parameters from infile and perform the specified contractions.  <a href="#adacbe0175a79dff748855d8c9839f82b">More...</a><br /></td></tr>
 <tr class="separator:adacbe0175a79dff748855d8c9839f82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Main function of Contraction code for Laphs Perambulators</p>
-<dl class="section author"><dt>Author</dt><dd>Bastian Knippschild </dd>
-<dd>
-Christopher Helmes </dd>
-<dd>
-Christian Jost </dd>
-<dd>
-Liuming Liu </dd>
-<dd>
-Markus Werner</dd></dl>
-<dl class="section version"><dt>Version</dt><dd>0.1 </dd></dl>
-<dl class="section copyright"><dt>Copyright</dt><dd>Copies are prohibited so far </dd></dl>
+<div class="textblock"><p>Main function of Contraction code for sLapH Perambulators. </p>
 
 <p class="definition">Definition in file <a class="el" href="contract_8cpp_source.html">contract.cpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
@@ -128,8 +121,9 @@ Markus Werner</dd></dl>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Read parameters from infile and perform the specified contractions</p>
-<p>In succession instanciate <a class="el" href="struct_global_data.html">GlobalData</a>, <a class="el" href="class_perambulator.html">Perambulator</a>, <a class="el" href="class_random_vector.html">RandomVector</a>, OperatorsForMesons and Correlators.</p><ul>
+
+<p>Read parameters from infile and perform the specified contractions. </p>
+<p>In succession instanciate <a class="el" href="struct_global_data.html" title="Class containing all metadata for contractions and functions to set them from infile. ">GlobalData</a>, <a class="el" href="class_perambulator.html" title="Memory allocation and reading routines for perambulators. ">Perambulator</a>, <a class="el" href="class_random_vector.html" title="Memory allocation and IO routines for random vectors. ">RandomVector</a>, OperatorsForMesons and Correlators.</p><ul>
 <li>Get paths, physical quantum numbers and desired operators from infile</li>
 <li>Loop over Configuration</li>
 <li>Read perambulators, randomvectors and contract</li>
@@ -139,7 +133,7 @@ Markus Werner</dd></dl>
 <div class="caption">
 Flow chart of main()</div></div>
 
-<p class="definition">Definition at line <a class="el" href="contract_8cpp_source.html#l00035">35</a> of file <a class="el" href="contract_8cpp_source.html">contract.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="contract_8cpp_source.html#l00026">26</a> of file <a class="el" href="contract_8cpp_source.html">contract.cpp</a>.</p>
 
 </div>
 </div>

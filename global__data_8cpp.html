@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>sLapH-contractions: modules/GlobalData/global_data.cpp File Reference</title>
+<title>sLapH-contractions: src/global_data.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,7 +64,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_e05d7e2b1ecd646af5bb94391405f3b5.html">modules</a></li><li class="navelem"><a class="el" href="dir_2ca6f03e131a65e85a2146ac3dda9e08.html">GlobalData</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -75,8 +75,8 @@ $(function() {
 <div class="title">global_data.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="global__data_8h_source.html">global_data.h</a>&quot;</code><br />
-<code>#include &quot;git.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global__data_8hpp_source.html">global_data.hpp</a>&quot;</code><br />
+<code>#include &quot;git.hpp&quot;</code><br />
 <code>#include &lt;Eigen/Core&gt;</code><br />
 <code>#include &lt;Eigen/Dense&gt;</code><br />
 <code>#include &lt;Eigen/SparseCore&gt;</code><br />
@@ -104,8 +104,10 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a765662c5195d54811069be8d4ef83243"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a765662c5195d54811069be8d4ef83243"><td class="memTemplItemLeft" align="right" valign="top">boost::program_options::typed_value&lt; T &gt; *&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a765662c5195d54811069be8d4ef83243">make_value</a> (T *store_to)</td></tr>
+<tr class="memdesc:a765662c5195d54811069be8d4ef83243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function for when a <em>store_to</em> value is being provided to typed_value.  <a href="#a765662c5195d54811069be8d4ef83243">More...</a><br /></td></tr>
 <tr class="separator:a765662c5195d54811069be8d4ef83243"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e5505d50dbbdf2a58732cb392b7b0b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a9e5505d50dbbdf2a58732cb392b7b0b7">read_parameters</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd, int ac, char *av[])</td></tr>
+<tr class="memdesc:a9e5505d50dbbdf2a58732cb392b7b0b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reading of infile is delegated to boost::program_options.  <a href="#a9e5505d50dbbdf2a58732cb392b7b0b7">More...</a><br /></td></tr>
 <tr class="separator:a9e5505d50dbbdf2a58732cb392b7b0b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a177226b94ae93cb1635ed09088ba3840"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data_8cpp.html#a177226b94ae93cb1635ed09088ba3840">operator&lt;&lt;</a> (std::ostream &amp;os, std::map&lt; int, int &gt; const &amp;map)</td></tr>
 <tr class="separator:a177226b94ae93cb1635ed09088ba3840"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,7 +131,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00371">371</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00362">362</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>
@@ -151,7 +153,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Convenience function for when a <em>store_to</em> value is being provided to typed_value.</p>
+
+<p>Convenience function for when a <em>store_to</em> value is being provided to typed_value. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">store_to</td><td>The variable that will hold the parsed value upon notify.</td></tr>
@@ -160,7 +163,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to a type_value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00037">37</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00032">32</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>
@@ -190,7 +193,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00373">373</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00364">364</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>
@@ -221,7 +224,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Print more stuff here. </p>
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00380">380</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00371">371</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>
@@ -256,13 +259,15 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reading of infile is delegated to boost::program_options.</p>
+
+<p>Reading of infile is delegated to boost::program_options. </p>
+<p>Reading the input parameters from the infile in the main routine and initializing <a class="el" href="struct_global_data.html" title="Class containing all metadata for contractions and functions to set them from infile. ">GlobalData</a>.</p>
 <dl class="section see"><dt>See also</dt><dd>GlobalData::input_handling() </dd>
 <dd>
 GlobalData::init_lookup_tables() </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000011">Todo:</a></b></dt><dd>: setting the sizes and numbers of rnd_vecs and perams should be put in a separate function </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000013">Todo:</a></b></dt><dd>: setting the sizes and numbers of rnd_vecs and perams should be put in a separate function </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00048">48</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data_8cpp_source.html#l00041">41</a> of file <a class="el" href="global__data_8cpp_source.html">global_data.cpp</a>.</p>
 
 </div>
 </div>

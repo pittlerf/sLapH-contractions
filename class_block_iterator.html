@@ -73,11 +73,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7cd909808c5ab635daa5b78d083a8e70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#a7cd909808c5ab635daa5b78d083a8e70">BlockIterator</a> (int const slice_source, int const slice_sink, int const block_source, int const block_sink, int const num_slice, int const num_block, int const pass, <a class="el" href="dilution-iterator_8h.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> const type, bool const one_sink_slice=false)</td></tr>
+<tr class="memitem:a7cd909808c5ab635daa5b78d083a8e70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#a7cd909808c5ab635daa5b78d083a8e70">BlockIterator</a> (int const slice_source, int const slice_sink, int const block_source, int const block_sink, int const num_slice, int const num_block, int const pass, <a class="el" href="dilution-iterator_8hpp.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> const type, bool const one_sink_slice=false)</td></tr>
 <tr class="separator:a7cd909808c5ab635daa5b78d083a8e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af139fc91337dbcf80ea7fb24d097d956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_block_iterator.html">BlockIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#af139fc91337dbcf80ea7fb24d097d956">operator*</a> () const</td></tr>
 <tr class="separator:af139fc91337dbcf80ea7fb24d097d956"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -94,6 +94,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a83b36fe64646d84df68f13070be40277"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#a83b36fe64646d84df68f13070be40277">sink_block</a> () const</td></tr>
 <tr class="separator:a83b36fe64646d84df68f13070be40277"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a143e240bfa39327a476ab61d50c84870"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#a143e240bfa39327a476ab61d50c84870">qline_id</a> () const</td></tr>
+<tr class="memdesc:a143e240bfa39327a476ab61d50c84870"><td class="mdescLeft">&#160;</td><td class="mdescRight">The following quark line index is a contraption that assigns each time slice within the current block a number in the interval <code>[0, 2 * dilT)</code>.  <a href="#a143e240bfa39327a476ab61d50c84870">More...</a><br /></td></tr>
 <tr class="separator:a143e240bfa39327a476ab61d50c84870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
@@ -112,14 +113,14 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ab7eb1a6a77afc5957bcb235914c032de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d828d3589f54c81e0aebf2796accf7d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#a3d828d3589f54c81e0aebf2796accf7d">pass_</a></td></tr>
 <tr class="separator:a3d828d3589f54c81e0aebf2796accf7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7b0081df2fd82fb2ae76778848286fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dilution-iterator_8h.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#aa7b0081df2fd82fb2ae76778848286fc">type_</a></td></tr>
+<tr class="memitem:aa7b0081df2fd82fb2ae76778848286fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dilution-iterator_8hpp.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#aa7b0081df2fd82fb2ae76778848286fc">type_</a></td></tr>
 <tr class="separator:aa7b0081df2fd82fb2ae76778848286fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3e29dbcd469b310dfd356a37abcbed7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_block_iterator.html#ab3e29dbcd469b310dfd356a37abcbed7">one_sink_slice_</a></td></tr>
 <tr class="separator:ab3e29dbcd469b310dfd356a37abcbed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00023">23</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00021">21</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7cd909808c5ab635daa5b78d083a8e70"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7cd909808c5ab635daa5b78d083a8e70">&#9670;&nbsp;</a></span>BlockIterator()</h2>
@@ -175,7 +176,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="dilution-iterator_8h.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> const&#160;</td>
+          <td class="paramtype"><a class="el" href="dilution-iterator_8hpp.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> const&#160;</td>
           <td class="paramname"><em>type</em>, </td>
         </tr>
         <tr>
@@ -197,7 +198,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00025">25</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00023">23</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -226,7 +227,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00128">128</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00126">126</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +254,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00044">44</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00042">42</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -280,7 +281,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00052">52</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00050">50</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -306,11 +307,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The following quark line index is a contraption that assigns each time slice within the current block a number in the interval <code>[0, 2 * dilT)</code>. The entries <code>[0, dilT)</code> correspond to the “block → sink“ step and the entries <code>[dilT, 2 * dilT)</code> corrspond to the other direction, say “sink ← block”.</p>
+
+<p>The following quark line index is a contraption that assigns each time slice within the current block a number in the interval <code>[0, 2 * dilT)</code>. </p>
+<p>The entries <code>[0, dilT)</code> correspond to the “block → sink“ step and the entries <code>[dilT, 2 * dilT)</code> corrspond to the other direction, say “sink ← block”.</p>
 <p>The following is the code that had been used previously to compute this index, only for the block-dilution scheme:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (t1_i == t2_i) {</div><div class="line">  <span class="keywordflow">if</span> (t1_min != 0)</div><div class="line">    id_Q2L_1 = t1 % t1_min;</div><div class="line">  <span class="keywordflow">else</span> {</div><div class="line">    id_Q2L_1 = t1;</div><div class="line">  }</div><div class="line">} <span class="keywordflow">else</span> {</div><div class="line">  <span class="keywordflow">if</span> (t1_min != 0)</div><div class="line">    id_Q2L_1 = (dir)*dilT + t1 % t1_min;</div><div class="line">  <span class="keywordflow">else</span></div><div class="line">    id_Q2L_1 = ((dir)*dilT + t1);</div><div class="line">}</div></div><!-- fragment --><p>Now we can use the container/iterator structure for the blocks and slices. In case we are in the first part, the source block has not been switched with the sink block. </p>
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00171">171</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00169">169</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -337,7 +340,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00136">136</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00134">134</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -364,7 +367,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00140">140</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00138">138</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -391,7 +394,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00134">134</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00132">132</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -418,7 +421,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00138">138</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00136">136</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -443,7 +446,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00187">187</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00185">185</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -467,7 +470,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00186">186</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00184">184</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -491,7 +494,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00189">189</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00187">187</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -515,7 +518,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00188">188</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00186">186</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -539,7 +542,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00192">192</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00190">190</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +566,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00190">190</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00188">188</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -587,7 +590,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00185">185</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00183">183</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -611,7 +614,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00184">184</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00182">182</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -625,7 +628,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="dilution-iterator_8h.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> BlockIterator::type_</td>
+          <td class="memname"><a class="el" href="dilution-iterator_8hpp.html#a58d067538ffe364c891ea41ddcf52aab">DilutionType</a> BlockIterator::type_</td>
         </tr>
       </table>
   </td>
@@ -635,12 +638,12 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="dilution-iterator_8h_source.html#l00191">191</a> of file <a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dilution-iterator_8hpp_source.html#l00189">189</a> of file <a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/<a class="el" href="dilution-iterator_8h_source.html">dilution-iterator.h</a></li>
+<li>include/<a class="el" href="dilution-iterator_8hpp_source.html">dilution-iterator.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

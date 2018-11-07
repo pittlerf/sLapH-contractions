@@ -73,7 +73,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="typedefs_8h_source.html">typedefs.h</a>&gt;</code></p>
+<p>Struct that contains all information for a sLapH operator.  
+ <a href="struct_operator_lookup.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -83,19 +86,21 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a4b63dec5c9d92a727fb7c0e573104fc3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_operator_lookup.html#a4b63dec5c9d92a727fb7c0e573104fc3">vdaggerv_lookup</a></td></tr>
+<tr class="memdesc:a4b63dec5c9d92a727fb7c0e573104fc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies physical content of quark field operator (with Dirac structure factored out)  <a href="#a4b63dec5c9d92a727fb7c0e573104fc3">More...</a><br /></td></tr>
 <tr class="separator:a4b63dec5c9d92a727fb7c0e573104fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aabdd72e1081b43870323e371c35c3391"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_operator_lookup.html#aabdd72e1081b43870323e371c35c3391">index_of_unity</a></td></tr>
+<tr class="memdesc:aabdd72e1081b43870323e371c35c3391"><td class="mdescLeft">&#160;</td><td class="mdescRight">For \( \vec{p} = 0 \), \( V^\dagger exp(ipx) V = \mathbb{1} \).  <a href="#aabdd72e1081b43870323e371c35c3391">More...</a><br /></td></tr>
 <tr class="separator:aabdd72e1081b43870323e371c35c3391"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac63777cce806adfbc4a8a5de84f6bf27"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_operator_lookup.html#ac63777cce806adfbc4a8a5de84f6bf27">need_gaugefield</a> = false</td></tr>
 <tr class="separator:ac63777cce806adfbc4a8a5de84f6bf27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Struct that contains all information for a sLapH operator</p>
+<div class="textblock"><p>Struct that contains all information for a sLapH operator. </p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd><p class="startdd">confusing because rvdaggerv_lookuptable and rvdaggervr_lookuptable contain indices of vdaggerv_lookup and ric_lookup. Multiple hierarchy levels in a single struct </p>
 <p class="enddd">confusing because either Q1 and rvdaggerv OR Q2 and rvdaggervr are used, but in both cases half the members are spurious </p>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8h_source.html#l00173">173</a> of file <a class="el" href="typedefs_8h_source.html">typedefs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00160">160</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1389d13ea4ad89f0c247f5b8cf1b83ba"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1389d13ea4ad89f0c247f5b8cf1b83ba">&#9670;&nbsp;</a></span>size()</h2>
@@ -120,7 +125,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8h_source.html#l00187">187</a> of file <a class="el" href="typedefs_8h_source.html">typedefs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00174">174</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -136,9 +141,11 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>For \( \vec{p} = 0 \), \( V^\dagger exp(ipx) V = \mathbb{1} \). If applicable This contains the index of <em>vdaggerv_lookup</em> where it can be replaced by a unit matrix. If \( \vec{p} = 0 \) is not needed, <em>index_of_unity</em> is set to -1 </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8h_source.html#l00184">184</a> of file <a class="el" href="typedefs_8h_source.html">typedefs.h</a>.</p>
+<p>For \( \vec{p} = 0 \), \( V^\dagger exp(ipx) V = \mathbb{1} \). </p>
+<p>If applicable This contains the index of <em>vdaggerv_lookup</em> where it can be replaced by a unit matrix. If \( \vec{p} = 0 \) is not needed, <em>index_of_unity</em> is set to -1 </p>
+
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00171">171</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -154,7 +161,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8h_source.html#l00185">185</a> of file <a class="el" href="typedefs_8h_source.html">typedefs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00172">172</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -169,14 +176,15 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
 <p>Specifies physical content of quark field operator (with Dirac structure factored out) </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8h_source.html#l00177">177</a> of file <a class="el" href="typedefs_8h_source.html">typedefs.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00164">164</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="typedefs_8h_source.html">typedefs.h</a></li>
+<li>include/<a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

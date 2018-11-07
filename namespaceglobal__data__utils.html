@@ -74,12 +74,16 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad10f4ab91b50f20fb2163866d538b5ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structquark.html">quark</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceglobal__data__utils.html#ad10f4ab91b50f20fb2163866d538b5ef">make_quark</a> (const std::string &amp;quark_string)</td></tr>
+<tr class="memdesc:ad10f4ab91b50f20fb2163866d538b5ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a quark object from a string.  <a href="#ad10f4ab91b50f20fb2163866d538b5ef">More...</a><br /></td></tr>
 <tr class="separator:ad10f4ab91b50f20fb2163866d538b5ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17e3a69ea23d0913b8b533d25c6af1b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4">quark_check</a> (<a class="el" href="structquark.html">quark</a> quarks)</td></tr>
+<tr class="memdesc:a17e3a69ea23d0913b8b533d25c6af1b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enforces that <em>quarks</em> is filled with valid values and terminates the program with an errormessage otherwise.  <a href="#a17e3a69ea23d0913b8b533d25c6af1b4">More...</a><br /></td></tr>
 <tr class="separator:a17e3a69ea23d0913b8b533d25c6af1b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74db6e64b4f53a343b57c322312303d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="global__data__typedefs_8h.html#a88a7903c1520c127ed4d810ef2c9c17d">Operators</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceglobal__data__utils.html#a74db6e64b4f53a343b57c322312303d9">make_operator_list</a> (const std::string &amp;operator_string)</td></tr>
+<tr class="memitem:a74db6e64b4f53a343b57c322312303d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="global__data__typedefs_8hpp.html#a88a7903c1520c127ed4d810ef2c9c17d">Operators</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceglobal__data__utils.html#a74db6e64b4f53a343b57c322312303d9">make_operator_list</a> (const std::string &amp;operator_string)</td></tr>
+<tr class="memdesc:a74db6e64b4f53a343b57c322312303d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes an operator list object from a string.  <a href="#a74db6e64b4f53a343b57c322312303d9">More...</a><br /></td></tr>
 <tr class="separator:a74db6e64b4f53a343b57c322312303d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b7560cbcf7e9e065e489abb2c208d93"><td class="memItemLeft" align="right" valign="top"><a class="el" href="struct_correlators__2.html">Correlators_2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93">make_correlator</a> (const std::string &amp;correlator_string)</td></tr>
+<tr class="memdesc:a6b7560cbcf7e9e065e489abb2c208d93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes an Correlators object from a string.  <a href="#a6b7560cbcf7e9e065e489abb2c208d93">More...</a><br /></td></tr>
 <tr class="separator:a6b7560cbcf7e9e065e489abb2c208d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -98,27 +102,28 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Makes an Correlators object from a string</p>
+
+<p>Makes an Correlators object from a string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">correlator_string</td><td><p class="starttd">Correlators as read from the infile</p>
 <p class="endtd">correlator_list = <em>type</em> : <em>quark</em> : <em>operator</em> : ... : [<em>GEVP</em>] : [<em>P</em>] where the following abbreviationswhere used</p><ul>
-<li><em>type</em> {C1,<a class="el" href="class_c2c.html">C2c</a>,<a class="el" href="class_c20.html">C20</a>,<a class="el" href="class_c20_v.html">C20V</a>,<a class="el" href="class_c3c.html">C3c</a>,<a class="el" href="class_c30.html">C30</a>,<a class="el" href="class_c4c_d.html">C4cD</a>,<a class="el" href="class_c4c_v.html">C4cV</a>,<a class="el" href="class_c4c_c.html">C4cC</a>,<a class="el" href="class_c4c_b.html">C4cB</a>,<a class="el" href="class_c40_d.html">C40D</a>,<a class="el" href="class_c40_v.html">C40V</a>,<a class="el" href="class_c40_c.html">C40C</a>,<a class="el" href="class_c40_b.html">C40B</a>} : Identifier for the Wick diagram to be calculated. </li>
+<li><em>type</em> {C1,<a class="el" href="class_c2c.html" title="Build charged 2pt correlation function . ">C2c</a>,<a class="el" href="class_c20.html" title="Build neutral 2pt correlation function . ">C20</a>,<a class="el" href="class_c20_v.html" title="Build neutral 2pt correlation function . ">C20V</a>,<a class="el" href="class_c3c.html" title="Build neutral 3pt correlation function . ">C3c</a>,<a class="el" href="class_c30.html" title="Build neutral 3pt correlation function . ">C30</a>,<a class="el" href="class_c4c_d.html" title="Build charged 4pt correlation function: Direct diagram . ">C4cD</a>,<a class="el" href="class_c4c_v.html" title="Build charged 4pt correlation function: Vacuum diagram . ">C4cV</a>,<a class="el" href="class_c4c_c.html" title="Build charged 4pt correlation function: Cross diagram . ">C4cC</a>,<a class="el" href="class_c4c_b.html" title="Build charged 4pt correlation function: Box diagram . ">C4cB</a>,<a class="el" href="class_c40_d.html" title="Build neutral 4pt correlation function: Direct diagram . ">C40D</a>,<a class="el" href="class_c40_v.html" title="Build neutral 4pt correlation function: Vacuum diagram . ">C40V</a>,<a class="el" href="class_c40_c.html" title="Build neutral 4pt correlation function: Cross diagram . ">C40C</a>,<a class="el" href="class_c40_b.html" title="Build neutral 4pt correlation function: Box diagram . ">C40B</a>} : Identifier for the Wick diagram to be calculated. </li>
 </ul>
 </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd>{ LapH::Correlators }<ul>
-<li><em><a class="el" href="structquark.html">quark</a></em> {"Q%d"} : Specifies which of the quarks from the infile to use</li>
+<li><em><a class="el" href="structquark.html" title="Quark type that contains all quark propagator informations: ">quark</a></em> {"Q%d"} : Specifies which of the quarks from the infile to use</li>
 <li><em>operator</em> {"Op%d"} : Specifies which of the operators from the infile to use</li>
-<li><em>GEVP</em>  todo 20.</li>
+<li><em>GEVP</em>  todo 22.</li>
 </ul>
 </dd></dl>
 <p>Internally uses boost to split the string and process the parts.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000021">Todo:</a></b></dt><dd>Write check for correctness of correlator_string </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000023">Todo:</a></b></dt><dd>Write check for correctness of correlator_string </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00308">308</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00302">302</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -129,7 +134,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="global__data__typedefs_8h.html#a88a7903c1520c127ed4d810ef2c9c17d">Operators</a> global_data_utils::make_operator_list </td>
+          <td class="memname"><a class="el" href="global__data__typedefs_8hpp.html#a88a7903c1520c127ed4d810ef2c9c17d">Operators</a> global_data_utils::make_operator_list </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>operator_string</em></td><td>)</td>
@@ -137,7 +142,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Makes an operator list object from a string</p>
+
+<p>Makes an operator list object from a string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">operator_string</td><td>Operator as specified in the infile: A ';'-sperated list with individual operators. The individual operators are composed of '.'-seperated parts. E.g. <div class="fragment"><div class="line">operator_list = g4.d0.p(0,0,1);g5.d0.p0,1</div></div><!-- fragment --> Momenta (<em>p</em>) can be specified as 3-momentum or by (one or more) scalar number(s). In the latter case all 3-momenta with corresponding absolute value are constructed</td></tr>
@@ -148,7 +154,7 @@ Functions</h2></td></tr>
 <p>Internally uses boost to split the string and process the parts.</p>
 <p>This is a factory function which returns by value and uses named return value optimization in order to call the constructor within the scope </p>
 
-<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00222">222</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00215">215</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -167,7 +173,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Makes a quark object from a string</p>
+
+<p>Makes a quark object from a string. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">quark_string</td><td>Quark as specified in the infile quark = <em>flavor</em> : <em>nb_rnd_vec</em> : T <em>diltT_type</em> : <em>dilT</em> : E <em>dilE_type</em> : <em>dilE</em> : D <em>dilD_type</em> : <em>dilD</em> : <em>path</em> where the following abbreviations where used<ul>
@@ -179,7 +186,7 @@ Functions</h2></td></tr>
 <li><em>dilE</em> : Number of dilution blocks in eigenvector space</li>
 <li><em>dilD_type</em> {I,B} : Dilution type in dirac space</li>
 <li><em>dilD</em> : Number of dilution blocks in Dirac space</li>
-<li><em>path</em> : Path to perambulator The validity of the values is checked in <a class="el" href="namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4">quark_check()</a></li>
+<li><em>path</em> : Path to perambulator The validity of the values is checked in <a class="el" href="namespaceglobal__data__utils.html#a17e3a69ea23d0913b8b533d25c6af1b4" title="Enforces that quarks is filled with valid values and terminates the program with an errormessage othe...">quark_check()</a></li>
 </ul>
 </td></tr>
   </table>
@@ -188,7 +195,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A quark object constructed with the data obtained from <em>quark_string</em> </dd></dl>
 <p>Internally uses boost to split the string and process the parts. </p>
 
-<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00139">139</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00133">133</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
 
 </div>
 </div>
@@ -207,11 +214,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Enforces that <em>quarks</em> is filled with valid values and terminates the program with an errormessage otherwise </p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000019">Todo:</a></b></dt><dd>Check that the number of random vectors is greater than the largest required diagram </dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000019">Todo:</a></b></dt><dd>Check that the number of random vectors is greater than the largest required diagram </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00165">165</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
+<p>Enforces that <em>quarks</em> is filled with valid values and terminates the program with an errormessage otherwise. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000021">Todo:</a></b></dt><dd>Check that the number of random vectors is greater than the largest required diagram </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000021">Todo:</a></b></dt><dd>Check that the number of random vectors is greater than the largest required diagram </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling__utils_8cpp_source.html#l00159">159</a> of file <a class="el" href="global__data__input__handling__utils_8cpp_source.html">global_data_input_handling_utils.cpp</a>.</p>
 
 </div>
 </div>

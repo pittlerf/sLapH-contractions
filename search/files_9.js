@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['main_2ecpp',['main.cpp',['../benchmarks_2main_8cpp.html',1,'(Global Namespace)'],['../tests_2gtest_2main_8cpp.html',1,'(Global Namespace)']]]
+  ['license_2emd',['LICENSE.md',['../_l_i_c_e_n_s_e_8md.html',1,'']]],
+  ['local_5ftimer_2ehpp',['local_timer.hpp',['../local__timer_8hpp.html',1,'']]]
 ];

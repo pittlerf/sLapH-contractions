@@ -77,7 +77,7 @@ $(function() {
 <p>Class for handling the Gaugefield, displacement routines and Smearing methods.  
  <a href="class_gauge_field.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -87,7 +87,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a481ac68df11a866a5f12d17a17082f5a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a481ac68df11a866a5f12d17a17082f5a">~GaugeField</a> ()</td></tr>
 <tr class="separator:a481ac68df11a866a5f12d17a17082f5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81d5549bac1845591c05209721a35635"><td class="memItemLeft" align="right" valign="top">const Eigen::Matrix3cd &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a81d5549bac1845591c05209721a35635">operator()</a> (const ssize_t t, const ssize_t v, const ssize_t dir) const</td></tr>
-<tr class="memdesc:a81d5549bac1845591c05209721a35635"><td class="mdescLeft">&#160;</td><td class="mdescRight">overloaded access operator  <a href="#a81d5549bac1845591c05209721a35635">More...</a><br /></td></tr>
+<tr class="memdesc:a81d5549bac1845591c05209721a35635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overloaded access operator.  <a href="#a81d5549bac1845591c05209721a35635">More...</a><br /></td></tr>
 <tr class="separator:a81d5549bac1845591c05209721a35635"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48939da871c0bb72cdbd2232bd4542a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a48939da871c0bb72cdbd2232bd4542a8">read_gauge_field</a> (const ssize_t config_i, const ssize_t slice_i, const ssize_t slice_f)</td></tr>
 <tr class="memdesc:a48939da871c0bb72cdbd2232bd4542a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">read in gauge field  <a href="#a48939da871c0bb72cdbd2232bd4542a8">More...</a><br /></td></tr>
@@ -108,7 +108,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a11e22e0742545e3ed700f78562698803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf9ce57c694feb2f5120d6ab44de9e03"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#acf9ce57c694feb2f5120d6ab44de9e03">get_dn</a> (const int pos, const int dir)</td></tr>
 <tr class="separator:acf9ce57c694feb2f5120d6ab44de9e03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5000029b1013c2fcf49c1960017067ae"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a5000029b1013c2fcf49c1960017067ae">summed_displacement</a> (const <a class="el" href="typedefs_8h.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a>)</td></tr>
+<tr class="memitem:a5000029b1013c2fcf49c1960017067ae"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a5000029b1013c2fcf49c1960017067ae">summed_displacement</a> (const <a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a>)</td></tr>
 <tr class="memdesc:a5000029b1013c2fcf49c1960017067ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Summ displacement vectors for phasefactor.  <a href="#a5000029b1013c2fcf49c1960017067ae">More...</a><br /></td></tr>
 <tr class="separator:a5000029b1013c2fcf49c1960017067ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0804e5db15d65b7c9af3fc80f9756480"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a0804e5db15d65b7c9af3fc80f9756480">forward_uv</a> (const Eigen::VectorXcd &amp;v, const ssize_t t, const int spatial_ind, const int direction) const</td></tr>
@@ -164,16 +164,16 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a463caa71793792be0f1afdd8b4b73b37"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a463caa71793792be0f1afdd8b4b73b37">config_path</a></td></tr>
 <tr class="memdesc:a463caa71793792be0f1afdd8b4b73b37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to gauge configurations.  <a href="#a463caa71793792be0f1afdd8b4b73b37">More...</a><br /></td></tr>
 <tr class="separator:a463caa71793792be0f1afdd8b4b73b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a952f71d9cc9a519a2f75957056a8c467"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_gauge_field_8h.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a952f71d9cc9a519a2f75957056a8c467">tslices</a></td></tr>
+<tr class="memitem:a952f71d9cc9a519a2f75957056a8c467"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="_gauge_field_8hpp.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a952f71d9cc9a519a2f75957056a8c467">tslices</a></td></tr>
 <tr class="memdesc:a952f71d9cc9a519a2f75957056a8c467"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector holding boost multi_arrays for range of timeslices.  <a href="#a952f71d9cc9a519a2f75957056a8c467">More...</a><br /></td></tr>
 <tr class="separator:a952f71d9cc9a519a2f75957056a8c467"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc1f43532f306a23e31d4fbec8a6b47b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8h.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#abc1f43532f306a23e31d4fbec8a6b47b">omega</a></td></tr>
+<tr class="memitem:abc1f43532f306a23e31d4fbec8a6b47b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8hpp.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#abc1f43532f306a23e31d4fbec8a6b47b">omega</a></td></tr>
 <tr class="memdesc:abc1f43532f306a23e31d4fbec8a6b47b"><td class="mdescLeft">&#160;</td><td class="mdescRight">One 3d timeslice of Gaugelinks as 2d boost multi_array of 3x3 Matrices.  <a href="#abc1f43532f306a23e31d4fbec8a6b47b">More...</a><br /></td></tr>
 <tr class="separator:abc1f43532f306a23e31d4fbec8a6b47b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cc0e5fd675b1a8f64548472e8080dd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8h.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a6cc0e5fd675b1a8f64548472e8080dd5">iup</a></td></tr>
+<tr class="memitem:a6cc0e5fd675b1a8f64548472e8080dd5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8hpp.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a6cc0e5fd675b1a8f64548472e8080dd5">iup</a></td></tr>
 <tr class="memdesc:a6cc0e5fd675b1a8f64548472e8080dd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">2d boost_multiarray for indices in up direction  <a href="#a6cc0e5fd675b1a8f64548472e8080dd5">More...</a><br /></td></tr>
 <tr class="separator:a6cc0e5fd675b1a8f64548472e8080dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88488776b3001e6ade1aba013f488352"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8h.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a88488776b3001e6ade1aba013f488352">idown</a></td></tr>
+<tr class="memitem:a88488776b3001e6ade1aba013f488352"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_gauge_field_8hpp.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gauge_field.html#a88488776b3001e6ade1aba013f488352">idown</a></td></tr>
 <tr class="memdesc:a88488776b3001e6ade1aba013f488352"><td class="mdescLeft">&#160;</td><td class="mdescRight">2d boost_multiarray for indices in down direction  <a href="#a88488776b3001e6ade1aba013f488352">More...</a><br /></td></tr>
 <tr class="separator:a88488776b3001e6ade1aba013f488352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -182,7 +182,7 @@ Private Attributes</h2></td></tr>
 <p>This Class reads in timeslices from Gaugefields in lime format into a Eigen::Matrix Structure. Eigenvectors or Matrices can be displaced in a symmetrized and an unsymmetrized way. Furthermore Gaugetransformations can be conducted either of the Gaugefield itself or passed Eigensystems.</p>
 <p>Smearings implemented so far are Hyp-Smearing, Ape-Smearing and Stout smearing, acting directly on the read in gaugefield </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00052">52</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00038">38</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad0fc134cb261d44f172742c5e67e8c4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0fc134cb261d44f172742c5e67e8c4a">&#9670;&nbsp;</a></span>GaugeField()</h2>
@@ -276,7 +276,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00060">60</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00046">46</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -322,7 +322,7 @@ Private Attributes</h2></td></tr>
 <p>Backward displacement acting to the right once in direction dir. </p>
 <p>v is the eigensystem at timeslice t t is the timeslice index dir is the direction of the derivative </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00535">535</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00553">553</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -351,10 +351,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Build gauge array. </p>
-<p>Gaugefield transformations//////////////////////////////////////////////////.</p>
 <p>Constructs trange gaugefields, stored internally </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00652">652</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00668">668</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -399,7 +398,7 @@ Private Attributes</h2></td></tr>
 <p>Forward displacement acting to the right once in direction dir. </p>
 <p>v is the eigensystem at timeslice t t is the timeslice index dir is the direction of the derivative </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00524">524</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00543">543</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -429,7 +428,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00083">83</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00104">104</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -459,7 +458,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00079">79</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00100">100</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -498,7 +497,7 @@ Private Attributes</h2></td></tr>
 <p>Initialize lookup tables for 3d navigation through timeslices. </p>
 <p>LX: Lattice extent in X direction, LY: Lattice extent in Y direction, LZ: Lattice extent in Z direction </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00027">27</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00039">39</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -539,7 +538,7 @@ Private Attributes</h2></td></tr>
 <p>project one timeslice of lime Gaugefield to 3d timeslice </p>
 <p>t is the timeslice to be mapped timeslice points to the array of the lime Gaugefield. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00092">92</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00111">111</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -583,10 +582,10 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>overloaded access operator </p>
+<p>Overloaded access operator. </p>
 <p>returns the complex 3x3 link variable of timeslice t at volumeindex v in direction dir </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00066">66</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00052">52</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -637,10 +636,9 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns palquette at one space-time point. </p>
-<p>Calculate Plaquette for given timeslice/////////////////////////////////////.</p>
 <p>mu and nu are plaquette directions, vol is the volume index, t is the timeslice index Used internally by plaque_ts </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00710">710</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00722">722</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -663,7 +661,7 @@ Private Attributes</h2></td></tr>
 <p>Returns plaquette for one timeslice. </p>
 <p>t is the timeslice index of the gaugefield </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00728">728</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00742">742</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -700,10 +698,10 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>read in gauge field </p>
-<p>slice_i is the initial, slice_f the final timeindex of the lattice. The read in lime gaugefield is internally splitted into slice_f - slice_i 3d timeslices and mapped to the eigenformat.</p>
-<p>Read in gauge field to vector of timeslices </p>
+<p>Read in gauge field to vector of timeslices.</p>
+<p>slice_i is the initial, slice_f the final timeindex of the lattice. The read in lime gaugefield is internally splitted into slice_f - slice_i 3d timeslices and mapped to the eigenformat. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00749">749</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00762">762</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -756,7 +754,7 @@ Private Attributes</h2></td></tr>
 <p>tmlQCD function to read in gaugefields to array of doubles </p>
 <p>gaugefield is a pointer to the storage for the gaugefield filename indicates the path to the configuration slice_i is the initial, slice_f the final timeslice to be read </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00768">768</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00781">781</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -795,7 +793,7 @@ Private Attributes</h2></td></tr>
 <p>APE Smearing of one timeslice of Gaugelinks. </p>
 <p>t is the timeslice index, alpha_1 is the staple weight, iter is the number of applications </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00263">263</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00277">277</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -840,7 +838,7 @@ Private Attributes</h2></td></tr>
 <p>Hypercubic Blocking in 3 dimensions. </p>
 <p>t is the timeslice index, alpha_1 the inner weight, alpha_2 the outer weight and iter the number of iterations the smearing is applied </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00306">306</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00322">322</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -879,7 +877,7 @@ Private Attributes</h2></td></tr>
 <p>Stout Smearing of Gaugelinks. </p>
 <p>t is the timeslice index, rho is the staple weight and iter the number of applications of the smearing </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00214">214</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00228">228</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -892,7 +890,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">Eigen::Vector3f GaugeField::summed_displacement </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="typedefs_8h.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a>&#160;</td>
           <td class="paramname"><em>displacement</em></td><td>)</td>
           <td></td>
         </tr>
@@ -901,7 +899,7 @@ Private Attributes</h2></td></tr>
 
 <p>Summ displacement vectors for phasefactor. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00512">512</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00531">531</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -939,7 +937,7 @@ Private Attributes</h2></td></tr>
 <p>v is the address of the Object to be displaced, t is the timeslice index, dir is one of 0,1 or 2 meaning x-,y- or z-direction respectively Gauge Transformation of timeslices</p>
 <p>For generating the transformation fields indices of the initial timeslice t0 and the final timeslice tf need to be passed </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00666">666</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00682">682</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -962,7 +960,7 @@ Private Attributes</h2></td></tr>
 <p>Returns a gaugetransformed transformed Eigenvector or LapH-Matrix. </p>
 <p>If no transformation fields are generated, one is generated, otherwise first one is used </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00685">685</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8cpp_source.html#l00699">699</a> of file <a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a>.</p>
 
 </div>
 </div>
@@ -989,7 +987,7 @@ Private Attributes</h2></td></tr>
 
 <p>Path to gauge configurations. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00225">225</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00211">211</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1013,7 +1011,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1027,7 +1025,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_gauge_field_8h.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a> GaugeField::idown</td>
+          <td class="memname"><a class="el" href="_gauge_field_8hpp.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a> GaugeField::idown</td>
         </tr>
       </table>
   </td>
@@ -1039,7 +1037,7 @@ Private Attributes</h2></td></tr>
 
 <p>2d boost_multiarray for indices in down direction </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00235">235</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00221">221</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1053,7 +1051,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_gauge_field_8h.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a> GaugeField::iup</td>
+          <td class="memname"><a class="el" href="_gauge_field_8hpp.html#a95fac7438973b7a5580cb9e6ea979cd8">look</a> GaugeField::iup</td>
         </tr>
       </table>
   </td>
@@ -1065,7 +1063,7 @@ Private Attributes</h2></td></tr>
 
 <p>2d boost_multiarray for indices in up direction </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00232">232</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00218">218</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1091,7 +1089,7 @@ Private Attributes</h2></td></tr>
 
 <p>Parameters specifying size of the Lattice. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1115,7 +1113,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1139,7 +1137,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1163,7 +1161,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1177,7 +1175,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="_gauge_field_8h.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a> GaugeField::omega</td>
+          <td class="memname"><a class="el" href="_gauge_field_8hpp.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a> GaugeField::omega</td>
         </tr>
       </table>
   </td>
@@ -1189,7 +1187,7 @@ Private Attributes</h2></td></tr>
 
 <p>One 3d timeslice of Gaugelinks as 2d boost multi_array of 3x3 Matrices. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00230">230</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00216">216</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1203,7 +1201,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="_gauge_field_8h.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a>&gt; GaugeField::tslices</td>
+          <td class="memname">std::vector&lt;<a class="el" href="_gauge_field_8hpp.html#a3d504151352c4fd9b14dfdbe4b9a9fb8">array_3cd_d2_eigen</a>&gt; GaugeField::tslices</td>
         </tr>
       </table>
   </td>
@@ -1215,7 +1213,7 @@ Private Attributes</h2></td></tr>
 
 <p>Vector holding boost multi_arrays for range of timeslices. </p>
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00227">227</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00213">213</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1239,7 +1237,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1263,7 +1261,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
@@ -1287,13 +1285,13 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_gauge_field_8h_source.html#l00223">223</a> of file <a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_gauge_field_8hpp_source.html#l00209">209</a> of file <a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>include/<a class="el" href="_gauge_field_8h_source.html">GaugeField.h</a></li>
-<li>modules/<a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a></li>
+<li>include/<a class="el" href="_gauge_field_8hpp_source.html">GaugeField.hpp</a></li>
+<li>src/<a class="el" href="_gauge_field_8cpp_source.html">GaugeField.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

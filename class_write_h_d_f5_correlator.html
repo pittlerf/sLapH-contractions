@@ -74,7 +74,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>&gt;</code></p>
+<p>Class to write correlations function to files in hdf5 format.  
+ <a href="class_write_h_d_f5_correlator.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -82,27 +85,32 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a146d90c874d27b6ed969d599e7f683cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a232206829dc040c5be353c3f9cf2a826"><td class="memTemplParams" colspan="2">template&lt;typename corr_datatype &gt; </td></tr>
 <tr class="memitem:a232206829dc040c5be353c3f9cf2a826"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="class_write_h_d_f5_correlator.html#a232206829dc040c5be353c3f9cf2a826">write</a> (const std::vector&lt; corr_datatype &gt; &amp;corr, const <a class="el" href="struct_diagram_index.html">DiagramIndex</a> &amp;corr_info)</td></tr>
+<tr class="memdesc:a232206829dc040c5be353c3f9cf2a826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes data to file.  <a href="#a232206829dc040c5be353c3f9cf2a826">More...</a><br /></td></tr>
 <tr class="separator:a232206829dc040c5be353c3f9cf2a826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:aa0693b4d8501cb6d0f596eccdcf9a78c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_write_h_d_f5_correlator.html#aa0693b4d8501cb6d0f596eccdcf9a78c">create_folder_for_hdf5_file</a> (const char *path)</td></tr>
+<tr class="memdesc:aa0693b4d8501cb6d0f596eccdcf9a78c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether output path exists and if not creates it.  <a href="#aa0693b4d8501cb6d0f596eccdcf9a78c">More...</a><br /></td></tr>
 <tr class="separator:aa0693b4d8501cb6d0f596eccdcf9a78c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fdd4d865409e309463aec98737ea20c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_write_h_d_f5_correlator.html#a6fdd4d865409e309463aec98737ea20c">open_or_create_hdf5_file</a> (std::string const &amp;name)</td></tr>
+<tr class="memdesc:a6fdd4d865409e309463aec98737ea20c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens correlator file, preserving existing data.  <a href="#a6fdd4d865409e309463aec98737ea20c">More...</a><br /></td></tr>
 <tr class="separator:a6fdd4d865409e309463aec98737ea20c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:ad73d097bffafd9c7bd000528b962c992"><td class="memItemLeft" align="right" valign="top">H5::H5File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_write_h_d_f5_correlator.html#ad73d097bffafd9c7bd000528b962c992">file</a></td></tr>
+<tr class="memdesc:ad73d097bffafd9c7bd000528b962c992"><td class="mdescLeft">&#160;</td><td class="mdescRight">The hdf5 file pointer.  <a href="#ad73d097bffafd9c7bd000528b962c992">More...</a><br /></td></tr>
 <tr class="separator:ad73d097bffafd9c7bd000528b962c992"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c1feadc63c2f13a84ab3c3300f17089"><td class="memItemLeft" align="right" valign="top">H5::CompType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_write_h_d_f5_correlator.html#a5c1feadc63c2f13a84ab3c3300f17089">comp_type</a></td></tr>
+<tr class="memdesc:a5c1feadc63c2f13a84ab3c3300f17089"><td class="mdescLeft">&#160;</td><td class="mdescRight">The hdf5 compound datatype.  <a href="#a5c1feadc63c2f13a84ab3c3300f17089">More...</a><br /></td></tr>
 <tr class="separator:a5c1feadc63c2f13a84ab3c3300f17089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class to write correlations function to files in hdf5 format</p>
+<div class="textblock"><p>Class to write correlations function to files in hdf5 format. </p>
 <p>Dependency inversion principle is violated: Class depends on the concrete implementation of hdf5 </p>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00109">109</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00107">107</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a146d90c874d27b6ed969d599e7f683cf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a146d90c874d27b6ed969d599e7f683cf">&#9670;&nbsp;</a></span>WriteHDF5Correlator()</h2>
@@ -150,7 +158,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00111">111</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00109">109</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -178,7 +186,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Checks whether output path exists and if not creates it</p>
+
+<p>Checks whether output path exists and if not creates it. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Path where hdf5 file shall be written </td></tr>
@@ -186,7 +195,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00171">171</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00169">169</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -213,7 +222,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Opens correlator file, preserving existing data.</p>
+
+<p>Opens correlator file, preserving existing data. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>String containing path+filename of the desired file </td></tr>
@@ -221,7 +231,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00186">186</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00184">184</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -260,14 +270,15 @@ template&lt;typename corr_datatype &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Writes data to file</p>
+
+<p>Writes data to file. </p>
 <p>corr The data to write  corr_info Contains the hdf5_dataset_name</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd><p class="startdd">It is sufficient to pass the hdf5_dataset_name </p>
 <p class="enddd">corr_datatype would be better as class template typename</p>
 </dd></dl>
-<dl class="section remark"><dt>Remarks</dt><dd>The type corr_datatype is always either <a class="el" href="structcomplex__t.html">complex_t</a> or compcomp_t. The function body is identical for both types as everything is specified by corr_info. Thus the template overload </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>The type corr_datatype is always either <a class="el" href="structcomplex__t.html" title="This is just a workaround for complex numbers to get it running for hdf5. ">complex_t</a> or compcomp_t. The function body is identical for both types as everything is specified by corr_info. Thus the template overload </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00136">136</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00134">134</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,12 +302,13 @@ template&lt;typename corr_datatype &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The hdf5 compound datatype.</p>
+
+<p>The hdf5 compound datatype. </p>
 <dl class="section see"><dt>See also</dt><dd>H5::CompType comp_type_factory_tr() </dd>
 <dd>
-H5::CompType <a class="el" href="h5-wrapper_8h.html#a088f82e4fc873e879f92008509f3b2e1">comp_type_factory&lt;compcomp_t&gt;()</a> </dd></dl>
+H5::CompType <a class="el" href="h5-wrapper_8hpp.html#a088f82e4fc873e879f92008509f3b2e1">comp_type_factory&lt;compcomp_t&gt;()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00203">203</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00201">201</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
@@ -319,14 +331,15 @@ H5::CompType <a class="el" href="h5-wrapper_8h.html#a088f82e4fc873e879f92008509f
   </tr>
 </table>
 </div><div class="memdoc">
-<p>The hdf5 file pointer </p>
 
-<p class="definition">Definition at line <a class="el" href="h5-wrapper_8h_source.html#l00197">197</a> of file <a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a>.</p>
+<p>The hdf5 file pointer. </p>
+
+<p class="definition">Definition at line <a class="el" href="h5-wrapper_8hpp_source.html#l00195">195</a> of file <a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/<a class="el" href="h5-wrapper_8h_source.html">h5-wrapper.h</a></li>
+<li>include/<a class="el" href="h5-wrapper_8hpp_source.html">h5-wrapper.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
