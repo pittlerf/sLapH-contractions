@@ -69,8 +69,6 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000025"></a>Member <a class="el" href="init__lookup__tables_8cpp.html#a1ae6a30ce4b93d44c338cb015dbbc2e7">build_quantum_numbers_from_correlator_list</a>  (const <a class="el" href="struct_correlators__2.html" title="Struct that contains all information specifying the correlator in the infile: ">Correlators_2</a> &amp;correlator, const Operator_list &amp;operator_list, std::vector&lt; std::vector&lt; QuantumNumbers &gt;&gt; &amp;quantum_numbers, std::map&lt; int, int &gt; const &amp;momentum_cutoff)</dt>
-<dd>Think about a way to avoid these if conditions.  </dd>
 <dt><a class="anchor" id="_todo000006"></a>Class <a class="el" href="structcomplex__t.html">complex_t</a>  </dt>
 <dd>Change namespace into something more specific  </dd>
 <dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="_correlators_8hpp.html#a29e2c0c23694d1f8776258f7ed4bd673">contract</a>  (const ssize_t Lt, const ssize_t dilT, const ssize_t dilE, const ssize_t nev, <a class="el" href="class_operator_factory.html" title="Calculates operators as they emerge in correlation functions using the stochastic estimates from the ...">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html" title="Memory allocation and IO routines for random vectors. ">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html" title="Memory allocation and reading routines for perambulators. ">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html" title="Struct that contains all information for a sLapH operator. ">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="struct_diagram_indices_collection.html" title="Contains information on all correlators. ">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="struct_diluted_factor_indices_collection.html" title="Maps index from CorrelatorLookup to QuarklineQ1Indicies or QuarklineQ2Indicies, depending on the quar...">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</dt>
@@ -81,7 +79,7 @@ $(function() {
 <dd>Are GEVP and tot_mom used at the moment? They should support building off-diagonal elements as well or resticting to a certain CMS momentum  </dd>
 <dt><a class="anchor" id="_todo000009"></a>Class <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a>  </dt>
 <dd>modular programming looks different  </dd>
-<dt><a class="anchor" id="_todo000036"></a>Member <a class="el" href="_operator_factory_8cpp.html#a251d9cfd03117fa37a56b09c5d79394c">displace_eigenvectors</a>  (Eigen::MatrixXcd const &amp;v, <a class="el" href="class_gauge_field.html" title="Class for handling the Gaugefield, displacement routines and Smearing methods. ">GaugeField</a> const &amp;gauge, ssize_t const t, DisplacementDirection const disp, ssize_t const verbose)</dt>
+<dt><a class="anchor" id="_todo000035"></a>Member <a class="el" href="_operator_factory_8cpp.html#a251d9cfd03117fa37a56b09c5d79394c">displace_eigenvectors</a>  (Eigen::MatrixXcd const &amp;v, <a class="el" href="class_gauge_field.html" title="Class for handling the Gaugefield, displacement routines and Smearing methods. ">GaugeField</a> const &amp;gauge, ssize_t const t, DisplacementDirection const disp, ssize_t const verbose)</dt>
 <dd>Swap order of loops?  </dd>
 <dt><a class="anchor" id="_todo000022"></a>Member <a class="el" href="namespaceglobal__data__utils.html#a6b7560cbcf7e9e065e489abb2c208d93">global_data_utils::make_correlator</a>  (const std::string &amp;correlator_string)</dt>
 <dd><p class="startdd">is that even supported?</p><ul>
@@ -97,7 +95,7 @@ $(function() {
 <dd>Check that the number of random vectors is greater than the largest required diagram  </dd>
 <dt><a class="anchor" id="_todo000024"></a>File <a class="el" href="init__lookup__tables_8cpp.html">init_lookup_tables.cpp</a>  </dt>
 <dd>Why are most functions static and not simply in an unnamed namespace?  </dd>
-<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="global__data__input__handling_8cpp.html#a646e553c29160d1de0781849e351ba28">input_handling</a>  (<a class="el" href="struct_global_data.html" title="Class containing all metadata for contractions and functions to set them from infile. ">GlobalData</a> &amp;gd, const std::vector&lt; std::string &gt; &amp;quark_configs, const std::vector&lt; std::string &gt; &amp;operator_list_configs, const std::vector&lt; std::string &gt; &amp;correlator_list_configs)</dt>
+<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="global__data__input__handling_8cpp.html#abf875e399c6324ca1dc8586580b3e218">input_handling</a>  (<a class="el" href="struct_global_data.html" title="Class containing all metadata for contractions and functions to set them from infile. ">GlobalData</a> &amp;gd, std::vector&lt; std::string &gt; const &amp;quark_configs, std::vector&lt; std::string &gt; const &amp;operator_list_configs, std::vector&lt; std::string &gt; const &amp;correlator_list_configs)</dt>
 <dd>Split that into multiple functions for checks, output and munging to improve readability  </dd>
 <dt><a class="anchor" id="_todo000010"></a>page <a class="el" href="index.html">Main Page</a>  </dt>
 <dd><p class="startdd">generalalize that for s and c quarks</p>
@@ -105,7 +103,7 @@ $(function() {
 </dd>
 <dt><a class="anchor" id="_todo000012"></a>Member <a class="el" href="src_2_gamma_8cpp.html#ae12a232ef98a27cd6ba3aebd246bfeba">make_gamma</a>  ()</dt>
 <dd>Refactor that into physical quantum number class along with momentum  </dd>
-<dt><a class="anchor" id="_todo000037"></a>Member <a class="el" href="class_operator_factory.html#a52b496a8ddc678b2b3fc9e1fceeabf24">OperatorFactory::build_vdaggerv</a>  (const std::string &amp;filename, const int config)</dt>
+<dt><a class="anchor" id="_todo000036"></a>Member <a class="el" href="class_operator_factory.html#a52b496a8ddc678b2b3fc9e1fceeabf24">OperatorFactory::build_vdaggerv</a>  (const std::string &amp;filename, const int config)</dt>
 <dd>might be useful to parallelize  </dd>
 <dt><a class="anchor" id="_todo000005"></a>Member <a class="el" href="class_operator_factory.html#a28a080bf13e9818b0095da996dc51ed5">OperatorFactory::return_vdaggerv</a>  (const ssize_t index, const ssize_t t) const</dt>
 <dd>check of vdaggerv is already build  </dd>

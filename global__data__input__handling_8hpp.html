@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>sLapH-contractions: src/global_data_build_IO_names.cpp File Reference</title>
+<title>sLapH-contractions: include/global_data_input_handling.hpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,36 +64,34 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">global_data_build_IO_names.cpp File Reference</div>  </div>
+<div class="title">global_data_input_handling.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="global__data__build___i_o__names_8hpp_source.html">global_data_build_IO_names.hpp</a>&quot;</code><br />
-<code>#include &lt;boost/format.hpp&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="global__data_8hpp_source.html">global_data.hpp</a>&quot;</code><br />
 </div>
-<p><a href="global__data__build___i_o__names_8cpp_source.html">Go to the source code of this file.</a></p>
+<p><a href="global__data__input__handling_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a55be88be69b2ac8b6cc32caacef6ad07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data__build___i_o__names_8cpp.html#a55be88be69b2ac8b6cc32caacef6ad07">build_IO_names</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd, const ssize_t config)</td></tr>
-<tr class="memdesc:a55be88be69b2ac8b6cc32caacef6ad07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fills the random vector and perambulator structs with the paths and file names to read the data.  <a href="#a55be88be69b2ac8b6cc32caacef6ad07">More...</a><br /></td></tr>
-<tr class="separator:a55be88be69b2ac8b6cc32caacef6ad07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf875e399c6324ca1dc8586580b3e218"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="global__data__input__handling_8hpp.html#abf875e399c6324ca1dc8586580b3e218">input_handling</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd, std::vector&lt; std::string &gt; const &amp;quark_configs, std::vector&lt; std::string &gt; const &amp;operator_list_configs, std::vector&lt; std::string &gt; const &amp;correlator_list_configs)</td></tr>
+<tr class="separator:abf875e399c6324ca1dc8586580b3e218"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a55be88be69b2ac8b6cc32caacef6ad07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55be88be69b2ac8b6cc32caacef6ad07">&#9670;&nbsp;</a></span>build_IO_names()</h2>
+<a id="abf875e399c6324ca1dc8586580b3e218"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf875e399c6324ca1dc8586580b3e218">&#9670;&nbsp;</a></span>input_handling()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void build_IO_names </td>
+          <td class="memname">void input_handling </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="struct_global_data.html">GlobalData</a> &amp;&#160;</td>
           <td class="paramname"><em>gd</em>, </td>
@@ -101,8 +99,20 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const ssize_t&#160;</td>
-          <td class="paramname"><em>config</em>&#160;</td>
+          <td class="paramtype">std::vector&lt; std::string &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>quark_configs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::string &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>operator_list_configs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::string &gt; const &amp;&#160;</td>
+          <td class="paramname"><em>correlator_list_configs</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -111,16 +121,18 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Fills the random vector and perambulator structs with the paths and file names to read the data. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">config</td><td>Configuration number for which paths and file names shall be constructed </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">gd</td><td>Global program state. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">quark_configs</td><td>Quarks as read from the infile. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">operator_list_configs</td><td>Operators as read from the infile. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">correlator_list_configs</td><td>Correlators as read from the infile.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>Split that into multiple functions for checks, output and munging to improve readability </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="global__data__build___i_o__names_8cpp_source.html#l00076">76</a> of file <a class="el" href="global__data__build___i_o__names_8cpp_source.html">global_data_build_IO_names.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="global__data__input__handling_8cpp_source.html#l00249">249</a> of file <a class="el" href="global__data__input__handling_8cpp_source.html">global_data_input_handling.cpp</a>.</p>
 
 </div>
 </div>
