@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['stochastic_20laplacian_20heaviside_20contraction_20code',['Stochastic Laplacian Heaviside Contraction Code',['../md__r_e_a_d_m_e.html',1,'']]],
   ['set',['set',['../class_random_vector.html#a6fa7e60727cb82e298a931da03de6ae0',1,'RandomVector::set(const ssize_t entity, const int seed)'],['../class_random_vector.html#a5ba28a2a2e02ba94141c3c326f635068',1,'RandomVector::set(const ssize_t entity, const int seed, const std::string &amp;filename)']]],
   ['set_5fv',['set_V',['../class_eigen_vector.html#a3b4c6b54c6b7e4c4efca9d99fefd54c9',1,'EigenVector']]],
   ['single2double',['single2double',['../io__utils_8hpp.html#a197346db5240db3b6d3923e9fbae9bba',1,'single2double(void *out_ptr, void *in_ptr, int nmemb):&#160;io_utils.cpp'],['../io__utils_8cpp.html#a197346db5240db3b6d3923e9fbae9bba',1,'single2double(void *out_ptr, void *in_ptr, int nmemb):&#160;io_utils.cpp']]],

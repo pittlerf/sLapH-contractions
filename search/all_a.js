@@ -14,6 +14,7 @@ var searchData=
   ['inner_5fproduct',['inner_product',['../_diluted_factor_8hpp.html#a3ff4bdf61f0a2827386149884604eda8',1,'DilutedFactor.hpp']]],
   ['input_5fhandling',['input_handling',['../global__data__input__handling_8hpp.html#abf875e399c6324ca1dc8586580b3e218',1,'input_handling(GlobalData &amp;gd, std::vector&lt; std::string &gt; const &amp;quark_configs, std::vector&lt; std::string &gt; const &amp;operator_list_configs, std::vector&lt; std::string &gt; const &amp;correlator_list_configs):&#160;global_data_input_handling.cpp'],['../global__data__input__handling_8cpp.html#abf875e399c6324ca1dc8586580b3e218',1,'input_handling(GlobalData &amp;gd, std::vector&lt; std::string &gt; const &amp;quark_configs, std::vector&lt; std::string &gt; const &amp;operator_list_configs, std::vector&lt; std::string &gt; const &amp;correlator_list_configs):&#160;global_data_input_handling.cpp']]],
   ['interlace',['interlace',['../dilution-iterator_8hpp.html#a58d067538ffe364c891ea41ddcf52aaba5342eb2c87a33ac6b473319602814c7c',1,'dilution-iterator.hpp']]],
+  ['introduction_2emd',['Introduction.md',['../_introduction_8md.html',1,'']]],
   ['io_5futils_2ecpp',['io_utils.cpp',['../io__utils_8cpp.html',1,'']]],
   ['io_5futils_2ehpp',['io_utils.hpp',['../io__utils_8hpp.html',1,'']]],
   ['is_5fvdaggerv_5fset',['is_vdaggerv_set',['../class_operator_factory.html#a45a3d4110f932b5dd943a13e1d7425b9',1,'OperatorFactory']]],
