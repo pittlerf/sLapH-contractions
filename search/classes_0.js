@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['blockiterator',['BlockIterator',['../class_block_iterator.html',1,'']]]
+  ['abstractcandidatefactory',['AbstractCandidateFactory',['../class_abstract_candidate_factory.html',1,'']]]
 ];

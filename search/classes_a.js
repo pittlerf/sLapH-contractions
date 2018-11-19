@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['stopwatch',['StopWatch',['../class_stop_watch.html',1,'']]]
+  ['quantumnumbers',['QuantumNumbers',['../struct_quantum_numbers.html',1,'']]],
+  ['quark',['quark',['../structquark.html',1,'']]]
 ];

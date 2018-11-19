@@ -69,6 +69,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">init_lookup_tables.cpp File Reference</div>  </div>
@@ -82,14 +84,40 @@ $(function() {
 </div>
 <p><a href="init__lookup__tables_8cpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_abstract_candidate_factory.html">AbstractCandidateFactory</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_candidate_factory_tr_q1.html">CandidateFactoryTrQ1</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_candidate_factory_tr_q1_q1.html">CandidateFactoryTrQ1Q1</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_candidate_factory_tr_q0_q2.html">CandidateFactoryTrQ0Q2</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_inner_lookup.html">InnerLookup</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_outer_lookup.html">OuterLookup</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a> = std::map&lt; std::string, <a class="el" href="struct_outer_lookup.html">OuterLookup</a> &gt;</td></tr>
+<tr class="memdesc:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure containing quark lines and <a class="el" href="struct_diluted_factor.html">DilutedFactor</a> indices.  <a href="#a187fa3f2faffd7f3b9a9b550caa27f7e">More...</a><br /></td></tr>
+<tr class="separator:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:abaf24091d18ce7d935b2cd153df68118"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#abaf24091d18ce7d935b2cd153df68118">build_quantum_numbers_from_correlator_list</a> (<a class="el" href="struct_correlators__2.html">Correlators_2</a> const &amp;correlator, <a class="el" href="global__data__typedefs_8hpp.html#a9ae4c7631935c325a96ea3d507d1e10c">Operator_list</a> const &amp;operator_list, std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers, std::map&lt; int, int &gt; const &amp;momentum_cutoff)</td></tr>
 <tr class="memdesc:abaf24091d18ce7d935b2cd153df68118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build an array with all the quantum numbers needed for a particular correlation function respecting physical conservation laws.  <a href="#abaf24091d18ce7d935b2cd153df68118">More...</a><br /></td></tr>
 <tr class="separator:abaf24091d18ce7d935b2cd153df68118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16484e1ff6f038bd33f1306f1eae1641"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a16484e1ff6f038bd33f1306f1eae1641">vector_to_string</a> (const std::vector&lt; std::pair&lt; char, char &gt;&gt; &amp;in)</td></tr>
+<tr class="memdesc:a16484e1ff6f038bd33f1306f1eae1641"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a string object of a displacement vector.  <a href="#a16484e1ff6f038bd33f1306f1eae1641">More...</a><br /></td></tr>
+<tr class="separator:a16484e1ff6f038bd33f1306f1eae1641"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae352407d8aa4f1624581d896f708058b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ae352407d8aa4f1624581d896f708058b">build_VdaggerV_lookup</a> (const std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; &amp;vdaggerv_lookup, std::vector&lt; std::vector&lt; std::pair&lt; ssize_t, bool &gt;&gt;&gt; &amp;vdv_indices)</td></tr>
 <tr class="memdesc:ae352407d8aa4f1624581d896f708058b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate list of <a class="el" href="struct_quantum_numbers.html" title="Struct that contains all physical information specifying a quantum field operator in the infile: ...">QuantumNumbers</a> into lookuptable for VdaggerV.  <a href="#ae352407d8aa4f1624581d896f708058b">More...</a><br /></td></tr>
 <tr class="separator:ae352407d8aa4f1624581d896f708058b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace54010002d8f026c777ff6d53b2a426"><td class="memItemLeft" align="right" valign="top"><a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ace54010002d8f026c777ff6d53b2a426">make_build_lookup_lookup_map</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd)</td></tr>
+<tr class="separator:ace54010002d8f026c777ff6d53b2a426"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9f5a19615757ea51c5f21f5deb9124f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ad9f5a19615757ea51c5f21f5deb9124f">init_lookup_tables</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd)</td></tr>
 <tr class="memdesc:ad9f5a19615757ea51c5f21f5deb9124f"><td class="mdescLeft">&#160;</td><td class="mdescRight">from GlobalData::correlators_list, GlobalData::operator::list and <a class="el" href="struct_global_data.html#a3b6140ae6ca8e3dae29d17576f101ea3">GlobalData::quarks</a>  <a href="#ad9f5a19615757ea51c5f21f5deb9124f">More...</a><br /></td></tr>
 <tr class="separator:ad9f5a19615757ea51c5f21f5deb9124f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -101,7 +129,27 @@ Functions</h2></td></tr>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000024">Todo:</a></b></dt><dd>Why are most functions static and not simply in an unnamed namespace? </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a187fa3f2faffd7f3b9a9b550caa27f7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a187fa3f2faffd7f3b9a9b550caa27f7e">&#9670;&nbsp;</a></span>BuildLookupLookupMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a> =  std::map&lt;std::string, <a class="el" href="struct_outer_lookup.html">OuterLookup</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Data structure containing quark lines and <a class="el" href="struct_diluted_factor.html">DilutedFactor</a> indices. </p>
+<p>I really dislike the name “lookup” as as a data structure where you cannot retrieve things is basically useless. But that does not mean that we can name new stuff like this, I have even added it here twice! </p>
+
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00690">690</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="abaf24091d18ce7d935b2cd153df68118"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abaf24091d18ce7d935b2cd153df68118">&#9670;&nbsp;</a></span>build_quantum_numbers_from_correlator_list()</h2>
 
@@ -225,10 +273,52 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>from GlobalData::correlators_list, GlobalData::operator::list and <a class="el" href="struct_global_data.html#a3b6140ae6ca8e3dae29d17576f101ea3">GlobalData::quarks</a> </p>
-<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000012">Bug:</a></b></dt><dd>In build_Q1_lookup the order of quarks given is consistently switched. </dd></dl>
+<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000002">Bug:</a></b></dt><dd>In build_Q1_lookup the order of quarks given is consistently switched. </dd></dl>
 <p>Sets index_of_unity to the index of operator_lookuptable.vdaggerv_lookup where momentum and displacement are both zero, or to -1 if no such entry is found.</p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l01675">1675</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00901">901</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ace54010002d8f026c777ff6d53b2a426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace54010002d8f026c777ff6d53b2a426">&#9670;&nbsp;</a></span>make_build_lookup_lookup_map()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a> make_build_lookup_lookup_map </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_global_data.html">GlobalData</a> &amp;&#160;</td>
+          <td class="paramname"><em>gd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00692">692</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a16484e1ff6f038bd33f1306f1eae1641"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16484e1ff6f038bd33f1306f1eae1641">&#9670;&nbsp;</a></span>vector_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string vector_to_string </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::pair&lt; char, char &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>in</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Makes a string object of a displacement vector. </p>
+
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00339">339</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>

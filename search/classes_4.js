@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['gamma_5flookup',['gamma_lookup',['../structgamma__lookup.html',1,'']]],
-  ['gaugefield',['GaugeField',['../class_gauge_field.html',1,'']]],
-  ['globaldata',['GlobalData',['../struct_global_data.html',1,'']]]
+  ['eigenvector',['EigenVector',['../class_eigen_vector.html',1,'']]],
+  ['element',['Element',['../struct_dilution_iterator_1_1_element.html',1,'DilutionIterator']]]
 ];

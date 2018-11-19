@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['_7eabstractcandidatefactory',['~AbstractCandidateFactory',['../class_abstract_candidate_factory.html#a74c1ab0b34dd02590ccf52cd3dd096ba',1,'AbstractCandidateFactory']]],
   ['_7ediagram',['~Diagram',['../class_diagram.html#a49e27a0505c0ebee29a08d018b52464b',1,'Diagram']]],
   ['_7eeigenvector',['~EigenVector',['../class_eigen_vector.html#a05c81df28ea666aeab185be3ddb757ea',1,'EigenVector']]],
   ['_7egaugefield',['~GaugeField',['../class_gauge_field.html#a481ac68df11a866a5f12d17a17082f5a',1,'GaugeField']]],

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['operatorfactory',['OperatorFactory',['../class_operator_factory.html',1,'']]],
-  ['operatorlookup',['OperatorLookup',['../struct_operator_lookup.html',1,'']]]
+  ['hdf5handle',['HDF5Handle',['../class_h_d_f5_handle.html',1,'']]],
+  ['hyppars',['HypPars',['../struct_hyp_pars.html',1,'']]]
 ];

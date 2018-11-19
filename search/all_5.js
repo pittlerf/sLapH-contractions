@@ -12,7 +12,7 @@ var searchData=
   ['diagram_2ehpp',['Diagram.hpp',['../_diagram_8hpp.html',1,'']]],
   ['diagram_5findex_5fcollection',['diagram_index_collection',['../struct_diluted_trace_trace_factory.html#a66c0de647c3d343f26ff1b70034af643',1,'DilutedTraceTraceFactory::diagram_index_collection()'],['../struct_diluted_trace_factory.html#aa3f558c58fd11b4f43653f60f36b92b5',1,'DilutedTraceFactory::diagram_index_collection()']]],
   ['diagramforward_2ehpp',['DiagramForward.hpp',['../_diagram_forward_8hpp.html',1,'']]],
-  ['diagramindex',['DiagramIndex',['../struct_diagram_index.html',1,'DiagramIndex'],['../struct_diagram_index.html#aa62048fccaa9caa06b7e91c27e8df162',1,'DiagramIndex::DiagramIndex(const ssize_t id, const std::string &amp;hdf5_dataset_name, const std::vector&lt; ssize_t &gt; &amp;lookup, const std::vector&lt; int &gt; &amp;gamma)'],['../struct_diagram_index.html#a1548dbe66c1333f5b9042d0975f134cb',1,'DiagramIndex::DiagramIndex(const ssize_t id, const std::string &amp;hdf5_dataset_name, const std::vector&lt; ssize_t &gt; &amp;lookup)']]],
+  ['diagramindex',['DiagramIndex',['../struct_diagram_index.html',1,'DiagramIndex'],['../struct_diagram_index.html#a9de346ad4266dbcffb9059d99b9534bb',1,'DiagramIndex::DiagramIndex()']]],
   ['diagramindicescollection',['DiagramIndicesCollection',['../struct_diagram_indices_collection.html',1,'']]],
   ['diagramnumeric',['DiagramNumeric',['../class_diagram_numeric.html',1,'DiagramNumeric&lt; Numeric_ &gt;'],['../class_diagram_numeric.html#afddaf39e528ededaef00af2ffaa2ab22',1,'DiagramNumeric::DiagramNumeric()']]],
   ['diagramnumeric_3c_20complex_20_3e',['DiagramNumeric&lt; Complex &gt;',['../class_diagram_numeric.html',1,'']]],

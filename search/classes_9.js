@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['randomvector',['RandomVector',['../class_random_vector.html',1,'']]],
-  ['randomvectorconstruction',['RandomVectorConstruction',['../struct_random_vector_construction.html',1,'']]]
+  ['perambulator',['Perambulator',['../class_perambulator.html',1,'']]],
+  ['perambulatorconstruction',['PerambulatorConstruction',['../struct_perambulator_construction.html',1,'']]]
 ];

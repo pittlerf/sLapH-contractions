@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['look',['look',['../_gauge_field_8hpp.html#a95fac7438973b7a5580cb9e6ea979cd8',1,'GaugeField.hpp']]]
+  ['factories',['Factories',['../struct_outer_lookup.html#a8f27e067ad05c34888b88401dfe216f6',1,'OuterLookup']]]
 ];

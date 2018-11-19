@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['abstractcandidatefactory',['AbstractCandidateFactory',['../class_abstract_candidate_factory.html',1,'AbstractCandidateFactory'],['../class_abstract_candidate_factory.html#a00ab4a998a8a569bba062b600313e875',1,'AbstractCandidateFactory::AbstractCandidateFactory()']]],
   ['alpha1',['alpha1',['../struct_hyp_pars.html#ab0f83559dfbc0b8bbfd06bb4af6180aa',1,'HypPars']]],
   ['alpha2',['alpha2',['../struct_hyp_pars.html#a07bdac8a7b69cc549ea6fe962a4c5545',1,'HypPars']]],
   ['array_5f3cd_5fd2_5feigen',['array_3cd_d2_eigen',['../_gauge_field_8hpp.html#a3d504151352c4fd9b14dfdbe4b9a9fb8',1,'GaugeField.hpp']]],

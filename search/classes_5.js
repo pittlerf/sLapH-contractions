@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['hdf5handle',['HDF5Handle',['../class_h_d_f5_handle.html',1,'']]],
-  ['hyppars',['HypPars',['../struct_hyp_pars.html',1,'']]]
+  ['gamma_5flookup',['gamma_lookup',['../structgamma__lookup.html',1,'']]],
+  ['gaugefield',['GaugeField',['../class_gauge_field.html',1,'']]],
+  ['globaldata',['GlobalData',['../struct_global_data.html',1,'']]]
 ];
