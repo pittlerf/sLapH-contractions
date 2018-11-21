@@ -78,14 +78,9 @@ $(function() {
 <code>#include &quot;<a class="el" href="_diagram_forward_8hpp_source.html">DiagramForward.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_operators_for_mesons_8hpp_source.html">OperatorsForMesons.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_perambulator_8hpp_source.html">Perambulator.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="global__data_8hpp_source.html">global_data.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>&quot;</code><br />
-<code>#include &lt;boost/multi_array.hpp&gt;</code><br />
-<code>#include &lt;Eigen/Dense&gt;</code><br />
-<code>#include &lt;complex&gt;</code><br />
-<code>#include &lt;fstream&gt;</code><br />
-<code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;sys/stat.h&gt;</code><br />
 <code>#include &lt;sys/types.h&gt;</code><br />
 </div>
@@ -93,7 +88,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a29e2c0c23694d1f8776258f7ed4bd673"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_correlators_8hpp.html#a29e2c0c23694d1f8776258f7ed4bd673">contract</a> (const ssize_t Lt, const ssize_t dilT, const ssize_t dilE, const ssize_t nev, <a class="el" href="class_operator_factory.html">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</td></tr>
+<tr class="memitem:a29e2c0c23694d1f8776258f7ed4bd673"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_correlators_8hpp.html#a29e2c0c23694d1f8776258f7ed4bd673">contract</a> (const ssize_t Lt, const ssize_t dilT, const ssize_t dilE, const ssize_t nev, <a class="el" href="class_operator_factory.html">OperatorFactory</a> const &amp;meson_operator, <a class="el" href="class_random_vector.html">RandomVector</a> const &amp;randomvectors, <a class="el" href="class_perambulator.html">Perambulator</a> const &amp;perambulators, <a class="el" href="struct_operator_lookup.html">OperatorLookup</a> const &amp;operator_lookup, <a class="el" href="global__data_8hpp.html#a59cac65754970405d4daabc7c069bb08">DiagramIndicesCollection</a> const &amp;corr_lookup, <a class="el" href="typedefs_8hpp.html#a5e5945561d0e763a6dd7d8fb4db3d46f">DilutedFactorIndicesCollection</a> const &amp;quark_lookup, std::string const output_path, std::string const output_filename)</td></tr>
 <tr class="memdesc:a29e2c0c23694d1f8776258f7ed4bd673"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates correlation functions according to the stochastic Laplacian Heaviside (sLapH) method.  <a href="#a29e2c0c23694d1f8776258f7ed4bd673">More...</a><br /></td></tr>
 <tr class="separator:a29e2c0c23694d1f8776258f7ed4bd673"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -155,13 +150,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a> const &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="global__data_8hpp.html#a59cac65754970405d4daabc7c069bb08">DiagramIndicesCollection</a> const &amp;&#160;</td>
           <td class="paramname"><em>corr_lookup</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a> const &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="typedefs_8hpp.html#a5e5945561d0e763a6dd7d8fb4db3d46f">DilutedFactorIndicesCollection</a> const &amp;&#160;</td>
           <td class="paramname"><em>quark_lookup</em>, </td>
         </tr>
         <tr>
@@ -189,9 +184,8 @@ Functions</h2></td></tr>
 <p>The central function is performed in <a class="el" href="_correlators_8hpp.html#a29e2c0c23694d1f8776258f7ed4bd673" title="Calculates correlation functions according to the stochastic Laplacian Heaviside (sLapH) method...">contract()</a>. Here, all the single diagrams are calculated successively. To this end, lookup tables for Correlators, Quarklines and Operators are needed that specify which combinations of physical quantum numbers are to be evaluated. These lists are built from the infile in GlobalData::init_lookup_tables().</p>
 <p>Additionally the necessary data is passed in the form of instances of Quarklines, OperatorsForMesons and Perambulators</p>
 <p>The diagrams trQ1Q1, trQ0Q2 (and thus <a class="el" href="class_c20.html" title="Build neutral 2pt correlation function . ">C20</a>, <a class="el" href="class_c2c.html" title="Build charged 2pt correlation function . ">C2c</a>) as well as <a class="el" href="class_c3c.html" title="Build neutral 3pt correlation function . ">C3c</a> and <a class="el" href="class_c4c_b.html" title="Build charged 4pt correlation function: Box diagram . ">C4cB</a> are memory optimized calling quarklines within an outer loop over time and thus only need 1/Lt the memory.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd><p class="startdd">check whether other correlators are still functional </p>
-<p class="enddd">make other correlators call one_t quarklines as well</p>
-</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>check whether other correlators are still functional</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>make other correlators call one_t quarklines as well</dd></dl>
 
 </div>
 </div>

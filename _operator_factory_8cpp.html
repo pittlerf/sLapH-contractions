@@ -83,7 +83,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a251d9cfd03117fa37a56b09c5d79394c"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operator_factory_8cpp.html#a251d9cfd03117fa37a56b09c5d79394c">displace_eigenvectors</a> (Eigen::MatrixXcd const &amp;v, <a class="el" href="class_gauge_field.html">GaugeField</a> const &amp;gauge, ssize_t const t, <a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a> const disp, ssize_t const verbose)</td></tr>
+<tr class="memitem:a251d9cfd03117fa37a56b09c5d79394c"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operator_factory_8cpp.html#a251d9cfd03117fa37a56b09c5d79394c">displace_eigenvectors</a> (Eigen::MatrixXcd const &amp;v, <a class="el" href="class_gauge_field.html">GaugeField</a> const &amp;gauge, ssize_t const t, <a class="el" href="typedefs_8hpp.html#abae8f2909112cbe6d2f7c9695468d89d">DisplacementDirection</a> const disp, ssize_t const verbose)</td></tr>
 <tr class="memdesc:a251d9cfd03117fa37a56b09c5d79394c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Displace Matrix of eigenvectors by looping over displacement vectors.  <a href="#a251d9cfd03117fa37a56b09c5d79394c">More...</a><br /></td></tr>
 <tr class="separator:a251d9cfd03117fa37a56b09c5d79394c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85be2e3a3fdab4447ba824298d651ba9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_operator_factory_8cpp.html#a85be2e3a3fdab4447ba824298d651ba9">create_momenta</a> (ssize_t const Lx, ssize_t const Ly, ssize_t const Lz, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; const &amp;vdaggerv_lookup, <a class="el" href="typedefs_8hpp.html#a9e42a90413f57f61481feda106541c01">array_cd_d2</a> &amp;momentum)</td></tr>
@@ -230,7 +230,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a> const&#160;</td>
+          <td class="paramtype"><a class="el" href="typedefs_8hpp.html#abae8f2909112cbe6d2f7c9695468d89d">DisplacementDirection</a> const&#160;</td>
           <td class="paramname"><em>disp</em>, </td>
         </tr>
         <tr>
@@ -249,7 +249,7 @@ Functions</h2></td></tr>
 
 <p>Displace Matrix of eigenvectors by looping over displacement vectors. </p>
 <p>v is the Eigensystem at a specific timeslice t is the timeslice to take into account disp is a vector of displacement pairs verbose is an integer controlling the debug level The eigenvectors of timeslice t are displaced using the vector of displacement pairs. The First entry of each pair specifies the direction of the right acting derivative, "&gt;" meaning forward and "&lt;" meaning backward</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000027">Todo:</a></b></dt><dd>Swap order of loops? </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000026">Todo:</a></b></dt><dd>Swap order of loops? </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="_operator_factory_8cpp_source.html#l00032">32</a> of file <a class="el" href="_operator_factory_8cpp_source.html">OperatorFactory.cpp</a>.</p>
 

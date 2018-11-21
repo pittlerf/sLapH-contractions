@@ -80,6 +80,7 @@ $(function() {
 <p>Functions translating lists build from the infile into lookup_tables.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="init__lookup__tables_8hpp_source.html">init_lookup_tables.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="_cartesian_product_8hpp_source.html">CartesianProduct.hpp</a>&quot;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 </div>
 <p><a href="init__lookup__tables_8cpp_source.html">Go to the source code of this file.</a></p>
@@ -101,6 +102,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a62e6600bc08eae4f49b7c06d84a090e3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a62e6600bc08eae4f49b7c06d84a090e3">Vector</a> = <a class="el" href="struct_quantum_numbers.html#adb6b89d6a5a412be934f628f445ea6be">QuantumNumbers::VectorData</a></td></tr>
+<tr class="separator:a62e6600bc08eae4f49b7c06d84a090e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a> = std::map&lt; std::string, <a class="el" href="struct_outer_lookup.html">OuterLookup</a> &gt;</td></tr>
 <tr class="memdesc:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data structure containing quark lines and <a class="el" href="struct_diluted_factor.html">DilutedFactor</a> indices.  <a href="#a187fa3f2faffd7f3b9a9b550caa27f7e">More...</a><br /></td></tr>
 <tr class="separator:a187fa3f2faffd7f3b9a9b550caa27f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,9 +116,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a16484e1ff6f038bd33f1306f1eae1641"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a16484e1ff6f038bd33f1306f1eae1641">vector_to_string</a> (const std::vector&lt; std::pair&lt; char, char &gt;&gt; &amp;in)</td></tr>
 <tr class="memdesc:a16484e1ff6f038bd33f1306f1eae1641"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes a string object of a displacement vector.  <a href="#a16484e1ff6f038bd33f1306f1eae1641">More...</a><br /></td></tr>
 <tr class="separator:a16484e1ff6f038bd33f1306f1eae1641"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae352407d8aa4f1624581d896f708058b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ae352407d8aa4f1624581d896f708058b">build_VdaggerV_lookup</a> (const std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;quantum_numbers, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; &amp;vdaggerv_lookup, std::vector&lt; std::vector&lt; std::pair&lt; ssize_t, bool &gt;&gt;&gt; &amp;vdv_indices)</td></tr>
-<tr class="memdesc:ae352407d8aa4f1624581d896f708058b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate list of <a class="el" href="struct_quantum_numbers.html" title="Struct that contains all physical information specifying a quantum field operator in the infile: ...">QuantumNumbers</a> into lookuptable for VdaggerV.  <a href="#ae352407d8aa4f1624581d896f708058b">More...</a><br /></td></tr>
-<tr class="separator:ae352407d8aa4f1624581d896f708058b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a699e28c9bdadd7da99325cc47c663098"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#a699e28c9bdadd7da99325cc47c663098">build_VdaggerV_lookup</a> (std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; const &amp;quantum_numbers, std::vector&lt; <a class="el" href="struct_vdagger_v_quantum_numbers.html">VdaggerVQuantumNumbers</a> &gt; &amp;vdaggerv_lookup, std::vector&lt; std::vector&lt; std::pair&lt; ssize_t, bool &gt;&gt;&gt; &amp;vdv_indices)</td></tr>
+<tr class="memdesc:a699e28c9bdadd7da99325cc47c663098"><td class="mdescLeft">&#160;</td><td class="mdescRight">Translate list of <a class="el" href="struct_quantum_numbers.html" title="Struct that contains all physical information specifying a quantum field operator in the infile: ...">QuantumNumbers</a> into lookuptable for VdaggerV.  <a href="#a699e28c9bdadd7da99325cc47c663098">More...</a><br /></td></tr>
+<tr class="separator:a699e28c9bdadd7da99325cc47c663098"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace54010002d8f026c777ff6d53b2a426"><td class="memItemLeft" align="right" valign="top"><a class="el" href="init__lookup__tables_8cpp.html#a187fa3f2faffd7f3b9a9b550caa27f7e">BuildLookupLookupMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ace54010002d8f026c777ff6d53b2a426">make_build_lookup_lookup_map</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd)</td></tr>
 <tr class="separator:ace54010002d8f026c777ff6d53b2a426"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9f5a19615757ea51c5f21f5deb9124f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="init__lookup__tables_8cpp.html#ad9f5a19615757ea51c5f21f5deb9124f">init_lookup_tables</a> (<a class="el" href="struct_global_data.html">GlobalData</a> &amp;gd)</td></tr>
@@ -145,7 +148,23 @@ Functions</h2></td></tr>
 <p>Data structure containing quark lines and <a class="el" href="struct_diluted_factor.html">DilutedFactor</a> indices. </p>
 <p>I really dislike the name “lookup” as as a data structure where you cannot retrieve things is basically useless. But that does not mean that we can name new stuff like this, I have even added it here twice! </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00690">690</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00532">532</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a62e6600bc08eae4f49b7c06d84a090e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62e6600bc08eae4f49b7c06d84a090e3">&#9670;&nbsp;</a></span>Vector</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="init__lookup__tables_8cpp.html#a62e6600bc08eae4f49b7c06d84a090e3">Vector</a> =  <a class="el" href="struct_quantum_numbers.html#adb6b89d6a5a412be934f628f445ea6be">QuantumNumbers::VectorData</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00021">21</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>
@@ -199,18 +218,13 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p><code>correlator</code> contains multiple operator_numbers. From combinatorics a large number of combinations arise. In general only a subset of them are physically allowed or necessary to calculate. In this function momentum conservation is enforced and multiple cutoffs introduced. </p>
-<p>initialized with zero</p>
-<p>initialized with zero</p>
-<p>initialized with zero</p>
-<p>initialized with zero</p>
-<p>initialized with zero </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00096">96</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00041">41</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ae352407d8aa4f1624581d896f708058b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae352407d8aa4f1624581d896f708058b">&#9670;&nbsp;</a></span>build_VdaggerV_lookup()</h2>
+<a id="a699e28c9bdadd7da99325cc47c663098"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a699e28c9bdadd7da99325cc47c663098">&#9670;&nbsp;</a></span>build_VdaggerV_lookup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,7 +232,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void build_VdaggerV_lookup </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; std::vector&lt; <a class="el" href="struct_quantum_numbers.html">QuantumNumbers</a> &gt;&gt; const &amp;&#160;</td>
           <td class="paramname"><em>quantum_numbers</em>, </td>
         </tr>
         <tr>
@@ -252,7 +266,7 @@ Functions</h2></td></tr>
 </dl>
 <p>: Think about the daggering!! </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00419">419</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00270">270</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>
@@ -276,7 +290,7 @@ Functions</h2></td></tr>
 <dl class="bug"><dt><b><a class="el" href="bug.html#_bug000002">Bug:</a></b></dt><dd>In build_Q1_lookup the order of quarks given is consistently switched. </dd></dl>
 <p>Sets index_of_unity to the index of operator_lookuptable.vdaggerv_lookup where momentum and displacement are both zero, or to -1 if no such entry is found.</p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00901">901</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00743">743</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>
@@ -296,7 +310,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00692">692</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00534">534</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>
@@ -318,7 +332,7 @@ Functions</h2></td></tr>
 
 <p>Makes a string object of a displacement vector. </p>
 
-<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00339">339</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="init__lookup__tables_8cpp_source.html#l00188">188</a> of file <a class="el" href="init__lookup__tables_8cpp_source.html">init_lookup_tables.cpp</a>.</p>
 
 </div>
 </div>

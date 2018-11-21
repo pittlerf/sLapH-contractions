@@ -12,6 +12,7 @@ var searchData=
   ['vec',['vec',['../class_random_vector.html#ab108f253bd7f84887ab57d7f4ae0aa74',1,'RandomVector::vec()'],['../ranlxs_8cpp.html#a61e54b690da6b9c940f31e166a20b66e',1,'vec():&#160;ranlxs.cpp']]],
   ['vec_5ft',['vec_t',['../structvec__t.html',1,'']]],
   ['vec_5fxcd_5feigen',['vec_Xcd_eigen',['../typedefs_8hpp.html#a6a423a88ac77730f83eee6cc0a557605',1,'typedefs.hpp']]],
+  ['vector',['Vector',['../init__lookup__tables_8cpp.html#a62e6600bc08eae4f49b7c06d84a090e3',1,'init_lookup_tables.cpp']]],
   ['vector_5fto_5fstring',['vector_to_string',['../init__lookup__tables_8cpp.html#a16484e1ff6f038bd33f1306f1eae1641',1,'init_lookup_tables.cpp']]],
   ['vectordata',['VectorData',['../struct_quantum_numbers.html#adb6b89d6a5a412be934f628f445ea6be',1,'QuantumNumbers::VectorData()'],['../struct_correlators__2.html#aa2c9a96cb245cfcd8fe00a7df465e6a9',1,'Correlators_2::VectorData()']]],
   ['verbose',['verbose',['../struct_global_data.html#a794001d9459c0ea973cded23a1597ca4',1,'GlobalData']]]

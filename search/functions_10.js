@@ -6,7 +6,7 @@ var searchData=
   ['single2double_5fcm',['single2double_cm',['../io__utils_8hpp.html#a7ccca1debcdc539524a43845f0746df9',1,'io_utils.hpp']]],
   ['sink',['sink',['../class_block_iterator.html#ae394e7e320d240f4dec35a0ab0cfb719',1,'BlockIterator::sink()'],['../class_dilution_iterator.html#a3c7d906c2092e6ee23634f2f7a8d12e7',1,'DilutionIterator::sink()']]],
   ['sink_5fblock',['sink_block',['../class_block_iterator.html#a83b36fe64646d84df68f13070be40277',1,'BlockIterator']]],
-  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a1389d13ea4ad89f0c247f5b8cf1b83ba',1,'OperatorLookup::size()']]],
+  ['size',['size',['../class_cartesian_product.html#a982f779b810e836858dd15e14e491c53',1,'CartesianProduct::size()'],['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a1389d13ea4ad89f0c247f5b8cf1b83ba',1,'OperatorLookup::size()']]],
   ['smearing_5fape',['smearing_ape',['../class_gauge_field.html#a18610e999eee481068945b9ffdd0f742',1,'GaugeField']]],
   ['smearing_5fhyp',['smearing_hyp',['../class_gauge_field.html#a6de55b42bfa727d31ecbe7d68e57494c',1,'GaugeField']]],
   ['smearing_5fstout',['smearing_stout',['../class_gauge_field.html#abde12791b12bdaf4987e43de18ec653c',1,'GaugeField']]],

@@ -79,16 +79,17 @@ $(function() {
 <div class="title">typedefs.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;boost/container/static_vector.hpp&gt;</code><br />
-<code>#include &lt;boost/multi_array.hpp&gt;</code><br />
-<code>#include &lt;Eigen/Core&gt;</code><br />
+<div class="textblock"><code>#include &lt;Eigen/Core&gt;</code><br />
 <code>#include &lt;Eigen/Dense&gt;</code><br />
+<code>#include &lt;boost/container/static_vector.hpp&gt;</code><br />
+<code>#include &lt;boost/multi_array.hpp&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;complex&gt;</code><br />
-<code>#include &lt;list&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
+<code>#include &lt;list&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div>
 <p><a href="typedefs_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -112,14 +113,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_index.html">DilutedFactorIndex</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct that holds all information on which VdaggerV must be diluted with which random vector.  <a href="struct_diluted_factor_index.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_indices_collection.html">DilutedFactorIndicesCollection</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps index from CorrelatorLookup to QuarklineQ1Indicies or QuarklineQ2Indicies, depending on the quarkline needed in Correlator.  <a href="struct_diluted_factor_indices_collection.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diagram_index.html">DiagramIndex</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">All information needed to build and write the correlator given the quarklines were calculated beforehand.  <a href="struct_diagram_index.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diagram_indices_collection.html">DiagramIndicesCollection</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains information on all correlators.  <a href="struct_diagram_indices_collection.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_diluted_factor_type_traits.html">DilutedFactorTypeTraits&lt; qlt &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -170,9 +165,6 @@ Typedefs</h2></td></tr>
 <tr class="memitem:ab6367b1744f812f306785ce2c845f530"><td class="memItemLeft" align="right" valign="top">typedef boost::multi_array&lt; std::vector&lt; Eigen::MatrixXcd &gt;, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#ab6367b1744f812f306785ce2c845f530">array_quarkline</a></td></tr>
 <tr class="memdesc:ab6367b1744f812f306785ce2c845f530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Special type for Quarklines.  <a href="#ab6367b1744f812f306785ce2c845f530">More...</a><br /></td></tr>
 <tr class="separator:ab6367b1744f812f306785ce2c845f530"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a83c164ba92c69f9451b7ad3454bd0b62"><td class="memItemLeft" align="right" valign="top">typedef boost::multi_array&lt; std::vector&lt; <a class="el" href="typedefs_8hpp.html#a400479783e355a94cc961fb30b81b31f">Complex</a> &gt;, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a83c164ba92c69f9451b7ad3454bd0b62">array_C1</a></td></tr>
-<tr class="memdesc:a83c164ba92c69f9451b7ad3454bd0b62"><td class="mdescLeft">&#160;</td><td class="mdescRight">{Is that deprecated?}  <a href="#a83c164ba92c69f9451b7ad3454bd0b62">More...</a><br /></td></tr>
-<tr class="separator:a83c164ba92c69f9451b7ad3454bd0b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a423a88ac77730f83eee6cc0a557605"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; Eigen::MatrixXcd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a6a423a88ac77730f83eee6cc0a557605">vec_Xcd_eigen</a></td></tr>
 <tr class="separator:a6a423a88ac77730f83eee6cc0a557605"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a947c299fddc67914ffa986d3b5ac1bc8"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::vector&lt; std::vector&lt; Eigen::MatrixXcd &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a947c299fddc67914ffa986d3b5ac1bc8">Xcd_d3_eigen</a></td></tr>
@@ -197,9 +189,12 @@ Typedefs</h2></td></tr>
 <tr class="separator:a73a2590b8e9d76323c258008ddb3465e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5a615c37238f5a4da3066426a3a8d98"><td class="memItemLeft" align="right" valign="top">typedef boost::multi_array&lt; Eigen::MatrixXcd, 10 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#ab5a615c37238f5a4da3066426a3a8d98">array_Xcd_d10_eigen</a></td></tr>
 <tr class="separator:ab5a615c37238f5a4da3066426a3a8d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3848481a83b470553e3282b6bbd66061"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a> = std::vector&lt; std::pair&lt; char, char &gt; &gt;</td></tr>
-<tr class="memdesc:a3848481a83b470553e3282b6bbd66061"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector for displacing eigenvectors the entries are pairs of the form ("&gt;";"x") where the first entry specifies the directions forward ("&gt;") ore backward ("&lt;") of the derivative the second entry of each pair specifies the spatial direction of the derivative.  <a href="#a3848481a83b470553e3282b6bbd66061">More...</a><br /></td></tr>
-<tr class="separator:a3848481a83b470553e3282b6bbd66061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abae8f2909112cbe6d2f7c9695468d89d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#abae8f2909112cbe6d2f7c9695468d89d">DisplacementDirection</a> = std::vector&lt; std::pair&lt; char, char &gt; &gt;</td></tr>
+<tr class="memdesc:abae8f2909112cbe6d2f7c9695468d89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector for displacing eigenvectors the entries are pairs of the form ("&gt;";"x") where the first entry specifies the directions forward ("&gt;") ore backward ("&lt;") of the derivative the second entry of each pair specifies the spatial direction of the derivative.  <a href="#abae8f2909112cbe6d2f7c9695468d89d">More...</a><br /></td></tr>
+<tr class="separator:abae8f2909112cbe6d2f7c9695468d89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e5945561d0e763a6dd7d8fb4db3d46f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a5e5945561d0e763a6dd7d8fb4db3d46f">DilutedFactorIndicesCollection</a> = std::map&lt; std::string, std::vector&lt; <a class="el" href="struct_diluted_factor_index.html">DilutedFactorIndex</a> &gt; &gt;</td></tr>
+<tr class="memdesc:a5e5945561d0e763a6dd7d8fb4db3d46f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps index from CorrelatorLookup to QuarklineQ1Indicies or QuarklineQ2Indicies, depending on the quarkline needed in Correlator.  <a href="#a5e5945561d0e763a6dd7d8fb4db3d46f">More...</a><br /></td></tr>
+<tr class="separator:a5e5945561d0e763a6dd7d8fb4db3d46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50c56a4520cc6343fed7f9321dbba878"><td class="memItemLeft" align="right" valign="top">typedef boost::multi_array&lt; std::vector&lt; <a class="el" href="typedefs_8hpp.html#a400479783e355a94cc961fb30b81b31f">Complex</a> &gt;, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="typedefs_8hpp.html#a50c56a4520cc6343fed7f9321dbba878">array_corr</a></td></tr>
 <tr class="memdesc:a50c56a4520cc6343fed7f9321dbba878"><td class="mdescLeft">&#160;</td><td class="mdescRight">Special type for Correlators.  <a href="#a50c56a4520cc6343fed7f9321dbba878">More...</a><br /></td></tr>
 <tr class="separator:a50c56a4520cc6343fed7f9321dbba878"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -249,29 +244,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00336">336</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00297">297</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="a83c164ba92c69f9451b7ad3454bd0b62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83c164ba92c69f9451b7ad3454bd0b62">&#9670;&nbsp;</a></span>array_C1</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef boost::multi_array&lt;std::vector&lt;<a class="el" href="typedefs_8hpp.html#a400479783e355a94cc961fb30b81b31f">Complex</a>&gt;, 2&gt; <a class="el" href="typedefs_8hpp.html#a83c164ba92c69f9451b7ad3454bd0b62">array_C1</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>{Is that deprecated?} </p>
-
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00057">57</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
-
-</div>
-</div>
 <a id="ac6eb4feb0110651a3a714d25ebb7d4b5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6eb4feb0110651a3a714d25ebb7d4b5">&#9670;&nbsp;</a></span>array_cd_d10</h2>
 
@@ -284,7 +261,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00050">50</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00051">51</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -302,7 +279,7 @@ Variables</h2></td></tr>
 
 <p>Data type for momentum. </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00042">42</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00043">43</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -318,7 +295,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00043">43</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00044">44</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -334,7 +311,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00044">44</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00045">45</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -350,7 +327,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00045">45</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00046">46</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -366,7 +343,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00046">46</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00047">47</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -382,7 +359,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00047">47</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00048">48</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -398,7 +375,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00048">48</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00049">49</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -414,7 +391,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00049">49</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00050">50</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -432,7 +409,7 @@ Variables</h2></td></tr>
 
 <p>Special type for Correlators. </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00339">339</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00300">300</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -450,7 +427,7 @@ Variables</h2></td></tr>
 
 <p>Special type for Quarklines. </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00053">53</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00054">54</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -466,7 +443,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00072">72</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00069">69</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -484,7 +461,7 @@ Variables</h2></td></tr>
 
 <p>Data type for vdaggerv. </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00064">64</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00061">61</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -500,7 +477,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00065">65</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00062">62</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -516,7 +493,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00066">66</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00063">63</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -532,7 +509,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00067">67</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00064">64</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -548,7 +525,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00068">68</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00065">65</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -564,7 +541,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00069">69</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00066">66</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -580,7 +557,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00070">70</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00067">67</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -596,7 +573,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00071">71</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00068">68</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -612,18 +589,36 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00019">19</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00020">20</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a3848481a83b470553e3282b6bbd66061"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3848481a83b470553e3282b6bbd66061">&#9670;&nbsp;</a></span>DisplacementDirection</h2>
+<a id="a5e5945561d0e763a6dd7d8fb4db3d46f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e5945561d0e763a6dd7d8fb4db3d46f">&#9670;&nbsp;</a></span>DilutedFactorIndicesCollection</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="typedefs_8hpp.html#a3848481a83b470553e3282b6bbd66061">DisplacementDirection</a> =  std::vector&lt;std::pair&lt;char,char&gt; &gt;</td>
+          <td class="memname">using <a class="el" href="typedefs_8hpp.html#a5e5945561d0e763a6dd7d8fb4db3d46f">DilutedFactorIndicesCollection</a> =  std::map&lt;std::string, std::vector&lt;<a class="el" href="struct_diluted_factor_index.html">DilutedFactorIndex</a>&gt; &gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maps index from CorrelatorLookup to QuarklineQ1Indicies or QuarklineQ2Indicies, depending on the quarkline needed in Correlator. </p>
+
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00231">231</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abae8f2909112cbe6d2f7c9695468d89d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abae8f2909112cbe6d2f7c9695468d89d">&#9670;&nbsp;</a></span>DisplacementDirection</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="typedefs_8hpp.html#abae8f2909112cbe6d2f7c9695468d89d">DisplacementDirection</a> =  std::vector&lt;std::pair&lt;char, char&gt; &gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -632,7 +627,7 @@ Variables</h2></td></tr>
 <p>One can displace in "x", "y" or "z" direction.</p>
 <p>Example: {(&gt;;x),(&lt;;y),(&lt;;x),...,(&gt;;z)} </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00082">82</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00079">79</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -648,7 +643,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00017">17</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00018">18</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -666,7 +661,7 @@ template&lt;size_t rvecs&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00022">22</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00023">23</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -682,7 +677,7 @@ template&lt;size_t rvecs&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00060">60</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00057">57</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +695,7 @@ template&lt;size_t rvecs&gt; </div>
 
 <p>Data type for rvdaggerv and rvdaggervr. </p>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00062">62</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00059">59</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -732,7 +727,7 @@ template&lt;size_t rvecs&gt; </div>
 <tr><td class="fieldname"><a id="a1bb391208d4a18defe9352e7476dfa41abd88d94b8ad371050bf21bbae15baf94"></a>Q2V&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00244">244</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00234">234</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -771,7 +766,7 @@ template&lt;size_t rvecs&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00221">221</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00218">218</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -809,7 +804,7 @@ template&lt;size_t rvecs&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00266">266</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00256">256</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -831,7 +826,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00342">342</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00303">303</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>
@@ -848,7 +843,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00015">15</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="typedefs_8hpp_source.html#l00016">16</a> of file <a class="el" href="typedefs_8hpp_source.html">typedefs.hpp</a>.</p>
 
 </div>
 </div>

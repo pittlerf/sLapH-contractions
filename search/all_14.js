@@ -7,7 +7,7 @@ var searchData=
   ['single2double_5fcm',['single2double_cm',['../io__utils_8hpp.html#a7ccca1debcdc539524a43845f0746df9',1,'io_utils.hpp']]],
   ['sink',['sink',['../struct_dilution_iterator_1_1_element.html#adf0b277e4816e337bcbaffde7db72882',1,'DilutionIterator::Element::sink()'],['../class_block_iterator.html#ae394e7e320d240f4dec35a0ab0cfb719',1,'BlockIterator::sink()'],['../class_dilution_iterator.html#a3c7d906c2092e6ee23634f2f7a8d12e7',1,'DilutionIterator::sink()']]],
   ['sink_5fblock',['sink_block',['../class_block_iterator.html#a83b36fe64646d84df68f13070be40277',1,'BlockIterator']]],
-  ['size',['size',['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a1389d13ea4ad89f0c247f5b8cf1b83ba',1,'OperatorLookup::size()']]],
+  ['size',['size',['../class_cartesian_product.html#a982f779b810e836858dd15e14e491c53',1,'CartesianProduct::size()'],['../class_dilution_scheme.html#a1a6f3046fb1955d5094950bf65636645',1,'DilutionScheme::size()'],['../struct_operator_lookup.html#a1389d13ea4ad89f0c247f5b8cf1b83ba',1,'OperatorLookup::size()']]],
   ['size_5fcols',['size_cols',['../struct_perambulator_construction.html#ad09416a2320343315512b0f8179a5723',1,'PerambulatorConstruction']]],
   ['size_5frows',['size_rows',['../struct_perambulator_construction.html#aca28a11accb5c0468b7cd2aa5868767b',1,'PerambulatorConstruction']]],
   ['slice_5fsink_5f',['slice_sink_',['../class_block_iterator.html#a5277f72a888528d9edf6c58bffdebdaa',1,'BlockIterator']]],
