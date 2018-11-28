@@ -381,16 +381,16 @@ ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
 
 struct CandidateFactory {
   std::string name;
-  Indices indices;
+  Indices vertices;
 };
 
 ssize_t make_candidate(std::vector<Indices> &tr_lookup,
-                       Indices const &indices,
+                       Indices const &vertices,
                        Indices const &ql_ids) {
   std::vector<ssize_t> ids;
   Indices indices2;
-  for (auto const index : indices) {
-    indices2.push_back(ql_ids[index]);
+  for (auto const vertex : vertices) {
+    indices2.push_back(ql_ids[vertex]);
   }
   auto const id = unique_push_back(tr_lookup, indices2);
   return id;
@@ -510,7 +510,7 @@ void init_lookup_tables(GlobalData &gd) {
       } else {
         for (auto const &candidate_factory : candidate_factories) {
           auto const id = make_candidate(gd.trace_indices_map[candidate_factory.name],
-                                         candidate_factory.indices,
+                                         candidate_factory.vertices,
                                          ql_ids);
           ql_ids_new.push_back(id);
         }
