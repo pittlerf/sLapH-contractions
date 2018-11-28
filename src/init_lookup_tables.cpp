@@ -509,10 +509,10 @@ void init_lookup_tables(GlobalData &gd) {
         ql_ids_new = ql_ids;
       } else {
         for (auto const &candidate_factory : candidate_factories) {
-          auto const id = make_candidate(gd.trace_indices_map[candidate_factory.name],
-                                         candidate_factory.vertices,
-                                         ql_ids);
-          ql_ids_new.push_back(id);
+          auto const tr_id = make_candidate(gd.trace_indices_map[candidate_factory.name],
+                                            candidate_factory.vertices,
+                                            ql_ids);
+          ql_ids_new.push_back(tr_id);
         }
       }
 
