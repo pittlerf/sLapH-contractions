@@ -4,6 +4,14 @@
 
 #include <omp.h>
 
+int get(BlockIterator const &slice_pair, Location const loc) {
+  if (loc == Location::source) {
+    return slice_pair.source();
+  } else {
+    return slice_pair.sink();
+  }
+}
+
 /*****************************************************************************/
 /*                                    C2c                                    */
 /*****************************************************************************/
@@ -11,13 +19,19 @@
 void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != ssize(corr_lookup()); ++i) {
-    auto const &c_look = corr_lookup()[i];
+  for (int i = 0; i != ssize(correlator_requests()); ++i) {
+    auto const &request = correlator_requests().at(i);
+    std::array<int, 2> key0;
+    auto const &trace_request0 = request.trace_requests.at(0);
+    auto const &locations0 = trace_request0.locations;
+    std::transform(std::begin(locations0),
+                   std::end(locations0),
+                   std::begin(key0),
+                   [&slice_pair](Location const loc) { return get(slice_pair, loc); });
 
-    auto const &x =
-        q.trQ0Q2[{slice_pair.source(), slice_pair.sink()}].at(c_look.lookup[0]);
-    c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
-            static_cast<double>(x.size());
+    auto const &x0 = q.trQ0Q2[key0].at(trace_request0.tr_id);
+    c[i] += std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
+            static_cast<double>(x0.size());
   }
 }
 

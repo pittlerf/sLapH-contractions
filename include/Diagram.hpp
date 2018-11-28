@@ -98,6 +98,10 @@ class Diagram {
 
   std::vector<DiagramIndex> const &corr_lookup() const { return corr_lookup_; }
 
+  std::vector<CorrelatorRequest> const &correlator_requests() const {
+    return corr_requests_;
+  }
+
   virtual void assemble(int const t,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) = 0;
