@@ -492,7 +492,7 @@ static void build_general_lookup(
     DiagramIndicesCollection &correlator_lookuptable,
     std::map<std::string, std::vector<Indices>> &trace_indices_map,
     std::map<std::string, std::vector<DilutedFactorIndex>> &quarkline_lookup,
-    OuterLookup const &ll,
+    OuterLookup const &spec,
     std::vector<quark> const &quarks,
     std::vector<int> const &quark_numbers,
     int start_config,
@@ -500,7 +500,7 @@ static void build_general_lookup(
     std::vector<std::vector<QuantumNumbers>> const &quantum_numbers,
     std::vector<std::vector<std::pair<ssize_t, bool>>> const &vdv_indices) {
   size_t ql_size = 0;
-  for (auto const &trace : ll.traces) {
+  for (auto const &trace : spec.traces) {
     ql_size += trace.size();
   }
   std::vector<ssize_t> ql_ids(ql_size);
@@ -512,15 +512,17 @@ static void build_general_lookup(
     quark_types.emplace_back(quarks[id].type);
 
   for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
-    for (auto const &llx : ll.traces) {
-      for (auto const &lle : llx) {
-        auto const ric_ids = create_rnd_vec_id(
-            quarks, quark_numbers[lle.q1], quark_numbers[lle.q2], lle.is_q1());
-        build_Quarkline_lookup_one_qn(lle.q2,
+    for (auto const &trace_spec : spec.traces) {
+      for (auto const &quarkline_spec : trace_spec) {
+        auto const ric_ids = create_rnd_vec_id(quarks,
+                                               quark_numbers[quarkline_spec.q1],
+                                               quark_numbers[quarkline_spec.q2],
+                                               quarkline_spec.is_q1());
+        build_Quarkline_lookup_one_qn(quarkline_spec.q2,
                                       quantum_numbers[d],
                                       vdv_indices[d],
                                       ric_ids,
-                                      quarkline_lookup[lle.name],
+                                      quarkline_lookup[quarkline_spec.name],
                                       ql_ids);
       }
     }
@@ -529,7 +531,7 @@ static void build_general_lookup(
         name, start_config, path_output, quark_types, quantum_numbers[d]);
 
     std::vector<ssize_t> ql_ids_new;
-    auto const &candidate_factories = make_candidate_factories(ll.traces, correlator_lookuptable);
+    auto const &candidate_factories = make_candidate_factories(spec.traces, correlator_lookuptable);
     if (ssize(candidate_factories) == 0) {
       ql_ids_new = ql_ids;
     } else {
