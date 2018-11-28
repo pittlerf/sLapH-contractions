@@ -15,6 +15,16 @@ using TraceIndicesCollection = std::map<std::string, std::vector<Indices>>;
 
 enum class Location { source, sink };
 
+struct TraceRequest {
+  std::string tr_name;
+  ssize_t tr_id;
+  std::vector<Location> locations;
+};
+
+struct CorrelatorRequest {
+  std::vector<TraceRequest> trace_requests;
+};
+
 /**
  * Class containing all metadata for contractions and functions to set them
  * from infile
@@ -63,6 +73,7 @@ struct GlobalData {
   OperatorLookup operator_lookuptable;
   DiagramIndicesCollection correlator_lookuptable;
   std::map<std::string, std::vector<Indices>> trace_indices_map;
+  std::map<std::string, std::vector<CorrelatorRequest>> correlator_requests_map;
 
   /**
    * Cutoff for the sum of individual momenta.

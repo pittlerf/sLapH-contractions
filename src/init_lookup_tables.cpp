@@ -386,7 +386,7 @@ class TraceRequestFactory {
                    std::vector<Location> const &locations)
       : name_(name), vertices_(vertices), locations_(locations) {}
 
-  ssize_t make(std::vector<Indices> &tr_lookup, Indices const &ql_ids) const {
+  TraceRequest make(std::vector<Indices> &tr_lookup, Indices const &ql_ids) const {
     Indices ql_ids_for_trace;
     ql_ids_for_trace.reserve(vertices_.size());
     for (auto const vertex : vertices_) {
@@ -394,7 +394,7 @@ class TraceRequestFactory {
     }
     auto const tr_id =
         unique_push_back(tr_lookup, ql_ids_for_trace);
-    return tr_id;
+    return {name_, tr_id, locations_};
   }
 
   std::string const &name() const { return name_; }
@@ -540,11 +540,14 @@ void init_lookup_tables(GlobalData &gd) {
       if (ssize(trace_request_factories) == 0) {
         ql_or_tr_ids = ql_ids;
       } else {
+        CorrelatorRequest correlator_request;
         for (auto const &trace_request_factory : trace_request_factories) {
-          auto const tr_id = trace_request_factory.make(
+          auto const trace_request = trace_request_factory.make(
               gd.trace_indices_map[trace_request_factory.name()], ql_ids);
-          ql_or_tr_ids.push_back(tr_id);
+          ql_or_tr_ids.push_back(trace_request.tr_id);
+        correlator_request.trace_requests.push_back(trace_request);
         }
+        gd.correlator_requests_map[correlator.type].push_back(correlator_request);
       }
 
       DiagramIndex candidate(ssize(correlator_lookup), hdf5_dataset_name, ql_or_tr_ids);
