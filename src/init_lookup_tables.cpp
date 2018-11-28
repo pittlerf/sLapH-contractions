@@ -503,20 +503,20 @@ void init_lookup_tables(GlobalData &gd) {
       std::string hdf5_dataset_name = build_hdf5_dataset_name(
           correlator.type, gd.start_config, gd.path_output, quark_types, quantum_numbers[d]);
 
-      std::vector<ssize_t> ql_ids_new;
+      std::vector<ssize_t> ql_or_tr_ids;
       auto const &candidate_factories = make_candidate_factories(spec.traces, gd.correlator_lookuptable);
       if (ssize(candidate_factories) == 0) {
-        ql_ids_new = ql_ids;
+        ql_or_tr_ids = ql_ids;
       } else {
         for (auto const &candidate_factory : candidate_factories) {
           auto const tr_id = make_candidate(gd.trace_indices_map[candidate_factory.name],
                                             candidate_factory.vertices,
                                             ql_ids);
-          ql_ids_new.push_back(tr_id);
+          ql_or_tr_ids.push_back(tr_id);
         }
       }
 
-      DiagramIndex candidate(ssize(correlator_lookup), hdf5_dataset_name, ql_ids_new);
+      DiagramIndex candidate(ssize(correlator_lookup), hdf5_dataset_name, ql_or_tr_ids);
 
       unique_push_back(correlator_lookup, candidate);
     }
