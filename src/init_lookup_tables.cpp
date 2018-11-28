@@ -407,6 +407,27 @@ class CandidateFactory {
 
 using Factories = std::vector<CandidateFactory>;
 
+std::vector<Location> get_locations(DiagramSpec const &spec, Indices const &vertices) {
+  std::vector<Location> locations;
+  locations.reserve(vertices.size());
+  for (auto const vertex : vertices) {
+    if (std::find(spec.vertices.first.begin(), spec.vertices.first.end(), vertex) !=
+        spec.vertices.first.end()) {
+      locations.push_back(Location::source);
+    } else if (std::find(spec.vertices.second.begin(),
+                         spec.vertices.second.end(),
+                         vertex) != spec.vertices.second.end()) {
+      locations.push_back(Location::sink);
+    } else {
+      throw std::runtime_error(
+          "The vertex was not found in the list, this needs to be fixed by a "
+          "developer.");
+    }
+  }
+
+  return locations;
+}
+
 Factories make_candidate_factories(DiagramSpec const &spec,
                                    DiagramIndicesCollection &correlator_lookuptable) {
   Factories f;
@@ -443,23 +464,7 @@ Factories make_candidate_factories(DiagramSpec const &spec,
     auto const name = name_ss.str();
 
     if (name == "trQ1" || name == "trQ0Q2" || name == "trQ1Q1" || name == "trQ1Q1Q1") {
-      std::vector<Location> locations;
-      locations.reserve(vertices.size());
-      for (auto const vertex : vertices) {
-        if (std::find(spec.vertices.first.begin(), spec.vertices.first.end(), vertex) !=
-            spec.vertices.first.end()) {
-          locations.push_back(Location::source);
-        } else if (std::find(spec.vertices.second.begin(),
-                             spec.vertices.second.end(),
-                             vertex) != spec.vertices.second.end()) {
-          locations.push_back(Location::sink);
-        } else {
-          throw std::runtime_error(
-              "The vertex was not found in the list, this needs to be fixed by a "
-              "developer.");
-        }
-      }
-
+      auto const &locations = get_locations(spec, vertices);
       f.push_back(CandidateFactory{name, vertices, locations});
     }
   }
