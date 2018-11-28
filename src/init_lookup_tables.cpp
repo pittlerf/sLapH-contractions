@@ -477,27 +477,6 @@ void init_lookup_tables(GlobalData &gd) {
 
     auto const &spec = diagram_spec.at(correlator.type);
 
-  /** Create lookuptable where to find the quarklines to build a diagram.
-   *
-   *  @param[in]  quarks            Quarks as read from the infile and processed
-   *                                into quark struct
-   *  @param[in]  quark_numbers     List which quarks are specified in the infile
-   *  @param[in]  start_config      Number of first gauge configuration
-   *  @param[in]  path_output       Output path from the infile.
-   *  @param[in]  quantum_numbers   A list of all physical quantum numbers
-   *                                quantum field operators for all correlators
-   *                                with Dirac structure factored out that are
-   *                                possible for @em correlator
-   *  @param[in]  vdv_indices       Indices identifying VdaggerV operators
-   *  @param[out] Q1_lookup         Lookuptable containing unique combinations of
-   *                                peram-, vdv-, and ric-indices needed to built
-   *                                Q1
-   *  @param[out] c_look            Lookup table for C30
-   *
-   *  @bug I am fairly certain that the quarks of C30 are mixed up. It is
-   *        also wrong in init_lookup_tables() (MW 27.3.17)
-   */
-
     size_t ql_size = 0;
     for (auto const &trace : spec.traces) {
       ql_size += trace.size();
