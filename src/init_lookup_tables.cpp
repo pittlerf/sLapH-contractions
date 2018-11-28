@@ -387,13 +387,13 @@ struct CandidateFactory {
 ssize_t make_candidate(std::vector<Indices> &tr_lookup,
                        Indices const &vertices,
                        Indices const &ql_ids) {
-  std::vector<ssize_t> ids;
-  Indices indices2;
+  Indices ql_ids_for_trace;
+  ql_ids_for_trace.reserve(vertices.size());
   for (auto const vertex : vertices) {
-    indices2.push_back(ql_ids[vertex]);
+    ql_ids_for_trace.push_back(ql_ids[vertex]);
   }
-  auto const id = unique_push_back(tr_lookup, indices2);
-  return id;
+  auto const tr_id = unique_push_back(tr_lookup, ql_ids_for_trace);
+  return tr_id;
 }
 
 using Factories = std::vector<CandidateFactory>;
