@@ -11,6 +11,9 @@
 #include <vector>
 
 using DiagramIndicesCollection = std::map<std::string, std::vector<DiagramIndex>>;
+using TraceIndicesCollection = std::map<std::string, std::vector<Indices>>;
+
+enum class Location { source, sink };
 
 /**
  * Class containing all metadata for contractions and functions to set them

@@ -20,7 +20,7 @@ struct DiagramParts {
                ssize_t const Lt,
                DilutedFactorIndicesCollection const &dil_fac_lookup,
                DiagramIndicesCollection const &corr_lookup,
-               std::map<std::string, std::vector<Indices>> const &trace_indices_map)
+               TraceIndicesCollection const &trace_indices_map)
       : q0(random_vector,
            perambulator,
            meson_operator,

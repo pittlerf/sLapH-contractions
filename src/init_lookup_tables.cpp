@@ -61,7 +61,7 @@ void build_quantum_numbers_from_correlator_list(
   // We extract the vertices from the given diagram. As this is not critical in
   // performance we treat us with boundary checks here via `at` instead of
   // `operator[]`.
-  auto const &vertices = diagram_spec.at(correlator.type).vertices;
+  auto const &vertices = diagram_specs.at(correlator.type).vertices;
 
   // The contractions that have to be done are all combinations of the various
   // possibilities from each vertex. We filter by momentum conservation later.
@@ -379,30 +379,39 @@ ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
   }
 }
 
-struct CandidateFactory {
-  std::string name;
-  Indices vertices;
-};
+class CandidateFactory {
+ public:
+  CandidateFactory(std::string const &name,
+                   Indices const &vertices,
+                   std::vector<Location> const &locations)
+      : name_(name), vertices_(vertices), locations_(locations) {}
 
-ssize_t make_candidate(std::vector<Indices> &tr_lookup,
-                       Indices const &vertices,
-                       Indices const &ql_ids) {
-  Indices ql_ids_for_trace;
-  ql_ids_for_trace.reserve(vertices.size());
-  for (auto const vertex : vertices) {
-    ql_ids_for_trace.push_back(ql_ids[vertex]);
+  ssize_t make(std::vector<Indices> &tr_lookup, Indices const &ql_ids) const {
+    Indices ql_ids_for_trace;
+    ql_ids_for_trace.reserve(vertices_.size());
+    for (auto const vertex : vertices_) {
+      ql_ids_for_trace.push_back(ql_ids[vertex]);
+    }
+    auto const tr_id =
+        unique_push_back(tr_lookup, ql_ids_for_trace);
+    return tr_id;
   }
-  auto const tr_id = unique_push_back(tr_lookup, ql_ids_for_trace);
-  return tr_id;
-}
+
+  std::string const &name() const { return name_; }
+
+ private:
+  std::string name_;
+  Indices vertices_;
+  std::vector<Location> locations_;
+};
 
 using Factories = std::vector<CandidateFactory>;
 
-Factories make_candidate_factories(std::vector<std::vector<InnerLookup>> const &traces,
+Factories make_candidate_factories(DiagramSpec const &spec,
                                    DiagramIndicesCollection &correlator_lookuptable) {
   Factories f;
 
-  for (auto const &trace : traces) {
+  for (auto const &trace : spec.traces) {
     std::ostringstream name_ss;
     name_ss << "tr";
 
@@ -434,11 +443,28 @@ Factories make_candidate_factories(std::vector<std::vector<InnerLookup>> const &
     auto const name = name_ss.str();
 
     if (name == "trQ1" || name == "trQ0Q2" || name == "trQ1Q1" || name == "trQ1Q1Q1") {
-      f.push_back(CandidateFactory{name, vertices});
+      std::vector<Location> locations;
+      locations.reserve(vertices.size());
+      for (auto const vertex : vertices) {
+        if (std::find(spec.vertices.first.begin(), spec.vertices.first.end(), vertex) !=
+            spec.vertices.first.end()) {
+          locations.push_back(Location::source);
+        } else if (std::find(spec.vertices.second.begin(),
+                             spec.vertices.second.end(),
+                             vertex) != spec.vertices.second.end()) {
+          locations.push_back(Location::sink);
+        } else {
+          throw std::runtime_error(
+              "The vertex was not found in the list, this needs to be fixed by a "
+              "developer.");
+        }
+      }
+
+      f.push_back(CandidateFactory{name, vertices, locations});
     }
   }
 
-  if (f.size() != 0 && f.size() != traces.size()) {
+  if (f.size() != 0 && f.size() != spec.traces.size()) {
     throw std::runtime_error(
         "The number of AbstractCandidateFactory's does not match the number of "
         "traces. Either all or none of the traces must be converted.");
@@ -475,7 +501,7 @@ void init_lookup_tables(GlobalData &gd) {
         quantum_numbers, gd.operator_lookuptable.vdaggerv_lookup, vdv_indices);
     std::vector<std::pair<ssize_t, ssize_t>> rnd_index;
 
-    auto const &spec = diagram_spec.at(correlator.type);
+    auto const &spec = diagram_specs.at(correlator.type);
 
     size_t ql_size = 0;
     for (auto const &trace : spec.traces) {
@@ -504,14 +530,13 @@ void init_lookup_tables(GlobalData &gd) {
           correlator.type, gd.start_config, gd.path_output, quark_types, quantum_numbers[d]);
 
       std::vector<ssize_t> ql_or_tr_ids;
-      auto const &candidate_factories = make_candidate_factories(spec.traces, gd.correlator_lookuptable);
+      auto const &candidate_factories = make_candidate_factories(spec, gd.correlator_lookuptable);
       if (ssize(candidate_factories) == 0) {
         ql_or_tr_ids = ql_ids;
       } else {
         for (auto const &candidate_factory : candidate_factories) {
-          auto const tr_id = make_candidate(gd.trace_indices_map[candidate_factory.name],
-                                            candidate_factory.vertices,
-                                            ql_ids);
+          auto const tr_id = candidate_factory.make(
+              gd.trace_indices_map[candidate_factory.name()], ql_ids);
           ql_or_tr_ids.push_back(tr_id);
         }
       }

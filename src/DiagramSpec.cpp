@@ -1,9 +1,7 @@
 #include "DiagramSpec.hpp"
 
-enum class Pos { source, sink };
-
-BuildLookupLookupMap make_build_lookup_lookup_map() {
-  BuildLookupLookupMap map;
+DiagramSpecs make_diagram_specs() {
+  DiagramSpecs map;
 
   map["C1"] = {Vertices({0}, {}), TraceSpecs{{{"Q1", 0, 0}}}};
 
@@ -51,4 +49,4 @@ BuildLookupLookupMap make_build_lookup_lookup_map() {
   return map;
 }
 
-BuildLookupLookupMap const diagram_spec = make_build_lookup_lookup_map();
+DiagramSpecs const diagram_specs = make_diagram_specs();
