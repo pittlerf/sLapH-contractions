@@ -12,6 +12,17 @@ int get(BlockIterator const &slice_pair, Location const loc) {
   }
 }
 
+template <int num_times>
+std::array<int, num_times> make_key(BlockIterator const &slice_pair,
+                                    std::vector<Location> const &locations) {
+  std::array<int, 2> key;
+  std::transform(std::begin(locations),
+                 std::end(locations),
+                 std::begin(key),
+                 [&slice_pair](Location const loc) { return get(slice_pair, loc); });
+  return key;
+}
+
 /*****************************************************************************/
 /*                                    C2c                                    */
 /*****************************************************************************/
@@ -21,13 +32,10 @@ void C2c::assemble_impl(std::vector<Complex> &c,
                         DiagramParts &q) {
   for (int i = 0; i != ssize(correlator_requests()); ++i) {
     auto const &request = correlator_requests().at(i);
-    std::array<int, 2> key0;
+
     auto const &trace_request0 = request.trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
-    std::transform(std::begin(locations0),
-                   std::end(locations0),
-                   std::begin(key0),
-                   [&slice_pair](Location const loc) { return get(slice_pair, loc); });
+    auto const &key0 = make_key<2>(slice_pair, locations0);
 
     auto const &x0 = q.trQ0Q2[key0].at(trace_request0.tr_id);
     c[i] += std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
