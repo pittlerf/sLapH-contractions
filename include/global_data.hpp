@@ -25,6 +25,8 @@ struct CorrelatorRequest {
   std::vector<TraceRequest> trace_requests;
 };
 
+using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorRequest>>;
+
 /**
  * Class containing all metadata for contractions and functions to set them
  * from infile
@@ -72,8 +74,8 @@ struct GlobalData {
   DilutedFactorIndicesCollection quarkline_lookuptable;
   OperatorLookup operator_lookuptable;
   DiagramIndicesCollection correlator_lookuptable;
-  std::map<std::string, std::vector<Indices>> trace_indices_map;
-  std::map<std::string, std::vector<CorrelatorRequest>> correlator_requests_map;
+  TraceIndicesCollection trace_indices_map;
+  CorrelatorRequestsMap correlator_requests_map;
 
   /**
    * Cutoff for the sum of individual momenta.

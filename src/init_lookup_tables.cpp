@@ -539,6 +539,8 @@ void init_lookup_tables(GlobalData &gd) {
           make_trace_request_factories(spec, gd.correlator_lookuptable);
       if (ssize(trace_request_factories) == 0) {
         ql_or_tr_ids = ql_ids;
+
+        gd.correlator_requests_map[correlator.type];
       } else {
         CorrelatorRequest correlator_request;
         for (auto const &trace_request_factory : trace_request_factories) {

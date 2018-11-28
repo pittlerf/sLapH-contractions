@@ -58,10 +58,12 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
 /*****************************************************************************/
 
 C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
+         std::vector<CorrelatorRequest> const &corr_requests,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(
+          corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -228,10 +230,12 @@ void C40V::assemble_impl(std::vector<ComplexProduct> &c,
 /*****************************************************************************/
 
 C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
+           std::vector<CorrelatorRequest> const &corr_requests,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(
+          corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -278,10 +282,12 @@ void C4cB::assemble_impl(std::vector<Complex> &c,
 /*****************************************************************************/
 
 C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
+           std::vector<CorrelatorRequest> const &corr_requests,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(
+          corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -326,10 +332,12 @@ void C40B::assemble_impl(std::vector<Complex> &c,
 /*****************************************************************************/
 
 C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
+           std::vector<CorrelatorRequest> const &corr_requests,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(
+          corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -375,10 +383,12 @@ void C4cC::assemble_impl(std::vector<Complex> &c,
 /*****************************************************************************/
 
 C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
+           std::vector<CorrelatorRequest> const &corr_requests,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(corr_lookup, output_path, output_filename, Lt) {
+    : DiagramNumeric<Complex>(
+          corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {

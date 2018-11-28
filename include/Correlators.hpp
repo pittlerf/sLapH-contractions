@@ -48,6 +48,7 @@ void contract(const ssize_t Lt,
               OperatorLookup const &operator_lookup,
               DiagramIndicesCollection const &corr_lookup,
               TraceIndicesCollection const &trace_indices_map,
+              CorrelatorRequestsMap const &correlator_requests_map,
               DilutedFactorIndicesCollection const &quark_lookup,
               std::string const output_path,
               std::string const output_filename);
