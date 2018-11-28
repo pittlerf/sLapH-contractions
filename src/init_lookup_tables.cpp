@@ -379,9 +379,9 @@ ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
   }
 }
 
-class CandidateFactory {
+class TraceRequestFactory {
  public:
-  CandidateFactory(std::string const &name,
+  TraceRequestFactory(std::string const &name,
                    Indices const &vertices,
                    std::vector<Location> const &locations)
       : name_(name), vertices_(vertices), locations_(locations) {}
@@ -405,7 +405,7 @@ class CandidateFactory {
   std::vector<Location> locations_;
 };
 
-using Factories = std::vector<CandidateFactory>;
+using Factories = std::vector<TraceRequestFactory>;
 
 std::vector<Location> get_locations(DiagramSpec const &spec, Indices const &vertices) {
   std::vector<Location> locations;
@@ -428,7 +428,7 @@ std::vector<Location> get_locations(DiagramSpec const &spec, Indices const &vert
   return locations;
 }
 
-Factories make_candidate_factories(DiagramSpec const &spec,
+Factories make_trace_request_factories(DiagramSpec const &spec,
                                    DiagramIndicesCollection &correlator_lookuptable) {
   Factories f;
 
@@ -465,13 +465,13 @@ Factories make_candidate_factories(DiagramSpec const &spec,
 
     if (name == "trQ1" || name == "trQ0Q2" || name == "trQ1Q1" || name == "trQ1Q1Q1") {
       auto const &locations = get_locations(spec, vertices);
-      f.push_back(CandidateFactory{name, vertices, locations});
+      f.push_back(TraceRequestFactory{name, vertices, locations});
     }
   }
 
   if (f.size() != 0 && f.size() != spec.traces.size()) {
     throw std::runtime_error(
-        "The number of AbstractCandidateFactory's does not match the number of "
+        "The number of AbstractTraceRequestFactory's does not match the number of "
         "traces. Either all or none of the traces must be converted.");
   }
 
@@ -535,13 +535,14 @@ void init_lookup_tables(GlobalData &gd) {
           correlator.type, gd.start_config, gd.path_output, quark_types, quantum_numbers[d]);
 
       std::vector<ssize_t> ql_or_tr_ids;
-      auto const &candidate_factories = make_candidate_factories(spec, gd.correlator_lookuptable);
-      if (ssize(candidate_factories) == 0) {
+      auto const &trace_request_factories =
+          make_trace_request_factories(spec, gd.correlator_lookuptable);
+      if (ssize(trace_request_factories) == 0) {
         ql_or_tr_ids = ql_ids;
       } else {
-        for (auto const &candidate_factory : candidate_factories) {
-          auto const tr_id = candidate_factory.make(
-              gd.trace_indices_map[candidate_factory.name()], ql_ids);
+        for (auto const &trace_request_factory : trace_request_factories) {
+          auto const tr_id = trace_request_factory.make(
+              gd.trace_indices_map[trace_request_factory.name()], ql_ids);
           ql_or_tr_ids.push_back(tr_id);
         }
       }
