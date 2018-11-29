@@ -10,9 +10,9 @@
 #include "local_timer.hpp"
 #include "typedefs.hpp"
 
-#include <boost/multi_array.hpp>
-#include <Eigen/Dense>
 #include <omp.h>
+#include <Eigen/Dense>
+#include <boost/multi_array.hpp>
 
 #include <complex>
 #include <fstream>
@@ -56,50 +56,92 @@ void contract(const ssize_t Lt,
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
   if (!corr_lookup.at("C2c").empty())
-    diagrams.emplace_back(
-        new C2c(corr_lookup.at("C2c"), correlator_requests_map.at("C2c"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C2c(corr_lookup.at("C2c"),
+                                  correlator_requests_map.at("C2c"),
+                                  output_path,
+                                  output_filename,
+                                  Lt));
   if (!corr_lookup.at("C20").empty())
-    diagrams.emplace_back(
-        new C20(corr_lookup.at("C20"), correlator_requests_map.at("C20"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C20(corr_lookup.at("C20"),
+                                  correlator_requests_map.at("C20"),
+                                  output_path,
+                                  output_filename,
+                                  Lt));
   if (!corr_lookup.at("C20V").empty())
-    diagrams.emplace_back(
-        new C20V(corr_lookup.at("C20V"), correlator_requests_map.at("C20V"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C20V(corr_lookup.at("C20V"),
+                                   correlator_requests_map.at("C20V"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
 
   if (!corr_lookup.at("C3c").empty())
-    diagrams.emplace_back(
-        new C3c(corr_lookup.at("C3c"), correlator_requests_map.at("C3c"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C3c(corr_lookup.at("C3c"),
+                                  correlator_requests_map.at("C3c"),
+                                  output_path,
+                                  output_filename,
+                                  Lt));
   if (!corr_lookup.at("C30").empty())
-    diagrams.emplace_back(
-        new C30(corr_lookup.at("C30"), correlator_requests_map.at("C30"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C30(corr_lookup.at("C30"),
+                                  correlator_requests_map.at("C30"),
+                                  output_path,
+                                  output_filename,
+                                  Lt));
   if (!corr_lookup.at("C30V").empty())
-    diagrams.emplace_back(
-        new C30V(corr_lookup.at("C30V"), correlator_requests_map.at("C30V"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C30V(corr_lookup.at("C30V"),
+                                   correlator_requests_map.at("C30V"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
 
   if (!corr_lookup.at("C4cB").empty())
-    diagrams.emplace_back(
-        new C4cB(corr_lookup.at("C4cB"), correlator_requests_map.at("C4cB"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C4cB(corr_lookup.at("C4cB"),
+                                   correlator_requests_map.at("C4cB"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C4cC").empty())
-    diagrams.emplace_back(
-        new C4cC(corr_lookup.at("C4cC"), correlator_requests_map.at("C4cC"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C4cC(corr_lookup.at("C4cC"),
+                                   correlator_requests_map.at("C4cC"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C40B").empty())
-    diagrams.emplace_back(
-        new C40B(corr_lookup.at("C40B"), correlator_requests_map.at("C40B"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C40B(corr_lookup.at("C40B"),
+                                   correlator_requests_map.at("C40B"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C40C").empty())
-    diagrams.emplace_back(
-        new C40C(corr_lookup.at("C40C"), correlator_requests_map.at("C40C"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C40C(corr_lookup.at("C40C"),
+                                   correlator_requests_map.at("C40C"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
 
   if (!corr_lookup.at("C4cD").empty())
-    diagrams.emplace_back(
-        new C4cD(corr_lookup.at("C4cD"), correlator_requests_map.at("C4cD"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C4cD(corr_lookup.at("C4cD"),
+                                   correlator_requests_map.at("C4cD"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C4cV").empty())
-    diagrams.emplace_back(
-        new C4cV(corr_lookup.at("C4cV"), correlator_requests_map.at("C4cV"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C4cV(corr_lookup.at("C4cV"),
+                                   correlator_requests_map.at("C4cV"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C40D").empty())
-    diagrams.emplace_back(
-        new C40D(corr_lookup.at("C40D"), correlator_requests_map.at("C40D"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C40D(corr_lookup.at("C40D"),
+                                   correlator_requests_map.at("C40D"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
   if (!corr_lookup.at("C40V").empty())
-    diagrams.emplace_back(
-        new C40V(corr_lookup.at("C40V"), correlator_requests_map.at("C40V"), output_path, output_filename, Lt));
+    diagrams.emplace_back(new C40V(corr_lookup.at("C40V"),
+                                   correlator_requests_map.at("C40V"),
+                                   output_path,
+                                   output_filename,
+                                   Lt));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 

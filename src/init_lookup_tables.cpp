@@ -382,8 +382,8 @@ ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
 class TraceRequestFactory {
  public:
   TraceRequestFactory(std::string const &name,
-                   Indices const &vertices,
-                   std::vector<Location> const &locations)
+                      Indices const &vertices,
+                      std::vector<Location> const &locations)
       : name_(name), vertices_(vertices), locations_(locations) {}
 
   TraceRequest make(std::vector<Indices> &tr_lookup, Indices const &ql_ids) const {
@@ -392,8 +392,7 @@ class TraceRequestFactory {
     for (auto const vertex : vertices_) {
       ql_ids_for_trace.push_back(ql_ids[vertex]);
     }
-    auto const tr_id =
-        unique_push_back(tr_lookup, ql_ids_for_trace);
+    auto const tr_id = unique_push_back(tr_lookup, ql_ids_for_trace);
     return {name_, tr_id, locations_};
   }
 
@@ -429,7 +428,7 @@ std::vector<Location> get_locations(DiagramSpec const &spec, Indices const &vert
 }
 
 Factories make_trace_request_factories(DiagramSpec const &spec,
-                                   DiagramIndicesCollection &correlator_lookuptable) {
+                                       DiagramIndicesCollection &correlator_lookuptable) {
   Factories f;
 
   for (auto const &trace : spec.traces) {
@@ -518,10 +517,11 @@ void init_lookup_tables(GlobalData &gd) {
     for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
       for (auto const &trace_spec : spec.traces) {
         for (auto const &quarkline_spec : trace_spec) {
-          auto const ric_ids = create_rnd_vec_id(gd.quarks,
-                                                 correlator.quark_numbers[quarkline_spec.q1],
-                                                 correlator.quark_numbers[quarkline_spec.q2],
-                                                 quarkline_spec.is_q1());
+          auto const ric_ids =
+              create_rnd_vec_id(gd.quarks,
+                                correlator.quark_numbers[quarkline_spec.q1],
+                                correlator.quark_numbers[quarkline_spec.q2],
+                                quarkline_spec.is_q1());
           build_Quarkline_lookup_one_qn(quarkline_spec.q2,
                                         quantum_numbers[d],
                                         vdv_indices[d],
@@ -531,8 +531,11 @@ void init_lookup_tables(GlobalData &gd) {
         }
       }
 
-      std::string hdf5_dataset_name = build_hdf5_dataset_name(
-          correlator.type, gd.start_config, gd.path_output, quark_types, quantum_numbers[d]);
+      std::string hdf5_dataset_name = build_hdf5_dataset_name(correlator.type,
+                                                              gd.start_config,
+                                                              gd.path_output,
+                                                              quark_types,
+                                                              quantum_numbers[d]);
 
       std::vector<ssize_t> ql_or_tr_ids;
       auto const &trace_request_factories =
@@ -547,7 +550,7 @@ void init_lookup_tables(GlobalData &gd) {
           auto const trace_request = trace_request_factory.make(
               gd.trace_indices_map[trace_request_factory.name()], ql_ids);
           ql_or_tr_ids.push_back(trace_request.tr_id);
-        correlator_request.trace_requests.push_back(trace_request);
+          correlator_request.trace_requests.push_back(trace_request);
         }
         gd.correlator_requests_map[correlator.type].push_back(correlator_request);
       }
@@ -556,7 +559,6 @@ void init_lookup_tables(GlobalData &gd) {
 
       unique_push_back(correlator_lookup, candidate);
     }
-
   }
 
   /** Sets index_of_unity to the index of operator_lookuptable.vdaggerv_lookup

@@ -21,8 +21,8 @@ void DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2>::buil
 
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
-    Tr[{t1, t2}][i] = factor_to_trace(df1[{t1, b2}].at({c_look[0]}),
-                                      df2[{t2, b1}].at({c_look[1]}));
+    Tr[{t1, t2}][i] =
+        factor_to_trace(df1[{t1, b2}].at({c_look[0]}), df2[{t2, b1}].at({c_look[1]}));
   }
 }
 
@@ -35,8 +35,8 @@ void DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2, 2>::buil
 
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
-    Tr[{t1, t2}][i] = factor_to_trace(df1[{t2}].at({c_look[1]}),
-                                      df2[{b2, t1, b2}].at({c_look[0]}));
+    Tr[{t1, t2}][i] =
+        factor_to_trace(df1[{t2}].at({c_look[1]}), df2[{b2, t1, b2}].at({c_look[0]}));
   }
 }
 

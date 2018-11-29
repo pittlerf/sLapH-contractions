@@ -12,8 +12,8 @@ struct DilutedTrace1Factory {
   using Value = DilutedTraces<rvecs>;
 
   DilutedTrace1Factory(DilutedFactorFactory<qlt> &_df,
-                      std::vector<Indices> const &_dic,
-                      DilutionScheme const &_ds)
+                       std::vector<Indices> const &_dic,
+                       DilutionScheme const &_ds)
       : df(_df), diagram_index_collection(_dic), dilution_scheme(_ds) {}
 
   Value const &operator[](Key const &key) {
@@ -48,9 +48,9 @@ struct DilutedTrace2Factory {
   using Value = DilutedTraces<rvecs>;
 
   DilutedTrace2Factory(DilutedFactorFactory<qlt1> &_df1,
-                           DilutedFactorFactory<qlt2> &_df2,
-                           std::vector<Indices> const &_dic,
-                           DilutionScheme const &_ds)
+                       DilutedFactorFactory<qlt2> &_df2,
+                       std::vector<Indices> const &_dic,
+                       DilutionScheme const &_ds)
       : df1(_df1), df2(_df2), diagram_index_collection(_dic), dilution_scheme(_ds) {}
 
   Value const &operator[](Key const &key) {
