@@ -84,7 +84,7 @@ struct DilutedTrace3Factory {
    */
   static constexpr int num_times = DilutedFactorTypeTraits<qlt1>::num_times +
                                    DilutedFactorTypeTraits<qlt2>::num_times +
-                                   DilutedFactorTypeTraits<qlt3>::num_times - 2;
+                                   DilutedFactorTypeTraits<qlt3>::num_times - 3;
 
   using Key = std::array<int, num_times>;
   using Value = DilutedTraces<rvecs>;
@@ -134,7 +134,7 @@ struct DilutedTrace4Factory {
   static constexpr int num_times = DilutedFactorTypeTraits<qlt1>::num_times +
                                    DilutedFactorTypeTraits<qlt2>::num_times +
                                    DilutedFactorTypeTraits<qlt3>::num_times +
-                                   DilutedFactorTypeTraits<qlt4>::num_times - 2;
+                                   DilutedFactorTypeTraits<qlt4>::num_times - 4;
 
   using Key = std::array<int, num_times>;
   using Value = DilutedTraces<rvecs>;
