@@ -333,6 +333,17 @@ static std::vector<std::pair<ssize_t, ssize_t>> create_rnd_vec_id(
   return rnd_vec_comb;
 }
 
+template <typename T>
+ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
+  auto const it = std::find(vector.begin(), vector.end(), element);
+  if (it == vector.cend()) {
+    vector.push_back(element);
+    return vector.cend() - 1 - vector.cbegin();
+  } else {
+    return it - vector.cbegin();
+  }
+}
+
 static void build_Quarkline_lookup_one_qn(
     ssize_t const operator_id,
     std::vector<QuantumNumbers> const &quantum_numbers,
@@ -350,25 +361,9 @@ static void build_Quarkline_lookup_one_qn(
   // it and set the index to the new one.
   DilutedFactorIndex const candidate{
       id_vdaggerv, need_vdaggerv_daggering, qn.gamma, rnd_vec_ids};
-  auto it = std::find(Ql_lookup.begin(), Ql_lookup.end(), candidate);
 
-  if (it != Ql_lookup.end()) {
-    Ql_lookup_ids[operator_id] = it - Ql_lookup.begin();
-  } else {
-    Ql_lookup_ids[operator_id] = Ql_lookup.size();
-    Ql_lookup.emplace_back(candidate);
-  }
-}
-
-template <typename T>
-ssize_t unique_push_back(std::vector<T> &vector, T const &element) {
-  auto const it = std::find(vector.begin(), vector.end(), element);
-  if (it == vector.cend()) {
-    vector.push_back(element);
-    return vector.cend() - 1 - vector.cbegin();
-  } else {
-    return it - vector.cbegin();
-  }
+  auto const id = unique_push_back(Ql_lookup, candidate);
+  Ql_lookup_ids[operator_id] = id;
 }
 
 class TraceRequestFactory {
