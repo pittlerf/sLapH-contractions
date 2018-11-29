@@ -50,13 +50,16 @@ void C2c::assemble_impl(std::vector<Complex> &c,
 void C20::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != ssize(corr_lookup()); ++i) {
-    auto const &c_look = corr_lookup()[i];
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+    auto const &trace_request0 = request.value().trace_requests.at(0);
+    auto const &locations0 = trace_request0.locations;
+    auto const &key0 = make_key<2>(slice_pair, locations0);
 
-    auto const &x =
-        q.trQ1Q1[{slice_pair.source(), slice_pair.sink()}].at(c_look.lookup[0]);
-    c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
-            static_cast<double>(x.size());
+    auto const &x0 =
+        q.trQ1Q1[key0].at(trace_request0.tr_id);
+    c[request.index()] +=
+        std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
+        static_cast<double>(x0.size());
   }
 }
 
