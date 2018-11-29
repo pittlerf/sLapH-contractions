@@ -213,6 +213,13 @@ static std::string const build_hdf5_dataset_name(
 /**
  * Translate list of QuantumNumbers into lookuptable for VdaggerV
  *
+ * As in other places of the code we want to see here which unique quantum
+ * number combinations are needed to build all VdaggerV objects. The additional
+ * complication, or simplification if you will, is that the inverse momentum
+ * can be obtained by a hermitian conjugation (“daggering”). If for a certain
+ * set of quantum numbers we find the matching displacement but negative
+ * momentum, we can just take that and remember to conjugate later on.
+ *
  * @param[in]  quantum_numbers List of all quantum numbers operators are needed
  *                             for
  * @param[out] vdaggerv_lookup Unique list of all VdaggerV operators needed.
@@ -232,38 +239,23 @@ void build_VdaggerV_lookup(
   for (auto const &qn_vec : quantum_numbers) {
     std::vector<std::pair<ssize_t, bool>> vdv_indices_row;
     for (auto const &qn : qn_vec) {
-      bool dagger;
-      // checking if the combination of quantum numbers already exists in
-      // vdaggerv. The position is stored in the iterator it.
-      auto it = std::find_if(vdaggerv_lookup.begin(),
-                             vdaggerv_lookup.end(),
-                             [&qn, &dagger](VdaggerVQuantumNumbers vdv_qn) {
-                               auto c1 = (vdv_qn.displacement == qn.displacement);
-                               auto c2 = (Vector(vdv_qn.momentum.data()) == qn.momentum);
-                               // also negative momentum is checked
-                               auto c3 =
-                                   (Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
-                               /** @TODO: Think about the daggering!! */
-                               Vector const zero(0, 0, 0);
-                               if (c1 and c2) {
-                                 dagger = false;
-                                 return true;
-                               } else if ((c1 and c3) and (qn.displacement.empty())) {
-                                 dagger = true;
-                                 return true;
-                               } else
-                                 return false;
-                             });
-      // If the quantum number combination already exists only the id is needed
-      // otherwise a new element is created at the end of the lookuptable.
-      if (it != vdaggerv_lookup.end()) {
-        vdv_indices_row.emplace_back((*it).id, dagger);
-      } else {
+      auto const it =
+          std::find_if(vdaggerv_lookup.cbegin(),
+                       vdaggerv_lookup.cend(),
+                       [&qn](VdaggerVQuantumNumbers vdv_qn) {
+                         return (vdv_qn.displacement == qn.displacement) &&
+                                (Vector(vdv_qn.momentum.data()) == qn.momentum ||
+                                 Vector(vdv_qn.momentum.data()) == (-1) * qn.momentum);
+                       });
+      if (it == vdaggerv_lookup.end()) {
         vdaggerv_lookup.emplace_back(
             VdaggerVQuantumNumbers(ssize(vdaggerv_lookup),
                                    {qn.momentum[0], qn.momentum[1], qn.momentum[2]},
                                    qn.displacement));
-        vdv_indices_row.emplace_back(vdaggerv_lookup.back().id, false);
+        vdv_indices_row.emplace_back(ssize(vdaggerv_lookup) - 1, false);
+      } else {
+        bool const dagger = Vector(it->momentum.data()) == (-1) * qn.momentum;
+        vdv_indices_row.emplace_back(it - vdaggerv_lookup.cbegin(), dagger);
       }
     }
     vdv_indices.emplace_back(vdv_indices_row);
