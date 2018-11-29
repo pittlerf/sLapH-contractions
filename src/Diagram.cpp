@@ -3,6 +3,7 @@
 #include "local_timer.hpp"
 
 #include <omp.h>
+#include <boost/range/adaptor/indexed.hpp>
 
 int get(BlockIterator const &slice_pair, Location const loc) {
   if (loc == Location::source) {
@@ -30,16 +31,15 @@ std::array<int, num_times> make_key(BlockIterator const &slice_pair,
 void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != ssize(correlator_requests()); ++i) {
-    auto const &request = correlator_requests().at(i);
-
-    auto const &trace_request0 = request.trace_requests.at(0);
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+    auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
 
     auto const &x0 = q.trQ0Q2[key0].at(trace_request0.tr_id);
-    c[i] += std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
-            static_cast<double>(x0.size());
+    c[request.index()] +=
+        std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
+        static_cast<double>(x0.size());
   }
 }
 
