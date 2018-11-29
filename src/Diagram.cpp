@@ -16,7 +16,7 @@ int get(BlockIterator const &slice_pair, Location const loc) {
 template <int num_times>
 std::array<int, num_times> make_key(BlockIterator const &slice_pair,
                                     std::vector<Location> const &locations) {
-  std::array<int, 2> key;
+  std::array<int, num_times> key;
   std::transform(std::begin(locations),
                  std::end(locations),
                  std::begin(key),
@@ -70,11 +70,17 @@ void C20::assemble_impl(std::vector<Complex> &c,
 void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
-  for (int i = 0; i != ssize(corr_lookup()); ++i) {
-    auto const &c_look = corr_lookup()[i];
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+    auto const &trace_request0 = request.value().trace_requests.at(0);
+    auto const &locations0 = trace_request0.locations;
+    auto const &key0 = make_key<1>(slice_pair, locations0);
 
-    c[i] += inner_product(q.trQ1[{slice_pair.source()}].at(c_look.lookup[0]),
-                          q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
+    auto const &trace_request1 = request.value().trace_requests.at(1);
+    auto const &locations1 = trace_request1.locations;
+    auto const &key1 = make_key<1>(slice_pair, locations1);
+
+    c[request.index()] += inner_product(q.trQ1[key0].at(trace_request0.tr_id),
+                                        q.trQ1[key1].at(trace_request1.tr_id));
   }
 }
 
