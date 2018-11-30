@@ -141,14 +141,16 @@ void C3c::assemble_impl(std::vector<Complex> &c,
 void C30::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  for (int i = 0; i != ssize(corr_lookup()); ++i) {
-    auto const &c_look = corr_lookup()[i];
+  assert(correlator_requests().size() == corr_lookup().size());
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+    auto const &trace_request0 = request.value().trace_requests.at(0);
+    auto const &locations0 = trace_request0.locations;
+    auto const &key0 = make_key<3>(slice_pair, locations0);
 
-    auto const &x =
-        q.trQ1Q1Q1[{slice_pair.source(), slice_pair.sink(), slice_pair.source()}].at(
-            c_look.lookup[0]);
-    c[i] += std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
-            static_cast<double>(x.size());
+    auto const &x = q.trQ1Q1Q1[key0].at(trace_request0.tr_id);
+    c.at(request.index()) +=
+        std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
+        static_cast<double>(x.size());
   }
 }
 
