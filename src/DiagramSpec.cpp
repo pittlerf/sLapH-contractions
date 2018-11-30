@@ -15,7 +15,7 @@ DiagramSpecs make_diagram_specs() {
                 TraceSpecs{{{"Q1", 0, 1}, {"Q1", 1, 2}, {"Q1", 2, 0}}}};
 
   map["C3c"] = {Vertices({0, 2}, {1}),
-                TraceSpecs{{{"Q2", 2, 0}, {"Q1", 0, 1}, {"Q0", 1, 2}}}};
+                TraceSpecs{{{"Q1", 0, 1}, {"Q0", 1, 2}, {"Q2", 2, 0}}}};
 
   map["C30V"] = {Vertices({0, 1}, {2}),
                  TraceSpecs{{{"Q1", 0, 1}, {"Q1", 1, 0}}, {{"Q1", 2, 2}}}};
