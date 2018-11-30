@@ -309,29 +309,16 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                    sizeof(Complex) / std::pow(2, 30)
             << " Gb" << std::endl;
 
-  int total_number_of_random_combinations_in_Q2L = 0;
-  for (auto const &q : gd.quarkline_lookuptable.at("Q2L")) {
-    total_number_of_random_combinations_in_Q2L += q.rnd_vec_ids.size();
+  int total_number_of_random_combinations_in_Q2 = 0;
+  for (auto const &q : gd.quarkline_lookuptable.at("Q2")) {
+    total_number_of_random_combinations_in_Q2 += q.rnd_vec_ids.size();
   }
-  int Q2L_matrix_size =
+  int Q2_matrix_size =
       gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ2L:\t" << std::fixed << std::setprecision(2)
+  std::cout << "\t\tQ2:\t" << std::fixed << std::setprecision(2)
             << gd.Lt / gd.quarks[0].number_of_dilution_T *
                    (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
-                   total_number_of_random_combinations_in_Q2L * Q2L_matrix_size *
-                   sizeof(Complex) / std::pow(2, 30)
-            << " Gb" << std::endl;
-
-  int total_number_of_random_combinations_in_Q2V = 0;
-  for (auto const &q : gd.quarkline_lookuptable.at("Q2V")) {
-    total_number_of_random_combinations_in_Q2V += q.rnd_vec_ids.size();
-  }
-  int Q2V_matrix_size =
-      gd.quarks[0].number_of_dilution_D * gd.quarks[0].number_of_dilution_E;
-  std::cout << "\t\tQ2V:\t" << std::fixed << std::setprecision(2)
-            << gd.Lt / gd.quarks[0].number_of_dilution_T *
-                   (gd.Lt / gd.quarks[0].number_of_dilution_T - 1) / 2 *
-                   total_number_of_random_combinations_in_Q2V * Q2V_matrix_size *
+                   total_number_of_random_combinations_in_Q2 * Q2_matrix_size *
                    sizeof(Complex) / std::pow(2, 30)
             << " Gb" << std::endl;
 
@@ -350,7 +337,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   for (auto const &q : gd.trace_indices_map.at("trQ0Q2")) {
     total_number_of_random_combinations_in_trQ0Q2 +=
         gd.quarkline_lookuptable.at("Q0")[q[0]].rnd_vec_ids.size() *
-        gd.quarkline_lookuptable.at("Q2V")[q[1]].rnd_vec_ids.size();
+        gd.quarkline_lookuptable.at("Q2")[q[1]].rnd_vec_ids.size();
   }
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * gd.Lt * total_number_of_random_combinations_in_trQ0Q2 *

@@ -426,7 +426,7 @@ Factories make_trace_request_factories(DiagramSpec const &spec,
     ssize_t previous_q2 = -1;
 
     for (auto const &ql : trace) {
-      if (ql.name == "Q2L" || ql.name == "Q2V") {
+      if (ql.name == "Q2" || ql.name == "Q2") {
         name_ss << "Q2";
       } else {
         name_ss << ql.name;

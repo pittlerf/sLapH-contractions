@@ -150,15 +150,15 @@ class BlockIterator {
     ```{.cpp}
     if (t1_i == t2_i) {
       if (t1_min != 0)
-        id_Q2L_1 = t1 % t1_min;
+        id_Q2_1 = t1 % t1_min;
       else {
-        id_Q2L_1 = t1;
+        id_Q2_1 = t1;
       }
     } else {
       if (t1_min != 0)
-        id_Q2L_1 = (dir)*dilT + t1 % t1_min;
+        id_Q2_1 = (dir)*dilT + t1 % t1_min;
       else
-        id_Q2L_1 = ((dir)*dilT + t1);
+        id_Q2_1 = ((dir)*dilT + t1);
     }
     ```
 

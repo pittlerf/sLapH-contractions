@@ -230,7 +230,7 @@ using DilutedFactorIndicesCollection =
     std::map<std::string, std::vector<DilutedFactorIndex>>;
 
 // Q0 formerly called rVdaggerVr
-enum class DilutedFactorType { Q0, Q1, Q2, Q2L, Q2V };
+enum class DilutedFactorType { Q0, Q1, Q2 };
 
 /** All information needed to build and write the correlator given the
  *  quarklines were calculated beforehand
@@ -278,18 +278,6 @@ struct DilutedFactorTypeTraits<DilutedFactorType::Q1> {
 
 template <>
 struct DilutedFactorTypeTraits<DilutedFactorType::Q2> {
-  typedef std::vector<DilutedFactorIndex> type;
-  static ssize_t constexpr num_times = 3;
-};
-
-template <>
-struct DilutedFactorTypeTraits<DilutedFactorType::Q2L> {
-  typedef std::vector<DilutedFactorIndex> type;
-  static ssize_t constexpr num_times = 3;
-};
-
-template <>
-struct DilutedFactorTypeTraits<DilutedFactorType::Q2V> {
   typedef std::vector<DilutedFactorIndex> type;
   static ssize_t constexpr num_times = 3;
 };

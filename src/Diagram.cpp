@@ -118,7 +118,7 @@ void C3c::assemble_impl(std::vector<Complex> &c,
         L1,
         std::get<0>(ids),
         q.q0[{slice_pair.source()}],
-        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
+        q.q2[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C3c::assemble_impl] multiply");
@@ -317,13 +317,13 @@ void C4cB::assemble_impl(std::vector<Complex> &c,
         L1,
         ids[0],
         q.q0[{slice_pair.source()}],
-        q.q2l[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
+        q.q2[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
 
     multiply<1, 1, 0, 0>(
         L2,
         ids[1],
         q.q0[{slice_pair.sink()}],
-        q.q2l[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
+        q.q2[{slice_pair.sink_block(), slice_pair.sink(), slice_pair.source_block()}]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cB::assemble_impl] multiply");
@@ -419,12 +419,12 @@ void C4cC::assemble_impl(std::vector<Complex> &c,
         L1,
         ids[0],
         q.q0[{slice_pair.sink()}],
-        q.q2v[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
+        q.q2[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
     multiply<1, 1, 0, 0>(
         L2,
         ids[1],
         q.q0[{slice_pair.sink()}],
-        q.q2v[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
+        q.q2[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cC::assemble_impl] multiply");
