@@ -57,8 +57,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
 
-    auto const &x0 =
-        q.trQ1Q1[key0].at(trace_request0.tr_id);
+    auto const &x0 = q.trQ1Q1[key0].at(trace_request0.tr_id);
     c.at(request.index()) +=
         std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
         static_cast<double>(x0.size());
@@ -83,7 +82,7 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &key1 = make_key<1>(slice_pair, locations1);
 
     c.at(request.index()) += inner_product(q.trQ1[key0].at(trace_request0.tr_id),
-                                        q.trQ1[key1].at(trace_request1.tr_id));
+                                           q.trQ1[key1].at(trace_request1.tr_id));
   }
 }
 
