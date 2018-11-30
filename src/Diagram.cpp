@@ -31,13 +31,14 @@ std::array<int, num_times> make_key(BlockIterator const &slice_pair,
 void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
+  assert(correlator_requests().size() == corr_lookup().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
 
     auto const &x0 = q.trQ0Q2[key0].at(trace_request0.tr_id);
-    c[request.index()] +=
+    c.at(request.index()) +=
         std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
         static_cast<double>(x0.size());
   }
@@ -50,6 +51,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
 void C20::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
+  assert(correlator_requests().size() == corr_lookup().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
@@ -57,7 +59,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
 
     auto const &x0 =
         q.trQ1Q1[key0].at(trace_request0.tr_id);
-    c[request.index()] +=
+    c.at(request.index()) +=
         std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
         static_cast<double>(x0.size());
   }
@@ -70,6 +72,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
 void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  assert(correlator_requests().size() == corr_lookup().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
@@ -79,7 +82,7 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
     auto const &locations1 = trace_request1.locations;
     auto const &key1 = make_key<1>(slice_pair, locations1);
 
-    c[request.index()] += inner_product(q.trQ1[key0].at(trace_request0.tr_id),
+    c.at(request.index()) += inner_product(q.trQ1[key0].at(trace_request0.tr_id),
                                         q.trQ1[key1].at(trace_request1.tr_id));
   }
 }
@@ -159,19 +162,19 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
-  for (int i = 0; i != ssize(corr_lookup()); ++i) {
-    auto const &c_look = corr_lookup()[i];
+  assert(correlator_requests().size() == corr_lookup().size());
 
-    //    assert(c_look.lookup[0] < q.trQ1Q1.tr.shape()[0]);
-    //    assert(slice_pair.source() < q.trQ1Q1.tr.shape()[1]);
-    //    assert(slice_pair.source() < q.trQ1Q1.tr.shape()[2]);
-    //
-    //    assert(c_look.lookup[1] < q.trQ1.tr.shape()[0]);
-    //    assert(slice_pair.sink() < q.trQ1.tr.shape()[1]);
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+    auto const &trace_request0 = request.value().trace_requests.at(0);
+    auto const &locations0 = trace_request0.locations;
+    auto const &key0 = make_key<2>(slice_pair, locations0);
 
-    c[i] += inner_product(
-        q.trQ1Q1[{slice_pair.source(), slice_pair.source()}].at(c_look.lookup[0]),
-        q.trQ1[{slice_pair.sink()}].at(c_look.lookup[1]));
+    auto const &trace_request1 = request.value().trace_requests.at(1);
+    auto const &locations1 = trace_request1.locations;
+    auto const &key1 = make_key<1>(slice_pair, locations1);
+
+    c.at(request.index()) += inner_product(q.trQ1Q1[key0].at(trace_request0.tr_id),
+                                           q.trQ1[key1].at(trace_request1.tr_id));
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C30::assemble_impl] inner_product");

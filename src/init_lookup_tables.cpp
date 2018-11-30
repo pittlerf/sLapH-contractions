@@ -539,7 +539,7 @@ void init_lookup_tables(GlobalData &gd) {
           ql_or_tr_ids.push_back(trace_request.tr_id);
           correlator_request.trace_requests.push_back(trace_request);
         }
-        gd.correlator_requests_map[correlator.type].push_back(correlator_request);
+        unique_push_back(gd.correlator_requests_map[correlator.type], correlator_request);
       }
 
       DiagramIndex candidate(ssize(correlator_lookup), hdf5_dataset_name, ql_or_tr_ids);

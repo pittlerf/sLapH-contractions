@@ -19,10 +19,19 @@ struct TraceRequest {
   std::string tr_name;
   ssize_t tr_id;
   std::vector<Location> locations;
+
+  bool operator==(TraceRequest const &other) const {
+    return tr_name == other.tr_name && tr_id == other.tr_id &&
+           locations == other.locations;
+  }
 };
 
 struct CorrelatorRequest {
   std::vector<TraceRequest> trace_requests;
+
+  bool operator==(CorrelatorRequest const &other) const {
+    return trace_requests == other.trace_requests;
+  }
 };
 
 using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorRequest>>;
