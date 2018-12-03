@@ -52,7 +52,7 @@ void DilutedTrace3Factory<DilutedFactorType::Q1,
   auto const b2 = dilution_scheme.time_to_block(t2);
   auto const b3 = dilution_scheme.time_to_block(t3);
 
-  DilutedFactors<2, 1> L1;
+  DilutedFactorsMap<2, 1> L1;
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
     multiply<1, 1, 0, 0>(L1, {c_look[0], c_look[1]}, df1[{t1, b2}], df2[{t2, b3}]);
@@ -77,7 +77,7 @@ void DilutedTrace3Factory<DilutedFactorType::Q1,
   auto const b2 = dilution_scheme.time_to_block(t2);
   auto const b3 = dilution_scheme.time_to_block(t3);
 
-  DilutedFactors<2, 1> L1;
+  DilutedFactorsMap<2, 1> L1;
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
     multiply<1, 1, 0, 0>(L1, {c_look[0], c_look[1]}, df1[{t1, b2}], df2[{t2}]);
@@ -101,8 +101,8 @@ void DilutedTrace4Factory<DilutedFactorType::Q1,
   auto const b1 = dilution_scheme.time_to_block(t1);
   auto const b2 = dilution_scheme.time_to_block(t2);
 
-  DilutedFactors<2, 1> L1;
-  DilutedFactors<2, 1> L2;
+  DilutedFactorsMap<2, 1> L1;
+  DilutedFactorsMap<2, 1> L2;
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
     multiply<1, 1, 0, 0>(L1, {c_look[3], c_look[0]}, df4[{t1, b1}], df1[{t1, b2}]);

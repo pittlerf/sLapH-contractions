@@ -109,11 +109,11 @@ inline Complex operator+(Complex const &c, DilutedTrace<rvecs> const &df) {
 }
 
 template <int n, size_t rvecs>
-using DilutedFactors =
+using DilutedFactorsMap =
     std::map<std::array<ssize_t, n>, std::vector<DilutedFactor<rvecs>>>;
 
 template <size_t n, size_t rvecs>
-std::string to_string(typename DilutedFactors<n, rvecs>::key_type const &array) {
+std::string to_string(typename DilutedFactorsMap<n, rvecs>::key_type const &array) {
   std::ostringstream oss;
   oss << "{";
   for (int i = 0; i < n; ++i) {
@@ -128,8 +128,8 @@ std::string to_string(typename DilutedFactors<n, rvecs>::key_type const &array) 
 }
 
 template <size_t n, size_t rvecs>
-void print(DilutedFactors<n, rvecs> const &otfm) {
-  std::cout << "DilutedFactors, size = " << otfm.size() << "\n";
+void print(DilutedFactorsMap<n, rvecs> const &otfm) {
+  std::cout << "DilutedFactorsMap, size = " << otfm.size() << "\n";
   for (auto const &elem : otfm) {
     std::cout << "  " << to_string<n, rvecs>(elem.first) << " -> "
               << "std::vector(size = " << elem.second.size() << ")\n";
@@ -447,10 +447,10 @@ std::map<UpTo, Complex> sub_accumulate(GlobalData const &gd,
 }
 
 template <int n1, int n2, size_t rvecs1, size_t rvecs2>
-void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
+void multiply(DilutedFactorsMap<n1 + n2, rvecs1 + rvecs2 + 1> &L,
               std::array<ssize_t, n1 + n2> const &key,
-              DilutedFactors<n1, rvecs1> const &factor0,
-              DilutedFactors<n2, rvecs2> const &factor1) {
+              DilutedFactorsMap<n1, rvecs1> const &factor0,
+              DilutedFactorsMap<n2, rvecs2> const &factor1) {
   LT_ULTRA_FINE_DECLARE;
   if (L.count(key) == 0) {
     std::array<ssize_t, n1> key1;
@@ -473,4 +473,4 @@ void multiply(DilutedFactors<n1 + n2, rvecs1 + rvecs2 + 1> &L,
 
 /** Map from DiagramIndex.id to DilutedTrace for all random index combinations */
 template <size_t rvecs>
-using DilutedTraces = std::map<ssize_t, std::vector<DilutedTrace<rvecs>>>;
+using DilutedTracessMap = std::map<ssize_t, std::vector<DilutedTrace<rvecs>>>;

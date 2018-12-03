@@ -9,7 +9,7 @@ struct DilutedTrace1Factory {
   static constexpr int num_times = DilutedFactorTypeTraits<qlt>::num_times - 1;
 
   using Key = std::array<int, num_times>;
-  using Value = DilutedTraces<rvecs>;
+  using Value = DilutedTracessMap<rvecs>;
 
   DilutedTrace1Factory(DilutedFactorFactory<qlt> &_df,
                        std::vector<Indices> const &_dic,
@@ -45,7 +45,7 @@ struct DilutedTrace2Factory {
                                    DilutedFactorTypeTraits<qlt2>::num_times - 2;
 
   using Key = std::array<int, num_times>;
-  using Value = DilutedTraces<rvecs>;
+  using Value = DilutedTracessMap<rvecs>;
 
   DilutedTrace2Factory(DilutedFactorFactory<qlt1> &_df1,
                        DilutedFactorFactory<qlt2> &_df2,
@@ -87,7 +87,7 @@ struct DilutedTrace3Factory {
                                    DilutedFactorTypeTraits<qlt3>::num_times - 3;
 
   using Key = std::array<int, num_times>;
-  using Value = DilutedTraces<rvecs>;
+  using Value = DilutedTracessMap<rvecs>;
 
   DilutedTrace3Factory(DilutedFactorFactory<qlt1> &_df1,
                        DilutedFactorFactory<qlt2> &_df2,
@@ -137,7 +137,7 @@ struct DilutedTrace4Factory {
                                    DilutedFactorTypeTraits<qlt4>::num_times - 4;
 
   using Key = std::array<int, num_times>;
-  using Value = DilutedTraces<rvecs>;
+  using Value = DilutedTracessMap<rvecs>;
 
   DilutedTrace4Factory(DilutedFactorFactory<qlt1> &_df1,
                        DilutedFactorFactory<qlt2> &_df2,
