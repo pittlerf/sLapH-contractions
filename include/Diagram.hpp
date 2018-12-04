@@ -45,16 +45,21 @@ struct DiagramParts {
         trQ1(q1, trace_indices_map.at("trQ1"), dilution_scheme),
         trQ1Q1(q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme),
         trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
-        trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme) {}
+        trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme) {
+          trace_factories["trQ1"] = &trQ1;
+          trace_factories["trQ1Q1"] = &trQ1Q1;
+          trace_factories["trQ0Q2"] = &trQ0Q2;
+          trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
+        }
 
   void clear() {
     q0.clear();
     q1.clear();
     q2.clear();
-    trQ1.clear();
-    trQ1Q1.clear();
-    trQ0Q2.clear();
-    trQ1Q1Q1.clear();
+
+    for (auto const &elem : trace_factories) {
+      elem.second->clear();
+    }
   }
 
   DilutedFactorFactory<DilutedFactorType::Q0> q0;
@@ -74,6 +79,8 @@ struct DiagramParts {
                        DilutedFactorType::Q1,
                        DilutedFactorType::Q1>
       trQ1Q1Q1;
+
+  std::map<std::string, AbstractDilutedTraceFactory *> trace_factories;
 };
 
 class Diagram {
