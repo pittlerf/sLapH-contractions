@@ -35,16 +35,14 @@ DiagramSpecs make_diagram_specs() {
   map["C40D"] = {Vertices({0, 2}, {1, 3}),
                  TraceSpecs{{{"Q1", 0, 1}, {"Q1", 1, 0}}, {{"Q1", 2, 3}, {"Q1", 3, 2}}}};
 
-  map["C4cD"] = {
-      Vertices({0, 2}, {1, 3}),
-      TraceSpecs{{{"Q0", 0, 1}, {"Q2", 1, 0}}, {{"Q0", 2, 3}, {"Q2", 3, 2}}}};
+  map["C4cD"] = {Vertices({0, 2}, {1, 3}),
+                 TraceSpecs{{{"Q0", 0, 1}, {"Q2", 1, 0}}, {{"Q0", 2, 3}, {"Q2", 3, 2}}}};
 
   map["C40V"] = {Vertices({0, 1}, {2, 3}),
                  TraceSpecs{{{"Q1", 0, 1}, {"Q1", 1, 0}}, {{"Q1", 2, 3}, {"Q1", 3, 2}}}};
 
-  map["C4cV"] = {
-      Vertices({0, 1}, {2, 3}),
-      TraceSpecs{{{"Q0", 0, 1}, {"Q2", 1, 0}}, {{"Q0", 2, 3}, {"Q2", 3, 2}}}};
+  map["C4cV"] = {Vertices({0, 1}, {2, 3}),
+                 TraceSpecs{{{"Q0", 0, 1}, {"Q2", 1, 0}}, {{"Q0", 2, 3}, {"Q2", 3, 2}}}};
 
   return map;
 }

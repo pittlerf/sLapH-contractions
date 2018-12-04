@@ -120,10 +120,8 @@ template class DilutedTrace3Factory<DilutedFactorType::Q1,
                                     DilutedFactorType::Q1>;
 template class DilutedTrace3Factory<DilutedFactorType::Q1,
                                     DilutedFactorType::Q0,
-                                    DilutedFactorType::Q2
-                                    >;
+                                    DilutedFactorType::Q2>;
 template class DilutedTrace4Factory<DilutedFactorType::Q1,
                                     DilutedFactorType::Q1,
                                     DilutedFactorType::Q1,
-                                    DilutedFactorType::Q1
-                                    >;
+                                    DilutedFactorType::Q1>;

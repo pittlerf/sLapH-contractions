@@ -73,9 +73,7 @@ struct DilutedTrace2Factory {
   std::map<Key, Value> Tr;
 };
 
-template <DilutedFactorType qlt1,
-          DilutedFactorType qlt2,
-          DilutedFactorType qlt3>
+template <DilutedFactorType qlt1, DilutedFactorType qlt2, DilutedFactorType qlt3>
 struct DilutedTrace3Factory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity

@@ -366,14 +366,14 @@ void C40B::assemble_impl(std::vector<Complex> &c,
   DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1>(L1,
-                         ids[0],
-                         q.q1[{slice_pair.source(), slice_pair.source_block()}],
-                         q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
+                   ids[0],
+                   q.q1[{slice_pair.source(), slice_pair.source_block()}],
+                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
 
     multiply<1, 1>(L2,
-                         ids[1],
-                         q.q1[{slice_pair.sink(), slice_pair.sink_block()}],
-                         q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
+                   ids[1],
+                   q.q1[{slice_pair.sink(), slice_pair.sink_block()}],
+                   q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40B::assemble_impl] multiply");
@@ -467,14 +467,14 @@ void C40C::assemble_impl(std::vector<Complex> &c,
   DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
     multiply<1, 1>(L1,
-                         ids[0],
-                         q.q1[{slice_pair.sink(), slice_pair.source_block()}],
-                         q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
+                   ids[0],
+                   q.q1[{slice_pair.sink(), slice_pair.source_block()}],
+                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
 
     multiply<1, 1>(L2,
-                         ids[1],
-                         q.q1[{slice_pair.sink(), slice_pair.source_block()}],
-                         q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
+                   ids[1],
+                   q.q1[{slice_pair.sink(), slice_pair.source_block()}],
+                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C40C::assemble_impl] multiply");

@@ -13,11 +13,9 @@
 #include <sstream>
 #include <vector>
 
-bool has_intersection(SmallVectorRndId const &left,
-                      SmallVectorRndId const &right);
+bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right);
 
-void merge_append(SmallVectorRndId &data,
-                  SmallVectorRndId const &addition);
+void merge_append(SmallVectorRndId &data, SmallVectorRndId const &addition);
 
 void merge_push_back(SmallVectorRndId &data, RndId const &addition);
 
@@ -27,9 +25,8 @@ void merge_push_back(SmallVectorRndId &data, RndId const &addition);
   that it only contains elements with _unequal_ left and right random vector index. This
   set is intended to be used as an intermediate result.
   */
-std::vector<DilutedFactor> operator*(
-    std::vector<DilutedFactor> const &left_vec,
-    std::vector<DilutedFactor> const &right_vec);
+std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
+                                     std::vector<DilutedFactor> const &right_vec);
 
 inline Complex operator+(DilutedTrace const &df, Complex const &c) {
   return c + df.data;
@@ -40,8 +37,7 @@ inline Complex operator+(Complex const &c, DilutedTrace const &df) {
 }
 
 template <int n>
-using DilutedFactorsMap =
-    std::map<std::array<ssize_t, n>, std::vector<DilutedFactor>>;
+using DilutedFactorsMap = std::map<std::array<ssize_t, n>, std::vector<DilutedFactor>>;
 
 template <size_t n>
 std::string to_string(typename DilutedFactorsMap<n>::key_type const &array) {
@@ -70,16 +66,13 @@ void print(DilutedFactorsMap<n> const &otfm) {
 Complex trace(std::vector<DilutedFactor> const &left_vec,
               std::vector<DilutedFactor> const &right_vec);
 
-std::vector<DilutedTrace> factor_to_trace(
-    std::vector<DilutedFactor> const &left_vec,
-    std::vector<DilutedFactor> const &right_vec);
+std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
+                                          std::vector<DilutedFactor> const &right_vec);
 
-std::vector<DilutedTrace> factor_to_trace(
-    std::vector<DilutedFactor> const &vec);
+std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec);
 
 ComplexProduct inner_product(std::vector<DilutedTrace> const &left_vec,
                              std::vector<DilutedTrace> const &right_vec);
-
 
 #if 0
 int constexpr max_flavor = 8;
