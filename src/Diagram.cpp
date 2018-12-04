@@ -32,7 +32,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -52,7 +52,7 @@ void C20::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -72,7 +72,7 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<1>(slice_pair, locations0);
@@ -142,7 +142,7 @@ void C30::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<3>(slice_pair, locations0);
@@ -165,7 +165,7 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
   LT_DIAGRAMS_START;
   assert(correlator_requests().size() == corr_lookup().size());
 
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -191,7 +191,7 @@ void C4cD::assemble_impl(std::vector<ComplexProduct> &c,
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -217,7 +217,7 @@ void C40D::assemble_impl(std::vector<ComplexProduct> &c,
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -243,7 +243,7 @@ void C4cV::assemble_impl(std::vector<ComplexProduct> &c,
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
@@ -269,7 +269,7 @@ void C40V::assemble_impl(std::vector<ComplexProduct> &c,
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
   assert(correlator_requests().size() == corr_lookup().size());
-  for (auto const &request : correlator_requests() | boost::adaptors::indexed()) {
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
     auto const &key0 = make_key<2>(slice_pair, locations0);
