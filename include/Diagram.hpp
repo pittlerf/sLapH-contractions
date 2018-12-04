@@ -191,74 +191,9 @@ class GeneralDiagram : public Diagram {
 };
 
 /*****************************************************************************/
-/*                                    C2                                     */
-/*****************************************************************************/
-
-/** Build charged 2pt correlation function
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5  \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
- *  @f}
- */
-class C2c : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C2c"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build neutral 2pt correlation function
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
- *  @f}
- */
-class C20 : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C20"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build neutral 2pt correlation function
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0} \rangle \cdot
- *        \langle D_\mathtt{Q1}^{-1}(t'|t') \Gamma_\mathtt{Op1} \rangle
- *  @f}
- */
-class C20V : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C20V"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/*****************************************************************************/
 /*                                    C3                                     */
 /*****************************************************************************/
 
-/** Build neutral 3pt correlation function
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
- *  @f}
- */
 class C3c : public Diagram {
  public:
   C3c(std::vector<DiagramIndex> const &corr_lookup,
@@ -278,129 +213,10 @@ class C3c : public Diagram {
       quantum_num_ids_;
 };
 
-/** Build neutral 3pt correlation function
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
- *  @f}
- */
-class C30 : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C30"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-class C30V : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C30V"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
 /*****************************************************************************/
 /*                                   C4                                     */
 /*****************************************************************************/
 
-/** Build charged 4pt correlation function: Direct diagram
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle \cdot
- *        \langle \gamma_5 D_\mathtt{Q2}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
-class C4cD : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C4cD"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build neutral 4pt correlation function: Direct diagram
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle \cdot
- *        \langle D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
-class C40D : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C40D"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build charged 4pt correlation function: Vacuum diagram
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t) \Gamma_\mathtt{Op1} \rangle \cdot
- *        \langle \gamma_5 D_\mathtt{Q2}^{-1}(t'|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
-class C4cV : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C4cV"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build neutral 4pt correlation function: Vacuum diagram
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t) \Gamma_\mathtt{Op1} \rangle \cdot
- *        \langle D_\mathtt{Q2}^{-1}(t'|t') \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
-class C40V : public Diagram {
- public:
-  using Diagram::Diagram;
-
-  char const *name() const override { return "C40V"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-};
-
-/** Build charged 4pt correlation function: Box diagram
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t)^\dagger \gamma_5 \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                \gamma_5 D_\mathtt{Q2}^{-1}(t'|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
 class C4cB : public Diagram {
  public:
   C4cB(std::vector<DiagramIndex> const &corr_lookup,
@@ -419,14 +235,6 @@ class C4cB : public Diagram {
   std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
-/** Build neutral 4pt correlation function: Box diagram
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                D_\mathtt{Q2}^{-1}(t'|t') \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
 class C40B : public Diagram {
  public:
   C40B(std::vector<DiagramIndex> const &corr_lookup,
@@ -445,14 +253,6 @@ class C40B : public Diagram {
   std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
-/** Build charged 4pt correlation function: Cross diagram
- *  @f{align}{
- *    C = \langle \gamma_5 D_\mathtt{Q0}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                \gamma_5 D_\mathtt{Q2}^{-1}(t|t')^\dagger \gamma_5 \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
 class C4cC : public Diagram {
  public:
   C4cC(std::vector<DiagramIndex> const &corr_lookup,
@@ -471,14 +271,6 @@ class C4cC : public Diagram {
   std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
-/** Build neutral 4pt correlation function: Cross diagram
- *  @f{align}{
- *    C = \langle D_\mathtt{Q0}^{-1}(t'|t) \Gamma_\mathtt{Op0}
- *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1}
- *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2}
- *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
- *  @f}
- */
 class C40C : public Diagram {
  public:
   C40C(std::vector<DiagramIndex> const &corr_lookup,

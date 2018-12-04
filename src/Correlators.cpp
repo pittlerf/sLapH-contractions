@@ -69,21 +69,15 @@ void contract(const ssize_t Lt,
               std::string const output_filename) {
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  if (!corr_lookup.at("C2c").empty())
-    diagrams.emplace_back(make_diagram(
-        "C2c", corr_lookup, correlator_requests_map, output_path, output_filename, Lt));
-  if (!corr_lookup.at("C20").empty())
-    diagrams.emplace_back(new C20(corr_lookup.at("C20"),
-                                  correlator_requests_map.at("C20"),
-                                  output_path,
-                                  output_filename,
-                                  Lt));
-  if (!corr_lookup.at("C20V").empty())
-    diagrams.emplace_back(new C20V(corr_lookup.at("C20V"),
-                                   correlator_requests_map.at("C20V"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
+  std::vector<char const *> general_diagram_names{
+      "C2c", "C20", "C20V", "C30", "C30V", "C4cD", "C4cV", "C40D", "C40V"};
+
+  for (auto const &name : general_diagram_names) {
+    if (!corr_lookup.at(name).empty()) {
+      diagrams.emplace_back(make_diagram(
+          name, corr_lookup, correlator_requests_map, output_path, output_filename, Lt));
+    }
+  }
 
   if (!corr_lookup.at("C3c").empty())
     diagrams.emplace_back(new C3c(corr_lookup.at("C3c"),
@@ -91,18 +85,6 @@ void contract(const ssize_t Lt,
                                   output_path,
                                   output_filename,
                                   Lt));
-  if (!corr_lookup.at("C30").empty())
-    diagrams.emplace_back(new C30(corr_lookup.at("C30"),
-                                  correlator_requests_map.at("C30"),
-                                  output_path,
-                                  output_filename,
-                                  Lt));
-  if (!corr_lookup.at("C30V").empty())
-    diagrams.emplace_back(new C30V(corr_lookup.at("C30V"),
-                                   correlator_requests_map.at("C30V"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
 
   if (!corr_lookup.at("C4cB").empty())
     diagrams.emplace_back(new C4cB(corr_lookup.at("C4cB"),
@@ -125,31 +107,6 @@ void contract(const ssize_t Lt,
   if (!corr_lookup.at("C40C").empty())
     diagrams.emplace_back(new C40C(corr_lookup.at("C40C"),
                                    correlator_requests_map.at("C40C"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-
-  if (!corr_lookup.at("C4cD").empty())
-    diagrams.emplace_back(new C4cD(corr_lookup.at("C4cD"),
-                                   correlator_requests_map.at("C4cD"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C4cV").empty())
-    diagrams.emplace_back(new C4cV(corr_lookup.at("C4cV"),
-                                   correlator_requests_map.at("C4cV"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C40D").empty())
-    diagrams.emplace_back(new C40D(corr_lookup.at("C40D"),
-                                   correlator_requests_map.at("C40D"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C40V").empty())
-    diagrams.emplace_back(new C40V(corr_lookup.at("C40V"),
-                                   correlator_requests_map.at("C40V"),
                                    output_path,
                                    output_filename,
                                    Lt));
