@@ -169,6 +169,20 @@ class Diagram {
   std::vector<std::mutex> mutexes_;
 };
 
+class GeneralDiagram : public Diagram {
+ public:
+  using Diagram::Diagram;
+
+  char const *name() const override { return name_; }
+
+ private:
+  void assemble_impl(std::vector<ComplexProduct> &c,
+                     BlockIterator const &slice_pair,
+                     DiagramParts &q) override;
+
+  char const *name_;
+};
+
 /*****************************************************************************/
 /*                                    C2                                     */
 /*****************************************************************************/

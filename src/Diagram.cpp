@@ -5,7 +5,7 @@
 #include <omp.h>
 #include <boost/range/adaptor/indexed.hpp>
 
-ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
+ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
                                BlockIterator const &slice_pair,
                                DiagramParts &q) {
   assert(ssize(trace_requests) == 1);
@@ -40,6 +40,28 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
   DilutedTraces t1{x1, false};
 
   return inner_product(t0, t1);
+}
+
+ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
+                                BlockIterator const &slice_pair,
+                                DiagramParts &q) {
+  if (ssize(trace_requests) == 1) {
+    return resolve_request1(trace_requests, slice_pair, q);
+  } else if (ssize(trace_requests) == 2) {
+    return resolve_request2(trace_requests, slice_pair, q);
+  } else {
+    throw std::runtime_error("This many traces are not implemented yet.");
+  }
+}
+
+void GeneralDiagram::assemble_impl(std::vector<ComplexProduct> &c,
+                                   BlockIterator const &slice_pair,
+                                   DiagramParts &q) {
+  assert(correlator_requests().size() == corr_lookup().size());
+  for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
+    c.at(request.index()) +=
+        resolve_request(request.value().trace_requests, slice_pair, q);
+  }
 }
 
 /*****************************************************************************/
