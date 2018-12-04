@@ -112,7 +112,8 @@ class Diagram {
           std::vector<CorrelatorRequest> const &corr_requests,
           std::string const &output_path,
           std::string const &output_filename,
-          int const Lt)
+          int const Lt,
+          char const *name)
       : corr_lookup_(corr_lookup),
         corr_requests_(corr_requests),
         output_path_(output_path),
@@ -122,11 +123,8 @@ class Diagram {
                     std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
         c_(omp_get_max_threads(),
            std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
-        mutexes_(Lt) {}
-
-  virtual ~Diagram() {}
-
-  virtual char const *name() const = 0;
+        mutexes_(Lt),
+        name_(name) {}
 
   std::vector<DiagramIndex> const &corr_lookup() const { return corr_lookup_; }
 
@@ -170,10 +168,11 @@ class Diagram {
     }
   }
 
- private:
-  virtual void assemble_impl(std::vector<ComplexProduct> &c,
-                             BlockIterator const &slice_pair,
-                             DiagramParts &q) = 0;
+  char const *name() const { return name_; }
+
+  void assemble_impl(std::vector<ComplexProduct> &c,
+                     BlockIterator const &slice_pair,
+                     DiagramParts &q);
 
   std::vector<DiagramIndex> const &corr_lookup_;
   std::vector<CorrelatorRequest> const &corr_requests_;
@@ -190,65 +189,6 @@ class Diagram {
   std::vector<std::vector<ComplexProduct>> c_;
 
   std::vector<std::mutex> mutexes_;
-};
-
-class GeneralDiagram : public Diagram {
- public:
-  GeneralDiagram(std::vector<DiagramIndex> const &corr_lookup,
-                 std::vector<CorrelatorRequest> const &corr_requests,
-                 std::string const &output_path,
-                 std::string const &output_filename,
-                 int const Lt,
-                 char const *name)
-      : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt),
-        name_(name) {}
-
-  char const *name() const override { return name_; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
 
   char const *name_;
-};
-
-/*****************************************************************************/
-/*                                   C4                                     */
-/*****************************************************************************/
-
-class C4cB : public Diagram {
- public:
-  C4cB(std::vector<DiagramIndex> const &corr_lookup,
-       std::vector<CorrelatorRequest> const &corr_requests,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
-
-  char const *name() const override { return "C4cB"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-
-  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
-};
-
-class C4cC : public Diagram {
- public:
-  C4cC(std::vector<DiagramIndex> const &corr_lookup,
-       std::vector<CorrelatorRequest> const &corr_requests,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
-
-  char const *name() const override { return "C4cC"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-
-  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };

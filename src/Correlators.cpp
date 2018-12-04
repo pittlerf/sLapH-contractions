@@ -30,12 +30,12 @@ Diagram *make_diagram(char const *name,
                       std::string const &output_path,
                       std::string const &output_filename,
                       int const Lt) {
-  return new GeneralDiagram(corr_lookup.at(name),
-                            correlator_requests_map.at(name),
-                            output_path,
-                            output_filename,
-                            Lt,
-                            name);
+  return new Diagram(corr_lookup.at(name),
+                     correlator_requests_map.at(name),
+                     output_path,
+                     output_filename,
+                     Lt,
+                     name);
 }
 
 /**
