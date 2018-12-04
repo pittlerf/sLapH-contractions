@@ -83,7 +83,6 @@ struct GlobalData {
   Correlator_list correlator_list;
   DilutedFactorIndicesCollection quarkline_lookuptable;
   OperatorLookup operator_lookuptable;
-  DiagramIndicesCollection correlator_lookuptable;
   TraceIndicesCollection trace_indices_map;
   CorrelatorRequestsMap correlator_requests_map;
 

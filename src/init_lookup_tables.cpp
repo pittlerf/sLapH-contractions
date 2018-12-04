@@ -414,8 +414,7 @@ std::vector<Location> get_locations(DiagramSpec const &spec, Indices const &vert
   return locations;
 }
 
-Factories make_trace_request_factories(DiagramSpec const &spec,
-                                       DiagramIndicesCollection &correlator_lookuptable) {
+Factories make_trace_request_factories(DiagramSpec const &spec) {
   Factories f;
 
   for (auto const &trace : spec.traces) {
@@ -448,12 +447,8 @@ Factories make_trace_request_factories(DiagramSpec const &spec,
     }
 
     auto const name = name_ss.str();
-
-    if (name == "trQ1" || name == "trQ0Q2" || name == "trQ1Q1" || name == "trQ1Q1Q1" ||
-        name == "trQ1Q0Q2" || name == "trQ1Q1Q1Q1" || name == "trQ2Q0Q2Q0") {
-      auto const &locations = get_locations(spec, vertices);
-      f.push_back(TraceRequestFactory{name, vertices, locations});
-    }
+    auto const &locations = get_locations(spec, vertices);
+    f.push_back(TraceRequestFactory{name, vertices, locations});
   }
 
   if (f.size() != 0 && f.size() != spec.traces.size()) {
@@ -500,7 +495,6 @@ void init_lookup_tables(GlobalData &gd) {
       ql_size += trace.size();
     }
     std::vector<ssize_t> ql_ids(ql_size);
-    auto &correlator_lookup = gd.correlator_lookuptable[correlator.type];
 
     for (ssize_t d = 0; d < ssize(quantum_numbers); ++d) {
       for (auto const &trace_spec : spec.traces) {
@@ -525,27 +519,17 @@ void init_lookup_tables(GlobalData &gd) {
                                                               quark_types,
                                                               quantum_numbers[d]);
 
-      std::vector<ssize_t> ql_or_tr_ids;
-      auto const &trace_request_factories =
-          make_trace_request_factories(spec, gd.correlator_lookuptable);
-      if (ssize(trace_request_factories) == 0) {
-        ql_or_tr_ids = ql_ids;
+      auto const &trace_request_factories = make_trace_request_factories(spec);
+      assert(ssize(trace_request_factories) != 0 &&
+             "The diagram must be expressed as traces.");
 
-        gd.correlator_requests_map[correlator.type];
-      } else {
-        CorrelatorRequest correlator_request{{}, hdf5_dataset_name};
-        for (auto const &trace_request_factory : trace_request_factories) {
-          auto const trace_request = trace_request_factory.make(
-              gd.trace_indices_map[trace_request_factory.name()], ql_ids);
-          ql_or_tr_ids.push_back(trace_request.tr_id);
-          correlator_request.trace_requests.push_back(trace_request);
-        }
-        unique_push_back(gd.correlator_requests_map[correlator.type], correlator_request);
+      CorrelatorRequest correlator_request{{}, hdf5_dataset_name};
+      for (auto const &trace_request_factory : trace_request_factories) {
+        auto const trace_request = trace_request_factory.make(
+            gd.trace_indices_map[trace_request_factory.name()], ql_ids);
+        correlator_request.trace_requests.push_back(trace_request);
       }
-
-      DiagramIndex candidate(ssize(correlator_lookup), hdf5_dataset_name, ql_or_tr_ids);
-
-      unique_push_back(correlator_lookup, candidate);
+      unique_push_back(gd.correlator_requests_map[correlator.type], correlator_request);
     }
   }
 

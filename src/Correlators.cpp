@@ -47,7 +47,6 @@ void contract(const ssize_t Lt,
               RandomVector const &randomvectors,
               Perambulator const &perambulators,
               OperatorLookup const &operator_lookup,
-              DiagramIndicesCollection const &corr_lookup,
               TraceIndicesCollection const &trace_indices_map,
               CorrelatorRequestsMap const &correlator_requests_map,
               DilutedFactorIndicesCollection const &quark_lookup,
@@ -55,11 +54,10 @@ void contract(const ssize_t Lt,
               std::string const output_filename) {
   std::vector<Diagram> diagrams;
 
-  for (auto const &c_look : correlator_requests_map) {
-    auto const name = c_look.first;
-    if (!corr_lookup.at(name).empty()) {
-      diagrams.emplace_back(
-          correlator_requests_map.at(name), output_path, output_filename, Lt, name);
+  for (auto const &elem : correlator_requests_map) {
+    auto const name = elem.first;
+    if (!elem.second.empty()) {
+      diagrams.emplace_back(elem.second, output_path, output_filename, Lt, name);
     }
   }
 
@@ -82,7 +80,6 @@ void contract(const ssize_t Lt,
                    nev,
                    Lt,
                    quark_lookup,
-                   corr_lookup,
                    trace_indices_map);
 
 #pragma omp for schedule(dynamic)

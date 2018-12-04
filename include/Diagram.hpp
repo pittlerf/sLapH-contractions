@@ -19,7 +19,6 @@ struct DiagramParts {
                ssize_t const nev,
                ssize_t const Lt,
                DilutedFactorIndicesCollection const &dil_fac_lookup,
-               DiagramIndicesCollection const &corr_lookup,
                TraceIndicesCollection const &trace_indices_map)
       : q0(random_vector,
            perambulator,
