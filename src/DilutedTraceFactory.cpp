@@ -19,6 +19,8 @@ void DilutedTrace1Factory<DilutedFactorType::Q1>::build(Key const &time_key) {
   }
 }
 
+template class DilutedTrace1Factory<DilutedFactorType::Q1>;
+
 template <>
 void DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>::build(
     Key const &time_key) {
@@ -34,6 +36,8 @@ void DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>::build(
   }
 }
 
+template class DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>;
+
 template <>
 void DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>::build(
     Key const &time_key) {
@@ -47,6 +51,8 @@ void DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>::build(
         factor_to_trace(df1[{t2}].at({c_look[1]}), df2[{b2, t1, b2}].at({c_look[0]}));
   }
 }
+
+template class DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>;
 
 template <>
 void DilutedTrace3Factory<DilutedFactorType::Q1,
@@ -72,6 +78,10 @@ void DilutedTrace3Factory<DilutedFactorType::Q1,
   }
 }
 
+template class DilutedTrace3Factory<DilutedFactorType::Q1,
+                                    DilutedFactorType::Q1,
+                                    DilutedFactorType::Q1>;
+
 template <>
 void DilutedTrace3Factory<DilutedFactorType::Q1,
                           DilutedFactorType::Q0,
@@ -95,6 +105,10 @@ void DilutedTrace3Factory<DilutedFactorType::Q1,
         factor_to_trace(L1[{c_look[2], c_look[0]}], df1[{t2, b3}].at({c_look[1]}));
   }
 }
+
+template class DilutedTrace3Factory<DilutedFactorType::Q1,
+                                    DilutedFactorType::Q0,
+                                    DilutedFactorType::Q2>;
 
 template <>
 void DilutedTrace4Factory<DilutedFactorType::Q1,
@@ -121,15 +135,6 @@ void DilutedTrace4Factory<DilutedFactorType::Q1,
   }
 }
 
-template class DilutedTrace1Factory<DilutedFactorType::Q1>;
-template class DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>;
-template class DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>;
-template class DilutedTrace3Factory<DilutedFactorType::Q1,
-                                    DilutedFactorType::Q1,
-                                    DilutedFactorType::Q1>;
-template class DilutedTrace3Factory<DilutedFactorType::Q1,
-                                    DilutedFactorType::Q0,
-                                    DilutedFactorType::Q2>;
 template class DilutedTrace4Factory<DilutedFactorType::Q1,
                                     DilutedFactorType::Q1,
                                     DilutedFactorType::Q1,
