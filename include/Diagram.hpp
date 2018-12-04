@@ -151,7 +151,7 @@ class DiagramNumeric : public Diagram {
     assert(output_filename_ != "");
 
     WriteHDF5Correlator filehandle(
-        output_path_, name(), output_filename_, comp_type_factory<Numeric>());
+        output_path_, name(), output_filename_, make_comp_type<Numeric>());
 
     std::vector<Numeric> one_corr(Lt_);
 

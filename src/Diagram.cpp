@@ -29,14 +29,16 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
   auto const &x0 = q.trace_factories[trace_request0.tr_name]
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
+  DilutedTraces t0{x0, false};
 
   auto const &trace_request1 = trace_requests.at(1);
   auto const &locations1 = trace_request1.locations;
   auto const &x1 = q.trace_factories[trace_request1.tr_name]
                        ->get(slice_pair, locations1)
                        .at(trace_request1.tr_id);
+  DilutedTraces t1{x1, false};
 
-  return inner_product(x0, x1);
+  return inner_product(t0, t1);
 }
 
 /*****************************************************************************/

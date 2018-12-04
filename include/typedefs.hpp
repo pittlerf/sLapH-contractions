@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ComplexProduct.hpp"
+
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <boost/container/static_vector.hpp>
@@ -7,7 +9,6 @@
 
 #include <algorithm>
 #include <array>
-#include <complex>
 #include <iomanip>
 #include <list>
 #include <map>
@@ -18,24 +19,7 @@ size_t constexpr max_used_rnd_ids = 6;
 
 using RndId = int8_t;
 
-typedef std::complex<double> Complex;
-
 using SmallVectorRndId = boost::container::static_vector<RndId, max_used_rnd_ids>;
-
-struct DilutedFactor {
-  using Data = Eigen::MatrixXcd;
-
-  Data data;
-  std::pair<RndId, RndId> ric;
-  SmallVectorRndId used_rnd_ids;
-};
-
-struct DilutedTrace {
-  using Data = Complex;
-
-  Data data;
-  SmallVectorRndId used_rnd_ids;
-};
 
 /** Data type for momentum */
 typedef boost::multi_array<Complex, 2> array_cd_d2;
@@ -84,46 +68,6 @@ typedef struct {
   double re;
   double im;
 } complex_t;
-
-// This is the datatype to write 4pt functions and that alike directly
-struct ComplexProduct {
-  double rere;
-  double reim;
-  double imre;
-  double imim;
-
-  ComplexProduct() : rere(0.0), reim(0.0), imre(0.0), imim(0.0) {}
-
-  ComplexProduct(const double rere,
-                 const double reim,
-                 const double imre,
-                 const double imim)
-      : rere(rere), reim(reim), imre(imre), imim(imim) {}
-
-  ComplexProduct &operator+=(ComplexProduct const &other) {
-    rere += other.rere;
-    reim += other.reim;
-    imre += other.imre;
-    imim += other.imim;
-
-    return *this;
-  }
-
-  ComplexProduct &operator/=(double const &right) {
-    rere /= right;
-    reim /= right;
-    imre /= right;
-    imim /= right;
-
-    return *this;
-  }
-
-  ComplexProduct operator/(double const &right) const {
-    auto res = *this;
-    res /= right;
-    return res;
-  }
-};
 
 /** Struct to uniquely identify a sLapH operator
  *  @f$ V^\dagger exp(i(p + d/2) x) V @f$

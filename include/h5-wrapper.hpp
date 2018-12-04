@@ -98,9 +98,6 @@ void write_heterogenious(H5::Group &group,
 }
 #endif
 
-template <typename Numeric>
-H5::CompType comp_type_factory();
-
 /** Class to write correlations function to files in hdf5 format
  *
  *  @Warning  Dependency inversion principle is violated: Class depends on the

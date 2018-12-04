@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ComplexProduct.hpp"
 #include "OperatorsForMesons.hpp"
 #include "global_data.hpp"
 #include "local_timer.hpp"
@@ -12,6 +13,14 @@
 #include <set>
 #include <sstream>
 #include <vector>
+
+struct DilutedFactor {
+  using Data = Eigen::MatrixXcd;
+
+  Data data;
+  std::pair<RndId, RndId> ric;
+  SmallVectorRndId used_rnd_ids;
+};
 
 bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right);
 
@@ -27,14 +36,6 @@ void merge_push_back(SmallVectorRndId &data, RndId const &addition);
   */
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec);
-
-inline Complex operator+(DilutedTrace const &df, Complex const &c) {
-  return c + df.data;
-}
-
-inline Complex operator+(Complex const &c, DilutedTrace const &df) {
-  return df + c;
-}
 
 template <int n>
 using DilutedFactorsMap = std::map<std::array<ssize_t, n>, std::vector<DilutedFactor>>;
@@ -65,14 +66,6 @@ void print(DilutedFactorsMap<n> const &otfm) {
 
 Complex trace(std::vector<DilutedFactor> const &left_vec,
               std::vector<DilutedFactor> const &right_vec);
-
-std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
-                                          std::vector<DilutedFactor> const &right_vec);
-
-std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec);
-
-ComplexProduct inner_product(std::vector<DilutedTrace> const &left_vec,
-                             std::vector<DilutedTrace> const &right_vec);
 
 #if 0
 int constexpr max_flavor = 8;
@@ -196,6 +189,3 @@ void multiply(DilutedFactorsMap<n1 + n2> &L,
     LT_ULTRA_FINE_PRINT("[DilutedFactor::multiply] multiply");
   }
 }
-
-/** Map from DiagramIndex.id to DilutedTrace for all random index combinations */
-using DilutedTracesMap = std::map<ssize_t, std::vector<DilutedTrace>>;

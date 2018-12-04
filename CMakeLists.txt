@@ -9,11 +9,13 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(lcontract
 
+  src/ComplexProduct.cpp
   src/Correlators.cpp
   src/Diagram.cpp
   src/DiagramSpec.cpp
   src/DilutedFactor.cpp
   src/DilutedFactorY.cpp
+  src/DilutedTrace.cpp
   src/DilutedTraceFactory.cpp
   src/dilution-iterator.cpp
   src/EigenVector.cpp
