@@ -155,16 +155,8 @@ void C30V::assemble_impl(std::vector<ComplexProduct> &c,
   assert(correlator_requests().size() == corr_lookup().size());
 
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
-    auto const &trace_request0 = request.value().trace_requests.at(0);
-    auto const &locations0 = trace_request0.locations;
-    auto const &key0 = make_key<2>(slice_pair, locations0);
-
-    auto const &trace_request1 = request.value().trace_requests.at(1);
-    auto const &locations1 = trace_request1.locations;
-    auto const &key1 = make_key<1>(slice_pair, locations1);
-
-    c.at(request.index()) += inner_product(q.trQ1Q1[key0].at(trace_request0.tr_id),
-                                           q.trQ1[key1].at(trace_request1.tr_id));
+    c.at(request.index()) +=
+        resolve_request2(request.value().trace_requests, slice_pair, q);
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C30::assemble_impl] inner_product");
