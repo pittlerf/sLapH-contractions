@@ -79,6 +79,8 @@ void contract(const ssize_t Lt,
                                                   "C40C",
                                                   "C40D",
                                                   "C40V",
+                                                  "C4cB",
+                                                  "C4cC",
                                                   "C4cD",
                                                   "C4cV"};
 
@@ -88,19 +90,6 @@ void contract(const ssize_t Lt,
           name, corr_lookup, correlator_requests_map, output_path, output_filename, Lt));
     }
   }
-
-  if (!corr_lookup.at("C4cB").empty())
-    diagrams.emplace_back(new C4cB(corr_lookup.at("C4cB"),
-                                   correlator_requests_map.at("C4cB"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C4cC").empty())
-    diagrams.emplace_back(new C4cC(corr_lookup.at("C4cC"),
-                                   correlator_requests_map.at("C4cC"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
 
   DilutionScheme const dilution_scheme(Lt, dilT, DilutionType::block);
 

@@ -47,13 +47,15 @@ struct DiagramParts {
         trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
         trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme),
         trQ1Q0Q2(q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme),
-        trQ1Q1Q1Q1(q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme) {
+        trQ1Q1Q1Q1(q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme) ,
+        trQ2Q0Q2Q0(q2, q0, q2, q0, trace_indices_map.at("trQ2Q0Q2Q0"), dilution_scheme) {
     trace_factories["trQ1"] = &trQ1;
     trace_factories["trQ1Q1"] = &trQ1Q1;
     trace_factories["trQ0Q2"] = &trQ0Q2;
     trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
     trace_factories["trQ1Q0Q2"] = &trQ1Q0Q2;
     trace_factories["trQ1Q1Q1Q1"] = &trQ1Q1Q1Q1;
+    trace_factories["trQ2Q0Q2Q0"] = &trQ2Q0Q2Q0;
   }
 
   void clear() {
@@ -94,6 +96,12 @@ struct DiagramParts {
                        DilutedFactorType::Q1,
                        DilutedFactorType::Q1>
       trQ1Q1Q1Q1;
+
+  DilutedTrace4Factory<DilutedFactorType::Q2,
+                       DilutedFactorType::Q0,
+                       DilutedFactorType::Q2,
+                       DilutedFactorType::Q0>
+      trQ2Q0Q2Q0;
 
   std::map<std::string, AbstractDilutedTraceFactory *> trace_factories;
 };
