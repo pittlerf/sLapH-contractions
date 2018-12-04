@@ -28,6 +28,7 @@ struct TraceRequest {
 
 struct CorrelatorRequest {
   std::vector<TraceRequest> trace_requests;
+  std::string hdf5_dataset_name;
 
   bool operator==(CorrelatorRequest const &other) const {
     return trace_requests == other.trace_requests;

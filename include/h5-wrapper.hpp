@@ -119,7 +119,6 @@ class WriteHDF5Correlator {
   /** Writes data to file
    *
    *  @Param corr       The data to write
-   *  @Param corr_info  Contains the hdf5_dataset_name
    *
    *  @todo   It is sufficient to pass the hdf5_dataset_name
    *  @todo   corr_datatype would be better as class template typename
@@ -130,13 +129,13 @@ class WriteHDF5Correlator {
    *          overload
    */
   template <typename corr_datatype>
-  void write(const std::vector<corr_datatype> &corr, const DiagramIndex &corr_info) {
+  void write(const std::vector<corr_datatype> &corr, std::string const &dataset_name) {
     // Exceptions are automatically printed, we do not need this feature.
     H5::Exception::dontPrint();
 
     // Create a data set object.
     H5::Group group;
-    H5std_string dataset_name((corr_info.hdf5_dataset_name).c_str());
+    H5std_string h5_dataset_name((dataset_name).c_str());
 
     hsize_t dim(corr.size());
     H5::DataSpace dspace(1, &dim);
@@ -145,15 +144,14 @@ class WriteHDF5Correlator {
     // anything because we do not overwrite existing data.
     try {
       file.openDataSet(dataset_name);
-      std::cout << "Not writing " << corr_info.hdf5_dataset_name << " because it exists."
-                << std::endl;
+      std::cout << "Not writing " << dataset_name << " because it exists." << std::endl;
       return;
     } catch (H5::Exception &) {
     }
 
     // Actual write.
     try {
-      auto dset = file.createDataSet(dataset_name, comp_type, dspace);
+      auto dset = file.createDataSet(h5_dataset_name, comp_type, dspace);
       dset.write(&corr[0], comp_type);
     } catch (H5::Exception &e) {
       e.printError();

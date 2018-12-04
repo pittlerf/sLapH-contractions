@@ -533,7 +533,7 @@ void init_lookup_tables(GlobalData &gd) {
 
         gd.correlator_requests_map[correlator.type];
       } else {
-        CorrelatorRequest correlator_request;
+        CorrelatorRequest correlator_request{{}, hdf5_dataset_name};
         for (auto const &trace_request_factory : trace_request_factories) {
           auto const trace_request = trace_request_factory.make(
               gd.trace_indices_map[trace_request_factory.name()], ql_ids);

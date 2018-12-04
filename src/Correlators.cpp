@@ -58,12 +58,8 @@ void contract(const ssize_t Lt,
   for (auto const &c_look : correlator_requests_map) {
     auto const name = c_look.first;
     if (!corr_lookup.at(name).empty()) {
-      diagrams.emplace_back(corr_lookup.at(name),
-                            correlator_requests_map.at(name),
-                            output_path,
-                            output_filename,
-                            Lt,
-                            name);
+      diagrams.emplace_back(
+          correlator_requests_map.at(name), output_path, output_filename, Lt, name);
     }
   }
 
@@ -103,7 +99,7 @@ void contract(const ssize_t Lt,
 
       // Build the diagrams.
       for (auto &diagram : diagrams) {
-        if (diagram.corr_lookup().empty()) {
+        if (diagram.correlator_requests().empty()) {
           continue;
         }
         LT_CORRELATOR_START;

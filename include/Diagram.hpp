@@ -100,34 +100,31 @@ struct DiagramParts {
 
 class Diagram {
  public:
-  Diagram(std::vector<DiagramIndex> const &corr_lookup,
-          std::vector<CorrelatorRequest> const &corr_requests,
+  Diagram(std::vector<CorrelatorRequest> const &correlator_requests,
           std::string const &output_path,
           std::string const &output_filename,
           int const Lt,
           std::string const &name)
-      : corr_lookup_(corr_lookup),
-        corr_requests_(corr_requests),
+      : correlator_requests_(correlator_requests),
         output_path_(output_path),
         output_filename_(output_filename),
         Lt_(Lt),
-        correlator_(Lt,
-                    std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
+        correlator_(
+            Lt,
+            std::vector<ComplexProduct>(correlator_requests.size(), ComplexProduct{})),
         c_(omp_get_max_threads(),
-           std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
+           std::vector<ComplexProduct>(correlator_requests.size(), ComplexProduct{})),
         mutexes_(Lt),
         name_(name) {}
 
-  std::vector<DiagramIndex> const &corr_lookup() const { return corr_lookup_; }
-
   std::vector<CorrelatorRequest> const &correlator_requests() const {
-    return corr_requests_;
+    return correlator_requests_;
   }
 
   void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
     int const tid = omp_get_thread_num();
 
-    for (int i = 0; i != ssize(corr_lookup()); ++i) {
+    for (int i = 0; i != ssize(correlator_requests()); ++i) {
       c_[tid][i] = ComplexProduct{};
     }
 
@@ -136,7 +133,7 @@ class Diagram {
     {
       std::lock_guard<std::mutex> lock(mutexes_[t]);
 
-      for (int i = 0; i != ssize(corr_lookup()); ++i) {
+      for (int i = 0; i != ssize(correlator_requests()); ++i) {
         correlator_[t][i] += c_[tid][i];
       }
     }
@@ -151,12 +148,12 @@ class Diagram {
 
     std::vector<ComplexProduct> one_corr(Lt_);
 
-    for (int i = 0; i != ssize(corr_lookup()); ++i) {
+    for (int i = 0; i != ssize(correlator_requests()); ++i) {
       for (int t = 0; t < Lt_; ++t) {
         one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
       }
       // Write data to file.
-      filehandle.write(one_corr, corr_lookup()[i]);
+      filehandle.write(one_corr, correlator_requests()[i].hdf5_dataset_name);
     }
   }
 
@@ -166,8 +163,7 @@ class Diagram {
                      BlockIterator const &slice_pair,
                      DiagramParts &q);
 
-  std::vector<DiagramIndex> const &corr_lookup_;
-  std::vector<CorrelatorRequest> const &corr_requests_;
+  std::vector<CorrelatorRequest> const &correlator_requests_;
 
   std::string const &output_path_;
   std::string const &output_filename_;
