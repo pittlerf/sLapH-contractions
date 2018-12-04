@@ -16,9 +16,10 @@ void C2c::assemble_impl(std::vector<Complex> &c,
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     auto const &trace_request0 = request.value().trace_requests.at(0);
     auto const &locations0 = trace_request0.locations;
-    auto const &key0 = make_key<2>(slice_pair, locations0);
 
-    auto const &x0 = q.trQ0Q2[key0].at(trace_request0.tr_id);
+    auto const &x0 = q.trace_factories[trace_request0.tr_name]
+                         ->get(slice_pair, locations0)
+                         .at(trace_request0.tr_id);
     c.at(request.index()) +=
         std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
         static_cast<double>(x0.size());
