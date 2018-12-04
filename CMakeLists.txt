@@ -8,9 +8,13 @@ project(sLapH-contractions CXX C)
 set(CMAKE_CXX_STANDARD 11)
 
 add_library(lcontract
+
   src/Correlators.cpp
   src/Diagram.cpp
   src/DiagramSpec.cpp
+  src/DilutedFactor.cpp
+  src/DilutedFactorY.cpp
+  src/DilutedTraceFactory.cpp
   src/dilution-iterator.cpp
   src/EigenVector.cpp
   src/Gamma.cpp
@@ -19,16 +23,15 @@ add_library(lcontract
   src/global_data_build_IO_names.cpp
   src/global_data_input_handling.cpp
   src/global_data_input_handling_utils.cpp
-  src/init_lookup_tables.cpp
   src/h5-wrapper.cpp
+  src/init_lookup_tables.cpp
   src/io_utils.cpp
   src/OperatorFactory.cpp
   src/Perambulator.cpp
-  src/DilutedFactorY.cpp
-  src/DilutedTraceFactory.cpp
   src/RandomVector.cpp
   src/ranlxs.cpp
   src/StopWatch.cpp
+
   )
 
 target_include_directories(lcontract PUBLIC "include")

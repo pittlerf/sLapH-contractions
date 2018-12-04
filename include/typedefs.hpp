@@ -14,29 +14,27 @@
 #include <vector>
 
 int constexpr max_rnd_ids = 10;
+size_t constexpr max_used_rnd_ids = 6;
 
 using RndId = int8_t;
 
 typedef std::complex<double> Complex;
 
-template <size_t rvecs>
-using SmallVectorRndId = boost::container::static_vector<RndId, rvecs>;
+using SmallVectorRndId = boost::container::static_vector<RndId, max_used_rnd_ids>;
 
-template <size_t rvecs>
 struct DilutedFactor {
   using Data = Eigen::MatrixXcd;
 
   Data data;
   std::pair<RndId, RndId> ric;
-  boost::container::static_vector<RndId, rvecs> used_rnd_ids;
+  SmallVectorRndId used_rnd_ids;
 };
 
-template <size_t rvecs>
 struct DilutedTrace {
   using Data = Complex;
 
   Data data;
-  boost::container::static_vector<RndId, rvecs> used_rnd_ids;
+  SmallVectorRndId used_rnd_ids;
 };
 
 /** Data type for momentum */

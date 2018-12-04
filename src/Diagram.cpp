@@ -109,12 +109,12 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
 void C3c::assemble_impl(std::vector<Complex> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
-  DilutedFactorsMap<2, 1> L1;
+  DilutedFactorsMap<2> L1;
 
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
   for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(
+    multiply<1, 1>(
         L1,
         std::get<0>(ids),
         q.q0[{slice_pair.source()}],
@@ -310,16 +310,16 @@ void C4cB::assemble_impl(std::vector<Complex> &c,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
-  DilutedFactorsMap<2, 1> L1;
-  DilutedFactorsMap<2, 1> L2;
+  DilutedFactorsMap<2> L1;
+  DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(
+    multiply<1, 1>(
         L1,
         ids[0],
         q.q0[{slice_pair.source()}],
         q.q2[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
 
-    multiply<1, 1, 0, 0>(
+    multiply<1, 1>(
         L2,
         ids[1],
         q.q0[{slice_pair.sink()}],
@@ -362,15 +362,15 @@ void C40B::assemble_impl(std::vector<Complex> &c,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
-  DilutedFactorsMap<2, 1> L1;
-  DilutedFactorsMap<2, 1> L2;
+  DilutedFactorsMap<2> L1;
+  DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(L1,
+    multiply<1, 1>(L1,
                          ids[0],
                          q.q1[{slice_pair.source(), slice_pair.source_block()}],
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
 
-    multiply<1, 1, 0, 0>(L2,
+    multiply<1, 1>(L2,
                          ids[1],
                          q.q1[{slice_pair.sink(), slice_pair.sink_block()}],
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
@@ -412,15 +412,15 @@ void C4cC::assemble_impl(std::vector<Complex> &c,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
-  DilutedFactorsMap<2, 1> L1;
-  DilutedFactorsMap<2, 1> L2;
+  DilutedFactorsMap<2> L1;
+  DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(
+    multiply<1, 1>(
         L1,
         ids[0],
         q.q0[{slice_pair.sink()}],
         q.q2[{slice_pair.sink_block(), slice_pair.source(), slice_pair.sink_block()}]);
-    multiply<1, 1, 0, 0>(
+    multiply<1, 1>(
         L2,
         ids[1],
         q.q0[{slice_pair.sink()}],
@@ -463,15 +463,15 @@ void C40C::assemble_impl(std::vector<Complex> &c,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
-  DilutedFactorsMap<2, 1> L1;
-  DilutedFactorsMap<2, 1> L2;
+  DilutedFactorsMap<2> L1;
+  DilutedFactorsMap<2> L2;
   for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1, 0, 0>(L1,
+    multiply<1, 1>(L1,
                          ids[0],
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}],
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
 
-    multiply<1, 1, 0, 0>(L2,
+    multiply<1, 1>(L2,
                          ids[1],
                          q.q1[{slice_pair.sink(), slice_pair.source_block()}],
                          q.q1[{slice_pair.source(), slice_pair.sink_block()}]);

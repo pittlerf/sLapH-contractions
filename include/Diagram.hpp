@@ -62,18 +62,17 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q2> q2;
 
   //< Temporal memory for tr(Q1)
-  DilutedTrace1Factory<DilutedFactorType::Q1, 1> trQ1;
+  DilutedTrace1Factory<DilutedFactorType::Q1> trQ1;
 
   //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1, 2> trQ1Q1;
+  DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1> trQ1Q1;
 
   //< Temporal memory for tr(Q2*rVdaggerVr)
-  DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2, 2> trQ0Q2;
+  DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2> trQ0Q2;
 
   DilutedTrace3Factory<DilutedFactorType::Q1,
                        DilutedFactorType::Q1,
-                       DilutedFactorType::Q1,
-                       3>
+                       DilutedFactorType::Q1>
       trQ1Q1Q1;
 };
 

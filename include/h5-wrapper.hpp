@@ -2,6 +2,8 @@
 
 #include "typedefs.hpp"
 
+#include "DilutedFactor.hpp"
+
 #include <H5Cpp.h>
 #include <omp.h>
 #include <boost/filesystem.hpp>
@@ -50,11 +52,10 @@ void write_heterogenious(H5::Group &handle, Payload const &payload);
 template <typename T>
 H5::CompType make_comp_type();
 
-template <size_t rvecs>
-void write_heterogenious(
-    H5::Group &group,
-    boost::detail::multi_array::sub_array<std::vector<DilutedTrace<rvecs>>, 1ul> const
-        &payload) {
+#if 0
+void write_heterogenious(H5::Group &group,
+                         boost::detail::multi_array::sub_array<std::vector<DilutedTrace>,
+                                                               1ul> const &payload) {
   std::map<std::string, std::vector<Complex>> data;
 
   for (int t = 0; t < payload.size(); ++t) {
@@ -95,6 +96,7 @@ void write_heterogenious(
     data_set.write(pair.second.data(), comp_type);
   }
 }
+#endif
 
 template <typename Numeric>
 H5::CompType comp_type_factory();
