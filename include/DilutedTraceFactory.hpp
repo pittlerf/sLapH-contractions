@@ -51,7 +51,7 @@ class DilutedTrace1Factory : public AbstractDilutedTraceFactory {
 
   DilutedTracesMap const &get(BlockIterator const &slice_pair,
                               std::vector<Location> const &locations) override {
-    assert(ssize(locations.size()) == num_times);
+    assert(ssize(locations) == num_times);
     auto const &key = make_key<num_times>(slice_pair, locations);
     return (*this)[key];
   }
@@ -95,7 +95,7 @@ class DilutedTrace2Factory : public AbstractDilutedTraceFactory {
 
   DilutedTracesMap const &get(BlockIterator const &slice_pair,
                               std::vector<Location> const &locations) override {
-    assert(ssize(locations.size()) == num_times);
+    assert(ssize(locations) == num_times);
     auto const &key = make_key<num_times>(slice_pair, locations);
     return (*this)[key];
   }
@@ -146,7 +146,7 @@ class DilutedTrace3Factory : public AbstractDilutedTraceFactory {
 
   DilutedTracesMap const &get(BlockIterator const &slice_pair,
                               std::vector<Location> const &locations) override {
-    assert(ssize(locations.size()) == num_times);
+    assert(ssize(locations) == num_times);
     auto const &key = make_key<num_times>(slice_pair, locations);
     return (*this)[key];
   }
@@ -204,7 +204,7 @@ class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
 
   DilutedTracesMap const &get(BlockIterator const &slice_pair,
                               std::vector<Location> const &locations) override {
-    assert(ssize(locations.size()) == num_times);
+    assert(ssize(locations) == num_times);
     auto const &key = make_key<num_times>(slice_pair, locations);
     return (*this)[key];
   }

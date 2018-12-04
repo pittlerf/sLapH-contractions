@@ -2,8 +2,8 @@
 
 ComplexProduct inner_product(DilutedTraces const &left_vec,
                              DilutedTraces const &right_vec) {
-  assert(left_vec.size() > 0);
-  assert(right_vec.size() > 0);
+  assert(left_vec.traces.size() > 0);
+  assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
 
