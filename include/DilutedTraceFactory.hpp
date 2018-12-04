@@ -4,8 +4,27 @@
 
 #include <boost/multi_array.hpp>
 
+int get_time(BlockIterator const &slice_pair, Location const loc);
+
+template <int num_times>
+std::array<int, num_times> make_key(BlockIterator const &slice_pair,
+                                    std::vector<Location> const &locations) {
+  std::array<int, num_times> key;
+  std::transform(std::begin(locations),
+                 std::end(locations),
+                 std::begin(key),
+                 [&slice_pair](Location const loc) { return get_time(slice_pair, loc); });
+  return key;
+}
+
+class AbstractDilutedTraceFactory {
+ public:
+  virtual DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                                      std::vector<Location> const &locations) = 0;
+};
+
 template <DilutedFactorType qlt>
-class DilutedTrace1Factory {
+class DilutedTrace1Factory : public AbstractDilutedTraceFactory {
  public:
   static constexpr int num_times = DilutedFactorTypeTraits<qlt>::num_times - 1;
 
@@ -25,6 +44,13 @@ class DilutedTrace1Factory {
     return Tr.at(key);
   }
 
+  DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                              std::vector<Location> const &locations) override {
+    assert(ssize(locations.size()) == num_times);
+    auto const &key = make_key<num_times>(slice_pair, locations);
+    return (*this)[key];
+  }
+
   void build(Key const &time_key);
 
   void clear() { return; }
@@ -37,7 +63,7 @@ class DilutedTrace1Factory {
 };
 
 template <DilutedFactorType qlt1, DilutedFactorType qlt2>
-class DilutedTrace2Factory {
+class DilutedTrace2Factory : public AbstractDilutedTraceFactory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
@@ -62,6 +88,13 @@ class DilutedTrace2Factory {
     return Tr.at(key);
   }
 
+  DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                              std::vector<Location> const &locations) override {
+    assert(ssize(locations.size()) == num_times);
+    auto const &key = make_key<num_times>(slice_pair, locations);
+    return (*this)[key];
+  }
+
   void build(Key const &time_key);
 
   void clear() { Tr.clear(); }
@@ -75,7 +108,7 @@ class DilutedTrace2Factory {
 };
 
 template <DilutedFactorType qlt1, DilutedFactorType qlt2, DilutedFactorType qlt3>
-class DilutedTrace3Factory {
+class DilutedTrace3Factory : public AbstractDilutedTraceFactory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
@@ -106,6 +139,13 @@ class DilutedTrace3Factory {
     return Tr.at(key);
   }
 
+  DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                              std::vector<Location> const &locations) override {
+    assert(ssize(locations.size()) == num_times);
+    auto const &key = make_key<num_times>(slice_pair, locations);
+    return (*this)[key];
+  }
+
   void build(Key const &time_key);
 
   void clear() { Tr.clear(); }
@@ -123,7 +163,7 @@ template <DilutedFactorType qlt1,
           DilutedFactorType qlt2,
           DilutedFactorType qlt3,
           DilutedFactorType qlt4>
-class DilutedTrace4Factory {
+class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
@@ -155,6 +195,13 @@ class DilutedTrace4Factory {
     }
 
     return Tr.at(key);
+  }
+
+  DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                              std::vector<Location> const &locations) override {
+    assert(ssize(locations.size()) == num_times);
+    auto const &key = make_key<num_times>(slice_pair, locations);
+    return (*this)[key];
   }
 
   void build(Key const &time_key);

@@ -1,5 +1,13 @@
 #include "DilutedTraceFactory.hpp"
 
+int get_time(BlockIterator const &slice_pair, Location const loc) {
+  if (loc == Location::source) {
+    return slice_pair.source();
+  } else {
+    return slice_pair.sink();
+  }
+}
+
 template <>
 void DilutedTrace1Factory<DilutedFactorType::Q1>::build(Key const &time_key) {
   auto t = time_key[0];

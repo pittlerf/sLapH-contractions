@@ -5,25 +5,6 @@
 #include <omp.h>
 #include <boost/range/adaptor/indexed.hpp>
 
-int get(BlockIterator const &slice_pair, Location const loc) {
-  if (loc == Location::source) {
-    return slice_pair.source();
-  } else {
-    return slice_pair.sink();
-  }
-}
-
-template <int num_times>
-std::array<int, num_times> make_key(BlockIterator const &slice_pair,
-                                    std::vector<Location> const &locations) {
-  std::array<int, num_times> key;
-  std::transform(std::begin(locations),
-                 std::end(locations),
-                 std::begin(key),
-                 [&slice_pair](Location const loc) { return get(slice_pair, loc); });
-  return key;
-}
-
 /*****************************************************************************/
 /*                                    C2c                                    */
 /*****************************************************************************/
