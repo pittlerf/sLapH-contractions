@@ -19,8 +19,12 @@ std::array<int, num_times> make_key(BlockIterator const &slice_pair,
 
 class AbstractDilutedTraceFactory {
  public:
+  virtual ~AbstractDilutedTraceFactory() {}
+
   virtual DilutedTracesMap const &get(BlockIterator const &slice_pair,
                                       std::vector<Location> const &locations) = 0;
+
+  virtual void clear() = 0;
 };
 
 template <DilutedFactorType qlt>
@@ -53,7 +57,7 @@ class DilutedTrace1Factory : public AbstractDilutedTraceFactory {
 
   void build(Key const &time_key);
 
-  void clear() { return; }
+  void clear() override { return; }
 
  private:
   DilutedFactorFactory<qlt> &df;
@@ -97,7 +101,7 @@ class DilutedTrace2Factory : public AbstractDilutedTraceFactory {
 
   void build(Key const &time_key);
 
-  void clear() { Tr.clear(); }
+  void clear() override { Tr.clear(); }
 
  private:
   DilutedFactorFactory<qlt1> &df1;
@@ -148,7 +152,7 @@ class DilutedTrace3Factory : public AbstractDilutedTraceFactory {
 
   void build(Key const &time_key);
 
-  void clear() { Tr.clear(); }
+  void clear() override { Tr.clear(); }
 
  private:
   DilutedFactorFactory<qlt1> &df1;
@@ -206,7 +210,7 @@ class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
 
   void build(Key const &time_key);
 
-  void clear() { Tr.clear(); }
+  void clear() override { Tr.clear(); }
 
  private:
   DilutedFactorFactory<qlt1> &df1;
