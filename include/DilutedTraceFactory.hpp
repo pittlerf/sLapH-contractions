@@ -5,7 +5,8 @@
 #include <boost/multi_array.hpp>
 
 template <DilutedFactorType qlt>
-struct DilutedTrace1Factory {
+class DilutedTrace1Factory {
+ public:
   static constexpr int num_times = DilutedFactorTypeTraits<qlt>::num_times - 1;
 
   using Key = std::array<int, num_times>;
@@ -36,7 +37,7 @@ struct DilutedTrace1Factory {
 };
 
 template <DilutedFactorType qlt1, DilutedFactorType qlt2>
-struct DilutedTrace2Factory {
+class DilutedTrace2Factory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
@@ -74,7 +75,7 @@ struct DilutedTrace2Factory {
 };
 
 template <DilutedFactorType qlt1, DilutedFactorType qlt2, DilutedFactorType qlt3>
-struct DilutedTrace3Factory {
+class DilutedTrace3Factory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
@@ -122,7 +123,7 @@ template <DilutedFactorType qlt1,
           DilutedFactorType qlt2,
           DilutedFactorType qlt3,
           DilutedFactorType qlt4>
-struct DilutedTrace4Factory {
+class DilutedTrace4Factory {
  public:
   /** num_times is the sum of times of contained factors -1 for each continuity
    *  condition of the quarkline diagram
