@@ -117,55 +117,6 @@ void C4cB::assemble_impl(std::vector<ComplexProduct> &c,
 }
 
 /*****************************************************************************/
-/*                                   C40B                                    */
-/*****************************************************************************/
-
-C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
-           std::vector<CorrelatorRequest> const &corr_requests,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
-  quantum_num_ids_.reserve(corr_lookup.size());
-
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids_.push_back(
-        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
-  }
-}
-
-void C40B::assemble_impl(std::vector<ComplexProduct> &c,
-                         BlockIterator const &slice_pair,
-                         DiagramParts &q) {
-  LT_DIAGRAMS_DECLARE;
-  LT_DIAGRAMS_START;
-  DilutedFactorsMap<2> L1;
-  DilutedFactorsMap<2> L2;
-  for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1>(L1,
-                   ids[0],
-                   q.q1[{slice_pair.source(), slice_pair.source_block()}],
-                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
-
-    multiply<1, 1>(L2,
-                   ids[1],
-                   q.q1[{slice_pair.sink(), slice_pair.sink_block()}],
-                   q.q1[{slice_pair.sink(), slice_pair.source_block()}]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C40B::assemble_impl] multiply");
-
-  LT_DIAGRAMS_START;
-  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
-    auto const &ids = quantum_num_ids_[i];
-    c[i] += trace(L1[ids[0]], L2[ids[1]]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C40B::assemble_impl] trace");
-}
-
-/*****************************************************************************/
 /*                                   C4cC                                    */
 /*****************************************************************************/
 
@@ -213,53 +164,4 @@ void C4cC::assemble_impl(std::vector<ComplexProduct> &c,
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT("[C4cC::assemble_impl] trace");
-}
-
-/*****************************************************************************/
-/*                                   C40C                                    */
-/*****************************************************************************/
-
-C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
-           std::vector<CorrelatorRequest> const &corr_requests,
-           std::string const &output_path,
-           std::string const &output_filename,
-           int const Lt)
-    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
-  quantum_num_ids_.reserve(corr_lookup.size());
-
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids_.push_back(
-        {std::array<ssize_t, 2>{c_look.lookup[3], c_look.lookup[0]},
-         std::array<ssize_t, 2>{c_look.lookup[1], c_look.lookup[2]}});
-  }
-}
-
-void C40C::assemble_impl(std::vector<ComplexProduct> &c,
-                         BlockIterator const &slice_pair,
-                         DiagramParts &q) {
-  LT_DIAGRAMS_DECLARE;
-  LT_DIAGRAMS_START;
-  DilutedFactorsMap<2> L1;
-  DilutedFactorsMap<2> L2;
-  for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1>(L1,
-                   ids[0],
-                   q.q1[{slice_pair.sink(), slice_pair.source_block()}],
-                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
-
-    multiply<1, 1>(L2,
-                   ids[1],
-                   q.q1[{slice_pair.sink(), slice_pair.source_block()}],
-                   q.q1[{slice_pair.source(), slice_pair.sink_block()}]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C40C::assemble_impl] multiply");
-
-  LT_DIAGRAMS_START;
-  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
-    auto const &ids = quantum_num_ids_[i];
-    c[i] += trace(L1[ids[0]], L2[ids[1]]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C40C::assemble_impl] trace");
 }

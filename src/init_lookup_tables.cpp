@@ -450,7 +450,7 @@ Factories make_trace_request_factories(DiagramSpec const &spec,
     auto const name = name_ss.str();
 
     if (name == "trQ1" || name == "trQ0Q2" || name == "trQ1Q1" || name == "trQ1Q1Q1" ||
-        name == "trQ1Q0Q2") {
+        name == "trQ1Q0Q2" || name == "trQ1Q1Q1Q1") {
       auto const &locations = get_locations(spec, vertices);
       f.push_back(TraceRequestFactory{name, vertices, locations});
     }

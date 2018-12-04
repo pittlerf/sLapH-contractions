@@ -46,12 +46,14 @@ struct DiagramParts {
         trQ1Q1(q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme),
         trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
         trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme),
-        trQ1Q0Q2(q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme) {
+        trQ1Q0Q2(q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme),
+        trQ1Q1Q1Q1(q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme) {
     trace_factories["trQ1"] = &trQ1;
     trace_factories["trQ1Q1"] = &trQ1Q1;
     trace_factories["trQ0Q2"] = &trQ0Q2;
     trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
     trace_factories["trQ1Q0Q2"] = &trQ1Q0Q2;
+    trace_factories["trQ1Q1Q1Q1"] = &trQ1Q1Q1Q1;
   }
 
   void clear() {
@@ -86,6 +88,12 @@ struct DiagramParts {
                        DilutedFactorType::Q0,
                        DilutedFactorType::Q2>
       trQ1Q0Q2;
+
+  DilutedTrace4Factory<DilutedFactorType::Q1,
+                       DilutedFactorType::Q1,
+                       DilutedFactorType::Q1,
+                       DilutedFactorType::Q1>
+      trQ1Q1Q1Q1;
 
   std::map<std::string, AbstractDilutedTraceFactory *> trace_factories;
 };
@@ -219,24 +227,6 @@ class C4cB : public Diagram {
   std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
 };
 
-class C40B : public Diagram {
- public:
-  C40B(std::vector<DiagramIndex> const &corr_lookup,
-       std::vector<CorrelatorRequest> const &corr_requests,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
-
-  char const *name() const override { return "C40B"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-
-  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
-};
-
 class C4cC : public Diagram {
  public:
   C4cC(std::vector<DiagramIndex> const &corr_lookup,
@@ -246,24 +236,6 @@ class C4cC : public Diagram {
        int const Lt);
 
   char const *name() const override { return "C4cC"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-
-  std::vector<std::array<std::array<ssize_t, 2>, 2>> quantum_num_ids_;
-};
-
-class C40C : public Diagram {
- public:
-  C40C(std::vector<DiagramIndex> const &corr_lookup,
-       std::vector<CorrelatorRequest> const &corr_requests,
-       std::string const &output_path,
-       std::string const &output_filename,
-       int const Lt);
-
-  char const *name() const override { return "C40C"; }
 
  private:
   void assemble_impl(std::vector<ComplexProduct> &c,

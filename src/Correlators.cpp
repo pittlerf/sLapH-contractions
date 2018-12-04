@@ -69,8 +69,18 @@ void contract(const ssize_t Lt,
               std::string const output_filename) {
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
-  std::vector<char const *> general_diagram_names{
-      "C2c", "C20", "C20V", "C3c", "C30", "C30V", "C4cD", "C4cV", "C40D", "C40V"};
+  std::vector<char const *> general_diagram_names{"C20",
+                                                  "C20V",
+                                                  "C2c",
+                                                  "C30",
+                                                  "C30V",
+                                                  "C3c",
+                                                  "C40B",
+                                                  "C40C",
+                                                  "C40D",
+                                                  "C40V",
+                                                  "C4cD",
+                                                  "C4cV"};
 
   for (auto const &name : general_diagram_names) {
     if (!corr_lookup.at(name).empty()) {
@@ -88,18 +98,6 @@ void contract(const ssize_t Lt,
   if (!corr_lookup.at("C4cC").empty())
     diagrams.emplace_back(new C4cC(corr_lookup.at("C4cC"),
                                    correlator_requests_map.at("C4cC"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C40B").empty())
-    diagrams.emplace_back(new C40B(corr_lookup.at("C40B"),
-                                   correlator_requests_map.at("C40B"),
-                                   output_path,
-                                   output_filename,
-                                   Lt));
-  if (!corr_lookup.at("C40C").empty())
-    diagrams.emplace_back(new C40C(corr_lookup.at("C40C"),
-                                   correlator_requests_map.at("C40C"),
                                    output_path,
                                    output_filename,
                                    Lt));
