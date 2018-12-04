@@ -86,8 +86,20 @@ struct DiagramParts {
 class Diagram {
  public:
   Diagram(std::vector<DiagramIndex> const &corr_lookup,
-          std::vector<CorrelatorRequest> const &corr_requests)
-      : corr_lookup_(corr_lookup), corr_requests_(corr_requests) {}
+          std::vector<CorrelatorRequest> const &corr_requests,
+          std::string const &output_path,
+          std::string const &output_filename,
+          int const Lt)
+      : corr_lookup_(corr_lookup),
+        corr_requests_(corr_requests),
+        output_path_(output_path),
+        output_filename_(output_filename),
+        Lt_(Lt),
+        correlator_(Lt,
+                    std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
+        c_(omp_get_max_threads(),
+           std::vector<ComplexProduct>(corr_lookup.size(), ComplexProduct{})),
+        mutexes_(Lt) {}
 
   virtual ~Diagram() {}
 
@@ -99,40 +111,11 @@ class Diagram {
     return corr_requests_;
   }
 
-  virtual void assemble(int const t,
-                        BlockIterator const &slice_pair,
-                        DiagramParts &q) = 0;
-
-  virtual void write() = 0;
-
- private:
-  std::vector<DiagramIndex> const &corr_lookup_;
-  std::vector<CorrelatorRequest> const &corr_requests_;
-};
-
-template <typename Numeric_>
-class DiagramNumeric : public Diagram {
- public:
-  using Numeric = Numeric_;
-
-  DiagramNumeric(std::vector<DiagramIndex> const &_corr_lookup,
-                 std::vector<CorrelatorRequest> const &corr_requests,
-                 std::string const &output_path,
-                 std::string const &output_filename,
-                 int const Lt)
-      : Diagram(_corr_lookup, corr_requests),
-        output_path_(output_path),
-        output_filename_(output_filename),
-        Lt_(Lt),
-        correlator_(Lt, std::vector<Numeric>(corr_lookup().size(), Numeric{})),
-        c_(omp_get_max_threads(), std::vector<Numeric>(corr_lookup().size(), Numeric{})),
-        mutexes_(Lt) {}
-
-  void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) override {
+  void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
     int const tid = omp_get_thread_num();
 
     for (int i = 0; i != ssize(corr_lookup()); ++i) {
-      c_[tid][i] = Numeric{};
+      c_[tid][i] = ComplexProduct{};
     }
 
     assemble_impl(c_.at(tid), slice_pair, q);
@@ -146,14 +129,14 @@ class DiagramNumeric : public Diagram {
     }
   }
 
-  void write() override {
+  void write() {
     assert(output_path_ != "");
     assert(output_filename_ != "");
 
     WriteHDF5Correlator filehandle(
-        output_path_, name(), output_filename_, make_comp_type<Numeric>());
+        output_path_, name(), output_filename_, make_comp_type<ComplexProduct>());
 
-    std::vector<Numeric> one_corr(Lt_);
+    std::vector<ComplexProduct> one_corr(Lt_);
 
     for (int i = 0; i != ssize(corr_lookup()); ++i) {
       for (int t = 0; t < Lt_; ++t) {
@@ -165,9 +148,12 @@ class DiagramNumeric : public Diagram {
   }
 
  private:
-  virtual void assemble_impl(std::vector<Numeric> &c,
+  virtual void assemble_impl(std::vector<ComplexProduct> &c,
                              BlockIterator const &slice_pair,
                              DiagramParts &q) = 0;
+
+  std::vector<DiagramIndex> const &corr_lookup_;
+  std::vector<CorrelatorRequest> const &corr_requests_;
 
   std::string const &output_path_;
   std::string const &output_filename_;
@@ -175,10 +161,10 @@ class DiagramNumeric : public Diagram {
   int const Lt_;
 
   /** OpenMP-shared correlators, indices are (1) time and (2) correlator id. */
-  std::vector<std::vector<Numeric>> correlator_;
+  std::vector<std::vector<ComplexProduct>> correlator_;
 
   /** OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
-  std::vector<std::vector<Numeric>> c_;
+  std::vector<std::vector<ComplexProduct>> c_;
 
   std::vector<std::mutex> mutexes_;
 };
@@ -193,9 +179,9 @@ class DiagramNumeric : public Diagram {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C2c : public DiagramNumeric<ComplexProduct> {
+class C2c : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C2c"; }
 
@@ -211,9 +197,9 @@ class C2c : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C20 : public DiagramNumeric<ComplexProduct> {
+class C20 : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C20"; }
 
@@ -229,9 +215,9 @@ class C20 : public DiagramNumeric<ComplexProduct> {
  *        \langle D_\mathtt{Q1}^{-1}(t'|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C20V : public DiagramNumeric<ComplexProduct> {
+class C20V : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C20V"; }
 
@@ -252,7 +238,7 @@ class C20V : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C3c : public DiagramNumeric<ComplexProduct> {
+class C3c : public Diagram {
  public:
   C3c(std::vector<DiagramIndex> const &corr_lookup,
       std::vector<CorrelatorRequest> const &corr_requests,
@@ -278,9 +264,9 @@ class C3c : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C30 : public DiagramNumeric<ComplexProduct> {
+class C30 : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C30"; }
 
@@ -290,9 +276,9 @@ class C30 : public DiagramNumeric<ComplexProduct> {
                      DiagramParts &q) override;
 };
 
-class C30V : public DiagramNumeric<ComplexProduct> {
+class C30V : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C30V"; }
 
@@ -314,9 +300,9 @@ class C30V : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cD : public DiagramNumeric<ComplexProduct> {
+class C4cD : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C4cD"; }
 
@@ -334,9 +320,9 @@ class C4cD : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40D : public DiagramNumeric<ComplexProduct> {
+class C40D : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C40D"; }
 
@@ -354,9 +340,9 @@ class C40D : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cV : public DiagramNumeric<ComplexProduct> {
+class C4cV : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C4cV"; }
 
@@ -374,9 +360,9 @@ class C4cV : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t'|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40V : public DiagramNumeric<ComplexProduct> {
+class C40V : public Diagram {
  public:
-  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
+  using Diagram::Diagram;
 
   char const *name() const override { return "C40V"; }
 
@@ -394,7 +380,7 @@ class C40V : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cB : public DiagramNumeric<ComplexProduct> {
+class C4cB : public Diagram {
  public:
   C4cB(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -420,7 +406,7 @@ class C4cB : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40B : public DiagramNumeric<ComplexProduct> {
+class C40B : public Diagram {
  public:
   C40B(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -446,7 +432,7 @@ class C40B : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cC : public DiagramNumeric<ComplexProduct> {
+class C4cC : public Diagram {
  public:
   C4cC(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -472,7 +458,7 @@ class C4cC : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40C : public DiagramNumeric<ComplexProduct> {
+class C40C : public Diagram {
  public:
   C40C(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,

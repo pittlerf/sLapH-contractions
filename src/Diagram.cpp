@@ -93,7 +93,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : DiagramNumeric<ComplexProduct>(
+    : Diagram(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -246,7 +246,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<ComplexProduct>(
+    : Diagram(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -298,7 +298,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<ComplexProduct>(
+    : Diagram(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -348,7 +348,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<ComplexProduct>(
+    : Diagram(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -399,7 +399,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<ComplexProduct>(
+    : Diagram(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
