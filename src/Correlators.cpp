@@ -55,22 +55,8 @@ void contract(const ssize_t Lt,
               std::string const output_filename) {
   std::vector<Diagram> diagrams;
 
-  std::vector<char const *> general_diagram_names{"C20",
-                                                  "C20V",
-                                                  "C2c",
-                                                  "C30",
-                                                  "C30V",
-                                                  "C3c",
-                                                  "C40B",
-                                                  "C40C",
-                                                  "C40D",
-                                                  "C40V",
-                                                  "C4cB",
-                                                  "C4cC",
-                                                  "C4cD",
-                                                  "C4cV"};
-
-  for (auto const &name : general_diagram_names) {
+  for (auto const &c_look : corr_lookup) {
+    auto const name = c_look.first;
     if (!corr_lookup.at(name).empty()) {
       diagrams.emplace_back(corr_lookup.at(name),
                             correlator_requests_map.at(name),

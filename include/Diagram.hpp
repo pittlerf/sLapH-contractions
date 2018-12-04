@@ -105,7 +105,7 @@ class Diagram {
           std::string const &output_path,
           std::string const &output_filename,
           int const Lt,
-          char const *name)
+          std::string const &name)
       : corr_lookup_(corr_lookup),
         corr_requests_(corr_requests),
         output_path_(output_path),
@@ -160,7 +160,7 @@ class Diagram {
     }
   }
 
-  char const *name() const { return name_; }
+  std::string const &name() const { return name_; }
 
   void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
@@ -182,5 +182,5 @@ class Diagram {
 
   std::vector<std::mutex> mutexes_;
 
-  char const *name_;
+  std::string name_;
 };
