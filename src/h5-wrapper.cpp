@@ -15,22 +15,6 @@ void create_folder(std::string const &path) {
   }
 }
 
-struct Complex1Times {
-  int t;
-  double re;
-  double im;
-};
-
-template <>
-H5::CompType make_comp_type<Complex>() {
-  H5::CompType cmplx_w(2 * sizeof(double));
-  auto type = H5::PredType::NATIVE_DOUBLE;
-  cmplx_w.insertMember("re", HOFFSET(complex_t, re), type);
-  cmplx_w.insertMember("im", HOFFSET(complex_t, im), type);
-
-  return cmplx_w;
-}
-
 template <>
 H5::CompType make_comp_type<ComplexProduct>() {
   H5::CompType cmplxcmplx_w(4 * sizeof(double));
@@ -56,11 +40,6 @@ H5::CompType make_comp_type<Complex1Times>() {
   return comp_type;
 }
 #endif
-
-template <>
-void write_homogenious(H5::DataSet &data_set, std::vector<Complex> const &payload) {
-  data_set.write(payload.data(), make_comp_type<Complex>());
-}
 
 template <>
 void write_homogenious(H5::DataSet &data_set,

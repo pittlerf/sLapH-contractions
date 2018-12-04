@@ -23,3 +23,5 @@ ComplexProduct operator*(ComplexProduct const &left, ComplexProduct const &right
 ComplexProduct operator/(ComplexProduct const &left, double const &right);
 
 ComplexProduct make_complex_product(Complex const &other, bool const ignore_imag);
+
+ComplexProduct const complex_product_zero{{0.0, 0.0}, {0.0, 0.0}};

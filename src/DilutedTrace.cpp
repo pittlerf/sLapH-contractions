@@ -7,7 +7,7 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
 
   int num_summands = 0;
 
-  ComplexProduct result{{0.0, 0.0}, {0.0, 0.0}};
+  ComplexProduct result = complex_product_zero;
 
   for (auto const &left : left_vec.traces) {
     Complex right_sum(0.0, 0.0);

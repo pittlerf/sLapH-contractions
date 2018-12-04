@@ -193,14 +193,14 @@ class DiagramNumeric : public Diagram {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C2c : public DiagramNumeric<Complex> {
+class C2c : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<Complex>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C2c"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -211,14 +211,14 @@ class C2c : public DiagramNumeric<Complex> {
  *                D_\mathtt{Q1}^{-1}(t|t') \Gamma_\mathtt{Op1} \rangle
  *  @f}
  */
-class C20 : public DiagramNumeric<Complex> {
+class C20 : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<Complex>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C20"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -252,7 +252,7 @@ class C20V : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C3c : public DiagramNumeric<Complex> {
+class C3c : public DiagramNumeric<ComplexProduct> {
  public:
   C3c(std::vector<DiagramIndex> const &corr_lookup,
       std::vector<CorrelatorRequest> const &corr_requests,
@@ -263,7 +263,7 @@ class C3c : public DiagramNumeric<Complex> {
   char const *name() const override { return "C3c"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -278,14 +278,14 @@ class C3c : public DiagramNumeric<Complex> {
  *                D_\mathtt{Q2}^{-1}(t'|t) \Gamma_\mathtt{Op2} \rangle
  *  @f}
  */
-class C30 : public DiagramNumeric<Complex> {
+class C30 : public DiagramNumeric<ComplexProduct> {
  public:
-  using DiagramNumeric<Complex>::DiagramNumeric;
+  using DiagramNumeric<ComplexProduct>::DiagramNumeric;
 
   char const *name() const override { return "C30"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 };
@@ -394,7 +394,7 @@ class C40V : public DiagramNumeric<ComplexProduct> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cB : public DiagramNumeric<Complex> {
+class C4cB : public DiagramNumeric<ComplexProduct> {
  public:
   C4cB(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -405,7 +405,7 @@ class C4cB : public DiagramNumeric<Complex> {
   char const *name() const override { return "C4cB"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -420,7 +420,7 @@ class C4cB : public DiagramNumeric<Complex> {
  *                D_\mathtt{Q3}^{-1}(t'|t) \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40B : public DiagramNumeric<Complex> {
+class C40B : public DiagramNumeric<ComplexProduct> {
  public:
   C40B(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -431,7 +431,7 @@ class C40B : public DiagramNumeric<Complex> {
   char const *name() const override { return "C40B"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -446,7 +446,7 @@ class C40B : public DiagramNumeric<Complex> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C4cC : public DiagramNumeric<Complex> {
+class C4cC : public DiagramNumeric<ComplexProduct> {
  public:
   C4cC(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -457,7 +457,7 @@ class C4cC : public DiagramNumeric<Complex> {
   char const *name() const override { return "C4cC"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 
@@ -472,7 +472,7 @@ class C4cC : public DiagramNumeric<Complex> {
  *                D_\mathtt{Q3}^{-1}(t|t') \Gamma_\mathtt{Op3} \rangle
  *  @f}
  */
-class C40C : public DiagramNumeric<Complex> {
+class C40C : public DiagramNumeric<ComplexProduct> {
  public:
   C40C(std::vector<DiagramIndex> const &corr_lookup,
        std::vector<CorrelatorRequest> const &corr_requests,
@@ -483,7 +483,7 @@ class C40C : public DiagramNumeric<Complex> {
   char const *name() const override { return "C40C"; }
 
  private:
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(std::vector<ComplexProduct> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q) override;
 

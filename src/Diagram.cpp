@@ -5,9 +5,9 @@
 #include <omp.h>
 #include <boost/range/adaptor/indexed.hpp>
 
-Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
-                        BlockIterator const &slice_pair,
-                        DiagramParts &q) {
+ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
+                               BlockIterator const &slice_pair,
+                               DiagramParts &q) {
   assert(ssize(trace_requests) == 1);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -16,8 +16,9 @@ Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
 
-  return std::accumulate(std::begin(x0), std::end(x0), Complex(0.0, 0.0)) /
-         static_cast<double>(x0.size());
+  return make_complex_product(
+      std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
+      static_cast<double>(x0.size()), false);
 }
 
 ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
@@ -45,7 +46,7 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
 /*                                    C2c                                    */
 /*****************************************************************************/
 
-void C2c::assemble_impl(std::vector<Complex> &c,
+void C2c::assemble_impl(std::vector<ComplexProduct> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
@@ -59,7 +60,7 @@ void C2c::assemble_impl(std::vector<Complex> &c,
 /*                                    C20                                    */
 /*****************************************************************************/
 
-void C20::assemble_impl(std::vector<Complex> &c,
+void C20::assemble_impl(std::vector<ComplexProduct> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
@@ -92,7 +93,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : DiagramNumeric<Complex>(
+    : DiagramNumeric<ComplexProduct>(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -103,7 +104,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C3c::assemble_impl(std::vector<Complex> &c,
+void C3c::assemble_impl(std::vector<ComplexProduct> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   DilutedFactorsMap<2> L1;
@@ -135,7 +136,7 @@ void C3c::assemble_impl(std::vector<Complex> &c,
 /*                                    C30                                    */
 /*****************************************************************************/
 
-void C30::assemble_impl(std::vector<Complex> &c,
+void C30::assemble_impl(std::vector<ComplexProduct> &c,
                         BlockIterator const &slice_pair,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
@@ -245,7 +246,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(
+    : DiagramNumeric<ComplexProduct>(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -256,7 +257,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C4cB::assemble_impl(std::vector<Complex> &c,
+void C4cB::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
@@ -297,7 +298,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(
+    : DiagramNumeric<ComplexProduct>(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -308,7 +309,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C40B::assemble_impl(std::vector<Complex> &c,
+void C40B::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
@@ -347,7 +348,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(
+    : DiagramNumeric<ComplexProduct>(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -358,7 +359,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C4cC::assemble_impl(std::vector<Complex> &c,
+void C4cC::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
@@ -398,7 +399,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : DiagramNumeric<Complex>(
+    : DiagramNumeric<ComplexProduct>(
           corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
@@ -409,7 +410,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
   }
 }
 
-void C40C::assemble_impl(std::vector<Complex> &c,
+void C40C::assemble_impl(std::vector<ComplexProduct> &c,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
   LT_DIAGRAMS_DECLARE;
