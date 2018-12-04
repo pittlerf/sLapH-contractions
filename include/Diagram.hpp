@@ -41,21 +41,44 @@ struct DiagramParts {
            dilT,
            dilE,
            nev,
-           dil_fac_lookup.at("Q2")),
-        trQ1(q1, trace_indices_map.at("trQ1"), dilution_scheme),
-        trQ1Q1(q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme),
-        trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
-        trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme),
-        trQ1Q0Q2(q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme),
-        trQ1Q1Q1Q1(q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme) ,
-        trQ2Q0Q2Q0(q2, q0, q2, q0, trace_indices_map.at("trQ2Q0Q2Q0"), dilution_scheme) {
-    trace_factories["trQ1"] = &trQ1;
-    trace_factories["trQ1Q1"] = &trQ1Q1;
-    trace_factories["trQ0Q2"] = &trQ0Q2;
-    trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
-    trace_factories["trQ1Q0Q2"] = &trQ1Q0Q2;
-    trace_factories["trQ1Q1Q1Q1"] = &trQ1Q1Q1Q1;
-    trace_factories["trQ2Q0Q2Q0"] = &trQ2Q0Q2Q0;
+           dil_fac_lookup.at("Q2")) {
+    trace_factories["trQ1"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace1Factory<DilutedFactorType::Q1>(
+            q1, trace_indices_map.at("trQ1"), dilution_scheme));
+
+    trace_factories["trQ1Q1"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>(
+            q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme));
+
+    trace_factories["trQ0Q2"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>(
+            q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme));
+
+    trace_factories["trQ1Q1Q1"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace3Factory<DilutedFactorType::Q1,
+                                 DilutedFactorType::Q1,
+                                 DilutedFactorType::Q1>(
+            q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme));
+
+    trace_factories["trQ1Q0Q2"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace3Factory<DilutedFactorType::Q1,
+                                 DilutedFactorType::Q0,
+                                 DilutedFactorType::Q2>(
+            q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme));
+
+    trace_factories["trQ1Q1Q1Q1"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace4Factory<DilutedFactorType::Q1,
+                                 DilutedFactorType::Q1,
+                                 DilutedFactorType::Q1,
+                                 DilutedFactorType::Q1>(
+            q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme));
+
+    trace_factories["trQ2Q0Q2Q0"] = std::unique_ptr<AbstractDilutedTraceFactory>(
+        new DilutedTrace4Factory<DilutedFactorType::Q2,
+                                 DilutedFactorType::Q0,
+                                 DilutedFactorType::Q2,
+                                 DilutedFactorType::Q0>(
+            q2, q0, q2, q0, trace_indices_map.at("trQ2Q0Q2Q0"), dilution_scheme));
   }
 
   void clear() {
@@ -72,38 +95,7 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q1> q1;
   DilutedFactorFactory<DilutedFactorType::Q2> q2;
 
-  //< Temporal memory for tr(Q1)
-  DilutedTrace1Factory<DilutedFactorType::Q1> trQ1;
-
-  //< Temporal memory for tr(rVdaggerV*Q1*rVdaggerV*Q1)
-  DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1> trQ1Q1;
-
-  //< Temporal memory for tr(Q2*rVdaggerVr)
-  DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2> trQ0Q2;
-
-  DilutedTrace3Factory<DilutedFactorType::Q1,
-                       DilutedFactorType::Q1,
-                       DilutedFactorType::Q1>
-      trQ1Q1Q1;
-
-  DilutedTrace3Factory<DilutedFactorType::Q1,
-                       DilutedFactorType::Q0,
-                       DilutedFactorType::Q2>
-      trQ1Q0Q2;
-
-  DilutedTrace4Factory<DilutedFactorType::Q1,
-                       DilutedFactorType::Q1,
-                       DilutedFactorType::Q1,
-                       DilutedFactorType::Q1>
-      trQ1Q1Q1Q1;
-
-  DilutedTrace4Factory<DilutedFactorType::Q2,
-                       DilutedFactorType::Q0,
-                       DilutedFactorType::Q2,
-                       DilutedFactorType::Q0>
-      trQ2Q0Q2Q0;
-
-  std::map<std::string, AbstractDilutedTraceFactory *> trace_factories;
+  std::map<std::string, std::unique_ptr<AbstractDilutedTraceFactory>> trace_factories;
 };
 
 class Diagram {
