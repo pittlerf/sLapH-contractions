@@ -71,7 +71,6 @@ void DilutedTrace3Factory<DilutedFactorType::Q1,
   auto const t1 = time_key[0];
   auto const t2 = time_key[1];
   auto const t3 = time_key[2];
-  auto const b1 = dilution_scheme.time_to_block(t1);
   auto const b2 = dilution_scheme.time_to_block(t2);
   auto const b3 = dilution_scheme.time_to_block(t3);
 
