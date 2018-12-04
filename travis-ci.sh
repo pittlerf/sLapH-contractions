@@ -14,7 +14,7 @@ cd ..
 ###############################################################################
 
 ubuntu_packages=(
-    gcc-7 g++-7
+    gcc g++
     ccache
     cmake
     libhdf5-dev 
@@ -23,8 +23,8 @@ ubuntu_packages=(
     libboost-filesystem-dev libboost-system-dev libboost-program-options-dev
     libgtest-dev
 )
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-get update
+#sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+#sudo apt-get update
 sudo apt-get install -y "${ubuntu_packages[@]}"
 
 ###############################################################################
