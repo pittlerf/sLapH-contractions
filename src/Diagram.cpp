@@ -138,14 +138,8 @@ void C30::assemble_impl(std::vector<Complex> &c,
                         DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
-    auto const &trace_request0 = request.value().trace_requests.at(0);
-    auto const &locations0 = trace_request0.locations;
-    auto const &key0 = make_key<3>(slice_pair, locations0);
-
-    auto const &x = q.trQ1Q1Q1[key0].at(trace_request0.tr_id);
     c.at(request.index()) +=
-        std::accumulate(std::begin(x), std::end(x), Complex(0.0, 0.0)) /
-        static_cast<double>(x.size());
+        resolve_request(request.value().trace_requests, slice_pair, q);
   }
 }
 
