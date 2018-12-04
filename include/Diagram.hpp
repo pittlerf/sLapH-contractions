@@ -46,11 +46,11 @@ struct DiagramParts {
         trQ1Q1(q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme),
         trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
         trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme) {
-          trace_factories["trQ1"] = &trQ1;
-          trace_factories["trQ1Q1"] = &trQ1Q1;
-          trace_factories["trQ0Q2"] = &trQ0Q2;
-          trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
-        }
+    trace_factories["trQ1"] = &trQ1;
+    trace_factories["trQ1Q1"] = &trQ1Q1;
+    trace_factories["trQ0Q2"] = &trQ0Q2;
+    trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
+  }
 
   void clear() {
     q0.clear();
