@@ -66,53 +66,6 @@ void GeneralDiagram::assemble_impl(std::vector<ComplexProduct> &c,
 }
 
 /*****************************************************************************/
-/*                                    C3c                                    */
-/*****************************************************************************/
-
-C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
-         std::vector<CorrelatorRequest> const &corr_requests,
-         std::string const &output_path,
-         std::string const &output_filename,
-         int const Lt)
-    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
-  quantum_num_ids_.reserve(corr_lookup.size());
-
-  for (const auto &c_look : corr_lookup) {
-    quantum_num_ids_.push_back(
-        make_tuple(std::array<ssize_t, 2>{c_look.lookup[2], c_look.lookup[0]},
-                   std::array<ssize_t, 1>{c_look.lookup[1]}));
-  }
-}
-
-void C3c::assemble_impl(std::vector<ComplexProduct> &c,
-                        BlockIterator const &slice_pair,
-                        DiagramParts &q) {
-  DilutedFactorsMap<2> L1;
-
-  LT_DIAGRAMS_DECLARE;
-  LT_DIAGRAMS_START;
-  for (const auto &ids : quantum_num_ids_) {
-    multiply<1, 1>(
-        L1,
-        std::get<0>(ids),
-        q.q0[{slice_pair.source()}],
-        q.q2[{slice_pair.source_block(), slice_pair.source(), slice_pair.sink_block()}]);
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C3c::assemble_impl] multiply");
-
-  LT_DIAGRAMS_START;
-  for (int i = 0; i != ssize(quantum_num_ids_); ++i) {
-    auto const &ids = quantum_num_ids_[i];
-    c[i] +=
-        trace(L1[std::get<0>(ids)],
-              q.q1[{slice_pair.sink(), slice_pair.source_block()}].at(std::get<1>(ids)));
-  }
-  LT_DIAGRAMS_STOP;
-  LT_DIAGRAMS_PRINT("[C3c::assemble_impl] trace");
-}
-
-/*****************************************************************************/
 /*                                   C4cB                                    */
 /*****************************************************************************/
 

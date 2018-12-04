@@ -70,7 +70,7 @@ void contract(const ssize_t Lt,
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
   std::vector<char const *> general_diagram_names{
-      "C2c", "C20", "C20V", "C30", "C30V", "C4cD", "C4cV", "C40D", "C40V"};
+      "C2c", "C20", "C20V", "C3c", "C30", "C30V", "C4cD", "C4cV", "C40D", "C40V"};
 
   for (auto const &name : general_diagram_names) {
     if (!corr_lookup.at(name).empty()) {
@@ -78,13 +78,6 @@ void contract(const ssize_t Lt,
           name, corr_lookup, correlator_requests_map, output_path, output_filename, Lt));
     }
   }
-
-  if (!corr_lookup.at("C3c").empty())
-    diagrams.emplace_back(new C3c(corr_lookup.at("C3c"),
-                                  correlator_requests_map.at("C3c"),
-                                  output_path,
-                                  output_filename,
-                                  Lt));
 
   if (!corr_lookup.at("C4cB").empty())
     diagrams.emplace_back(new C4cB(corr_lookup.at("C4cB"),

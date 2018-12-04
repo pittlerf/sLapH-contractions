@@ -45,11 +45,13 @@ struct DiagramParts {
         trQ1(q1, trace_indices_map.at("trQ1"), dilution_scheme),
         trQ1Q1(q1, q1, trace_indices_map.at("trQ1Q1"), dilution_scheme),
         trQ0Q2(q0, q2, trace_indices_map.at("trQ0Q2"), dilution_scheme),
-        trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme) {
+        trQ1Q1Q1(q1, q1, q1, trace_indices_map.at("trQ1Q1Q1"), dilution_scheme),
+        trQ1Q0Q2(q1, q0, q2, trace_indices_map.at("trQ1Q0Q2"), dilution_scheme) {
     trace_factories["trQ1"] = &trQ1;
     trace_factories["trQ1Q1"] = &trQ1Q1;
     trace_factories["trQ0Q2"] = &trQ0Q2;
     trace_factories["trQ1Q1Q1"] = &trQ1Q1Q1;
+    trace_factories["trQ1Q0Q2"] = &trQ1Q0Q2;
   }
 
   void clear() {
@@ -79,6 +81,11 @@ struct DiagramParts {
                        DilutedFactorType::Q1,
                        DilutedFactorType::Q1>
       trQ1Q1Q1;
+
+  DilutedTrace3Factory<DilutedFactorType::Q1,
+                       DilutedFactorType::Q0,
+                       DilutedFactorType::Q2>
+      trQ1Q0Q2;
 
   std::map<std::string, AbstractDilutedTraceFactory *> trace_factories;
 };
@@ -188,29 +195,6 @@ class GeneralDiagram : public Diagram {
                      DiagramParts &q) override;
 
   char const *name_;
-};
-
-/*****************************************************************************/
-/*                                    C3                                     */
-/*****************************************************************************/
-
-class C3c : public Diagram {
- public:
-  C3c(std::vector<DiagramIndex> const &corr_lookup,
-      std::vector<CorrelatorRequest> const &corr_requests,
-      std::string const &output_path,
-      std::string const &output_filename,
-      int const Lt);
-
-  char const *name() const override { return "C3c"; }
-
- private:
-  void assemble_impl(std::vector<ComplexProduct> &c,
-                     BlockIterator const &slice_pair,
-                     DiagramParts &q) override;
-
-  std::vector<std::tuple<std::array<ssize_t, 2>, std::array<ssize_t, 1>>>
-      quantum_num_ids_;
 };
 
 /*****************************************************************************/
