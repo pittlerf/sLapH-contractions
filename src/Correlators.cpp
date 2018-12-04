@@ -55,7 +55,7 @@ void contract(const ssize_t Lt,
               std::string const output_filename) {
   std::vector<Diagram> diagrams;
 
-  for (auto const &c_look : corr_lookup) {
+  for (auto const &c_look : correlator_requests_map) {
     auto const name = c_look.first;
     if (!corr_lookup.at(name).empty()) {
       diagrams.emplace_back(corr_lookup.at(name),
