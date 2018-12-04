@@ -20,6 +20,25 @@ Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
          static_cast<double>(x0.size());
 }
 
+ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
+                                BlockIterator const &slice_pair,
+                                DiagramParts &q) {
+  assert(ssize(trace_requests) == 2);
+  auto const &trace_request0 = trace_requests.at(0);
+  auto const &locations0 = trace_request0.locations;
+  auto const &x0 = q.trace_factories[trace_request0.tr_name]
+                       ->get(slice_pair, locations0)
+                       .at(trace_request0.tr_id);
+
+  auto const &trace_request1 = trace_requests.at(1);
+  auto const &locations1 = trace_request1.locations;
+  auto const &x1 = q.trace_factories[trace_request1.tr_name]
+                       ->get(slice_pair, locations1)
+                       .at(trace_request1.tr_id);
+
+  return inner_product(x0, x1);
+}
+
 /*****************************************************************************/
 /*                                    C2c                                    */
 /*****************************************************************************/
@@ -57,16 +76,8 @@ void C20V::assemble_impl(std::vector<ComplexProduct> &c,
                          DiagramParts &q) {
   assert(correlator_requests().size() == corr_lookup().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
-    auto const &trace_request0 = request.value().trace_requests.at(0);
-    auto const &locations0 = trace_request0.locations;
-    auto const &key0 = make_key<1>(slice_pair, locations0);
-
-    auto const &trace_request1 = request.value().trace_requests.at(1);
-    auto const &locations1 = trace_request1.locations;
-    auto const &key1 = make_key<1>(slice_pair, locations1);
-
-    c.at(request.index()) += inner_product(q.trQ1[key0].at(trace_request0.tr_id),
-                                           q.trQ1[key1].at(trace_request1.tr_id));
+    c.at(request.index()) +=
+        resolve_request2(request.value().trace_requests, slice_pair, q);
   }
 }
 
