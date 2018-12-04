@@ -171,7 +171,14 @@ class Diagram {
 
 class GeneralDiagram : public Diagram {
  public:
-  using Diagram::Diagram;
+  GeneralDiagram(std::vector<DiagramIndex> const &corr_lookup,
+                 std::vector<CorrelatorRequest> const &corr_requests,
+                 std::string const &output_path,
+                 std::string const &output_filename,
+                 int const Lt,
+                 char const *name)
+      : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt),
+        name_(name) {}
 
   char const *name() const override { return name_; }
 

@@ -34,4 +34,3 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
                                           std::vector<DilutedFactor> const &right_vec);
 
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec);
-

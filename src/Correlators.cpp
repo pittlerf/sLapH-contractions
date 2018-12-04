@@ -24,6 +24,20 @@ int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
 }
 
+Diagram *make_diagram(char const *name,
+                      DiagramIndicesCollection const &corr_lookup,
+                      CorrelatorRequestsMap const &correlator_requests_map,
+                      std::string const &output_path,
+                      std::string const &output_filename,
+                      int const Lt) {
+  return new GeneralDiagram(corr_lookup.at(name),
+                            correlator_requests_map.at(name),
+                            output_path,
+                            output_filename,
+                            Lt,
+                            name);
+}
+
 /**
  *  @param quarklines       Instance of Quarklines. Contains prebuilt
  *                          combinations of operators and perambulators
@@ -56,11 +70,8 @@ void contract(const ssize_t Lt,
   std::vector<std::unique_ptr<Diagram>> diagrams;
 
   if (!corr_lookup.at("C2c").empty())
-    diagrams.emplace_back(new C2c(corr_lookup.at("C2c"),
-                                  correlator_requests_map.at("C2c"),
-                                  output_path,
-                                  output_filename,
-                                  Lt));
+    diagrams.emplace_back(make_diagram(
+        "C2c", corr_lookup, correlator_requests_map, output_path, output_filename, Lt));
   if (!corr_lookup.at("C20").empty())
     diagrams.emplace_back(new C20(corr_lookup.at("C20"),
                                   correlator_requests_map.at("C20"),

@@ -6,8 +6,8 @@
 #include <boost/range/adaptor/indexed.hpp>
 
 ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
-                               BlockIterator const &slice_pair,
-                               DiagramParts &q) {
+                                BlockIterator const &slice_pair,
+                                DiagramParts &q) {
   assert(ssize(trace_requests) == 1);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -18,7 +18,8 @@ ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
 
   return make_complex_product(
       std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
-      static_cast<double>(x0.size()), false);
+          static_cast<double>(x0.size()),
+      false);
 }
 
 ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
@@ -43,8 +44,8 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
 }
 
 ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
-                                BlockIterator const &slice_pair,
-                                DiagramParts &q) {
+                               BlockIterator const &slice_pair,
+                               DiagramParts &q) {
   if (ssize(trace_requests) == 1) {
     return resolve_request1(trace_requests, slice_pair, q);
   } else if (ssize(trace_requests) == 2) {
@@ -115,8 +116,7 @@ C3c::C3c(std::vector<DiagramIndex> const &corr_lookup,
          std::string const &output_path,
          std::string const &output_filename,
          int const Lt)
-    : Diagram(
-          corr_lookup, corr_requests, output_path, output_filename, Lt) {
+    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -268,8 +268,7 @@ C4cB::C4cB(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : Diagram(
-          corr_lookup, corr_requests, output_path, output_filename, Lt) {
+    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -320,8 +319,7 @@ C40B::C40B(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : Diagram(
-          corr_lookup, corr_requests, output_path, output_filename, Lt) {
+    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -370,8 +368,7 @@ C4cC::C4cC(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : Diagram(
-          corr_lookup, corr_requests, output_path, output_filename, Lt) {
+    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
@@ -421,8 +418,7 @@ C40C::C40C(std::vector<DiagramIndex> const &corr_lookup,
            std::string const &output_path,
            std::string const &output_filename,
            int const Lt)
-    : Diagram(
-          corr_lookup, corr_requests, output_path, output_filename, Lt) {
+    : Diagram(corr_lookup, corr_requests, output_path, output_filename, Lt) {
   quantum_num_ids_.reserve(corr_lookup.size());
 
   for (const auto &c_look : corr_lookup) {
