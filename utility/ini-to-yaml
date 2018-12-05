@@ -78,7 +78,7 @@ def parse_operator(operator):
             + p.Suppress('.d') + p_displacement('displacement') \
             + p.Suppress('.p') + p_momentum('momentum')
     x = p_operator.parseString(operator)
-    pprint.pprint(x['momentum'])
+
     return dict(
         gamma=int(x['gamma']),
         #displacement=x['displacement'],
@@ -102,7 +102,6 @@ def parse_correlator(correlator):
     )
 
 
-
 def main():
     options = _parse_args()
 
@@ -111,9 +110,8 @@ def main():
     data['operator_list'] = [parse_operator(operator) for operator in data['operator_list']]
     data['correlator_list'] = [parse_correlator(correlator) for correlator in data['correlator_list']]
 
-    #pprint.pprint(data)
-    print(yaml.dump(data))
-
+    with open(options.output, 'w') as f:
+        yaml.dump(data, f)
 
 
 def _parse_args():
@@ -125,7 +123,7 @@ def _parse_args():
     '''
     parser = argparse.ArgumentParser(description='Converts the old INI-like (but not really) configuration file to the new YAML format.')
     parser.add_argument('input')
-    #parser.add_argument('output')
+    parser.add_argument('output')
     options = parser.parse_args()
 
     return options
