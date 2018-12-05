@@ -1,7 +1,5 @@
 #include "Correlators.hpp"
 
-//#define DILUTION_ITERATOR_PRINT
-
 #include "Diagram.hpp"
 #include "DilutedFactor.hpp"
 #include "DilutedFactorFactory.hpp"
