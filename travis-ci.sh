@@ -25,7 +25,7 @@ ubuntu_packages=(
 )
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
 #sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-#sudo apt-get update
+sudo apt-get update
 sudo apt-get install -y "${ubuntu_packages[@]}"
 
 ###############################################################################
