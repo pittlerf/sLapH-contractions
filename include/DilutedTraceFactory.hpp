@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DilutedFactorY.hpp"
+#include "DilutedFactorFactory.hpp"
 #include "DilutedTrace.hpp"
 
 #include <boost/multi_array.hpp>

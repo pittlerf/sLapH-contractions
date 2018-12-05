@@ -1,4 +1,4 @@
-#include "DilutedFactorY.hpp"
+#include "DilutedFactorFactory.hpp"
 
 #include "local_timer.hpp"
 

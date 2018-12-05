@@ -14,7 +14,7 @@ add_library(lcontract
   src/Diagram.cpp
   src/DiagramSpec.cpp
   src/DilutedFactor.cpp
-  src/DilutedFactorY.cpp
+  src/DilutedFactorFactory.cpp
   src/DilutedTrace.cpp
   src/DilutedTraceFactory.cpp
   src/dilution-iterator.cpp

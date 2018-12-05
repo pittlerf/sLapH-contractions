@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Correlators.hpp"
-#include "DilutedFactorY.hpp"
+#include "DilutedFactorFactory.hpp"
 #include "DilutedTraceFactory.hpp"
 #include "h5-wrapper.hpp"
 

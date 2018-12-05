@@ -4,7 +4,7 @@
 
 #include "Diagram.hpp"
 #include "DilutedFactor.hpp"
-#include "DilutedFactorY.hpp"
+#include "DilutedFactorFactory.hpp"
 #include "StopWatch.hpp"
 #include "dilution-iterator.hpp"
 #include "local_timer.hpp"
