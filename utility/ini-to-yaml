@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import argparse
+import pprint
+import re
+
+import pyparsing as p
+import yaml
+
+
+p_digit = p.Word(p.nums, exact=1)
+p_digits = p.Word(p.nums)
+p_colon = p.Literal(':').suppress()
+p_momentum = p.Group(p.delimitedList(p_digits, ',') | \
+        p.Group(p.Suppress('(') + p.delimitedList(p_digits, ',') + p.Suppress(')')))
+
+def read_outer_structure(path):
+    data = {}
+
+    with open(path) as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+
+            m = re.match(r'^(\S+)\s*=\s*(\S+)$', line)
+            if m:
+                key, value = m.groups()
+
+                if key in ('nb_eigen_threads', 'Lt', 'Lx', 'Ly', 'Lz', 'delta_config',
+                           'number_of_eigen_vec'):
+                    value = int(value)
+
+                if key in ('quark', 'operator_list', 'correlator_list'):
+                    if key not in data:
+                        data[key] = []
+                    data[key].append(value)
+                else:
+                    data[key] = value
+
+    return data
+
+
+def convert_momentum(momentum):
+    out = []
+    for elem in momentum:
+        if isinstance(elem, str):
+            out.append(int(elem))
+        elif isinstance(elem, p.ParseResults):
+            out.append(list(map(int, elem)))
+    return out
+
+
+def parse_quark(quark):
+    p_quark = p.Word('us', exact=1)('flavor') + p_colon + p_digits('rnd_vecs') \
+            + p_colon + p.Word('T', exact=1).suppress() + p.Word('BIF', exact=1) + p_colon + p_digits \
+            + p_colon + p.Word('E', exact=1).suppress() + p.Word('BIF', exact=1) + p_colon + p_digits \
+            + p_colon + p.Word('D', exact=1).suppress() + p.Word('BIF', exact=1) + p_colon + p_digits \
+            + p_colon + p.Word(p.alphas)
+
+    x = p_quark.parseString(quark)
+
+    return dict(
+        name=x[0],
+        num_rnd=int(x[1]),
+        dilution=dict(
+            time=dict(type=x[2], size=int(x[3])),
+            eigen=dict(type=x[4], size=int(x[5])),
+            dirac=dict(type=x[6], size=int(x[7]))),
+        path=x[8])
+
+
+def parse_operator(operator):
+    p_shift = p.Group(p.Word('<>', exact=1) + p.Word('xyz', exact=1))
+    p_displacement = p.Literal('0') #| p.Group(p.delimitedList(p.delimitedList(p_shift, '|'), ','))
+
+    p_operator = p.Suppress('g') + p_digits('gamma') \
+            + p.Suppress('.d') + p_displacement('displacement') \
+            + p.Suppress('.p') + p_momentum('momentum')
+    x = p_operator.parseString(operator)
+    pprint.pprint(x['momentum'])
+    return dict(
+        gamma=int(x['gamma']),
+        #displacement=x['displacement'],
+        momentum=convert_momentum(x['momentum']),
+    )
+
+
+def parse_correlator(correlator):
+    p_op_q = p.Suppress('Op') + p_digits + p.Suppress(':Q') + p_digits
+
+    p_correlator = p.Word(p.alphanums)('name') \
+            + p_colon + p.delimitedList(p_op_q, ':')('opqs') \
+            + p_colon + p.Suppress('P') + p_momentum('momentum')
+    x = p_correlator.parseString(correlator)
+    
+    return dict(
+        name=x['name'],
+        momentum=convert_momentum(x['momentum']),
+        operators=list(map(int, x['opqs'][0::2])),
+        quarks=list(map(int, x['opqs'][1::2]))
+    )
+
+
+
+def main():
+    options = _parse_args()
+
+    data = read_outer_structure(options.input)
+    data['quark'] = [parse_quark(quark) for quark in data['quark']]
+    data['operator_list'] = [parse_operator(operator) for operator in data['operator_list']]
+    data['correlator_list'] = [parse_correlator(correlator) for correlator in data['correlator_list']]
+
+    #pprint.pprint(data)
+    print(yaml.dump(data))
+
+
+
+def _parse_args():
+    '''
+    Parses the command line arguments.
+
+    :return: Namespace with arguments.
+    :rtype: Namespace
+    '''
+    parser = argparse.ArgumentParser(description='Converts the old INI-like (but not really) configuration file to the new YAML format.')
+    parser.add_argument('input')
+    #parser.add_argument('output')
+    options = parser.parse_args()
+
+    return options
+
+
+if __name__ == '__main__':
+    main()
