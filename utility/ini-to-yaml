@@ -51,6 +51,15 @@ def convert_momentum(momentum):
     return out
 
 
+def convert_dilution(t, i):
+    if t == 'I':
+        return dict(type='I', count=int(i))
+    elif t == 'B':
+        return dict(type='B', size=int(i))
+    elif t == 'F':
+        return dict(type='F')
+
+
 def parse_quark(quark):
     p_quark = p.Word('us', exact=1)('flavor') + p_colon + p_digits('rnd_vecs') \
             + p_colon + p.Word('T', exact=1).suppress() + p.Word('BIF', exact=1) + p_colon + p_digits \
@@ -64,9 +73,9 @@ def parse_quark(quark):
         name=x[0],
         num_rnd=int(x[1]),
         dilution=dict(
-            time=dict(type=x[2], size=int(x[3])),
-            eigen=dict(type=x[4], size=int(x[5])),
-            dirac=dict(type=x[6], size=int(x[7]))),
+            time=convert_dilution(x[2], x[3]),
+            eigen=convert_dilution(x[4], x[5]),
+            dirac=convert_dilution(x[6], x[7])),
         path=x[8])
 
 
