@@ -105,7 +105,7 @@ void contract(const ssize_t Lt,
           diagram.assemble(t, slice_pair, q);
         }  // End of slice pair loop.
         LT_CORRELATOR_STOP;
-        LT_CORRELATOR_PRINT(std::string("[contract] ") + diagram->name());
+        LT_CORRELATOR_PRINT(std::string("[contract] ") + diagram.name());
       }  // End of diagram loop.
 
       q.clear();
