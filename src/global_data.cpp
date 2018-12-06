@@ -5,6 +5,7 @@
 #include "global_data_input_handling.hpp"
 #include "init_lookup_tables.hpp"
 
+#include <yaml-cpp/yaml.h>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/SparseCore>
@@ -213,8 +214,9 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
       std::cout << "CANNOT open input file: " << input_file << "\n";
       exit(1);
     } else {
-      po::store(parse_config_file(ifs, input_file_options), vm);
-      po::notify(vm);
+      YAML::Node yaml_config = YAML::LoadFile(input_file.c_str());
+      //po::store(parse_config_file(ifs, input_file_options), vm);
+      //po::notify(vm);
     }
   }
 

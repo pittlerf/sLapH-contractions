@@ -106,6 +106,10 @@ if(NOT DEFINED LIME_LIBRARIES)
   message(FATAL_ERROR "Must specify -DLIME_LIBRARIES on the command line to CMake.")
 endif()
 
+# yaml-cpp
+find_package(yaml-cpp REQUIRED)
+target_link_libraries(lcontract PUBLIC yaml-cpp)
+
 # OpenMP
 find_package(OpenMP REQUIRED)
 target_compile_options(lcontract PUBLIC ${OpenMP_CXX_FLAGS})
