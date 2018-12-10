@@ -14,8 +14,6 @@ cd ..
 ###############################################################################
 
 ubuntu_packages=(
-    gcc g++
-    ccache
     cmake
     libhdf5-dev 
     hdf5-tools
