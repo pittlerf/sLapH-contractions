@@ -72,7 +72,7 @@ rm -rf "$builddir"
 mkdir -p "$builddir"
 pushd "$builddir"
 
-CXX=$(which g++-7)
+CXX=$(which g++)
 
 # Compile gtest
 # Modified from https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/
