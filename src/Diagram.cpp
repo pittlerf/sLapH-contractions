@@ -58,7 +58,7 @@ ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
 void Diagram::assemble_impl(std::vector<ComplexProduct> &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
-  assert(correlator_requests().size() == corr_lookup().size());
+  assert(correlator_requests().size() == correlator_requests().size());
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     c.at(request.index()) +=
         resolve_request(request.value().trace_requests, slice_pair, q);
