@@ -222,3 +222,72 @@ class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
   DilutionScheme const &dilution_scheme;
   std::map<Key, Value> Tr;
 };
+
+template <DilutedFactorType qlt1,
+          DilutedFactorType qlt2,
+          DilutedFactorType qlt3,
+          DilutedFactorType qlt4,
+          DilutedFactorType qlt5,
+          DilutedFactorType qlt6>
+class DilutedTrace6Factory : public AbstractDilutedTraceFactory {
+ public:
+  /** num_times is the sum of times of contained factors -1 for each continuity
+   *  condition of the quarkline diagram
+   */
+  static constexpr int num_times = DilutedFactorTypeTraits<qlt1>::num_times +
+                                   DilutedFactorTypeTraits<qlt2>::num_times +
+                                   DilutedFactorTypeTraits<qlt3>::num_times +
+                                   DilutedFactorTypeTraits<qlt4>::num_times +
+                                   DilutedFactorTypeTraits<qlt5>::num_times +
+                                   DilutedFactorTypeTraits<qlt6>::num_times - 6;
+
+  using Key = std::array<int, num_times>;
+  using Value = DilutedTracesMap;
+
+  DilutedTrace6Factory(DilutedFactorFactory<qlt1> &_df1,
+                       DilutedFactorFactory<qlt2> &_df2,
+                       DilutedFactorFactory<qlt3> &_df3,
+                       DilutedFactorFactory<qlt4> &_df4,
+                       DilutedFactorFactory<qlt5> &_df5,
+                       DilutedFactorFactory<qlt6> &_df6,
+                       std::vector<Indices> const &_dic,
+                       DilutionScheme const &_ds)
+      : df1(_df1),
+        df2(_df2),
+        df3(_df3),
+        df4(_df4),
+        df5(_df5),
+        df6(_df6),
+        diagram_index_collection(_dic),
+        dilution_scheme(_ds) {}
+
+  Value const &operator[](Key const &key) {
+    if (Tr.count(key) == 0) {
+      build(key);
+    }
+
+    return Tr.at(key);
+  }
+
+  DilutedTracesMap const &get(BlockIterator const &slice_pair,
+                              std::vector<Location> const &locations) override {
+    assert(ssize(locations) == num_times);
+    auto const &key = make_key<num_times>(slice_pair, locations);
+    return (*this)[key];
+  }
+
+  void build(Key const &time_key);
+
+  void clear() override { Tr.clear(); }
+
+ private:
+  DilutedFactorFactory<qlt1> &df1;
+  DilutedFactorFactory<qlt2> &df2;
+  DilutedFactorFactory<qlt3> &df3;
+  DilutedFactorFactory<qlt4> &df4;
+  DilutedFactorFactory<qlt5> &df5;
+  DilutedFactorFactory<qlt6> &df6;
+  std::vector<Indices> const &diagram_index_collection;
+  DilutionScheme const &dilution_scheme;
+  std::map<Key, Value> Tr;
+};
