@@ -191,8 +191,16 @@ add_subdirectory(tests/gtest)
 
 enable_testing()
 
-add_test(NAME integration-L4
+add_test(NAME "integration_L4_all_diagrams"
   COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4/run-integration-test" "${CMAKE_CURRENT_BINARY_DIR}"
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
+
+add_test(NAME "integration_L4_charged_diagrams"
+  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/contract" -i test_charged.ini --start_config 1000 --end_config 1000
+  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
+
+add_test(NAME "integration_L4_neutral_diagrams"
+  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/contract" -i test_neutral.ini --start_config 1000 --end_config 1000
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
 
 add_test(NAME unit-dilution-iterator
