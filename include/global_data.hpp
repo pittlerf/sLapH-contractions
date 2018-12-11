@@ -48,24 +48,7 @@ using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorReques
  *  - paths
  */
 struct GlobalData {
-  GlobalData() {
-    momentum_cutoff[0] = 4;
-    momentum_cutoff[1] = 5;
-    momentum_cutoff[2] = 6;
-    momentum_cutoff[3] = 7;
-    momentum_cutoff[4] = 4;
-
-    quarkline_lookuptable["Q0"];
-    quarkline_lookuptable["Q1"];
-    quarkline_lookuptable["Q2"];
-
-    trace_indices_map["trQ0Q2"];
-    trace_indices_map["trQ1"];
-    trace_indices_map["trQ1Q1"];
-    trace_indices_map["trQ1Q1Q1Q1"];
-    trace_indices_map["trQ2Q0Q2Q0"];
-    trace_indices_map["trQ2Q0Q2Q0Q2Q0"];
-  }
+  GlobalData();
 
   int Lx, Ly, Lz, Lt;
   int dim_row, V_TS, V_for_lime;
