@@ -36,7 +36,7 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
   if (num_summands == 0) {
     throw std::runtime_error(
         "compcomp_t inner_product(vector<DilutedTrace>, "
-        "vector<DilutedTrace>) has an empty result.");
+        "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
   }
 
   return result / static_cast<double>(num_summands);
@@ -98,7 +98,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
   if (result_vec.size() == 0) {
     throw std::runtime_error(
         "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>, "
-        "vector<DilutedFactor>) has an empty result.");
+        "vector<DilutedFactor>) has an empty result. Not enough random vectors?");
   }
 
   return result_vec;
@@ -131,7 +131,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec)
   if (result_vec.size() == 0) {
     throw std::runtime_error(
         "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>) has an empty "
-        "result.");
+        "result. Not enough random vectors?");
   }
 
   return result_vec;
