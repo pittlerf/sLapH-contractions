@@ -30,6 +30,10 @@ using DilutedTracesMap = std::map<ssize_t, std::vector<DilutedTrace>>;
 ComplexProduct inner_product(DilutedTraces const &left_vec,
                              DilutedTraces const &right_vec);
 
+ComplexProduct inner_product(DilutedTraces const &left_vec,
+                             DilutedTraces const &middle_vec,
+                             DilutedTraces const &right_vec);
+
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
                                           std::vector<DilutedFactor> const &right_vec);
 

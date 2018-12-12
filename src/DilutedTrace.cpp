@@ -42,6 +42,45 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
   return result / static_cast<double>(num_summands);
 }
 
+ComplexProduct inner_product(DilutedTraces const &left_vec,
+                             DilutedTraces const &middle_vec,
+                             DilutedTraces const &right_vec) {
+  assert(left_vec.traces.size() > 0);
+  assert(middle_vec.traces.size() > 0);
+  assert(right_vec.traces.size() > 0);
+
+  int num_summands = 0;
+
+  ComplexProduct result = complex_product_zero;
+
+  for (auto const &left : left_vec.traces) {
+    for (auto const &middle : middle_vec.traces) {
+      Complex right_sum(0.0, 0.0);
+
+      for (auto const &right : right_vec.traces) {
+        if ((left.used_rnd_ids & middle.used_rnd_ids & right.used_rnd_ids) != 0u) {
+          continue;
+        }
+
+        right_sum += right.data;
+        ++num_summands;
+      }
+
+      result += make_complex_product(left.data, left_vec.ignore_imag) *
+                make_complex_product(middle.data, middle_vec.ignore_imag) *
+                make_complex_product(right_sum, right_vec.ignore_imag);
+    }
+  }
+
+  if (num_summands == 0) {
+    throw std::runtime_error(
+        "compcomp_t inner_product(vector<DilutedTrace>, "
+        "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
+  }
+
+  return result / static_cast<double>(num_summands);
+}
+
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
                                           std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
