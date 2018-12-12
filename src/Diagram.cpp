@@ -12,7 +12,10 @@ ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
 
-  auto const &x0 = q.trace_factories[trace_request0.tr_name]
+  if (q.trace_factories.count(trace_request0.tr_name) == 0) {
+    std::cerr << trace_request0.tr_name << std::endl;
+  }
+  auto const &x0 = q.trace_factories.at(trace_request0.tr_name)
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
 
@@ -28,14 +31,14 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
   assert(ssize(trace_requests) == 2);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
-  auto const &x0 = q.trace_factories[trace_request0.tr_name]
+  auto const &x0 = q.trace_factories.at(trace_request0.tr_name)
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
   DilutedTraces t0{x0, false};
 
   auto const &trace_request1 = trace_requests.at(1);
   auto const &locations1 = trace_request1.locations;
-  auto const &x1 = q.trace_factories[trace_request1.tr_name]
+  auto const &x1 = q.trace_factories.at(trace_request1.tr_name)
                        ->get(slice_pair, locations1)
                        .at(trace_request1.tr_id);
   DilutedTraces t1{x1, false};
