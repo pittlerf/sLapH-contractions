@@ -131,7 +131,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec)
   if (result_vec.size() == 0) {
     throw std::runtime_error(
         "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>) has an empty "
-        "result. Not enough random vectors?");
+        "result.");
   }
 
   return result_vec;
