@@ -351,9 +351,9 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
 
   int total_number_of_random_combinations_in_trQ0Q2 = 0;
   for (auto const &q : gd.trace_indices_map.at("trQ0Q2")) {
-    total_number_of_random_combinations_in_trQ0Q2 +=
-        gd.quarkline_lookuptable.at("Q0").at(q[0]).rnd_vec_ids.size() *
-        gd.quarkline_lookuptable.at("Q2").at(q[1]).rnd_vec_ids.size();
+    auto const size1 = gd.quarkline_lookuptable.at("Q0").at(q[0]).rnd_vec_ids.size();
+    auto const size2 = gd.quarkline_lookuptable.at("Q2").at(q[1]).rnd_vec_ids.size();
+    total_number_of_random_combinations_in_trQ0Q2 += size1 * size2;
   }
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * gd.Lt * total_number_of_random_combinations_in_trQ0Q2 *

@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-using DiagramIndicesCollection = std::map<std::string, std::vector<DiagramIndex>>;
-using TraceIndicesCollection = std::map<std::string, std::vector<Indices>>;
+typedef std::map<std::string, std::vector<DiagramIndex>> DiagramIndicesCollection;
+typedef std::map<std::string, std::vector<Indices>> TraceIndicesCollection;
 
 enum class Location { source, sink };
 
@@ -35,7 +35,7 @@ struct CorrelatorRequest {
   }
 };
 
-using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorRequest>>;
+typedef std::map<std::string, std::vector<CorrelatorRequest>> CorrelatorRequestsMap;
 
 /**
  * Class containing all metadata for contractions and functions to set them
