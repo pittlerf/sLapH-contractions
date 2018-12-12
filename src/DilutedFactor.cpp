@@ -1,28 +1,5 @@
 #include "DilutedFactor.hpp"
 
-bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right) {
-  SmallVectorRndId intersection;
-
-  std::set_intersection(std::begin(left),
-                        std::end(left),
-                        std::begin(right),
-                        std::end(right),
-                        std::back_inserter(intersection));
-  return intersection.size() > 0;
-}
-
-void merge_append(SmallVectorRndId &data, SmallVectorRndId const &addition) {
-  auto const old_end = std::end(data);
-  std::copy(std::begin(addition), std::end(addition), std::back_inserter(data));
-  std::inplace_merge(std::begin(data), old_end, std::end(data));
-}
-
-void merge_push_back(SmallVectorRndId &data, RndId const &addition) {
-  auto const old_end = std::end(data);
-  data.push_back(addition);
-  std::inplace_merge(std::begin(data), old_end, std::end(data));
-}
-
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
@@ -44,17 +21,14 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) != 0u) {
         continue;
       }
 
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      SmallVectorRndId used;
-      used.push_back(inner_rnd_id);
-      merge_append(used, left.used_rnd_ids);
-      merge_append(used, right.used_rnd_ids);
+      UsedRnd used = left.used_rnd_ids | right.used_rnd_ids | (1u << inner_rnd_id);
 
       result_vec.push_back({left.data * right.data,
                             std::make_pair(left.ric.first, right.ric.second),
@@ -103,7 +77,7 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) == 0u) {
         continue;
       }
 

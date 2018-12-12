@@ -19,7 +19,6 @@ size_t constexpr max_used_rnd_ids = 6;
 
 using RndId = int8_t;
 
-using SmallVectorRndId = boost::container::static_vector<RndId, max_used_rnd_ids>;
 
 /** Data type for momentum */
 typedef boost::multi_array<Complex, 2> array_cd_d2;

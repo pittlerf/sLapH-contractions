@@ -8,7 +8,7 @@ struct DilutedTrace {
   using Data = Complex;
 
   Data data;
-  SmallVectorRndId used_rnd_ids;
+  UsedRnd used_rnd_ids;
 };
 
 struct DilutedTraces {
