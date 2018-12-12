@@ -254,7 +254,8 @@ void build_VdaggerV_lookup(
                                    qn.displacement));
         vdv_indices_row.emplace_back(ssize(vdaggerv_lookup) - 1, false);
       } else {
-        bool const dagger = Vector(it->momentum.data()) == (-1) * qn.momentum;
+        bool const dagger = qn.momentum != Vector(0, 0, 0) &&
+                            Vector(it->momentum.data()) == (-1) * qn.momentum;
         vdv_indices_row.emplace_back(it - vdaggerv_lookup.cbegin(), dagger);
       }
     }
