@@ -92,8 +92,12 @@ void Diagram::assemble_impl(std::vector<ComplexProduct> &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
   assert(correlator_requests().size() == correlator_requests().size());
+  LT_DIAGRAMS_DECLARE;
+  LT_DIAGRAMS_START;
   for (auto const &request : correlator_requests() | boost::adaptors::indexed(0)) {
     c.at(request.index()) +=
         resolve_request(request.value().trace_requests, slice_pair, q);
   }
+  LT_DIAGRAMS_STOP;
+  LT_DIAGRAMS_PRINT(name());
 }
