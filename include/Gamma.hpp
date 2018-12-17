@@ -2,6 +2,7 @@
 
 #include "typedefs.hpp"
 
+#include <array>
 #include <vector>
 
 struct gamma_lookup {

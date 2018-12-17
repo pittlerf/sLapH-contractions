@@ -1,6 +1,7 @@
 #include "Gamma.hpp"
 
 #include <gtest/gtest.h>
+#include <Eigen/Dense>
 
 namespace {
 std::complex<double> const I{0.0, 1.0};

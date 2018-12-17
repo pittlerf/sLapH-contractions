@@ -1,5 +1,6 @@
 #pragma once
 
+#include "boost_multi_array.hpp"
 #include "typedefs.hpp"
 
 #include <Eigen/Dense>
