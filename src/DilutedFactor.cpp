@@ -6,7 +6,9 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
   assert(right_vec.size() > 0);
 
   std::vector<DilutedFactor> result_vec;
+  LT_ULTRA_FINE_DECLARE;
 
+  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
 
@@ -35,6 +37,10 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                             used});
     }
   }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT(
+      "[vector<DilutedFactor> operator*(vector<DilutedFactor>, vector<DilutedFactor>)] "
+      "right_sum");
 
   if (result_vec.size() == 0) {
     throw std::runtime_error(
@@ -50,10 +56,8 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
-  Complex result(0.0, 0.0);
-
   int num_summands = 0;
-
+  Complex result(0.0, 0.0);
   LT_ULTRA_FINE_DECLARE;
 
   for (auto const &left : left_vec) {
@@ -89,9 +93,9 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
       // multiplications to do.
       right_sum += right.data;
       ++num_summands;
+      LT_ULTRA_FINE_STOP;
+      LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
     }
-    LT_ULTRA_FINE_STOP;
-    LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
 
     LT_ULTRA_FINE_START;
     auto const &product = left.data * right_sum;

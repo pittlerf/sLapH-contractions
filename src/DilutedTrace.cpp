@@ -6,9 +6,10 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
-
   ComplexProduct result = complex_product_zero;
+  LT_ULTRA_FINE_DECLARE;
 
+  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     Complex right_sum(0.0, 0.0);
 
@@ -32,6 +33,8 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
     result += make_complex_product(left.data, left_vec.ignore_imag) *
               make_complex_product(right_sum, right_vec.ignore_imag);
   }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT("[ComplexProduct inner_product(DilutedTraces, DilutedTraces]");
 
   if (num_summands == 0) {
     throw std::runtime_error(
@@ -50,9 +53,10 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
-
   ComplexProduct result = complex_product_zero;
+  LT_ULTRA_FINE_DECLARE;
 
+  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     for (auto const &middle : middle_vec.traces) {
       Complex right_sum(0.0, 0.0);
@@ -71,6 +75,9 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
                 make_complex_product(right_sum, right_vec.ignore_imag);
     }
   }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT(
+      "[ComplexProduct inner_product(DilutedTraces, DilutedTraces, DilutedTraces]");
 
   if (num_summands == 0) {
     throw std::runtime_error(
