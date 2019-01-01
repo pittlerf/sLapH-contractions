@@ -51,8 +51,8 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
   return result_vec;
 }
 
-ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
-                     std::vector<DilutedFactor> const &right_vec) {
+Complex trace(std::vector<DilutedFactor> const &left_vec,
+              std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
@@ -111,5 +111,5 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
         "summands.");
   }
 
-  return make_complex_product(result, false) / static_cast<double>(num_summands);
+  return result / static_cast<double>(num_summands);
 }

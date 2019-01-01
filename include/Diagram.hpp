@@ -117,11 +117,9 @@ class Diagram {
         output_path_(output_path),
         output_filename_(output_filename),
         Lt_(Lt),
-        correlator_(
-            Lt,
-            std::vector<ComplexProduct>(correlator_requests.size(), ComplexProduct{})),
+        correlator_(Lt, std::vector<Complex>(correlator_requests.size(), Complex{})),
         c_(omp_get_max_threads(),
-           std::vector<ComplexProduct>(correlator_requests.size(), ComplexProduct{})),
+           std::vector<Complex>(correlator_requests.size(), Complex{})),
         mutexes_(Lt),
         name_(name) {}
 
@@ -133,7 +131,7 @@ class Diagram {
     int const tid = omp_get_thread_num();
 
     for (int i = 0; i != ssize(correlator_requests()); ++i) {
-      c_[tid][i] = ComplexProduct{};
+      c_[tid][i] = Complex{};
     }
 
     assemble_impl(c_.at(tid), slice_pair, q);
@@ -152,9 +150,9 @@ class Diagram {
     assert(output_filename_ != "");
 
     WriteHDF5Correlator filehandle(
-        output_path_, name(), output_filename_, make_comp_type<ComplexProduct>());
+        output_path_, name(), output_filename_, make_comp_type<Complex>());
 
-    std::vector<ComplexProduct> one_corr(Lt_);
+    std::vector<Complex> one_corr(Lt_);
 
     for (int i = 0; i != ssize(correlator_requests()); ++i) {
       for (int t = 0; t < Lt_; ++t) {
@@ -167,7 +165,7 @@ class Diagram {
 
   std::string const &name() const { return name_; }
 
-  void assemble_impl(std::vector<ComplexProduct> &c,
+  void assemble_impl(std::vector<Complex> &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q);
 
@@ -179,10 +177,10 @@ class Diagram {
   int const Lt_;
 
   /** OpenMP-shared correlators, indices are (1) time and (2) correlator id. */
-  std::vector<std::vector<ComplexProduct>> correlator_;
+  std::vector<std::vector<Complex>> correlator_;
 
   /** OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
-  std::vector<std::vector<ComplexProduct>> c_;
+  std::vector<std::vector<Complex>> c_;
 
   std::vector<std::mutex> mutexes_;
 
