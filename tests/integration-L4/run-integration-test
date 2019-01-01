@@ -10,7 +10,7 @@ set -x
 # Delete the old files. In case they care not there, the glob is not matched and that file
 # cannot be found. Ignore that error/
 rm correlators/*.h5 || true
-rm global_data.bin
+rm global_data.bin || true
 
 "$1/globaldata" -i test_all.ini --start_config 1000 --end_config 1000
 
