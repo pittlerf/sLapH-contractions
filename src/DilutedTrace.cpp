@@ -5,12 +5,12 @@ Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
-  Complex result{0.0, 0.0};
+  Accumulator<Complex> result;
   LT_ULTRA_FINE_DECLARE;
 
   LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
-    Complex right_sum(0.0, 0.0);
+    Accumulator<Complex> right_sum;
 
     for (auto const &right : right_vec.traces) {
       // We also need to be careful to not combine factors which have common used random
@@ -29,7 +29,7 @@ Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_
       ++num_summands;
     }
 
-    result += left.data * right_sum;
+    result += left.data * right_sum.value();
   }
   LT_ULTRA_FINE_STOP;
   LT_ULTRA_FINE_PRINT("[Complex inner_product(DilutedTraces, DilutedTraces]");
@@ -40,7 +40,7 @@ Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_
         "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
   }
 
-  return result / static_cast<double>(num_summands);
+  return result.value() / static_cast<double>(num_summands);
 }
 
 Complex inner_product(DilutedTraces const &left_vec,
@@ -51,13 +51,13 @@ Complex inner_product(DilutedTraces const &left_vec,
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
-  Complex result{0.0, 0.0};
+  Accumulator<Complex> result;
   LT_ULTRA_FINE_DECLARE;
 
   LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     for (auto const &middle : middle_vec.traces) {
-      Complex right_sum(0.0, 0.0);
+      Accumulator<Complex> right_sum;
 
       for (auto const &right : right_vec.traces) {
         if ((left.used_rnd_ids & middle.used_rnd_ids & right.used_rnd_ids) != 0u) {
@@ -68,7 +68,7 @@ Complex inner_product(DilutedTraces const &left_vec,
         ++num_summands;
       }
 
-      result += left.data * middle.data * right_sum;
+      result += left.data * middle.data * right_sum.value();
     }
   }
   LT_ULTRA_FINE_STOP;
@@ -81,7 +81,7 @@ Complex inner_product(DilutedTraces const &left_vec,
         "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
   }
 
-  return result / static_cast<double>(num_summands);
+  return result.value() / static_cast<double>(num_summands);
 }
 
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
