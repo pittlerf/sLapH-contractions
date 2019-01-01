@@ -15,11 +15,14 @@ cd ..
 
 ubuntu_packages=(
     cmake
-    libhdf5-dev 
     hdf5-tools
+    libboost-filesystem-dev
+    libboost-program-options-dev
+    libboost-serialization-dev
+    libboost-system-dev
     libeigen3-dev
-    libboost-filesystem-dev libboost-system-dev libboost-program-options-dev
     libgtest-dev
+    libhdf5-dev 
 )
 sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main universe restricted multiverse"
 #sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
