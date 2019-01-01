@@ -12,7 +12,7 @@
 template <typename Numeric>
 class KahanAccumulator {
  public:
-  Numeric value() const { return sum_; }
+  Numeric value() const { return sum_ + c_; }
 
   KahanAccumulator &operator+=(Numeric const right) {
     Numeric const y = right - c_;
