@@ -41,3 +41,10 @@ class NativeAccumulator {
  private:
   Numeric sum_ = 0.0;
 };
+
+template <typename Numeric>
+#ifdef SLAPH_KAHAN
+using Accumulator = KahanAccumulator<Numeric>;
+#else
+using Accumulator = NativeAccumulator<Numeric>;
+#endif

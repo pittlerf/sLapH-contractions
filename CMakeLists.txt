@@ -159,6 +159,12 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fsanitize=address")
 
+option(SLAPH_KAHAN "Use Kahan summation in the accumulation steps" OFF)
+
+if(SLAPH_KAHAN)
+  add_definitions("-DSLAPH_KAHAN")
+endif()
+
 ###############################################################################
 #                                 Executables                                 #
 ###############################################################################
