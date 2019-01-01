@@ -47,6 +47,8 @@ struct VdaggerVQuantumNumbers {
   std::array<int, 3> momentum;        /**< The -momentum as 3-vector */
   DisplacementDirection displacement; /**< The displacement as 3-vector */
 
+  VdaggerVQuantumNumbers() {}
+
   VdaggerVQuantumNumbers(const ssize_t id,
                          std::array<int, 3> const &momentum,
                          DisplacementDirection const &displacement)

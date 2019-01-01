@@ -12,8 +12,6 @@ set -x
 rm correlators/*.h5 || true
 rm global_data.bin
 
-"$1/globaldata" -i test_all.ini --start_config 1000 --end_config 1000
+"$1/globaldata" -i test_neutral.ini --start_config 1000 --end_config 1000
 
 "$1/contract" global_data.bin
-
-./compare

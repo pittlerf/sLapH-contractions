@@ -163,18 +163,23 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fsanitize=address")
 #                                 Executables                                 #
 ###############################################################################
 
-### contract
+# globaldata
+add_executable(globaldata main/globaldata.cpp)
+target_link_libraries(globaldata lcontract)
 
+install(TARGETS globaldata DESTINATION bin)
+
+# contract
 add_executable(contract main/contract.cpp)
 target_link_libraries(contract lcontract)
 
 install(TARGETS contract DESTINATION bin)
 
-### test-iterator
+# test-iterator
 add_executable(test-dilution-iterator main/test-iterator.cpp)
 target_link_libraries(test-dilution-iterator lcontract)
 
-### test-derivative
+# test-derivative
 add_executable(test-derivative main/test-derivative.cpp)
 target_link_libraries(test-derivative lcontract)
 
@@ -196,11 +201,11 @@ add_test(NAME "integration_L4_all_diagrams"
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
 
 add_test(NAME "integration_L4_charged_diagrams"
-  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/contract" -i test_conjugated.ini --start_config 1000 --end_config 1000
+  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4/run-integration-test-conjugated" "${CMAKE_CURRENT_BINARY_DIR}"
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
 
 add_test(NAME "integration_L4_neutral_diagrams"
-  COMMAND "${CMAKE_CURRENT_BINARY_DIR}/contract" -i test_neutral.ini --start_config 1000 --end_config 1000
+  COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4/run-integration-test-neutral" "${CMAKE_CURRENT_BINARY_DIR}"
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/tests/integration-L4")
 
 add_test(NAME unit-dilution-iterator

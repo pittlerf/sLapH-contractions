@@ -9,9 +9,12 @@
 
 #include <omp.h>
 #include <boost/archive/binary_iarchive.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
 
 #include <iostream>
+
+namespace po = boost::program_options;
 
 /*! Read parameters from infile and perform the specified contractions
  *
@@ -37,12 +40,36 @@ int main(int ac, char *av[]) {
   // reading global parameters from input file
   GlobalData gd;
 
-  read_parameters(gd, ac, av);
+  po::options_description generic("Command line options");
+  generic.add_options()("help,h", "produce help message");
+  generic.add_options()("version,v", "print version string");
+  generic.add_options()("globaldata", "Path to global data file");
+
+  po::positional_options_description p;
+  p.add("globaldata", -1);
+
+  po::variables_map vm;
+  po::store(po::command_line_parser(ac, av).options(generic).positional(p).run(),
+            vm);
+  po::notify(vm);
+
+  if (vm.count("help")) {
+    std::cout << generic << "\n";
+    exit(0);
+  }
+
+  if (vm.count("version")) {
+    std::cout << "Contraction code for LapHs perambulators.\n"
+              << "Git SHA-1: " << git_sha1 << "\n"
+              << "Git refspec: " << git_refspec << "\n"
+              << "Git status: " << git_changes << "\n";
+    exit(0);
+  }
 
   {
-    std::ofstream ofs("global_data.bin");
-    boost::archive::binary_oarchive archive(ofs);
-    archive << gd;
+    std::ifstream ifs(vm["globaldata"].as<std::string>(), std::ios::binary);
+    boost::archive::binary_iarchive archive(ifs);
+    archive >> gd;
   }
 
   // initialization of OMP paralization

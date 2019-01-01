@@ -62,6 +62,8 @@ struct quark {
   ssize_t id;
   std::string path;
 
+  quark() {}
+
   /** Constructor */
   quark(std::string type,
         int number_of_rnd_vec,
