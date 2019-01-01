@@ -27,3 +27,17 @@ class KahanAccumulator {
   Numeric sum_ = 0.0;
   Numeric c_ = 0.0;
 };
+
+template <typename Numeric>
+class NativeAccumulator {
+ public:
+  Numeric value() const { return sum_; }
+
+  NativeAccumulator &operator+=(Numeric const right) {
+    sum_ += right;
+    return *this;
+  }
+
+ private:
+  Numeric sum_ = 0.0;
+};
