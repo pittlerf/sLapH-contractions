@@ -2,11 +2,12 @@
 
 #include "typedefs.hpp"
 
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include <complex>
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
 /** Memory allocation and IO routines for random vectors */
 class RandomVector {

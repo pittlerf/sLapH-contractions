@@ -8,6 +8,8 @@
 #include "global_data_build_IO_names.hpp"
 
 #include <omp.h>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #include <iostream>
 
@@ -36,6 +38,12 @@ int main(int ac, char *av[]) {
   GlobalData gd;
 
   read_parameters(gd, ac, av);
+
+  {
+    std::ofstream ofs("global_data.xml");
+    boost::archive::text_oarchive archive(ofs);
+    archive << gd;
+  }
 
   // initialization of OMP paralization
   Eigen::initParallel();

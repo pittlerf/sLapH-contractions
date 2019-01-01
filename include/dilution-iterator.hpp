@@ -1,9 +1,10 @@
 #pragma once
 
+#include <boost/serialization/map.hpp>
+
 #include <cassert>
 #include <iomanip>
 #include <iostream>
-#include <map>
 #include <stdexcept>
 #include <type_traits>
 

@@ -1,9 +1,9 @@
 #include "GaugeField.hpp"
 
 #include <boost/format.hpp>
+#include <boost/serialization/vector.hpp>
 
 #include <sstream>
-#include <vector>
 
 // member initializer is executed from left to right. Is used to set constant members
 GaugeField::GaugeField(const int _Lt,

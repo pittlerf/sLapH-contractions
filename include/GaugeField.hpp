@@ -6,6 +6,7 @@
 #include "typedefs.hpp"
 
 #include <boost/multi_array.hpp>
+#include <boost/serialization/vector.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include <cmath>
@@ -14,7 +15,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 
 //! \typedef 2dim array for lookup tables
 typedef boost::multi_array<int, 2> look;

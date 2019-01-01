@@ -3,9 +3,10 @@
 #include "global_data_typedefs.hpp"
 #include "typedefs.hpp"
 
-#include <array>
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/string.hpp>
+
 #include <iostream>
-#include <string>
 
 namespace global_data_utils {
 

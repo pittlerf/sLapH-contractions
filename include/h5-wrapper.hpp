@@ -7,11 +7,11 @@
 #include <H5Cpp.h>
 #include <omp.h>
 #include <boost/filesystem.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/string.hpp>
 
 #include <iostream>
-#include <map>
 #include <sstream>
-#include <string>
 
 #define PRINT(x) std::cout << #x << ": " << (x) << std::endl;
 

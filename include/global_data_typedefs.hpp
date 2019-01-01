@@ -1,8 +1,7 @@
 #pragma once
 
 #include "typedefs.hpp"
-
-#include <Eigen/Dense>
+#include "Eigen_Boost_serialization.hpp"
 
 #include <ostream>
 
@@ -14,6 +13,13 @@
 struct RandomVectorConstruction {
   ssize_t nb_entities, length;
   std::vector<std::string> filename_list;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &nb_entities;
+    ar &length;
+    ar &filename_list;
+  }
 };
 
 /** Small struct which contains all information to build and read
@@ -26,6 +32,14 @@ struct PerambulatorConstruction {
   std::vector<ssize_t> size_rows;
   std::vector<ssize_t> size_cols;
   std::vector<std::string> filename_list;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &nb_entities;
+    ar &size_rows;
+    ar &size_cols;
+    ar &filename_list;
+  }
 };
 
 /** Quark type that contains all quark propagator informations:
@@ -69,6 +83,20 @@ struct quark {
         number_of_dilution_D(number_of_dilution_D),
         id(id),
         path(path) {}
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &type;
+    ar &number_of_rnd_vec;
+    ar &dilution_T;
+    ar &number_of_dilution_T;
+    ar &dilution_E;
+    ar &number_of_dilution_E;
+    ar &dilution_D;
+    ar &number_of_dilution_D;
+    ar &id;
+    ar &path;
+  }
 };
 
 /** Struct that contains all physical information specifying a quantum field
@@ -86,6 +114,13 @@ struct QuantumNumbers {
   std::vector<int> gamma;
   DisplacementDirection displacement;
   VectorData momentum;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &gamma;
+    ar &displacement;
+    ar &momentum;
+  }
 };
 
 inline std::string to_string(std::vector<int> const &vec) {
@@ -147,6 +182,15 @@ struct Correlators_2 {
   std::vector<int> operator_numbers;
   std::string GEVP;
   std::vector<VectorData> tot_mom;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &type;
+    ar &quark_numbers;
+    ar &operator_numbers;
+    ar &GEVP;
+    ar &tot_mom;
+  }
 };
 
 typedef std::vector<QuantumNumbers> Operators;
@@ -159,4 +203,11 @@ struct HypPars {
   double alpha1;
   double alpha2;
   ssize_t iterations;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &alpha1;
+    ar &alpha2;
+    ar &iterations;
+  }
 };

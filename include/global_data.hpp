@@ -3,12 +3,13 @@
 #include "global_data_typedefs.hpp"
 #include "typedefs.hpp"
 
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include <sys/stat.h>
-#include <array>
 #include <iosfwd>
-#include <map>
-#include <string>
-#include <vector>
 
 typedef std::map<std::string, std::vector<DiagramIndex>> DiagramIndicesCollection;
 typedef std::map<std::string, std::vector<Indices>> TraceIndicesCollection;
@@ -24,6 +25,13 @@ struct TraceRequest {
     return tr_name == other.tr_name && tr_id == other.tr_id &&
            locations == other.locations;
   }
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &tr_name;
+    ar &tr_id;
+    ar &locations;
+  }
 };
 
 struct CorrelatorRequest {
@@ -32,6 +40,12 @@ struct CorrelatorRequest {
 
   bool operator==(CorrelatorRequest const &other) const {
     return trace_requests == other.trace_requests;
+  }
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &trace_requests;
+    ar &hdf5_dataset_name;
   }
 };
 
@@ -97,6 +111,44 @@ struct GlobalData {
   std::map<int, int> momentum_cutoff;
 
   HypPars hyp_parameters;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &Lx;
+    ar &Ly;
+    ar &Lz;
+    ar &Lt;
+    ar &dim_row;
+    ar &V_TS;
+    ar &V_for_lime;
+    ar &number_of_eigen_vec;
+    ar &number_of_inversions;
+    ar &start_config;
+    ar &end_config;
+    ar &delta_config;
+    ar &verbose;
+    ar &nb_eigen_threads;
+    ar &path_eigenvectors;
+    ar &name_eigenvectors;
+    ar &filename_eigenvectors;
+    ar &path_perambulators;
+    ar &name_perambulators;
+    ar &name_lattice;
+    ar &filename_ending_correlators;
+    ar &path_output;
+    ar &path_config;
+    ar &handling_vdaggerv;
+    ar &path_vdaggerv;
+    ar &rnd_vec_construct;
+    ar &peram_construct;
+    ar &quarks;
+    ar &operator_list;
+    ar &correlator_list;
+    ar &quarkline_lookuptable;
+    ar &operator_lookuptable;
+    ar &trace_indices_map;
+    ar &correlator_requests_map;
+  }
 };
 
 /**

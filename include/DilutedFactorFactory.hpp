@@ -10,12 +10,12 @@
 #include <Eigen/Dense>
 #include <boost/circular_buffer.hpp>
 #include <boost/multi_array.hpp>
+#include <boost/serialization/string.hpp>
 
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <string>
 
 template <typename T, ssize_t n>
 void print(std::array<T, n> const &a) {

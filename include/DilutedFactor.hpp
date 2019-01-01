@@ -8,11 +8,11 @@
 
 #include <omp.h>
 #include <Eigen/Dense>
+#include <boost/serialization/vector.hpp>
 
 #include <iosfwd>
 #include <set>
 #include <sstream>
-#include <vector>
 
 typedef uint16_t UsedRnd;
 

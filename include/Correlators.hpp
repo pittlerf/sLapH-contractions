@@ -7,7 +7,7 @@
 #include "global_data.hpp"
 #include "typedefs.hpp"
 
-#include <string>
+#include <boost/serialization/string.hpp>
 
 #include <sys/stat.h>
 #include <sys/types.h>

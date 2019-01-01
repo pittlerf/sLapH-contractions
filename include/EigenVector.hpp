@@ -4,10 +4,10 @@
 #include "typedefs.hpp"
 
 #include <Eigen/Dense>
+#include <boost/serialization/string.hpp>
 
 #include <fstream>
 #include <iostream>
-#include <string>
 
 class EigenVector {
  private:

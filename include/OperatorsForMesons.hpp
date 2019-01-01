@@ -10,13 +10,13 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/multi_array.hpp>
+#include <boost/serialization/string.hpp>
 
 #include <Eigen/Dense>
 #include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <string>
 
 /** Calculates operators as they emerge in correlation functions using the
  *  stochastic estimates from the stochastic Laplacian Heaviside method

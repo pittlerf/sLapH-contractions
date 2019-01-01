@@ -2,8 +2,8 @@
 
 #include "typedefs.hpp"
 
-#include <array>
-#include <vector>
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/vector.hpp>
 
 struct gamma_lookup {
   std::array<int, 4> row;

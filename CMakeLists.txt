@@ -82,7 +82,7 @@ target_link_libraries(lcontract PUBLIC ${HDF5_LIBRARIES})
 
 # Boost
 if(NOT DEFINED Boost_INCLUDE_DIRS OR NOT DEFINED Boost_LIBRARIES)
-  find_package(Boost REQUIRED COMPONENTS filesystem system program_options)
+  find_package(Boost REQUIRED COMPONENTS filesystem program_options serialization system)
 endif()
 target_include_directories(lcontract PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(lcontract PUBLIC ${Boost_LIBRARIES})

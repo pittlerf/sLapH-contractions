@@ -4,12 +4,12 @@
 #include "typedefs.hpp"
 
 #include <Eigen/Dense>
+#include <boost/serialization/vector.hpp>
 
 #include <ctime>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 
 /** Memory allocation and reading routines for perambulators */
 class Perambulator {

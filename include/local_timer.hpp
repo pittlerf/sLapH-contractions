@@ -2,8 +2,9 @@
 
 #include <omp.h>
 
+#include <boost/serialization/string.hpp>
+
 #include <iostream>
-#include <string>
 
 static inline void lt_print(const std::string msg, const double &local_timer) {
 #pragma omp critical(cout)

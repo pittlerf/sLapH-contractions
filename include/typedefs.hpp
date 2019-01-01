@@ -2,12 +2,13 @@
 
 #include "ComplexProduct.hpp"
 
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/vector.hpp>
+
 #include <algorithm>
-#include <array>
 #include <iomanip>
-#include <list>
-#include <map>
-#include <vector>
 
 int constexpr max_rnd_ids = 10;
 size_t constexpr max_used_rnd_ids = 6;
@@ -50,6 +51,13 @@ struct VdaggerVQuantumNumbers {
                          std::array<int, 3> const &momentum,
                          DisplacementDirection const &displacement)
       : id(id), momentum(momentum), displacement(displacement) {}
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &id;
+    ar &momentum;
+    ar &displacement;
+  }
 };
 
 /** Struct that contains all information for a sLapH operator
@@ -75,6 +83,13 @@ struct OperatorLookup {
   bool need_gaugefield = false;
 
   inline ssize_t size() { return vdaggerv_lookup.size(); }
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &vdaggerv_lookup;
+    ar &index_of_unity;
+    ar &need_gaugefield;
+  }
 };
 
 /** Struct that holds all information on which VdaggerV must be diluted with
@@ -118,6 +133,14 @@ struct DilutedFactorIndex {
    *  specified by @em id_q1 and @em id_q2
    */
   std::vector<std::pair<ssize_t, ssize_t>> rnd_vec_ids;
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &id_vdaggerv;
+    ar &need_vdaggerv_daggering;
+    ar &gamma;
+    ar &rnd_vec_ids;
+  }
 };
 
 inline bool operator==(DilutedFactorIndex const &first, DilutedFactorIndex const second) {
@@ -157,6 +180,14 @@ struct DiagramIndex {
                const std::vector<ssize_t> &lookup,
                const std::vector<int> &gamma = {})
       : id(id), hdf5_dataset_name(hdf5_dataset_name), lookup(lookup), gamma(gamma){};
+
+  template <class Archive>
+  void serialize(Archive &ar, const unsigned int version) {
+    ar &id;
+    ar &hdf5_dataset_name;
+    ar &lookup;
+    ar &gamma;
+  }
 };
 
 inline bool operator==(DiagramIndex const &first, DiagramIndex const &second) {

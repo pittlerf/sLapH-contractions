@@ -11,12 +11,12 @@
 #include <omp.h>
 #include <Eigen/Dense>
 #include <boost/multi_array.hpp>
+#include <boost/serialization/vector.hpp>
 
 #include <complex>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 
 int get_time_delta(BlockIterator const &slice_pair, int const Lt) {
   return abs((slice_pair.sink() - slice_pair.source() - Lt) % Lt);
