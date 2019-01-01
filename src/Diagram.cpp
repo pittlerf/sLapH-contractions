@@ -1,5 +1,6 @@
 #include "Diagram.hpp"
 
+#include "KahanAccumulator.hpp"
 #include "local_timer.hpp"
 
 #include <omp.h>
@@ -19,7 +20,7 @@ Complex resolve_request1(std::vector<TraceRequest> const &trace_requests,
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
 
-  return std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
+  return std::accumulate(std::begin(x0), std::end(x0), Accumulator<Complex>{}).value() /
          static_cast<double>(x0.size());
 }
 
