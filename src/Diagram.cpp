@@ -91,7 +91,7 @@ void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramPart
   int const tid = omp_get_thread_num();
 
   for (int i = 0; i != ssize(correlator_requests()); ++i) {
-    c_[tid][i] = Complex{};
+    c_[tid][i] = Accumulator<Complex>{};
   }
 
   assemble_impl(c_.at(tid), slice_pair, q);
@@ -105,7 +105,7 @@ void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramPart
   }
 }
 
-void Diagram::assemble_impl(std::vector<Complex> &c,
+void Diagram::assemble_impl(AccumulatorVector &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
   assert(correlator_requests().size() == correlator_requests().size());
@@ -130,7 +130,7 @@ void Diagram::write() {
 
   for (int i = 0; i != ssize(correlator_requests()); ++i) {
     for (int t = 0; t < Lt_; ++t) {
-      one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
+      one_corr[t] = correlator_[t][i].value() / static_cast<double>(Lt_);
     }
     // Write data to file.
     filehandle.write(one_corr, correlator_requests()[i].hdf5_dataset_name);

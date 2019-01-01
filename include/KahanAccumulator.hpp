@@ -27,6 +27,12 @@ class KahanAccumulator {
     return left += right;
   }
 
+  KahanAccumulator operator+=(KahanAccumulator const right) {
+    sum_ += right.sum_;
+    c_ += right.c_;
+    return *this;
+  }
+
  private:
   Numeric sum_ = 0.0;
   Numeric c_ = 0.0;
@@ -45,6 +51,11 @@ class NativeAccumulator {
   NativeAccumulator operator+(Numeric const right) const {
     NativeAccumulator left = *this;
     return left += right;
+  }
+
+  NativeAccumulator operator+=(NativeAccumulator const right) {
+    sum_ += right.sum_;
+    return *this;
   }
 
  private:

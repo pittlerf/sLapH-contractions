@@ -108,6 +108,8 @@ struct DiagramParts {
 
 class Diagram {
  public:
+  using AccumulatorVector = std::vector<Accumulator<Complex>>;
+
   Diagram(std::vector<CorrelatorRequest> const &correlator_requests,
           std::string const &output_path,
           std::string const &output_filename,
@@ -117,9 +119,10 @@ class Diagram {
         output_path_(output_path),
         output_filename_(output_filename),
         Lt_(Lt),
-        correlator_(Lt, std::vector<Complex>(correlator_requests.size(), Complex{})),
+        correlator_(
+            Lt, AccumulatorVector(correlator_requests.size(), Accumulator<Complex>{})),
         c_(omp_get_max_threads(),
-           std::vector<Complex>(correlator_requests.size(), Complex{})),
+           AccumulatorVector(correlator_requests.size(), Accumulator<Complex>{})),
         mutexes_(Lt),
         name_(name) {}
 
@@ -133,7 +136,7 @@ class Diagram {
 
   std::string const &name() const { return name_; }
 
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(AccumulatorVector &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q);
 
@@ -146,10 +149,10 @@ class Diagram {
   int const Lt_;
 
   /** OpenMP-shared correlators, indices are (1) time and (2) correlator id. */
-  std::vector<std::vector<Complex>> correlator_;
+  std::vector<AccumulatorVector> correlator_;
 
   /** OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
-  std::vector<std::vector<Complex>> c_;
+  std::vector<AccumulatorVector> c_;
 
   std::vector<std::mutex> mutexes_;
 
