@@ -1,6 +1,7 @@
 #include "Gamma.hpp"
 
 #include <gtest/gtest.h>
+#include <Eigen/Dense>
 
 namespace {
 std::complex<double> const I{0.0, 1.0};
@@ -14,29 +15,36 @@ Eigen::Matrix4cd sparse_to_eigen_dense(gamma_lookup const sparse) {
   return dense;
 }
 
-// TODO: How to best reuse tmlqcd_gamma matrices? struct?
-TEST(gamma, checkBasis) {
-  // Gamma matrices as defined in tmLQCD
+class GammaTest : public testing::Test {
+ public:
+  GammaTest() {
+    // Gamma matrices as defined in tmLQCD
+    tmlqcd_gamma[0] <<  0,  0,  1,  0,
+                        0,  0,  0,  1,
+                        1,  0,  0,  0,
+                        0,  1,  0,  0;
+
+    tmlqcd_gamma[1] <<  0,  0,  0,  I,
+                        0,  0,  I,  0,
+                        0, -I,  0,  0,
+                       -I,  0,  0,  0;
+
+    tmlqcd_gamma[2] <<  0,  0,  0,  1,
+                        0,  0, -1,  0,
+                        0, -1,  0,  0,
+                        1,  0,  0,  0;
+
+    tmlqcd_gamma[3] <<  0,  0,  I,  0,
+                        0,  0,  0, -I,
+                       -I,  0,  0,  0,
+                        0,  I,  0,  0;
+  }
+
+ protected:
   std::array<Eigen::Matrix4cd, 4> tmlqcd_gamma;
-  tmlqcd_gamma[0] <<  0,  0,  1,  0,
-                      0,  0,  0,  1,
-                      1,  0,  0,  0,
-                      0,  1,  0,  0;
+};
 
-  tmlqcd_gamma[1] <<  0,  0,  0,  I,
-                      0,  0,  I,  0,
-                      0, -I,  0,  0,
-                     -I,  0,  0,  0;
-
-  tmlqcd_gamma[2] <<  0,  0,  0,  1,
-                      0,  0, -1,  0,
-                      0, -1,  0,  0,
-                      1,  0,  0,  0;
-
-  tmlqcd_gamma[3] <<  0,  0,  I,  0,
-                      0,  0,  0, -I,
-                     -I,  0,  0,  0,
-                      0,  I,  0,  0;
+TEST_F(GammaTest, checkBasis) {
   //Check basis matrices
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[0]), tmlqcd_gamma[0]);
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[1]), tmlqcd_gamma[1]);
@@ -45,29 +53,7 @@ TEST(gamma, checkBasis) {
   EXPECT_EQ(sparse_to_eigen_dense(gamma_vec[4]), Eigen::Matrix4cd::Identity());
 }
 
-TEST(gamma, checkProducts) {
-  // Gamma matrices as defined in tmLQCD
-  std::array<Eigen::Matrix4cd, 4> tmlqcd_gamma;
-  tmlqcd_gamma[0] <<  0,  0,  1,  0,
-                      0,  0,  0,  1,
-                      1,  0,  0,  0,
-                      0,  1,  0,  0;
-
-  tmlqcd_gamma[1] <<  0,  0,  0,  I,
-                      0,  0,  I,  0,
-                      0, -I,  0,  0,
-                     -I,  0,  0,  0;
-
-  tmlqcd_gamma[2] <<  0,  0,  0,  1,
-                      0,  0, -1,  0,
-                      0, -1,  0,  0,
-                      1,  0,  0,  0;
-
-  tmlqcd_gamma[3] <<  0,  0,  I,  0,
-                      0,  0,  0, -I,
-                     -I,  0,  0,  0,
-                      0,  I,  0,  0;
-
+TEST_F(GammaTest, checkProducts) {
   // Check gamma5
   Eigen::Matrix4cd test_gamma5;
   test_gamma5 = Eigen::Matrix4cd::Identity();

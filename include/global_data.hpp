@@ -10,8 +10,8 @@
 #include <string>
 #include <vector>
 
-using DiagramIndicesCollection = std::map<std::string, std::vector<DiagramIndex>>;
-using TraceIndicesCollection = std::map<std::string, std::vector<Indices>>;
+typedef std::map<std::string, std::vector<DiagramIndex>> DiagramIndicesCollection;
+typedef std::map<std::string, std::vector<Indices>> TraceIndicesCollection;
 
 enum class Location { source, sink };
 
@@ -35,7 +35,7 @@ struct CorrelatorRequest {
   }
 };
 
-using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorRequest>>;
+typedef std::map<std::string, std::vector<CorrelatorRequest>> CorrelatorRequestsMap;
 
 /**
  * Class containing all metadata for contractions and functions to set them
@@ -48,13 +48,7 @@ using CorrelatorRequestsMap = std::map<std::string, std::vector<CorrelatorReques
  *  - paths
  */
 struct GlobalData {
-  GlobalData() {
-    momentum_cutoff[0] = 4;
-    momentum_cutoff[1] = 5;
-    momentum_cutoff[2] = 6;
-    momentum_cutoff[3] = 7;
-    momentum_cutoff[4] = 4;
-  }
+  GlobalData();
 
   int Lx, Ly, Lz, Lt;
   int dim_row, V_TS, V_for_lime;

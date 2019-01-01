@@ -10,7 +10,7 @@ struct QuarklineSpec {
   ssize_t q1;
   ssize_t q2;
 
-  bool is_q1() const { return q1 == q2; }
+  bool is_loop() const { return q1 == q2; }
 };
 
 using TraceSpec = std::vector<QuarklineSpec>;

@@ -6,16 +6,17 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
-
   ComplexProduct result = complex_product_zero;
+  LT_ULTRA_FINE_DECLARE;
 
+  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     Complex right_sum(0.0, 0.0);
 
     for (auto const &right : right_vec.traces) {
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) != 0u) {
         continue;
       }
 
@@ -32,11 +33,56 @@ ComplexProduct inner_product(DilutedTraces const &left_vec,
     result += make_complex_product(left.data, left_vec.ignore_imag) *
               make_complex_product(right_sum, right_vec.ignore_imag);
   }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT("[ComplexProduct inner_product(DilutedTraces, DilutedTraces]");
 
   if (num_summands == 0) {
     throw std::runtime_error(
         "compcomp_t inner_product(vector<DilutedTrace>, "
-        "vector<DilutedTrace>) has an empty result.");
+        "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
+  }
+
+  return result / static_cast<double>(num_summands);
+}
+
+ComplexProduct inner_product(DilutedTraces const &left_vec,
+                             DilutedTraces const &middle_vec,
+                             DilutedTraces const &right_vec) {
+  assert(left_vec.traces.size() > 0);
+  assert(middle_vec.traces.size() > 0);
+  assert(right_vec.traces.size() > 0);
+
+  int num_summands = 0;
+  ComplexProduct result = complex_product_zero;
+  LT_ULTRA_FINE_DECLARE;
+
+  LT_ULTRA_FINE_START;
+  for (auto const &left : left_vec.traces) {
+    for (auto const &middle : middle_vec.traces) {
+      Complex right_sum(0.0, 0.0);
+
+      for (auto const &right : right_vec.traces) {
+        if ((left.used_rnd_ids & middle.used_rnd_ids & right.used_rnd_ids) != 0u) {
+          continue;
+        }
+
+        right_sum += right.data;
+        ++num_summands;
+      }
+
+      result += make_complex_product(left.data, left_vec.ignore_imag) *
+                make_complex_product(middle.data, middle_vec.ignore_imag) *
+                make_complex_product(right_sum, right_vec.ignore_imag);
+    }
+  }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT(
+      "[ComplexProduct inner_product(DilutedTraces, DilutedTraces, DilutedTraces]");
+
+  if (num_summands == 0) {
+    throw std::runtime_error(
+        "compcomp_t inner_product(vector<DilutedTrace>, "
+        "vector<DilutedTrace>) has an empty result. Not enough random vectors?");
   }
 
   return result / static_cast<double>(num_summands);
@@ -69,18 +115,15 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) != 0u) {
         continue;
       }
 
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      SmallVectorRndId used;
-      merge_push_back(used, inner_rnd_id);
-      merge_push_back(used, outer_rnd_id);
-      merge_append(used, left.used_rnd_ids);
-      merge_append(used, right.used_rnd_ids);
+      UsedRnd used = left.used_rnd_ids | right.used_rnd_ids | (1u << inner_rnd_id) |
+                     (1u << outer_rnd_id);
 
       // The right sides that we encounter at this point have the same left and right
       // random vector indices. They may differ in the set of used random vector indices.
@@ -98,7 +141,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
   if (result_vec.size() == 0) {
     throw std::runtime_error(
         "vector<DilutedTrace> factor_to_trace(vector<DilutedFactor>, "
-        "vector<DilutedFactor>) has an empty result.");
+        "vector<DilutedFactor>) has an empty result. Not enough random vectors?");
   }
 
   return result_vec;
@@ -115,16 +158,8 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec)
       continue;
     }
 
-    SmallVectorRndId used;
-    std::copy(std::begin(elem.used_rnd_ids),
-              std::end(elem.used_rnd_ids),
-              std::back_inserter(used));
-
-    auto const outer_rnd_id = elem.ric.first;
-    merge_push_back(used, outer_rnd_id);
-
+    UsedRnd used = elem.used_rnd_ids | (1u << elem.ric.first);
     DilutedTrace result = {elem.data.trace(), used};
-
     result_vec.push_back(result);
   }
 

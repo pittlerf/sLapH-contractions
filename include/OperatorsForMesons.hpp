@@ -3,6 +3,7 @@
 #include "EigenVector.hpp"
 #include "GaugeField.hpp"
 #include "RandomVector.hpp"
+#include "boost_multi_array.hpp"
 #include "global_data_typedefs.hpp"
 #include "typedefs.hpp"
 

@@ -14,8 +14,6 @@ cd ..
 ###############################################################################
 
 ubuntu_packages=(
-    gcc g++
-    ccache
     cmake
     libhdf5-dev 
     hdf5-tools
@@ -32,11 +30,11 @@ sudo apt-get install -y "${ubuntu_packages[@]}"
 #                              Fix Eigen Library                              #
 ###############################################################################
 
-sudo updatedb
-locate FindEigen3.cmake
-
-mkdir cmake-module
-cp $(locate FindEigen3.cmake) cmake-module
+#sudo updatedb
+#locate FindEigen3.cmake
+#
+#mkdir cmake-module
+#cp $(locate FindEigen3.cmake) cmake-module
 
 ###############################################################################
 #                               Install C-LIME                                #
@@ -72,7 +70,7 @@ rm -rf "$builddir"
 mkdir -p "$builddir"
 pushd "$builddir"
 
-CXX=$(which g++-7)
+CXX=$(which g++)
 
 # Compile gtest
 # Modified from https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/

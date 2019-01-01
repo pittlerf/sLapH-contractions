@@ -25,6 +25,27 @@
 
 namespace po = boost::program_options;
 
+GlobalData::GlobalData() {
+  momentum_cutoff[0] = 4;
+  momentum_cutoff[1] = 5;
+  momentum_cutoff[2] = 6;
+  momentum_cutoff[3] = 7;
+  momentum_cutoff[4] = 4;
+
+  quarkline_lookuptable["Q0"];
+  quarkline_lookuptable["Q1"];
+  quarkline_lookuptable["Q2"];
+
+  trace_indices_map["trQ0Q2"];
+  trace_indices_map["trQ1"];
+  trace_indices_map["trQ1Q0Q2"];
+  trace_indices_map["trQ1Q1"];
+  trace_indices_map["trQ1Q1Q1"];
+  trace_indices_map["trQ1Q1Q1Q1"];
+  trace_indices_map["trQ2Q0Q2Q0"];
+  trace_indices_map["trQ2Q0Q2Q0Q2Q0"];
+}
+
 /**
  * Convenience function for when a \ref store_to value is being provided to
  * typed_value.
@@ -322,8 +343,8 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   int total_number_of_random_combinations_in_trQ1Q1 = 0;
   for (auto const &q : gd.trace_indices_map.at("trQ1Q1")) {
     total_number_of_random_combinations_in_trQ1Q1 +=
-        gd.quarkline_lookuptable.at("Q1")[q[0]].rnd_vec_ids.size() *
-        gd.quarkline_lookuptable.at("Q1")[q[1]].rnd_vec_ids.size();
+        gd.quarkline_lookuptable.at("Q1").at(q[0]).rnd_vec_ids.size() *
+        gd.quarkline_lookuptable.at("Q1").at(q[1]).rnd_vec_ids.size();
   }
   std::cout << "\ttrQ1Q1:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * gd.Lt * total_number_of_random_combinations_in_trQ1Q1 *
@@ -332,9 +353,9 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
 
   int total_number_of_random_combinations_in_trQ0Q2 = 0;
   for (auto const &q : gd.trace_indices_map.at("trQ0Q2")) {
-    total_number_of_random_combinations_in_trQ0Q2 +=
-        gd.quarkline_lookuptable.at("Q0")[q[0]].rnd_vec_ids.size() *
-        gd.quarkline_lookuptable.at("Q2")[q[1]].rnd_vec_ids.size();
+    auto const size1 = gd.quarkline_lookuptable.at("Q0").at(q[0]).rnd_vec_ids.size();
+    auto const size2 = gd.quarkline_lookuptable.at("Q2").at(q[1]).rnd_vec_ids.size();
+    total_number_of_random_combinations_in_trQ0Q2 += size1 * size2;
   }
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * gd.Lt * total_number_of_random_combinations_in_trQ0Q2 *
@@ -344,7 +365,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   int total_number_of_random_combinations_in_trQ1 = 0;
   for (auto const &q : gd.trace_indices_map.at("trQ1")) {
     total_number_of_random_combinations_in_trQ1 +=
-        gd.quarkline_lookuptable.at("Q1")[q[0]].rnd_vec_ids.size();
+        gd.quarkline_lookuptable.at("Q1").at(q[0]).rnd_vec_ids.size();
   }
   std::cout << "\ttrQ1:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * total_number_of_random_combinations_in_trQ1 * sizeof(Complex) /

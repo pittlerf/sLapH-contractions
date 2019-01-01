@@ -14,19 +14,15 @@
 #include <sstream>
 #include <vector>
 
+typedef uint16_t UsedRnd;
+
 struct DilutedFactor {
   using Data = Eigen::MatrixXcd;
 
   Data data;
   std::pair<RndId, RndId> ric;
-  SmallVectorRndId used_rnd_ids;
+  UsedRnd used_rnd_ids;
 };
-
-bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right);
-
-void merge_append(SmallVectorRndId &data, SmallVectorRndId const &addition);
-
-void merge_push_back(SmallVectorRndId &data, RndId const &addition);
 
 /** Product yielding the off-diagonal elements.
 

@@ -2,6 +2,8 @@
 
 #include "typedefs.hpp"
 
+#include <Eigen/Dense>
+
 #include <ostream>
 
 /** Small struct which contains all information to build and read random

@@ -254,7 +254,8 @@ void build_VdaggerV_lookup(
                                    qn.displacement));
         vdv_indices_row.emplace_back(ssize(vdaggerv_lookup) - 1, false);
       } else {
-        bool const dagger = Vector(it->momentum.data()) == (-1) * qn.momentum;
+        bool const dagger = qn.momentum != Vector(0, 0, 0) &&
+                            Vector(it->momentum.data()) == (-1) * qn.momentum;
         vdv_indices_row.emplace_back(it - vdaggerv_lookup.cbegin(), dagger);
       }
     }
@@ -294,7 +295,7 @@ static std::vector<std::pair<ssize_t, ssize_t>> create_rnd_vec_id(
     std::vector<quark> const &quarks,
     ssize_t const id_q1,
     ssize_t const id_q2,
-    bool const C1) {
+    bool const is_loop) {
   // set start and end points of rnd numbers
   auto rndq1_start = 0;
   for (auto i = 0; i < id_q1; i++)
@@ -316,7 +317,7 @@ static std::vector<std::pair<ssize_t, ssize_t>> create_rnd_vec_id(
 
   // finally filling the array
   std::vector<std::pair<ssize_t, ssize_t>> rnd_vec_comb;
-  if (!C1) {
+  if (!is_loop) {
     for (ssize_t i = rndq1_start; i < rndq1_end; ++i)
       for (ssize_t j = rndq2_start; j < rndq2_end; ++j)
         // To avoid bias, different random vectors must have different indices.
@@ -503,7 +504,7 @@ void init_lookup_tables(GlobalData &gd) {
               create_rnd_vec_id(gd.quarks,
                                 correlator.quark_numbers[quarkline_spec.q1],
                                 correlator.quark_numbers[quarkline_spec.q2],
-                                quarkline_spec.is_q1());
+                                quarkline_spec.is_loop());
           build_Quarkline_lookup_one_qn(quarkline_spec.q2,
                                         quantum_numbers[d],
                                         vdv_indices[d],

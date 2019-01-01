@@ -8,7 +8,7 @@ struct DilutedTrace {
   using Data = Complex;
 
   Data data;
-  SmallVectorRndId used_rnd_ids;
+  UsedRnd used_rnd_ids;
 };
 
 struct DilutedTraces {
@@ -28,6 +28,10 @@ inline Complex operator+(Complex const &c, DilutedTrace const &df) {
 using DilutedTracesMap = std::map<ssize_t, std::vector<DilutedTrace>>;
 
 ComplexProduct inner_product(DilutedTraces const &left_vec,
+                             DilutedTraces const &right_vec);
+
+ComplexProduct inner_product(DilutedTraces const &left_vec,
+                             DilutedTraces const &middle_vec,
                              DilutedTraces const &right_vec);
 
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,

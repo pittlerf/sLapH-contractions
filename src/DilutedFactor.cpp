@@ -1,35 +1,14 @@
 #include "DilutedFactor.hpp"
 
-bool has_intersection(SmallVectorRndId const &left, SmallVectorRndId const &right) {
-  SmallVectorRndId intersection;
-
-  std::set_intersection(std::begin(left),
-                        std::end(left),
-                        std::begin(right),
-                        std::end(right),
-                        std::back_inserter(intersection));
-  return intersection.size() > 0;
-}
-
-void merge_append(SmallVectorRndId &data, SmallVectorRndId const &addition) {
-  auto const old_end = std::end(data);
-  std::copy(std::begin(addition), std::end(addition), std::back_inserter(data));
-  std::inplace_merge(std::begin(data), old_end, std::end(data));
-}
-
-void merge_push_back(SmallVectorRndId &data, RndId const &addition) {
-  auto const old_end = std::end(data);
-  data.push_back(addition);
-  std::inplace_merge(std::begin(data), old_end, std::end(data));
-}
-
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
   std::vector<DilutedFactor> result_vec;
+  LT_ULTRA_FINE_DECLARE;
 
+  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
 
@@ -44,23 +23,24 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) != 0u) {
         continue;
       }
 
       // We want to keep track of the indices that have been contracted away. These are
       // all the ones from the left factor, all the ones from the right factor and the one
       // that we are contracting over right now.
-      SmallVectorRndId used;
-      used.push_back(inner_rnd_id);
-      merge_append(used, left.used_rnd_ids);
-      merge_append(used, right.used_rnd_ids);
+      UsedRnd used = left.used_rnd_ids | right.used_rnd_ids | (1u << inner_rnd_id);
 
       result_vec.push_back({left.data * right.data,
                             std::make_pair(left.ric.first, right.ric.second),
                             used});
     }
   }
+  LT_ULTRA_FINE_STOP;
+  LT_ULTRA_FINE_PRINT(
+      "[vector<DilutedFactor> operator*(vector<DilutedFactor>, vector<DilutedFactor>)] "
+      "right_sum");
 
   if (result_vec.size() == 0) {
     throw std::runtime_error(
@@ -76,10 +56,8 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
-  Complex result(0.0, 0.0);
-
   int num_summands = 0;
-
+  Complex result(0.0, 0.0);
   LT_ULTRA_FINE_DECLARE;
 
   for (auto const &left : left_vec) {
@@ -103,7 +81,7 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
 
       // We also need to be careful to not combine factors which have common used random
       // vector indices.
-      if (has_intersection(left.used_rnd_ids, right.used_rnd_ids)) {
+      if ((left.used_rnd_ids & right.used_rnd_ids) == 0u) {
         continue;
       }
 
@@ -115,9 +93,9 @@ ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
       // multiplications to do.
       right_sum += right.data;
       ++num_summands;
+      LT_ULTRA_FINE_STOP;
+      LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
     }
-    LT_ULTRA_FINE_STOP;
-    LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
 
     LT_ULTRA_FINE_START;
     auto const &product = left.data * right_sum;
