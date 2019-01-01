@@ -87,6 +87,24 @@ Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
   }
 }
 
+void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
+  int const tid = omp_get_thread_num();
+
+  for (int i = 0; i != ssize(correlator_requests()); ++i) {
+    c_[tid][i] = Complex{};
+  }
+
+  assemble_impl(c_.at(tid), slice_pair, q);
+
+  {
+    std::lock_guard<std::mutex> lock(mutexes_[t]);
+
+    for (int i = 0; i != ssize(correlator_requests()); ++i) {
+      correlator_[t][i] += c_[tid][i];
+    }
+  }
+}
+
 void Diagram::assemble_impl(std::vector<Complex> &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
@@ -99,4 +117,22 @@ void Diagram::assemble_impl(std::vector<Complex> &c,
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT(name());
+}
+
+void Diagram::write() {
+  assert(output_path_ != "");
+  assert(output_filename_ != "");
+
+  WriteHDF5Correlator filehandle(
+      output_path_, name(), output_filename_, make_comp_type<Complex>());
+
+  std::vector<Complex> one_corr(Lt_);
+
+  for (int i = 0; i != ssize(correlator_requests()); ++i) {
+    for (int t = 0; t < Lt_; ++t) {
+      one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
+    }
+    // Write data to file.
+    filehandle.write(one_corr, correlator_requests()[i].hdf5_dataset_name);
+  }
 }
