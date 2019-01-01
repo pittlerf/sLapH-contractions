@@ -2,8 +2,8 @@
 
 #include "ComplexProduct.hpp"
 
-#include <boost/multi_array.hpp>
 #include <Eigen/Dense>
+#include <boost/multi_array.hpp>
 
 /** Data type for momentum */
 typedef boost::multi_array<Complex, 2> array_cd_d2;
@@ -36,4 +36,3 @@ typedef boost::multi_array<Eigen::MatrixXcd, 10> array_Xcd_d10_eigen;
 
 /** Special type for Correlators */
 typedef boost::multi_array<std::vector<Complex>, 3> array_corr;
-

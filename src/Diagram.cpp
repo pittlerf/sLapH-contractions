@@ -5,9 +5,9 @@
 #include <omp.h>
 #include <boost/range/adaptor/indexed.hpp>
 
-ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
-                                BlockIterator const &slice_pair,
-                                DiagramParts &q) {
+Complex resolve_request1(std::vector<TraceRequest> const &trace_requests,
+                         BlockIterator const &slice_pair,
+                         DiagramParts &q) {
   assert(ssize(trace_requests) == 1);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -19,15 +19,13 @@ ComplexProduct resolve_request1(std::vector<TraceRequest> const &trace_requests,
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
 
-  return make_complex_product(
-      std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
-          static_cast<double>(x0.size()),
-      false);
+  return std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
+         static_cast<double>(x0.size());
 }
 
-ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
-                                BlockIterator const &slice_pair,
-                                DiagramParts &q) {
+Complex resolve_request2(std::vector<TraceRequest> const &trace_requests,
+                         BlockIterator const &slice_pair,
+                         DiagramParts &q) {
   assert(ssize(trace_requests) == 2);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -46,9 +44,9 @@ ComplexProduct resolve_request2(std::vector<TraceRequest> const &trace_requests,
   return inner_product(t0, t1);
 }
 
-ComplexProduct resolve_request3(std::vector<TraceRequest> const &trace_requests,
-                                BlockIterator const &slice_pair,
-                                DiagramParts &q) {
+Complex resolve_request3(std::vector<TraceRequest> const &trace_requests,
+                         BlockIterator const &slice_pair,
+                         DiagramParts &q) {
   assert(ssize(trace_requests) == 2);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -74,9 +72,9 @@ ComplexProduct resolve_request3(std::vector<TraceRequest> const &trace_requests,
   return inner_product(t0, t1, t2);
 }
 
-ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
-                               BlockIterator const &slice_pair,
-                               DiagramParts &q) {
+Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
+                        BlockIterator const &slice_pair,
+                        DiagramParts &q) {
   if (ssize(trace_requests) == 1) {
     return resolve_request1(trace_requests, slice_pair, q);
   } else if (ssize(trace_requests) == 2) {
@@ -88,7 +86,7 @@ ComplexProduct resolve_request(std::vector<TraceRequest> const &trace_requests,
   }
 }
 
-void Diagram::assemble_impl(std::vector<ComplexProduct> &c,
+void Diagram::assemble_impl(std::vector<Complex> &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
   assert(correlator_requests().size() == correlator_requests().size());

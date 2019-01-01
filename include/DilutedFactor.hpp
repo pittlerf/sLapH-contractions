@@ -60,8 +60,8 @@ void print(DilutedFactorsMap<n> const &otfm) {
   }
 }
 
-ComplexProduct trace(std::vector<DilutedFactor> const &left_vec,
-                     std::vector<DilutedFactor> const &right_vec);
+Complex trace(std::vector<DilutedFactor> const &left_vec,
+              std::vector<DilutedFactor> const &right_vec);
 
 #if 0
 int constexpr max_flavor = 8;
