@@ -7,7 +7,7 @@
 
 // A simple test where the normal double precision is sufficient.
 TEST(KahanAccumulator, simple) {
-  KahanAccumulator acc;
+  KahanAccumulator<double> acc;
   double sum = 0.0;
 
   for (int i = 1; i != 10; ++i) {
@@ -22,7 +22,7 @@ TEST(KahanAccumulator, simple) {
 // conventional addition the result will still say 1.0, with the Kahan
 // summation we expect an exact result.
 TEST(KahanAccumulator, hard) {
-  KahanAccumulator acc;
+  KahanAccumulator<double> acc;
   double sum = 0.0;
 
   acc += 1.0;

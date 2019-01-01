@@ -5,14 +5,18 @@
  *
  * The algorithm is taken from
  * https://en.wikipedia.org/wiki/Kahan_summation_algorithm
+ *
+ * @tparam Numeric A numeric type which supports addition and subtraction. The
+ * most sensible values are `double` and `std::complex<double>`.
  */
+template <typename Numeric>
 class KahanAccumulator {
  public:
-  double value() const { return sum_; }
+  Numeric value() const { return sum_; }
 
-  KahanAccumulator &operator+=(double const right) {
-    double const y = right - c_;
-    double const t = sum_ + y;
+  KahanAccumulator &operator+=(Numeric const right) {
+    Numeric const y = right - c_;
+    Numeric const t = sum_ + y;
     c_ = (t - sum_) - y;
     sum_ = t;
 
@@ -20,6 +24,6 @@ class KahanAccumulator {
   }
 
  private:
-  double sum_ = 0.0;
-  double c_ = 0.0;
+  Numeric sum_ = 0.0;
+  Numeric c_ = 0.0;
 };
