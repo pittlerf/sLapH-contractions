@@ -17,3 +17,4 @@ Testing/Temporary
 tests/Testing/Temporary
 sLapH-contractions.creator.user
 make-coffee-build.sh
+tests/integration-L4/global_data.bin
