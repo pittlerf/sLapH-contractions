@@ -35,16 +35,16 @@ static void BM_kahan_double(benchmark::State &state) {
   bm_accumulate<KahanAccumulator<double>>(state);
 }
 
-BENCHMARK(BM_kahan_double);
 
 static void BM_native_double(benchmark::State &state) {
   bm_accumulate<NativeAccumulator<double>>(state);
 }
 
-BENCHMARK(BM_native_double);
 
 static void BM_native_quad(benchmark::State &state) {
   bm_accumulate<NativeAccumulator<long double>>(state);
 }
 
 BENCHMARK(BM_native_quad);
+BENCHMARK(BM_native_double);
+BENCHMARK(BM_kahan_double);
