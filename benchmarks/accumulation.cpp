@@ -6,7 +6,7 @@
 #include <vector>
 
 static std::vector<double> make_numbers() {
-  std::vector<double> numbers(50);
+  std::vector<double> numbers(500);
 
   std::default_random_engine engine(0);
   std::uniform_real_distribution<double> dist(0, 1);
