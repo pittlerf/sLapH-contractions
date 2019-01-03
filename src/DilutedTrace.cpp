@@ -127,8 +127,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
       // instances, we do not care to preserve the information about the used random
       // vector indices. Therefore we can sum all these elements up to have less
       // multiplications to do.
-      result_vec.push_back(
-          {typename DilutedTrace::Data{(left.data * right.data).trace()}, used});
+      result_vec.push_back({DilutedTrace::Data{(left.data * right.data).trace()}, used});
     }
     LT_ULTRA_FINE_STOP;
     LT_ULTRA_FINE_PRINT("[DilutedFactor::factor_to_trace] multiply_trace");
