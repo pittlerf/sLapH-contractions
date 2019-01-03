@@ -41,6 +41,9 @@ class KahanAccumulator {
     return *this;
   }
 
+  Numeric sum() { return sum_; }
+  Numeric c() { return c_; }
+
  private:
   Numeric sum_ = 0.0;
   Numeric c_ = 0.0;

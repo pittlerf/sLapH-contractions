@@ -44,3 +44,33 @@ TEST(KahanAccumulator, kahanHard) {
   EXPECT_EQ(acc.value(), exact);
   EXPECT_NE(sum, exact);
 }
+
+TEST(KahanAccumulator, kahanPrecision) {
+  double const eps = std::numeric_limits<double>::epsilon();
+  double const summand = eps / 4;
+
+  KahanAccumulator<double> acc;
+  std::cout << "| Begin | " << acc.sum() << " | " << acc.c() << " |\n";
+  acc += 1.0;
+  std::cout << "| += 1.0 | " << acc.sum() << " | " << acc.c() << " |\n";
+  acc += summand;
+  std::cout << "| += summand | " << acc.sum() << " | " << acc.c() << " |\n";
+  acc += -1.0;
+  std::cout << "| += -1.0 | " << acc.sum() << " | " << acc.c() << " |\n";
+
+  EXPECT_NE(acc.value(), 0.0);
+  EXPECT_EQ(acc.value(), summand) << "sum: " << acc.sum() << ", c: " << acc.c();
+}
+
+TEST(KahanAccumulator, longDoublePrecision) {
+  double const eps = std::numeric_limits<double>::epsilon();
+  double const summand = eps * 1e-1;
+
+  NativeAccumulator<long double> acc;
+  acc += 1.0;
+  acc += summand;
+  acc += -1.0;
+
+  EXPECT_NE(acc.value(), 0.0);
+  EXPECT_NEAR(acc.value(), summand, eps);
+}
