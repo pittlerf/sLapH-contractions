@@ -67,6 +67,10 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
     auto const inner_rnd_id = left.ric.second;
 
     LT_ULTRA_FINE_START;
+
+    // XXX (MU 2019-01-03): This variable is an accumulator, but it runs with
+    // double precision in all cases. The discussion has been started at
+    // https://github.com/HISKP-LQCD/sLapH-contractions/pull/87#issuecomment-451157721.
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
