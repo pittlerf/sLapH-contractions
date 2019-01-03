@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 /**
  * Kahan summation implementation.
  *
@@ -14,7 +16,13 @@ class KahanAccumulator {
  public:
   Numeric value() const { return sum_ + c_; }
 
-  KahanAccumulator &operator+=(Numeric const right) {
+  KahanAccumulator &operator+=(Numeric right) {
+    if (std::abs(right) > std::abs(sum_)) {
+      auto const temp = sum_;
+      sum_ = right;
+      right = temp;
+    }
+
     Numeric const y = right - c_;
     Numeric const t = sum_ + y;
     c_ = (t - sum_) - y;
