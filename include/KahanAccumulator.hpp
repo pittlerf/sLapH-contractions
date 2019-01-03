@@ -14,7 +14,7 @@
 template <typename Numeric>
 class KahanAccumulator {
  public:
-  Numeric value() const { return sum_ + c_; }
+  Numeric value() const { return sum_ - c_; }
 
   KahanAccumulator &operator+=(Numeric right) {
     if (std::abs(right) > std::abs(sum_)) {
