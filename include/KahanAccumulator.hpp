@@ -14,18 +14,15 @@
 template <typename Numeric>
 class KahanAccumulator {
  public:
-  Numeric value() const { return sum_ - c_; }
+  Numeric value() const { return sum_ + c_; }
 
   KahanAccumulator &operator+=(Numeric right) {
-    if (std::abs(right) > std::abs(sum_)) {
-      auto const temp = sum_;
-      sum_ = right;
-      right = temp;
+    Numeric const t = sum_ + right;
+    if (std::abs(sum_) >= std::abs(right)) {
+      c_ += (sum_ - t) + right;
+    } else {
+      c_ += (right - t) + sum_;
     }
-
-    Numeric const y = right - c_;
-    Numeric const t = sum_ + y;
-    c_ = (t - sum_) - y;
     sum_ = t;
     return *this;
   }
@@ -40,9 +37,6 @@ class KahanAccumulator {
     c_ += right.c_;
     return *this;
   }
-
-  Numeric sum() { return sum_; }
-  Numeric c() { return c_; }
 
  private:
   Numeric sum_ = 0.0;

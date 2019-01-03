@@ -50,16 +50,12 @@ TEST(KahanAccumulator, kahanPrecision) {
   double const summand = eps / 4;
 
   KahanAccumulator<double> acc;
-  std::cout << "| Begin | " << acc.sum() << " | " << acc.c() << " |\n";
   acc += 1.0;
-  std::cout << "| += 1.0 | " << acc.sum() << " | " << acc.c() << " |\n";
   acc += summand;
-  std::cout << "| += summand | " << acc.sum() << " | " << acc.c() << " |\n";
   acc += -1.0;
-  std::cout << "| += -1.0 | " << acc.sum() << " | " << acc.c() << " |\n";
 
   EXPECT_NE(acc.value(), 0.0);
-  EXPECT_EQ(acc.value(), summand) << "sum: " << acc.sum() << ", c: " << acc.c();
+  EXPECT_EQ(acc.value(), summand);
 }
 
 TEST(KahanAccumulator, longDoublePrecision) {
