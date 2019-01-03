@@ -124,7 +124,10 @@ class Diagram {
         c_(omp_get_max_threads(),
            AccumulatorVector(correlator_requests.size(), Accumulator<Complex>{})),
         mutexes_(Lt),
-        name_(name) {}
+        name_(name) {
+    assert(output_path_ != "");
+    assert(output_filename_ != "");
+  }
 
   std::vector<CorrelatorRequest> const &correlator_requests() const {
     return correlator_requests_;

@@ -120,9 +120,6 @@ void Diagram::assemble_impl(AccumulatorVector &c,
 }
 
 void Diagram::write() {
-  assert(output_path_ != "");
-  assert(output_filename_ != "");
-
   WriteHDF5Correlator filehandle(
       output_path_, name(), output_filename_, make_comp_type<Complex>());
 
