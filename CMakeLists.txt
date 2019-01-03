@@ -163,6 +163,9 @@ option(SLAPH_KAHAN "Use Kahan summation in the accumulation steps" OFF)
 
 if(SLAPH_KAHAN)
   add_definitions("-DSLAPH_KAHAN")
+  message(STATUS "Using Kahan accumulation with double precision internally")
+else()
+  message(STATUS "Using native double precision accumulation")
 endif()
 
 ###############################################################################
