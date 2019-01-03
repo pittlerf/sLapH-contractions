@@ -57,16 +57,3 @@ TEST(KahanAccumulator, kahanPrecision) {
   EXPECT_NE(acc.value(), 0.0);
   EXPECT_EQ(acc.value(), summand);
 }
-
-TEST(KahanAccumulator, longDoublePrecision) {
-  double const eps = std::numeric_limits<double>::epsilon();
-  double const summand = eps * 1e-1;
-
-  NativeAccumulator<long double> acc;
-  acc += 1.0;
-  acc += summand;
-  acc += -1.0;
-
-  EXPECT_NE(acc.value(), 0.0);
-  EXPECT_NEAR(acc.value(), summand, eps);
-}
