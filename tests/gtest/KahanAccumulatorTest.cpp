@@ -47,7 +47,7 @@ TEST(KahanAccumulator, kahanHard) {
 
 TEST(KahanAccumulator, kahanPrecision) {
   double const eps = std::numeric_limits<double>::epsilon();
-  double const summand = eps / 4;
+  double const summand = eps * 1e-15;
 
   KahanAccumulator<double> acc;
   acc += 1.0;
