@@ -6,7 +6,7 @@
 #include <iostream>
 
 // A simple test where the normal double precision is sufficient.
-TEST(KahanAccumulator, simple) {
+TEST(KahanAccumulator, kahanSimple) {
   KahanAccumulator<double> acc;
   double sum = 0.0;
 
@@ -21,7 +21,7 @@ TEST(KahanAccumulator, simple) {
 // Add a fraction of the double epsilon to 1.0 many times. With the
 // conventional addition the result will still say 1.0, with the Kahan
 // summation we expect an exact result.
-TEST(KahanAccumulator, hard) {
+TEST(KahanAccumulator, kahanHard) {
   KahanAccumulator<double> acc;
   double sum = 0.0;
 
