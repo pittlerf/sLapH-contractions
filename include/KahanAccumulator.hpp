@@ -16,6 +16,10 @@ class KahanAccumulator {
  public:
   Numeric value() const { return sum_ + c_; }
 
+  /**
+   * Algorithm taken from
+   * https://en.wikipedia.org/wiki/Kahan_summation_algorithm#Further_enhancements.
+   */
   KahanAccumulator &operator+=(Numeric right) {
     Numeric const t = sum_ + right;
     if (std::abs(sum_) >= std::abs(right)) {
