@@ -1,5 +1,7 @@
 #include "DilutedFactor.hpp"
 
+#include "KahanAccumulator.hpp"
+
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
@@ -57,7 +59,7 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
   assert(right_vec.size() > 0);
 
   int num_summands = 0;
-  Complex result(0.0, 0.0);
+  Accumulator<Complex> result;
   LT_ULTRA_FINE_DECLARE;
 
   for (auto const &left : left_vec) {
@@ -111,5 +113,5 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
         "summands.");
   }
 
-  return result / static_cast<double>(num_summands);
+  return result.value() / static_cast<double>(num_summands);
 }
