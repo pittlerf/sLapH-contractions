@@ -1,8 +1,8 @@
 #pragma once
 
-#include "typedefs.hpp"
-
 #include "DilutedFactor.hpp"
+#include "KahanAccumulator.hpp"
+#include "typedefs.hpp"
 
 struct DilutedTrace {
   using Data = Complex;
@@ -21,6 +21,16 @@ inline Complex operator+(DilutedTrace const &df, Complex const &c) {
 }
 
 inline Complex operator+(Complex const &c, DilutedTrace const &df) {
+  return df + c;
+}
+
+inline Accumulator<Complex> operator+(DilutedTrace const &df,
+                                      Accumulator<Complex> const &c) {
+  return c + df.data;
+}
+
+inline Accumulator<Complex> operator+(Accumulator<Complex> const &c,
+                                      DilutedTrace const &df) {
   return df + c;
 }
 

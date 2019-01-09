@@ -1,5 +1,6 @@
 #include "Diagram.hpp"
 
+#include "KahanAccumulator.hpp"
 #include "local_timer.hpp"
 
 #include <omp.h>
@@ -19,7 +20,7 @@ Complex resolve_request1(std::vector<TraceRequest> const &trace_requests,
                        ->get(slice_pair, locations0)
                        .at(trace_request0.tr_id);
 
-  return std::accumulate(std::begin(x0), std::end(x0), Complex{0.0, 0.0}) /
+  return std::accumulate(std::begin(x0), std::end(x0), Accumulator<Complex>{}).value() /
          static_cast<double>(x0.size());
 }
 
@@ -86,7 +87,25 @@ Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
   }
 }
 
-void Diagram::assemble_impl(std::vector<Complex> &c,
+void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
+  int const tid = omp_get_thread_num();
+
+  for (int i = 0; i != ssize(correlator_requests()); ++i) {
+    c_[tid][i] = Accumulator<Complex>{};
+  }
+
+  assemble_impl(c_.at(tid), slice_pair, q);
+
+  {
+    std::lock_guard<std::mutex> lock(mutexes_[t]);
+
+    for (int i = 0; i != ssize(correlator_requests()); ++i) {
+      correlator_[t][i] += c_[tid][i];
+    }
+  }
+}
+
+void Diagram::assemble_impl(AccumulatorVector &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
   assert(correlator_requests().size() == correlator_requests().size());
@@ -98,4 +117,19 @@ void Diagram::assemble_impl(std::vector<Complex> &c,
   }
   LT_DIAGRAMS_STOP;
   LT_DIAGRAMS_PRINT(name());
+}
+
+void Diagram::write() {
+  WriteHDF5Correlator filehandle(
+      output_path_, name(), output_filename_, make_comp_type<Complex>());
+
+  std::vector<Complex> one_corr(Lt_);
+
+  for (int i = 0; i != ssize(correlator_requests()); ++i) {
+    for (int t = 0; t < Lt_; ++t) {
+      one_corr[t] = correlator_[t][i].value() / static_cast<double>(Lt_);
+    }
+    // Write data to file.
+    filehandle.write(one_corr, correlator_requests()[i].hdf5_dataset_name);
+  }
 }

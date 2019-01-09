@@ -11,6 +11,7 @@ if(${GTEST_FOUND})
     main.cpp
     gamma.cpp
     create_momenta.cpp
+    KahanAccumulatorTest.cpp
     )
 
   target_link_libraries(main-gtest GTest::GTest lcontract)

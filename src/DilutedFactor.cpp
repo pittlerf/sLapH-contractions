@@ -1,5 +1,7 @@
 #include "DilutedFactor.hpp"
 
+#include "KahanAccumulator.hpp"
+
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
   assert(left_vec.size() > 0);
@@ -57,7 +59,7 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
   assert(right_vec.size() > 0);
 
   int num_summands = 0;
-  Complex result(0.0, 0.0);
+  Accumulator<Complex> result;
   LT_ULTRA_FINE_DECLARE;
 
   for (auto const &left : left_vec) {
@@ -65,6 +67,10 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
     auto const inner_rnd_id = left.ric.second;
 
     LT_ULTRA_FINE_START;
+
+    // XXX (MU 2019-01-03): This variable is an accumulator, but it runs with
+    // double precision in all cases. The discussion has been started at
+    // https://github.com/HISKP-LQCD/sLapH-contractions/pull/87#issuecomment-451157721.
     Eigen::MatrixXcd right_sum(
         Eigen::MatrixXcd::Zero(left.data.rows(), left.data.cols()));
 
@@ -111,5 +117,5 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
         "summands.");
   }
 
-  return result / static_cast<double>(num_summands);
+  return result.value() / static_cast<double>(num_summands);
 }

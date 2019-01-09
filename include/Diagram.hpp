@@ -108,6 +108,8 @@ struct DiagramParts {
 
 class Diagram {
  public:
+  using AccumulatorVector = std::vector<Accumulator<Complex>>;
+
   Diagram(std::vector<CorrelatorRequest> const &correlator_requests,
           std::string const &output_path,
           std::string const &output_filename,
@@ -117,70 +119,43 @@ class Diagram {
         output_path_(output_path),
         output_filename_(output_filename),
         Lt_(Lt),
-        correlator_(Lt, std::vector<Complex>(correlator_requests.size(), Complex{})),
+        correlator_(
+            Lt, AccumulatorVector(correlator_requests.size(), Accumulator<Complex>{})),
         c_(omp_get_max_threads(),
-           std::vector<Complex>(correlator_requests.size(), Complex{})),
+           AccumulatorVector(correlator_requests.size(), Accumulator<Complex>{})),
         mutexes_(Lt),
-        name_(name) {}
+        name_(name) {
+    assert(output_path_ != "");
+    assert(output_filename_ != "");
+  }
 
   std::vector<CorrelatorRequest> const &correlator_requests() const {
     return correlator_requests_;
   }
 
-  void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
-    int const tid = omp_get_thread_num();
+  void assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q);
 
-    for (int i = 0; i != ssize(correlator_requests()); ++i) {
-      c_[tid][i] = Complex{};
-    }
-
-    assemble_impl(c_.at(tid), slice_pair, q);
-
-    {
-      std::lock_guard<std::mutex> lock(mutexes_[t]);
-
-      for (int i = 0; i != ssize(correlator_requests()); ++i) {
-        correlator_[t][i] += c_[tid][i];
-      }
-    }
-  }
-
-  void write() {
-    assert(output_path_ != "");
-    assert(output_filename_ != "");
-
-    WriteHDF5Correlator filehandle(
-        output_path_, name(), output_filename_, make_comp_type<Complex>());
-
-    std::vector<Complex> one_corr(Lt_);
-
-    for (int i = 0; i != ssize(correlator_requests()); ++i) {
-      for (int t = 0; t < Lt_; ++t) {
-        one_corr[t] = correlator_[t][i] / static_cast<double>(Lt_);
-      }
-      // Write data to file.
-      filehandle.write(one_corr, correlator_requests()[i].hdf5_dataset_name);
-    }
-  }
+  void write();
 
   std::string const &name() const { return name_; }
 
-  void assemble_impl(std::vector<Complex> &c,
+  void assemble_impl(AccumulatorVector &c,
                      BlockIterator const &slice_pair,
                      DiagramParts &q);
 
   std::vector<CorrelatorRequest> const &correlator_requests_;
 
+ private:
   std::string const &output_path_;
   std::string const &output_filename_;
 
   int const Lt_;
 
   /** OpenMP-shared correlators, indices are (1) time and (2) correlator id. */
-  std::vector<std::vector<Complex>> correlator_;
+  std::vector<AccumulatorVector> correlator_;
 
   /** OpenMP-shared correlators, indices are (1) thread id and (2) correlator id. */
-  std::vector<std::vector<Complex>> c_;
+  std::vector<AccumulatorVector> c_;
 
   std::vector<std::mutex> mutexes_;
 
