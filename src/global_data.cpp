@@ -81,6 +81,11 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                         po::value<std::string>(&output_file)->default_value("LapHs.out"),
                         "name of output file.");
 
+  generic.add_options()(
+      "single_time_slice_combination",
+      po::value<int>(&gd.single_time_slice_combination)->default_value(-1),
+      "Only compute this time slice combination (for benchmarking only)");
+
   // Declare a group of options that will be allowed both on command line and
   // in input file
   po::options_description config("Input file options");
@@ -137,7 +142,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
       "name_eigenvectors",
       po::value<std::string>(&gd.name_eigenvectors)->default_value("eigenvector"),
       "name of eigenvectors\nThe full name is internally created to:\n"
-      "\"name_of_eigenvectors.eigenvector\n. time slice.configuration\"");
+      "\"name_of_eigenvectors.configuration.time_slice\"");
   config.add_options()(
       "handling_vdaggerv",
       po::value<std::string>(&gd.handling_vdaggerv)->default_value("build"),

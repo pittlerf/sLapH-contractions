@@ -50,4 +50,5 @@ void contract(const ssize_t Lt,
               CorrelatorRequestsMap const &correlator_requests_map,
               DilutedFactorIndicesCollection const &quark_lookup,
               std::string const output_path,
-              std::string const output_filename);
+              std::string const output_filename,
+              int single_time_slice_combination);

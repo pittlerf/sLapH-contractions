@@ -49,7 +49,8 @@ void contract(const ssize_t Lt,
               CorrelatorRequestsMap const &correlator_requests_map,
               DilutedFactorIndicesCollection const &quark_lookup,
               std::string const output_path,
-              std::string const output_filename) {
+              std::string const output_filename,
+              int single_time_slice_combination) {
   std::vector<Diagram> diagrams;
 
   for (auto const &elem : correlator_requests_map) {
@@ -82,6 +83,10 @@ void contract(const ssize_t Lt,
 
 #pragma omp for schedule(dynamic)
     for (int b = 0; b < dilution_scheme.size(); ++b) {
+      if (single_time_slice_combination >= 0 && single_time_slice_combination != b) {
+        continue;
+      }
+
 #pragma omp critical(cout)
       {
         std::cout << "Thread " << std::setw(3) << omp_get_thread_num() << " of "

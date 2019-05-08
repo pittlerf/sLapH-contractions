@@ -97,6 +97,8 @@ struct GlobalData {
   std::map<int, int> momentum_cutoff;
 
   HypPars hyp_parameters;
+
+  int single_time_slice_combination;
 };
 
 /**
