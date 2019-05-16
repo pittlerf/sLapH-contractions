@@ -2,7 +2,8 @@
 
 #include <omp.h>
 
-#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 
 class TimingsStreamSingleton {
@@ -13,6 +14,16 @@ class TimingsStreamSingleton {
       oss << "timings-thread-" << i << ".xml";
       streams_.emplace_back(oss.str());
     }
+
+    for (auto &stream : streams_) {
+      stream << "<timings>\n";
+    }
+  }
+
+  ~TimingsStreamSingleton() {
+    for (auto &stream : streams_) {
+      stream << "</timings>\n";
+    }
   }
 
   static TimingsStreamSingleton &instance() {
@@ -20,7 +31,10 @@ class TimingsStreamSingleton {
     return instance;
   }
 
-  std::ofstream &get() { int const tid = omp_get_thread_num(); }
+  std::ofstream &get() {
+    int const tid = omp_get_thread_num();
+    return streams_.at(tid);
+  }
 
  private:
   std::vector<std::ofstream> streams_;
@@ -31,7 +45,7 @@ class TimingScope {
  public:
   TimingScope(std::string const &function, std::string const &info)
       : start_(omp_get_wtime()), stream_(TimingsStreamSingleton::instance().get()) {
-    steam << "<call function='" << function << "' info='" << info << "'>\n";
+    stream_ << "<call function='" << function << "' info='" << info << "'>\n";
   }
 
   ~TimingScope() {
@@ -42,5 +56,5 @@ class TimingScope {
 
  private:
   double start_;
-  std::ofstream &stream_
-}
+  std::ofstream &stream_;
+};
