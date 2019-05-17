@@ -17,7 +17,7 @@ void foo(std::string const &info) {
   baz("");
 }
 
-int main(std::string const &info) {
+int main() {
   TimingScope<1> timing_scope("main", "");
 
   foo("C30");

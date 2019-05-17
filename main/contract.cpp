@@ -6,6 +6,7 @@
 #include "git.hpp"
 #include "global_data.hpp"
 #include "global_data_build_IO_names.hpp"
+#include "timings.hpp"
 
 #include <omp.h>
 
@@ -25,6 +26,8 @@
  *  @image html contract.pdf "Flow chart of main()"
  */
 int main(int ac, char *av[]) {
+  TimingScope<1> timing_scope("main");
+
   std::cout << "This is sLapH-contractions:\n"
             << "  git branch " << git_refspec << "\n"
             << "  git revision " << git_sha1 << "\n"

@@ -54,7 +54,10 @@ def main():
     tree = xml.etree.ElementTree.parse(options.profile)
 
     calls = tree.findall('.//call')
-    print(calls)
+    
+    print('Found {} calls.'.format(len(calls)))
+
+    tottime = float(tree.find('.//call[@function="main"]/total').attrib['time'])
 
     vertices = []
     edges = []
@@ -64,11 +67,12 @@ def main():
         vertices.append(v)
         edges += e
 
-    pprint.pprint(vertices)
-    pprint.pprint(edges)
+    print('Gathered {} vertices and {} edges.'.format(len(vertices), len(edges)))
 
+    vertex_keyfun = lambda v: v.id
+    vertices.sort(key=vertex_keyfun)
     grouped_vertices = []
-    for vertex_id, group in itertools.groupby(vertices, lambda v: v.id):
+    for vertex_id, group in itertools.groupby(vertices, vertex_keyfun):
         group = list(group)
         v = group[0]
 
@@ -78,8 +82,12 @@ def main():
             selftime=sum(g.selftime for g in group),
             calls=len(group)))
 
+    print('Grouped vertices down to {}.'.format(len(grouped_vertices)))
+
+    edge_keyfun = lambda e: (e.from_id, e.to_id)
+    edges.sort(key=edge_keyfun)
     grouped_edges = []
-    for (from_id, to_id), group in itertools.groupby(edges, lambda e: (e.from_id, e.to_id)):
+    for (from_id, to_id), group in itertools.groupby(edges, edge_keyfun):
         group = list(group)
         e = group[0]
 
@@ -89,17 +97,21 @@ def main():
             cumtime=sum(g.cumtime for g in group),
             calls=len(group)))
 
-    pprint.pprint(grouped_edges)
+    print('Grouped edges down to {}.'.format(len(grouped_edges)))
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(
         os.path.dirname(os.path.abspath(sys.argv[0]))))
     template = env.get_template('profile.dot.j2')
-    rendered = template.render(vertices=grouped_vertices, edges=grouped_edges)
+    rendered = template.render(vertices=grouped_vertices, edges=grouped_edges, tottime=tottime)
+    print('Generated graph.')
 
     with open('profile.dot', 'w') as f:
         f.write(rendered)
+    print('Wrote graph.')
 
     subprocess.run(['dot', 'profile.dot', '-Tpdf', '-o', 'profile.pdf'])
+    subprocess.run(['dot', 'profile.dot', '-Tpng', '-o', 'profile.png'])
+    print('Compiled graph.')
 
 
 

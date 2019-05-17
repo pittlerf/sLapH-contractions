@@ -1,7 +1,7 @@
 #include "Diagram.hpp"
 
 #include "KahanAccumulator.hpp"
-#include "local_timer.hpp"
+#include "timings.hpp"
 
 #include <omp.h>
 #include <boost/range/adaptor/indexed.hpp>
@@ -9,6 +9,8 @@
 Complex resolve_request1(std::vector<TraceRequest> const &trace_requests,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  TimingScope<1> timing_scope("resolve_request1");
+
   assert(ssize(trace_requests) == 1);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -27,6 +29,8 @@ Complex resolve_request1(std::vector<TraceRequest> const &trace_requests,
 Complex resolve_request2(std::vector<TraceRequest> const &trace_requests,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  TimingScope<1> timing_scope("resolve_request2");
+
   assert(ssize(trace_requests) == 2);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -48,6 +52,8 @@ Complex resolve_request2(std::vector<TraceRequest> const &trace_requests,
 Complex resolve_request3(std::vector<TraceRequest> const &trace_requests,
                          BlockIterator const &slice_pair,
                          DiagramParts &q) {
+  TimingScope<1> timing_scope("resolve_request3");
+
   assert(ssize(trace_requests) == 2);
   auto const &trace_request0 = trace_requests.at(0);
   auto const &locations0 = trace_request0.locations;
@@ -88,6 +94,8 @@ Complex resolve_request(std::vector<TraceRequest> const &trace_requests,
 }
 
 void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramParts &q) {
+  TimingScope<1> timing_scope("Diagram::assemble", name());
+
   int const tid = omp_get_thread_num();
 
   for (int i = 0; i != ssize(correlator_requests()); ++i) {
@@ -108,6 +116,8 @@ void Diagram::assemble(int const t, BlockIterator const &slice_pair, DiagramPart
 void Diagram::assemble_impl(AccumulatorVector &c,
                             BlockIterator const &slice_pair,
                             DiagramParts &q) {
+  TimingScope<1> timing_scope("Diagram::assemble_impl", name());
+
   assert(correlator_requests().size() == correlator_requests().size());
   LT_DIAGRAMS_DECLARE;
   LT_DIAGRAMS_START;
@@ -120,6 +130,8 @@ void Diagram::assemble_impl(AccumulatorVector &c,
 }
 
 void Diagram::write() {
+  TimingScope<1> timing_scope("Diagram::write", name());
+
   WriteHDF5Correlator filehandle(
       output_path_, name(), output_filename_, make_comp_type<Complex>());
 

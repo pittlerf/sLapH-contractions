@@ -1,8 +1,11 @@
 #pragma once
 
 #include <omp.h>
+#include <boost/algorithm/string/replace.hpp>
 
 #include <fstream>
+#include <iomanip>
+#include <limits>
 #include <sstream>
 #include <vector>
 
@@ -16,6 +19,7 @@ class TimingsStreamSingleton {
     }
 
     for (auto &stream : streams_) {
+      stream << std::setprecision(std::numeric_limits<double>::max_digits10);
       stream << "<timings>\n";
     }
   }
@@ -43,9 +47,12 @@ class TimingsStreamSingleton {
 template <int level>
 class TimingScope {
  public:
-  TimingScope(std::string const &function, std::string const &info)
+  TimingScope(std::string const &function, std::string const &info = "")
       : start_(omp_get_wtime()), stream_(TimingsStreamSingleton::instance().get()) {
-    stream_ << "<call function='" << function << "' info='" << info << "'>\n";
+    std::string f = function;
+    f = boost::replace_all_copy(f, "<", "&lt;");
+    f = boost::replace_all_copy(f, ">", "&gt;");
+    stream_ << "<call function='" << f << "' info='" << info << "'>\n";
   }
 
   ~TimingScope() {

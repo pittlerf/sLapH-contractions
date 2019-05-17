@@ -1,16 +1,17 @@
 #include "DilutedFactor.hpp"
 
 #include "KahanAccumulator.hpp"
+#include "timings.hpp"
 
 std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                                      std::vector<DilutedFactor> const &right_vec) {
+  TimingScope<4> timing_scope("operator*(v<DF>, v<DF>");
+
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
   std::vector<DilutedFactor> result_vec;
-  LT_ULTRA_FINE_DECLARE;
 
-  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec) {
     auto const inner_rnd_id = left.ric.second;
 
@@ -39,10 +40,6 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
                             used});
     }
   }
-  LT_ULTRA_FINE_STOP;
-  LT_ULTRA_FINE_PRINT(
-      "[vector<DilutedFactor> operator*(vector<DilutedFactor>, vector<DilutedFactor>)] "
-      "right_sum");
 
   if (result_vec.size() == 0) {
     throw std::runtime_error(
@@ -55,18 +52,19 @@ std::vector<DilutedFactor> operator*(std::vector<DilutedFactor> const &left_vec,
 
 Complex trace(std::vector<DilutedFactor> const &left_vec,
               std::vector<DilutedFactor> const &right_vec) {
+  TimingScope<4> timing_scope("trace(v<DF>, v<DF>)");
+
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
   int num_summands = 0;
   Accumulator<Complex> result;
-  LT_ULTRA_FINE_DECLARE;
 
   for (auto const &left : left_vec) {
+    TimingScope<4> timing_scope("trace(v<DF>, v<DF>): right sum");
+
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
-
-    LT_ULTRA_FINE_START;
 
     // XXX (MU 2019-01-03): This variable is an accumulator, but it runs with
     // double precision in all cases. The discussion has been started at
@@ -99,15 +97,10 @@ Complex trace(std::vector<DilutedFactor> const &left_vec,
       // multiplications to do.
       right_sum += right.data;
       ++num_summands;
-      LT_ULTRA_FINE_STOP;
-      LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] right_sum");
     }
 
-    LT_ULTRA_FINE_START;
     auto const &product = left.data * right_sum;
     result += product.trace();
-    LT_ULTRA_FINE_STOP;
-    LT_ULTRA_FINE_PRINT("[DilutedFactor::trace] product_trace");
 
   }  // for(left_vec)
 
