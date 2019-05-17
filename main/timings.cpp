@@ -1,29 +1,27 @@
 #include <timings.hpp>
 
-void foo();
-void bar();
-void baz();
-
-void foo() {
-  TimingScope<2> timing_scope("foo", "");
-
-  bar();
-  baz();
-}
-
-void bar() {
-  TimingScope<2> timing_scope("bar", "");
-
-  baz();
-}
-
-void baz() {
+void baz(std::string const &info) {
   TimingScope<3> timing_scope("baz", "");
 }
 
-int main() {
+void bar(std::string const &info) {
+  TimingScope<2> timing_scope("bar", info);
+
+  baz("");
+}
+
+void foo(std::string const &info) {
+  TimingScope<2> timing_scope("foo", info);
+
+  bar(info);
+  baz("");
+}
+
+int main(std::string const &info) {
   TimingScope<1> timing_scope("main", "");
 
-  foo();
-  bar();
+  foo("C30");
+  foo("C20V");
+  bar("C1");
+  bar("");
 }
