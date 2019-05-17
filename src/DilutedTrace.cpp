@@ -91,7 +91,7 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
   std::vector<DilutedTrace> result_vec;
 
   for (auto const &left : left_vec) {
-    TimingScope<4> timing_scope("factor_to_trace(v<DF>, v<DF>): right side");
+    TimingScope<5> timing_scope("factor_to_trace(v<DF>, v<DF>): right side");
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
 
