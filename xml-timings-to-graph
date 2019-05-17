@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright © 2019 Martin Ueding <dev@martin-ueding.de>
+
+import argparse
+import collections
+import hashlib
+import itertools
+import os
+import pprint
+import subprocess
+import sys
+import xml.etree.ElementTree
+
+import jinja2
+
+
+Vertex = collections.namedtuple('Vertex', ['id', 'function', 'info', 'cumtime', 'selftime', 'calls'])
+Edge = collections.namedtuple('Edge', ['from_id', 'to_id', 'function', 'info', 'cumtime', 'calls'])
+
+
+def node_id(function, info):
+    return 'n{}'.format(hashlib.sha1((function + ' ' + info).encode()).hexdigest())
+
+
+def parse_call(call):
+    function = call.attrib['function']
+    info = call.attrib['info']
+    id = node_id(function, info)
+    cumtime = float(call.find('./total').attrib['time'])
+
+    child_calls = call.findall('./call')
+    edges = [
+        Edge(id,
+             node_id(child.attrib['function'], child.attrib['info']),
+             child.attrib['function'],
+             child.attrib['info'],
+             float(child.find('./total').attrib['time']),
+             1)
+        for child in child_calls
+    ]
+
+    selftime = cumtime - sum(edge.cumtime for edge in edges)
+
+    vertex = Vertex(id=id, function=function, info=info, cumtime=cumtime, selftime=selftime, calls=1)
+
+    return vertex, edges
+
+
+def main():
+    options = _parse_args()
+
+    tree = xml.etree.ElementTree.parse(options.profile)
+
+    calls = tree.findall('.//call')
+    print(calls)
+
+    vertices = []
+    edges = []
+
+    for call in calls:
+        v, e = parse_call(call)
+        vertices.append(v)
+        edges += e
+
+    pprint.pprint(vertices)
+    pprint.pprint(edges)
+
+    grouped_vertices = []
+    for vertex_id, group in itertools.groupby(vertices, lambda v: v.id):
+        group = list(group)
+        v = group[0]
+
+        grouped_vertices.append(Vertex(
+            id=v.id, function=v.function, info=v.info,
+            cumtime=sum(g.cumtime for g in group),
+            selftime=sum(g.selftime for g in group),
+            calls=len(group)))
+
+    grouped_edges = []
+    for (from_id, to_id), group in itertools.groupby(edges, lambda e: (e.from_id, e.to_id)):
+        group = list(group)
+        e = group[0]
+
+        grouped_edges.append(Edge(
+            from_id=e.from_id, to_id=e.to_id,
+            function=e.function, info=e.info,
+            cumtime=sum(g.cumtime for g in group),
+            calls=len(group)))
+
+    pprint.pprint(grouped_edges)
+
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(
+        os.path.dirname(os.path.abspath(sys.argv[0]))))
+    template = env.get_template('profile.dot.j2')
+    rendered = template.render(vertices=grouped_vertices, edges=grouped_edges)
+
+    with open('profile.dot', 'w') as f:
+        f.write(rendered)
+
+    subprocess.run(['dot', 'profile.dot', '-Tpdf', '-o', 'profile.pdf'])
+
+
+
+def _parse_args():
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('profile')
+    options = parser.parse_args()
+
+    return options
+
+
+if __name__ == '__main__':
+    main()
