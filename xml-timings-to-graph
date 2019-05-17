@@ -7,16 +7,17 @@ import argparse
 import collections
 import hashlib
 import itertools
+import math
 import os
 import pprint
 import subprocess
 import sys
-import xml.etree.ElementTree
 
 import jinja2
+import lxml.etree
 
 
-Vertex = collections.namedtuple('Vertex', ['id', 'function', 'info', 'cumtime', 'selftime', 'calls'])
+Vertex = collections.namedtuple('Vertex', ['id', 'function', 'info', 'cumtime', 'selftime', 'calls', 'hue'])
 Edge = collections.namedtuple('Edge', ['from_id', 'to_id', 'function', 'info', 'cumtime', 'calls'])
 
 
@@ -24,26 +25,49 @@ def node_id(function, info):
     return 'n{}'.format(hashlib.sha1((function + ' ' + info).encode()).hexdigest())
 
 
-def parse_call(call):
-    function = call.attrib['function']
+def get_info(call):
     info = call.attrib['info']
-    id = node_id(function, info)
+
+    parent = call
+    while True:
+        parent = parent.find('..')
+        if parent is None:
+            break
+        parent_info = parent.get('info', '')
+        if parent_info != info:
+            infos = [parent_info, info]
+            info = '/'.join(i for i in infos if len(i) > 0)
+
+    return info
+
+
+def get_edge(child, caller_id):
+    info = get_info(child)
+
+    return Edge(
+        caller_id,
+        node_id(child.attrib['function'], info),
+        child.attrib['function'],
+        info,
+        float(child.find('./total').attrib['time']),
+        1)
+
+
+def parse_call(call):
     cumtime = float(call.find('./total').attrib['time'])
+    function = call.attrib['function']
+    info = get_info(call)
+    id = node_id(function, info)
 
     child_calls = call.findall('./call')
     edges = [
-        Edge(id,
-             node_id(child.attrib['function'], child.attrib['info']),
-             child.attrib['function'],
-             child.attrib['info'],
-             float(child.find('./total').attrib['time']),
-             1)
+        get_edge(child, id)
         for child in child_calls
     ]
 
     selftime = cumtime - sum(edge.cumtime for edge in edges)
 
-    vertex = Vertex(id=id, function=function, info=info, cumtime=cumtime, selftime=selftime, calls=1)
+    vertex = Vertex(id=id, function=function, info=info, cumtime=cumtime, selftime=selftime, calls=1, hue=None)
 
     return vertex, edges
 
@@ -51,7 +75,7 @@ def parse_call(call):
 def main():
     options = _parse_args()
 
-    tree = xml.etree.ElementTree.parse(options.profile)
+    tree = lxml.etree.parse(options.profile)
 
     calls = tree.findall('.//call')
     
@@ -76,11 +100,16 @@ def main():
         group = list(group)
         v = group[0]
 
+        cumtime = sum(g.cumtime for g in group)
+        selftime = sum(g.selftime for g in group)
+
         grouped_vertices.append(Vertex(
             id=v.id, function=v.function, info=v.info,
-            cumtime=sum(g.cumtime for g in group),
-            selftime=sum(g.selftime for g in group),
-            calls=len(group)))
+            cumtime=cumtime,
+            selftime=selftime,
+            calls=len(group),
+            hue='{:.4f}'.format(250/360 * (1 - math.pow(cumtime / tottime, 0.5))),
+        ))
 
     print('Grouped vertices down to {}.'.format(len(grouped_vertices)))
 
