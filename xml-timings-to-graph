@@ -15,6 +15,7 @@ import sys
 
 import jinja2
 import lxml.etree
+import tqdm
 
 
 Vertex = collections.namedtuple('Vertex', ['id', 'function', 'info', 'cumtime', 'selftime', 'calls', 'hue'])
@@ -76,9 +77,9 @@ def main():
     options = _parse_args()
 
     tree = lxml.etree.parse(options.profile)
+    print('Loaded XML file.')
 
     calls = tree.findall('.//call')
-    
     print('Found {} calls.'.format(len(calls)))
 
     tottime = float(tree.find('.//call[@function="main"]/total').attrib['time'])
@@ -86,7 +87,7 @@ def main():
     vertices = []
     edges = []
 
-    for call in calls:
+    for call in tqdm.tqdm(calls):
         v, e = parse_call(call)
         vertices.append(v)
         edges += e
