@@ -1,14 +1,16 @@
 #include "DilutedTrace.hpp"
 
+#include "timings.hpp"
+
 Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_vec) {
+  TimingScope<4> timing_scope("inner_product(DT, DT)");
+
   assert(left_vec.traces.size() > 0);
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
   Accumulator<Complex> result;
-  LT_ULTRA_FINE_DECLARE;
 
-  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     Accumulator<Complex> right_sum;
 
@@ -31,8 +33,6 @@ Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_
 
     result += left.data * right_sum.value();
   }
-  LT_ULTRA_FINE_STOP;
-  LT_ULTRA_FINE_PRINT("[Complex inner_product(DilutedTraces, DilutedTraces]");
 
   if (num_summands == 0) {
     throw std::runtime_error(
@@ -46,15 +46,15 @@ Complex inner_product(DilutedTraces const &left_vec, DilutedTraces const &right_
 Complex inner_product(DilutedTraces const &left_vec,
                       DilutedTraces const &middle_vec,
                       DilutedTraces const &right_vec) {
+  TimingScope<4> timing_scope("inner_product(DT, DT, DT)");
+
   assert(left_vec.traces.size() > 0);
   assert(middle_vec.traces.size() > 0);
   assert(right_vec.traces.size() > 0);
 
   int num_summands = 0;
   Accumulator<Complex> result;
-  LT_ULTRA_FINE_DECLARE;
 
-  LT_ULTRA_FINE_START;
   for (auto const &left : left_vec.traces) {
     for (auto const &middle : middle_vec.traces) {
       Accumulator<Complex> right_sum;
@@ -71,9 +71,6 @@ Complex inner_product(DilutedTraces const &left_vec,
       result += left.data * middle.data * right_sum.value();
     }
   }
-  LT_ULTRA_FINE_STOP;
-  LT_ULTRA_FINE_PRINT(
-      "[Complex inner_product(DilutedTraces, DilutedTraces, DilutedTraces]");
 
   if (num_summands == 0) {
     throw std::runtime_error(
@@ -86,18 +83,18 @@ Complex inner_product(DilutedTraces const &left_vec,
 
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left_vec,
                                           std::vector<DilutedFactor> const &right_vec) {
+  TimingScope<4> timing_scope("factor_to_trace(v<DF>, v<DF>)");
+
   assert(left_vec.size() > 0);
   assert(right_vec.size() > 0);
 
   std::vector<DilutedTrace> result_vec;
 
-  LT_ULTRA_FINE_DECLARE;
-
   for (auto const &left : left_vec) {
+    TimingScope<5> timing_scope("factor_to_trace(v<DF>, v<DF>): right side");
     auto const outer_rnd_id = left.ric.first;
     auto const inner_rnd_id = left.ric.second;
 
-    LT_ULTRA_FINE_START;
     for (auto const &right : right_vec) {
       // We want to make the inner and outer indices match. The inner indices need to
       // match because the product would not make sense otherwise. The outer indices must
@@ -129,8 +126,6 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
       // multiplications to do.
       result_vec.push_back({DilutedTrace::Data{(left.data * right.data).trace()}, used});
     }
-    LT_ULTRA_FINE_STOP;
-    LT_ULTRA_FINE_PRINT("[DilutedFactor::factor_to_trace] multiply_trace");
   }  // for(left_vec)
 
   if (result_vec.size() == 0) {
@@ -143,6 +138,8 @@ std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &left
 }
 
 std::vector<DilutedTrace> factor_to_trace(std::vector<DilutedFactor> const &vec) {
+  TimingScope<4> timing_scope("factor_to_trace(v<DF>)");
+
   assert(vec.size() > 0);
 
   std::vector<DilutedTrace> result_vec;

@@ -1,5 +1,7 @@
 #include "DilutedTraceFactory.hpp"
 
+#include "timings.hpp"
+
 int get_time(BlockIterator const &slice_pair, Location const loc) {
   if (loc == Location::source) {
     return slice_pair.source();
@@ -10,6 +12,8 @@ int get_time(BlockIterator const &slice_pair, Location const loc) {
 
 template <>
 void DilutedTrace1Factory<DilutedFactorType::Q1>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace1Factory<Q1>::build");
+
   auto t = time_key[0];
   auto b = dilution_scheme.time_to_block(t);
 
@@ -24,6 +28,8 @@ template class DilutedTrace1Factory<DilutedFactorType::Q1>;
 template <>
 void DilutedTrace2Factory<DilutedFactorType::Q1, DilutedFactorType::Q1>::build(
     Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q1>::build");
+
   auto t1 = time_key[0];
   auto t2 = time_key[1];
   auto b1 = dilution_scheme.time_to_block(t1);
@@ -41,6 +47,8 @@ template class DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2
 template <>
 void DilutedTrace2Factory<DilutedFactorType::Q0, DilutedFactorType::Q2>::build(
     Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q0, Q2>::build");
+
   auto t1 = time_key[0];
   auto t2 = time_key[1];
   auto b2 = dilution_scheme.time_to_block(t2);
@@ -58,6 +66,8 @@ template <>
 void DilutedTrace3Factory<DilutedFactorType::Q1,
                           DilutedFactorType::Q1,
                           DilutedFactorType::Q1>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q1, Q1, Q1>::build");
+
   auto const t1 = time_key[0];
   auto const t2 = time_key[1];
   auto const t3 = time_key[2];
@@ -86,6 +96,8 @@ template <>
 void DilutedTrace3Factory<DilutedFactorType::Q1,
                           DilutedFactorType::Q0,
                           DilutedFactorType::Q2>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q1, Q0, Q2>::build");
+
   auto const t1 = time_key[0];
   auto const t2 = time_key[1];
   auto const t3 = time_key[2];
@@ -115,6 +127,8 @@ void DilutedTrace4Factory<DilutedFactorType::Q1,
                           DilutedFactorType::Q1,
                           DilutedFactorType::Q1,
                           DilutedFactorType::Q1>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q1, Q1, Q1, Q1>::build");
+
   auto const t0 = time_key[0];
   auto const t1 = time_key[1];
   auto const t2 = time_key[2];
@@ -149,6 +163,8 @@ void DilutedTrace4Factory<DilutedFactorType::Q2,
                           DilutedFactorType::Q0,
                           DilutedFactorType::Q2,
                           DilutedFactorType::Q0>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q2, Q0, Q2, Q0>::build");
+
   auto const t0 = time_key[0];
   auto const t1 = time_key[1];
   auto const t2 = time_key[2];
@@ -185,6 +201,8 @@ void DilutedTrace6Factory<DilutedFactorType::Q2,
                           DilutedFactorType::Q0,
                           DilutedFactorType::Q2,
                           DilutedFactorType::Q0>::build(Key const &time_key) {
+  TimingScope<3> timing_scope("DilutedTrace2Factory<Q2, Q0, Q2, Q0, Q2, Q0>::build");
+
   auto const t0 = time_key[0];
   auto const t1 = time_key[1];
   auto const t2 = time_key[2];

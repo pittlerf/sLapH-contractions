@@ -5,7 +5,7 @@
 #include "DilutedFactorFactory.hpp"
 #include "StopWatch.hpp"
 #include "dilution-iterator.hpp"
-#include "local_timer.hpp"
+#include "timings.hpp"
 #include "typedefs.hpp"
 
 #include <omp.h>
@@ -51,6 +51,8 @@ void contract(const ssize_t Lt,
               std::string const output_path,
               std::string const output_filename,
               int single_time_slice_combination) {
+  TimingScope<1> timing_scope("contract");
+
   std::vector<Diagram> diagrams;
 
   for (auto const &elem : correlator_requests_map) {
@@ -102,15 +104,13 @@ void contract(const ssize_t Lt,
         if (diagram.correlator_requests().empty()) {
           continue;
         }
-        LT_CORRELATOR_START;
+        TimingScope<1> timing_scope("contract diagram", diagram.name());
 
         for (auto const slice_pair : block_pair) {
           int const t = get_time_delta(slice_pair, Lt);
 
           diagram.assemble(t, slice_pair, q);
         }  // End of slice pair loop.
-        LT_CORRELATOR_STOP;
-        LT_CORRELATOR_PRINT(std::string("[contract] ") + diagram.name());
       }  // End of diagram loop.
 
       q.clear();
