@@ -109,8 +109,6 @@ void DilutedFactorFactory<DilutedFactorType::Q1>::build(Key const &time_key) {
   int const t1 = time_key[0];
   int const b2 = time_key[1];
 
-  LT_FINE_DECLARE;
-
   for (int operator_key = 0; operator_key < ssize(quarkline_indices); ++operator_key) {
     auto const &op = quarkline_indices[operator_key];
 

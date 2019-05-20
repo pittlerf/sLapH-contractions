@@ -70,8 +70,6 @@ void contract(const ssize_t Lt,
   {
     swatch.start();
 
-    LT_CORRELATOR_DECLARE;
-
     DiagramParts q(randomvectors,
                    perambulators,
                    meson_operator,

@@ -29,6 +29,7 @@ add_library(lcontract
   src/init_lookup_tables.cpp
   src/io_utils.cpp
   src/OperatorFactory.cpp
+  src/DilutedProductFactory.cpp
   src/Perambulator.cpp
   src/RandomVector.cpp
   src/ranlxs.cpp
