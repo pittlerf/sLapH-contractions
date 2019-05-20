@@ -76,6 +76,10 @@ def parse_call(call):
 def main():
     options = _parse_args()
 
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(
+        os.path.dirname(os.path.abspath(__file__))))
+    template = env.get_template('profile.dot.j2')
+
     tree = lxml.etree.parse(options.profile)
     print('Loaded XML file.')
 
@@ -129,9 +133,6 @@ def main():
 
     print('Grouped edges down to {}.'.format(len(grouped_edges)))
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(
-        os.path.dirname(os.path.abspath(sys.argv[0]))))
-    template = env.get_template('profile.dot.j2')
     rendered = template.render(vertices=grouped_vertices, edges=grouped_edges, tottime=tottime)
     print('Generated graph.')
 
