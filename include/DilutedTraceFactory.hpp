@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DilutedFactorFactory.hpp"
+#include "DilutedProductFactory.hpp"
 #include "DilutedTrace.hpp"
 
 #include <boost/multi_array.hpp>
@@ -250,6 +251,7 @@ class DilutedTrace6Factory : public AbstractDilutedTraceFactory {
                        DilutedFactorFactory<qlt4> &_df4,
                        DilutedFactorFactory<qlt5> &_df5,
                        DilutedFactorFactory<qlt6> &_df6,
+                       DilutedProductFactoryQ0Q2 &dpf,
                        std::vector<Indices> const &_dic,
                        DilutionScheme const &_ds)
       : df1(_df1),
@@ -258,6 +260,7 @@ class DilutedTrace6Factory : public AbstractDilutedTraceFactory {
         df4(_df4),
         df5(_df5),
         df6(_df6),
+        dpf_(dpf),
         diagram_index_collection(_dic),
         dilution_scheme(_ds) {}
 
@@ -287,6 +290,7 @@ class DilutedTrace6Factory : public AbstractDilutedTraceFactory {
   DilutedFactorFactory<qlt4> &df4;
   DilutedFactorFactory<qlt5> &df5;
   DilutedFactorFactory<qlt6> &df6;
+  DilutedProductFactoryQ0Q2 &dpf_;
   std::vector<Indices> const &diagram_index_collection;
   DilutionScheme const &dilution_scheme;
   std::map<Key, Value> Tr;
