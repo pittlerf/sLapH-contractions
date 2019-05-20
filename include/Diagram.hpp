@@ -2,6 +2,7 @@
 
 #include "Correlators.hpp"
 #include "DilutedFactorFactory.hpp"
+#include "DilutedProductFactory.hpp"
 #include "DilutedTraceFactory.hpp"
 #include "h5-wrapper.hpp"
 
@@ -40,7 +41,8 @@ struct DiagramParts {
            dilT,
            dilE,
            nev,
-           dil_fac_lookup.at("Q2")) {
+           dil_fac_lookup.at("Q2")),
+        q0q2(q0, q2) {
     trace_factories["trQ1"] = std::unique_ptr<AbstractDilutedTraceFactory>(
         new DilutedTrace1Factory<DilutedFactorType::Q1>(
             q1, trace_indices_map.at("trQ1"), dilution_scheme));
@@ -102,6 +104,8 @@ struct DiagramParts {
   DilutedFactorFactory<DilutedFactorType::Q0> q0;
   DilutedFactorFactory<DilutedFactorType::Q1> q1;
   DilutedFactorFactory<DilutedFactorType::Q2> q2;
+
+  DilutedProductFactoryQ0Q2 q0q2;
 
   std::map<std::string, std::unique_ptr<AbstractDilutedTraceFactory>> trace_factories;
 };

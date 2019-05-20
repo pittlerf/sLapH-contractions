@@ -233,6 +233,8 @@ void DilutedTrace6Factory<DilutedFactorType::Q2,
     auto const &f4 = m4.at({c_look[5]});
     auto const &f5 = m5.at({c_look[0]});
 
+    //auto const &l1 = q.
+
     Tr[time_key][i] = factor_to_trace(f0 * f1 * f2 * f3 * f4, f5);
   }
 }
