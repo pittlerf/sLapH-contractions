@@ -1,7 +1,11 @@
 #include "DilutedProductFactory.hpp"
 
+#include "timings.hpp"
+
 void DilutedProductFactoryQ0Q2::build(Key const &time_key,
                                       std::array<ssize_t, 2> const &key) {
+  TimingScope<4> timing_scope("DilutedProductFactoryQ0Q2::build");
+
   // Extract time keys.
   int constexpr nt1 = 3;
   int constexpr nt2 = 1;

@@ -14,7 +14,9 @@ class DilutedProductFactoryQ0Q2 {
 
   std::vector<DilutedFactor> const &get(Key const &time_key,
                                         std::array<ssize_t, 2> const &key) {
-    if (Q0Q2_.count(time_key) == 0 || Q0Q2_[time_key].count(key) == 0) {
+    TimingScope<4> timing_scope("DilutedProductFactoryQ0Q2::get");
+
+    if (Q0Q2_.count(time_key) == 0 || Q0Q2_.at(time_key).count(key) == 0) {
       build(time_key, key);
     }
 

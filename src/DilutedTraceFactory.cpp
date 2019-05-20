@@ -223,7 +223,11 @@ void DilutedTrace6Factory<DilutedFactorType::Q2,
     auto const &l2 = dpf_.get({b1, t2, b3, t3}, {c_look[3], c_look[4]});
     auto const &l3 = dpf_.get({b3, t4, b5, t5}, {c_look[5], c_look[0]});
 
-    Tr[time_key][i] = factor_to_trace(l1 * l2 * l3);
+    assert(l1.size() > 0);
+    assert(l2.size() > 0);
+    assert(l3.size() > 0);
+
+    Tr[time_key][i] = factor_to_trace(l1 * l2, l3);
   }
 }
 
