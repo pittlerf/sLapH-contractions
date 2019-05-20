@@ -50,7 +50,7 @@ class TimingScope {
   TimingScope(std::string const &function, std::string const &info = "")
       : start_(omp_get_wtime()), stream_(TimingsStreamSingleton::instance().get()) {
     std::string f = function;
-    if (level <= 5) {
+    if (level <= 4) {
       f = boost::replace_all_copy(f, "<", "&lt;");
       f = boost::replace_all_copy(f, ">", "&gt;");
       stream_ << "<call function='" << f << "' info='" << info << "'>\n";
@@ -58,7 +58,7 @@ class TimingScope {
   }
 
   ~TimingScope() {
-    if (level <= 5) {
+    if (level <= 4) {
       auto const end = omp_get_wtime();
       auto const duration = end - start_;
       stream_ << "<total time='" << duration << "' />\n</call>\n";
