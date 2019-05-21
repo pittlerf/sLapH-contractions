@@ -186,12 +186,14 @@ class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
                        DilutedFactorFactory<qlt2> &_df2,
                        DilutedFactorFactory<qlt3> &_df3,
                        DilutedFactorFactory<qlt4> &_df4,
+                       DilutedProductFactoryQ0Q2 &dpf,
                        std::vector<Indices> const &_dic,
                        DilutionScheme const &_ds)
       : df1(_df1),
         df2(_df2),
         df3(_df3),
         df4(_df4),
+        dpf_(dpf),
         diagram_index_collection(_dic),
         dilution_scheme(_ds) {}
 
@@ -219,6 +221,7 @@ class DilutedTrace4Factory : public AbstractDilutedTraceFactory {
   DilutedFactorFactory<qlt2> &df2;
   DilutedFactorFactory<qlt3> &df3;
   DilutedFactorFactory<qlt4> &df4;
+  DilutedProductFactoryQ0Q2 &dpf_;
   std::vector<Indices> const &diagram_index_collection;
   DilutionScheme const &dilution_scheme;
   std::map<Key, Value> Tr;

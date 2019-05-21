@@ -72,14 +72,14 @@ struct DiagramParts {
                                  DilutedFactorType::Q1,
                                  DilutedFactorType::Q1,
                                  DilutedFactorType::Q1>(
-            q1, q1, q1, q1, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme));
+            q1, q1, q1, q1, q0q2, trace_indices_map.at("trQ1Q1Q1Q1"), dilution_scheme));
 
     trace_factories["trQ2Q0Q2Q0"] = std::unique_ptr<AbstractDilutedTraceFactory>(
         new DilutedTrace4Factory<DilutedFactorType::Q2,
                                  DilutedFactorType::Q0,
                                  DilutedFactorType::Q2,
                                  DilutedFactorType::Q0>(
-            q2, q0, q2, q0, trace_indices_map.at("trQ2Q0Q2Q0"), dilution_scheme));
+            q2, q0, q2, q0, q0q2, trace_indices_map.at("trQ2Q0Q2Q0"), dilution_scheme));
 
     trace_factories["trQ2Q0Q2Q0Q2Q0"] = std::unique_ptr<AbstractDilutedTraceFactory>(
         new DilutedTrace6Factory<DilutedFactorType::Q2,
