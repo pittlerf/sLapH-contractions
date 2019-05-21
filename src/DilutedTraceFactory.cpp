@@ -174,22 +174,11 @@ void DilutedTrace4Factory<DilutedFactorType::Q2,
   auto const b2 = dilution_scheme.time_to_block(t2);
   // auto const b3 = dilution_scheme.time_to_block(t3);
 
-  DilutedFactorsMap<2> L1;
-  DilutedFactorsMap<2> L2;
-  for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
-    const auto &c_look = diagram_index_collection[i];
-    multiply<1, 1>(L1, {c_look[0], c_look[1]}, df2[{t0}], df3[{b0, t1, b2}]);
-    multiply<1, 1>(L2, {c_look[2], c_look[3]}, df4[{t2}], df1[{b2, t3, b0}]);
-  }
-
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
 
     auto const &l1 = dpf_.get({b0, t1, b2, t2}, {c_look[1], c_look[2]});
     auto const &l2 = dpf_.get({b2, t3, b0, t0}, {c_look[3], c_look[0]});
-
-    // Tr[time_key][i] = factor_to_trace(L1[{c_look[0], c_look[1]}], L2[{c_look[2],
-    // c_look[3]}]);
 
     Tr[time_key][i] = factor_to_trace(l1, l2);
   }
