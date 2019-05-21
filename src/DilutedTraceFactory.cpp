@@ -184,8 +184,14 @@ void DilutedTrace4Factory<DilutedFactorType::Q2,
 
   for (ssize_t i = 0; i != ssize(diagram_index_collection); ++i) {
     const auto &c_look = diagram_index_collection[i];
-    Tr[time_key][i] =
-        factor_to_trace(L1[{c_look[0], c_look[1]}], L2[{c_look[2], c_look[3]}]);
+
+    auto const &l1 = dpf_.get({b0, t1, b2, t2}, {c_look[1], c_look[2]});
+    auto const &l2 = dpf_.get({b2, t3, b0, t0}, {c_look[3], c_look[0]});
+
+    // Tr[time_key][i] = factor_to_trace(L1[{c_look[0], c_look[1]}], L2[{c_look[2],
+    // c_look[3]}]);
+
+    Tr[time_key][i] = factor_to_trace(l1, l2);
   }
 }
 
