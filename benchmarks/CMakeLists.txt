@@ -6,6 +6,7 @@ if(${benchmark_FOUND})
 
     accumulation.cpp
     create_momenta.cpp
+    omp_wtime.cpp
 
     )
 

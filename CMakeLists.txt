@@ -187,6 +187,10 @@ target_link_libraries(test-dilution-iterator lcontract)
 add_executable(test-derivative main/test-derivative.cpp)
 target_link_libraries(test-derivative lcontract)
 
+### test-derivative
+add_executable(timings main/timings.cpp)
+target_link_libraries(timings lcontract)
+
 ###############################################################################
 #                               Subdirectories                                #
 ###############################################################################
