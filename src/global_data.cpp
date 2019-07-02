@@ -119,6 +119,9 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
   config.add_options()("Lz",
                        po::value<int>(&gd.Lz)->default_value(0),
                        "Lz: lattice extent in z direction");
+  gd.dim_row = 3 * gd.Lz * gd.Ly * gd.Lx ;
+  gd.V_TS = gd.dim_row * 4 * 2;
+  gd.V_for_lime = gd.V_TS * gd.Lt;
 
   config.add_options()("alpha1",
                        po::value<double>(&gd.hyp_parameters.alpha1)->default_value(0),
@@ -275,6 +278,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
       gd.peram_construct.size_cols.push_back((gd.Lt / q.number_of_dilution_T) *
                                              q.number_of_dilution_E *
                                              q.number_of_dilution_D);
+      gd.number_of_inversions= (gd.Lt / q.number_of_dilution_T) * q.number_of_dilution_E * q.number_of_dilution_D;
     }
   }
 
@@ -355,11 +359,17 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
             << " Gb" << std::endl;
 
   int total_number_of_random_combinations_in_trQ0Q2 = 0;
+  int counter_p= 0;
   for (auto const &q : gd.trace_indices_map.at("trQ0Q2")) {
+    ++counter_p;
+    //std::cout<<"Question memory"<<std::endl;
+    //std::cout<<q[0]<<" "<<q[1]<<std::endl;
     auto const size1 = gd.quarkline_lookuptable.at("Q0").at(q[0]).rnd_vec_ids.size();
     auto const size2 = gd.quarkline_lookuptable.at("Q2").at(q[1]).rnd_vec_ids.size();
+    //std::cout<<size1<<" "<<size2<<std::endl;
     total_number_of_random_combinations_in_trQ0Q2 += size1 * size2;
   }
+  printf("Counter %d\n",counter_p);
   std::cout << "\ttrQ0Q2:\t" << std::fixed << std::setprecision(2)
             << gd.Lt * gd.Lt * total_number_of_random_combinations_in_trQ0Q2 *
                    sizeof(Complex) / std::pow(2, 30)
