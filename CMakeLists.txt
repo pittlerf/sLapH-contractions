@@ -92,7 +92,8 @@ if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   find_package(Eigen3 REQUIRED)
 endif()
 target_include_directories(lcontract SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR})
-target_compile_definitions(lcontract PUBLIC EIGEN_DONT_PARALLELIZE)
+target_compile_definitions(lcontract PUBLIC)
+# EIGEN_DONT_PARALLELIZE)
 
 # Lime
 if(NOT DEFINED LIME_INCLUDE_DIRS)

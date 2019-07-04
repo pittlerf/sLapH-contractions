@@ -3,6 +3,7 @@
 
 #include <boost/format.hpp>
 
+#include <omp.h>
 #include <iomanip>
 
 static ssize_t map_char_to_dir(const char dir) {
@@ -259,8 +260,17 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     }
   }
 
+  omp_set_nested(1);
+  Eigen::setNbThreads(4);
+
+//  int nb_omp=omp_get_num_threads();
+  omp_set_num_threads(8);
+
+
+
 #pragma omp parallel
   {
+
     swatch.start();
     Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
 
@@ -321,6 +331,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
   swatch.print();
   is_vdaggerv_set = true;
+  exit(1);
 }
 
 void OperatorFactory::read_vdaggerv(const int config) {

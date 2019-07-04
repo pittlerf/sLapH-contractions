@@ -120,6 +120,7 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                        po::value<int>(&gd.Lz)->default_value(0),
                        "Lz: lattice extent in z direction");
   gd.dim_row = 3 * gd.Lz * gd.Ly * gd.Lx ;
+  
   gd.V_TS = gd.dim_row * 4 * 2;
   gd.V_for_lime = gd.V_TS * gd.Lt;
 
