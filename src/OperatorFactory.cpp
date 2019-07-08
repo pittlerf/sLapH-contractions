@@ -265,16 +265,16 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
   // how many outer iterations do we need to work off all time slices in a stepping 
   // of 'nb_evec_read_threads'
-  const int nphases = (int)ceil((double)Lt / gd.nb_evec_read_threads);
+  const ssize_t nphases = (ssize_t)ceil((double)Lt / gd.nb_evec_read_threads);
   
-  int t_start = 0;
+  ssize_t t_start = 0;
   
   swatch.start();
   
   // loop over the phases
-  for(int iphase = 0; iphase < phases; iphase++){
-    int t_end = t_start + gd.nb_evec_read_threads;
-    int n_read_threads = gd.nb_evec_read_threads;
+  for(ssize_t iphase = 0; iphase < phases; iphase++){
+    ssize_t t_end = t_start + gd.nb_evec_read_threads;
+    ssize_t n_read_threads = gd.nb_evec_read_threads;
     if( t_end >= Lt ){
       n_read_threads = Lt - t_start - 1;
       t_end = Lt;
@@ -284,7 +284,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     #pragma omp parallel num_threads(n_read_threads)
     {
       #pragma omp for
-      for(int i = 0; i < n_read_threads; ++i){
+      for(ssize_t i = 0; i < n_read_threads; ++i){
         int t = t_start + i;
         auto const inter_name = (boost::format("%s%03d") % filename % t).str();
         V_t[i].read_eigen_vector(inter_name.c_tr(), 0, 0);
@@ -525,7 +525,7 @@ void OperatorFactory::read_vdaggerv_liuming(const int config) {
 void OperatorFactory::create_operators(const std::string &filename,
                                        const RandomVector &rnd_vec,
                                        const int config,
-                                       const & GlobalData gd) {
+                                       const GlobalData & gd) {
   is_vdaggerv_set = false;
   if (handling_vdaggerv == "write" || handling_vdaggerv == "build")
     build_vdaggerv(filename, config, gd);
