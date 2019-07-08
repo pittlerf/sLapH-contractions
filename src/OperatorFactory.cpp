@@ -217,7 +217,7 @@ OperatorFactory::OperatorFactory(const ssize_t Lt,
   std::cout << "\tMeson operators initialised" << std::endl;
 }
 
-void OperatorFactory::build_vdaggerv(const std::string &filename, const int config, const & GlobalData gd) {
+void OperatorFactory::build_vdaggerv(const std::string &filename, const int config, const GlobalData & gd) {
   const ssize_t dim_row = 3 * Lx * Ly * Lz;
   const int id_unity = operator_lookuptable.index_of_unity;
 
