@@ -285,7 +285,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     {
       #pragma omp for
       for(ssize_t i = 0; i < n_read_threads; ++i){
-        int t = t_start + i;
+        ssize_t t = t_start + i;
         auto const inter_name = (boost::format("%s%03d") % filename % t).str();
         V_t[i].read_eigen_vector(inter_name.c_tr(), 0, 0);
       }
@@ -302,8 +302,8 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     const int old_eigen_threads = Eigen::nbThreads();
     Eigen::setNbThreads(gd.nb_vdaggerv_eigen_threads);
     for(const auto &op : operator_lookuptable.vdaggerv_lookup){
-      for(int i = 0; i < n_read_threads; ++i){
-        int t = t_start + i;
+      for(ssize_t i = 0; i < n_read_threads; ++i){
+        ssize_t t = t_start + i;
         if( op.id != id_unity ){
           if(!op.displacement.empty()){
             W_t = displace_eigenvectors(V_t[i], *gauge, t, op.displacement, 1);
@@ -323,8 +323,8 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
       // perform thread-parallel I/O to write out VdaggerV
       if( handling_vdaggerv == "write" && op.id != id_unity ){
         #pragma omp parallel for num_threads(n_read_threads)
-        for(int i = 0; i < n_read_threads; ++i){
-          int t = t_start + i;
+        for(ssize_t i = 0; i < n_read_threads; ++i){
+          ssize_t t = t_start + i;
           std::string momentum_string = std::to_string(op.momentum[0]) +
                                         std::to_string(op.momentum[1]) +
                                         std::to_string(op.momentum[2]);
