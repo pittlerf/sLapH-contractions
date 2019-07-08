@@ -58,8 +58,8 @@ struct GlobalData {
   int verbose;
   ssize_t nb_eigen_threads;
 
-  int nb_evec_read_threads;
-  int nb_vdaggerv_eigen_threads;
+  ssize_t nb_evec_read_threads;
+  ssize_t nb_vdaggerv_eigen_threads;
 
   std::string path_eigenvectors;
   std::string name_eigenvectors;
