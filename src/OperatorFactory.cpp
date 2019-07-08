@@ -272,7 +272,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
   swatch.start();
   
   // loop over the phases
-  for(ssize_t iphase = 0; iphase < phases; iphase++){
+  for(ssize_t iphase = 0; iphase < nphases; iphase++){
     ssize_t t_end = t_start + gd.nb_evec_read_threads;
     ssize_t n_read_threads = gd.nb_evec_read_threads;
     if( t_end >= Lt ){
@@ -297,6 +297,8 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     // calculation must only be performed for a subset of quantum numbers given
     // in op_VdaggerV.
     Eigen::MatrixXcd W_t;
+    Eigen::VectorXcd mom = Eigen::VectorXcd::Zero(dim_row);
+
     const int old_eigen_threads = Eigen::nbThreads();
     Eigen::setNbThreads(gd.nb_vdaggerv_eigen_threads);
     for(const auto &op : operator_lookuptable.vdaggerv_lookup){
