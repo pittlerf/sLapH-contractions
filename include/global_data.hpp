@@ -57,6 +57,10 @@ struct GlobalData {
   int start_config, end_config, delta_config;
   int verbose;
   ssize_t nb_eigen_threads;
+
+  int nb_evec_read_threads;
+  int nb_vdaggerv_eigen_threads;
+
   std::string path_eigenvectors;
   std::string name_eigenvectors;
   std::string filename_eigenvectors;

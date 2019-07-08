@@ -98,6 +98,16 @@ void read_parameters(GlobalData &gd, int ac, char *av[]) {
                        po::value<ssize_t>(&gd.nb_eigen_threads)->default_value(1),
                        "nb_eigen_threads: number of threads Eigen uses internally");
 
+  config.add_options()("nb_evec_read_threads",
+                       po::value<ssize_t>(&gd.nb_evec_read_threads)->default_value(1),
+                       "nb_evec_read_threads: number of threads used for reading eigenvector files in parallel");
+
+  config.add_options()("nb_vdaggerv_eigen_threads",
+                       po::value<ssize_t>(&gd.nb_vdaggerv_eigen_threads)->default_value(1),
+                       "nb_vdaggerv_eigen_threads: number of Eigen threads to be used "
+                       "for dense matrix multiplication for VdaggerV construction "
+                       "(should equal the number of cores");
+
   // lattice options
   config.add_options()(
       "output_path",

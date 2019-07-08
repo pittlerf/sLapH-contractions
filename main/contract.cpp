@@ -86,7 +86,7 @@ int main(int ac, char *av[]) {
     randomvectors.read_random_vectors_from_separate_files(
         gd.rnd_vec_construct.filename_list);
     // read eigenvectors and build operators
-    meson_operators.create_operators(gd.filename_eigenvectors, randomvectors, config_i);
+    meson_operators.create_operators(gd.filename_eigenvectors, randomvectors, config_i, );
 
     // doing all the contractions
     contract(gd.Lt,
