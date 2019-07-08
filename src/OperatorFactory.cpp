@@ -272,7 +272,7 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
   swatch.start();
   
   // loop over the phases
-  for(ssize_t iphase = 0; iphase < phases; iphase++){
+  for(ssize_t iphase = 0; iphase < nphases; iphase++){
     ssize_t t_end = t_start + gd.nb_evec_read_threads;
     ssize_t n_read_threads = gd.nb_evec_read_threads;
     if( t_end >= Lt ){
