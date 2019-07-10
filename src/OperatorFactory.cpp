@@ -260,14 +260,6 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
     }
   }
 
-  omp_set_nested(1);
-  Eigen::setNbThreads(4);
-
-//  int nb_omp=omp_get_num_threads();
-  omp_set_num_threads(8);
-
-
-
 #pragma omp parallel
   {
 
@@ -331,7 +323,6 @@ void OperatorFactory::build_vdaggerv(const std::string &filename, const int conf
 
   swatch.print();
   is_vdaggerv_set = true;
-  exit(1);
 }
 
 void OperatorFactory::read_vdaggerv(const int config) {
